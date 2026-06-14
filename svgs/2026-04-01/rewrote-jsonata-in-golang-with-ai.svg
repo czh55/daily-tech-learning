@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4695" viewBox="0 0 1320 4695">
+  <foreignObject x="0" y="0" width="1320" height="4695">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>一天重写 JSONata，我用 400 美元干掉了公司 50 万美元的 K8s 集群</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/01/rewrote-jsonata-in-golang-with-ai</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">跨语言 RPC，微服务架构中最昂</div><span class="arrow-sym">→</span><div class="node">Cloudflare 的“抄作业</div><span class="arrow-sym">→</span><div class="node">7 小时，400 美元，1300</div><span class="arrow-sym">→</span><div class="node">百倍性能与意外之喜：“手术刀式”</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】跨语言 RPC，微服务架构中最昂贵的“性能税”</h3>
+  <p><strong>在讲什么问题：</strong>跨语言 RPC，微服务架构中最昂贵的“性能税”</p>
+  <p><strong>关键理解：</strong>要理解这次重构的意义有多么重大，首先得看看 Nir Barak 的团队曾经陷入了多深的泥潭。 他们的核心业务是一个用 Go 编写的高性能数据管道，每天处理数十亿的事件。但其中有一个环节，需要用到一个名为 JSONata 的查询语言（你可以把它想象成带 Lambda 函数的 jq）来执行动态策略。 尴尬的是，JSONata 的官方实现是 JavaScript 写的。 这就导致了一个极其痛苦的架构：他们的主业务 Go 服务，为了执行这些规则…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：要理解这次重构的意义有多么重大，首先得看看 Nir Barak 的团队曾经陷入了多深的泥潭。 他们的核心业务是一个用 Go 编写的高性能数据管道，每天处理数十亿的事件。但其中有一个环节，需要用到一个名为 JSONata 的查询语言（你可以把…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】Cloudflare 的“抄作业”哲学</h3>
+  <p><strong>在讲什么问题：</strong>Cloudflare 的“抄作业”哲学</p>
+  <p><strong>关键理解：</strong>转机发生在前几周。Nir Barak 看到了 Cloudflare 那篇刷爆全网的文章《 我们如何用 AI 在一周内重构 Next.js 》。 Cloudflare 的做法极其“暴力”且有效：他们没有让 AI 去创造新东西，而是把 Next.js 现成的spec，以及包含几千个 case 的官方测试套件（Test Suite）直接扔给大模型，然后对 AI 下达了一个简单粗暴的指令： “我不管你怎么实现，给我写一个能在 Vite 上跑通所…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：转机发生在前几周。Nir Barak 看到了 Cloudflare 那篇刷爆全网的文章《 我们如何用 AI 在一周内重构 Next.js 》。 Cloudflare 的做法极其“暴力”且有效：他们没有让 AI 去创造新东西，而是把 Next…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】7 小时，400 美元，13000 行 Go 代码</h3>
+  <p><strong>在讲什么问题：</strong>7 小时，400 美元，13000 行 Go 代码</p>
+  <p><strong>关键理解：</strong>接下来的故事，充满了令人肾上腺素飙升的极客快感。 Nir Barak 坐在电脑前，看着 AI Agent 像一台失控的缝纫机一样，疯狂地生成 Go 代码、运行测试、读取报错、然后自我修正。 整个过程被划分成了几个“波次（Waves）”：先实现核心解析器，再实现内置函数，最后处理各种边缘 case。 在 AI 与测试用例的左右互搏之下，仅仅 7 个小时 后，奇迹发生了： 一个包含 13,000 多行纯 Go 代码的、名为 gnata 的全…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：接下来的故事，充满了令人肾上腺素飙升的极客快感。 Nir Barak 坐在电脑前，看着 AI Agent 像一台失控的缝纫机一样，疯狂地生成 Go 代码、运行测试、读取报错、然后自我修正。 整个过程被划分成了几个“波次（Waves）”：先实…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】百倍性能与意外之喜：“手术刀式”重构的深远影响</h3>
+  <p><strong>在讲什么问题：</strong>百倍性能与意外之喜：“手术刀式”重构的深远影响</p>
+  <p><strong>关键理解：</strong>成本降为零已经足够震撼，但性能上的收益更是堪称“恐怖”。 这还只是开始。由于 gnata 是纯 Go 实现，Nir Barak 团队得以进行更深度的“魔改”：他们设计了一套 两层评估架构 。对于简单的字段查找，gnata 直接在原始的 JSON 字节流上操作，实现了 零堆内存分配（Zero Heap Allocations） ！只有遇到复杂表达式时，才会启动完整的解析器。 在接下来的两周内，他们乘胜追击，用 gnata 的批量处理能力，…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：成本降为零已经足够震撼，但性能上的收益更是堪称“恐怖”。 这还只是开始。由于 gnata 是纯 Go 实现，Nir Barak 团队得以进行更深度的“魔改”：他们设计了一套 两层评估架构 。对于简单的字段查找，gnata 直接在原始的 JS…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】小结：我们不再只是“氛围感编码”</h3>
+  <p><strong>在讲什么问题：</strong>小结：我们不再只是“氛围感编码”</p>
+  <p><strong>关键理解：</strong>在文章的结尾，Nir Barak 提到了 AI 大神 Andrej Karpathy 最近的观点，大意是： “编程正在变得面目全非。在底层，深厚的技术专长正成为比以往任何时候都更强大的‘乘数效应放大器’。” Nir Barak 感慨道，直到最近，他自己都对那种完全由 AI Agent 生成代码的“氛围编码（Vibe coding）”持怀疑态度。但 2026 年 2 月，成为了一个连他这样固执的开发者都无法忽视的 “拐点” 。 gnata…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在文章的结尾，Nir Barak 提到了 AI 大神 Andrej Karpathy 最近的观点，大意是： “编程正在变得面目全非。在底层，深厚的技术专长正成为比以往任何时候都更强大的‘乘数效应放大器’。” Nir Barak 感慨道，直到…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>跨语言 RPC，微服务架构中最昂贵的“性能税”：要理解这次重构的意义有多么重大，首先得看看 Nir Barak 的团队曾经陷入了多深的泥潭。 他们的核心业务是一个用 G…</li><li>Cloudflare 的“抄作业”哲学：转机发生在前几周。Nir Barak 看到了 Cloudflare 那篇刷爆全网的文章《 我们如何用 AI 在一周内重构…</li><li>7 小时，400 美元，13000 行 Go 代码：接下来的故事，充满了令人肾上腺素飙升的极客快感。 Nir Barak 坐在电脑前，看着 AI Agent 像一台失控的缝…</li><li>百倍性能与意外之喜：“手术刀式”重构的深远影响：成本降为零已经足够震撼，但性能上的收益更是堪称“恐怖”。 这还只是开始。由于 gnata 是纯 Go 实现，Nir Ba…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

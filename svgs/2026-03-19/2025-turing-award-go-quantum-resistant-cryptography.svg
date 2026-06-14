@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4722" viewBox="0 0 1320 4722">
+  <foreignObject x="0" y="0" width="1320" height="4722">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>刚刚，2025图灵奖揭晓！面对即将瘫痪的传统密码学，Go 语言的“抗量子”底牌曝光</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/19/2025-turing-award-go-quantum-resistant-cryptography</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你的数据，正被黑客“先存后破”</div><span class="arrow-sym">→</span><div class="node">Go 团队的“抗量子”谋略</div><span class="arrow-sym">→</span><div class="node">揭开 crypto/mldsa </div><span class="arrow-sym">→</span><div class="node">极简的参数集隔离</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】你的数据，正被黑客“先存后破”</h3>
+  <p><strong>在讲什么问题：</strong>你的数据，正被黑客“先存后破”</p>
+  <p><strong>关键理解：</strong>在理解 Go 团队的动作之前，我们必须先弄懂，为什么我们需要“ 后量子密码学（PQC） ”？ 目前，我们用来保护 HTTPS 流量、验证 JWT 登录、以及签署 Git 提交的底层基石，绝大多数是 RSA 或 ECC（椭圆曲线）算法 。这些算法的安全假设，建立在大质数分解和离散对数计算极其困难的数学事实上。 但早在 1994 年，Peter Shor 就提出了著名的 Shor 算法。该算法在数学上证明了： 只要拥有一台足够规模的量子计算…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在理解 Go 团队的动作之前，我们必须先弄懂，为什么我们需要“ 后量子密码学（PQC） ”？ 目前，我们用来保护 HTTPS 流量、验证 JWT 登录、以及签署 Git 提交的底层基石，绝大多数是 RSA 或 ECC（椭圆曲线）算法 。这些…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】Go 团队的“抗量子”谋略</h3>
+  <p><strong>在讲什么问题：</strong>Go 团队的“抗量子”谋略</p>
+  <p><strong>关键理解：</strong>如果你经常关注 Go 社区，你会发现 Go 核心团队早就确定了引入新密码学算法的策略。在 Go 官方仓库的 Issue #64537（crypto: post-quantum support roadmap）中，现任 Go 安全团队负责人 Roland Shoemaker 和 Go 密码学专家 Filippo Valsorda 明确抛出了 Go 在面对量子危机时的三大铁律： 绝对不当小白鼠：Go 标准库只实现那些结构已经绝对稳定、并在业…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：如果你经常关注 Go 社区，你会发现 Go 核心团队早就确定了引入新密码学算法的策略。在 Go 官方仓库的 Issue #64537（crypto: post-quantum support roadmap）中，现任 Go 安全团队负责人 …</div>
+</div>
+<div class="card">
+  <h3>【模板 A】揭开 crypto/mldsa 的硬核源码</h3>
+  <p><strong>在讲什么问题：</strong>揭开 crypto/mldsa 的硬核源码</p>
+  <p><strong>关键理解：</strong>数字签名的重要性不言而喻：微服务之间的 mTLS 认证、固件升级包的防篡改、区块链的交易防伪，全靠它。 就在最近，Filippo 在 Go 官方 GitHub 上正式提交了 Issue #77626（proposal: crypto/mldsa: new package） ，提议在即将到来的 Go 1.27 中，正式向全世界暴露 ML-DSA（NIST FIPS 204 标准）的公有 API。 让我们剥开这层提案，看看顶级大厂架构师是如…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：数字签名的重要性不言而喻：微服务之间的 mTLS 认证、固件升级包的防篡改、区块链的交易防伪，全靠它。 就在最近，Filippo 在 Go 官方 GitHub 上正式提交了 Issue #77626（proposal: crypto/mld…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】极简的参数集隔离</h3>
+  <p><strong>在讲什么问题：</strong>极简的参数集隔离</p>
+  <p><strong>关键理解：</strong>ML-DSA 并不是一个单一算法，它包含了不同的安全级别。Go 提案非常干净利落地定义了三个常量函数： func MLDSA44() Parameters // 推荐日常使用，安全级别相当于 AES-128 func MLDSA65() Parameters // 相当于 AES-192 func MLDSA87() Parameters // 极高安全级别，相当于 AES-256 开发者不需要去记忆复杂的参数结构，只需像拼积木一样调用…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：ML-DSA 并不是一个单一算法，它包含了不同的安全级别。Go 提案非常干净利落地定义了三个常量函数： func MLDSA44() Parameters // 推荐日常使用，安全级别相当于 AES-128 func MLDSA65() P…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】拒绝“半展开密钥”，将安全做到极致</h3>
+  <p><strong>在讲什么问题：</strong>拒绝“半展开密钥”，将安全做到极致</p>
+  <p><strong>关键理解：</strong>如果你看源码，会发现 NewPrivateKey 除了传入 params 参数集外，只需要传入一个极短的 seed（种子字节），而不是业内的“半展开密钥（Semi-expanded keys）”。 为什么？Filippo 在讨论中给出了让人拍案叫绝的解释： “半展开密钥是一个极其糟糕的格式。它不仅占用空间更大，加载速度更慢，而且 更危险 。我们只会支持基于 Seed 的密钥派生。” 这体现了 Go 始终如一的安全哲学：如果一种格式 有被…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：如果你看源码，会发现 NewPrivateKey 除了传入 params 参数集外，只需要传入一个极短的 seed（种子字节），而不是业内的“半展开密钥（Semi-expanded keys）”。 为什么？Filippo 在讨论中给出了让人…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>你的数据，正被黑客“先存后破”：在理解 Go 团队的动作之前，我们必须先弄懂，为什么我们需要“ 后量子密码学（PQC） ”？ 目前，我们用来保护 HTT…</li><li>Go 团队的“抗量子”谋略：如果你经常关注 Go 社区，你会发现 Go 核心团队早就确定了引入新密码学算法的策略。在 Go 官方仓库的 Issue …</li><li>揭开 crypto/mldsa 的硬核源码：数字签名的重要性不言而喻：微服务之间的 mTLS 认证、固件升级包的防篡改、区块链的交易防伪，全靠它。 就在最近，Fil…</li><li>极简的参数集隔离：ML-DSA 并不是一个单一算法，它包含了不同的安全级别。Go 提案非常干净利落地定义了三个常量函数： func MLD…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

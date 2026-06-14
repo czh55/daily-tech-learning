@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4791" viewBox="0 0 1320 4791">
+  <foreignObject x="0" y="0" width="1320" height="4791">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>Bun 创始人带头“叛逃”：放弃 Zig，用 AI 把项目重写成 Rust？</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/08/bun-founder-abandons-zig-for-rust-ai-rewrite</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">铁证如山：从 CLAUDE.md</div><span class="arrow-sym">→</span><div class="node">动机拆解：我们为什么要背叛“全世</div><span class="arrow-sym">→</span><div class="node">AI 作案现场：当“代码重构”成</div><span class="arrow-sym">→</span><div class="node">反思：在 AI 时代，我们该如何</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】铁证如山：从 CLAUDE.md 到 2.8 万行代码变更</h3>
+  <p><strong>在讲什么问题：</strong>铁证如山：从 CLAUDE.md 到 2.8 万行代码变更</p>
+  <p><strong>关键理解：</strong>起初，很多人以为这只是一个愚人节玩笑。 但随着 Simon Willison 等社区大佬的深挖，越来越多的“铁证”浮出水面： 巨大的代码量 ：这个实验性的分支，在一次提交中就变更了 12 个文件，新增了 2.8 万行代码 ，这绝不是小打小闹。 写给 AI 的“说明书” ：那份长达 622 行的 PORTING.md，极其详细地将 Zig 的指针、分配器、错误处理等核心概念，一一映射到了 Rust 的等价物上。这显然是一份给 AI Age…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：起初，很多人以为这只是一个愚人节玩笑。 但随着 Simon Willison 等社区大佬的深挖，越来越多的“铁证”浮出水面： 巨大的代码量 ：这个实验性的分支，在一次提交中就变更了 12 个文件，新增了 2.8 万行代码 ，这绝不是小打小闹…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】动机拆解：我们为什么要背叛“全世界最好的语言”？</h3>
+  <p><strong>在讲什么问题：</strong>动机拆解：我们为什么要背叛“全世界最好的语言”？</p>
+  <p><strong>关键理解：</strong>这就引出了所有人都想问的那个问题： 为什么？ Zig 语言以其简单的语法、对 C 语言的无缝兼容、以及对底层内存的精准控制而著称。Jarred Sumner 本人也曾是 Zig 最狂热的布道者。 但在 X 平台的激烈讨论中，社区大佬们给出了几个推测： 1. 生态的贫瘠 vs Rust 的(相对)富饶 这是最核心的原因。Zig 虽然优雅，但它的社区生态，相比于已经“枝繁叶茂”的 Rust 来说，依然是一片“荒漠”。 当你需要一个成熟的异步…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这就引出了所有人都想问的那个问题： 为什么？ Zig 语言以其简单的语法、对 C 语言的无缝兼容、以及对底层内存的精准控制而著称。Jarred Sumner 本人也曾是 Zig 最狂热的布道者。 但在 X 平台的激烈讨论中，社区大佬们给出了…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】AI 作案现场：当“代码重构”成为一种“指令集”</h3>
+  <p><strong>在讲什么问题：</strong>AI 作案现场：当“代码重构”成为一种“指令集”</p>
+  <p><strong>关键理解：</strong>这次事件中最具未来感的，是 Jarred Sumner 选择的重构方式。 他没有去组建一个庞大的“重写小组”，而是把自己的架构思想，沉淀成了一份给 AI 看的“技术规范”。 A 阶段：AI 只管“翻译”，不管对错。 目标是快速地将 Zig 的逻辑，“像素级”地平移到 Rust 文件中。这个阶段的代码，甚至不需要能编译。 B 阶段：AI 负责“修复”，直到编译通过。 在这个阶段，AI 将扮演一个“修复工”的角色，不断地与 Rust 编译器…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这次事件中最具未来感的，是 Jarred Sumner 选择的重构方式。 他没有去组建一个庞大的“重写小组”，而是把自己的架构思想，沉淀成了一份给 AI 看的“技术规范”。 A 阶段：AI 只管“翻译”，不管对错。 目标是快速地将 Zig …</div>
+</div>
+<div class="card">
+  <h3>【模板 B】反思：在 AI 时代，我们该如何选择技术栈？</h3>
+  <p><strong>在讲什么问题：</strong>反思：在 AI 时代，我们该如何选择技术栈？</p>
+  <p><strong>关键理解：</strong>Bun 与 Zig 的这次“决裂”，像一面镜子，照出了 AI 时代技术选型的新法则。 法则一：生态的“引力”，正在变得比语法本身更重要 一门语言的语法再优美，如果它的生态里没有足够多的“轮子”，那么在追求快速迭代的今天，它就必然会被边缘化。 AI 加速了代码的生成，也同样加速了对“成熟生态”的依赖。 法则二：“对 AI 的友好度”，正在成为一门语言的核心竞争力 一门语言的文档是否完善、错误信息是否清晰、社区代码风格是否统一……这些在过去…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Bun 与 Zig 的这次“决裂”，像一面镜子，照出了 AI 时代技术选型的新法则。 法则一：生态的“引力”，正在变得比语法本身更重要 一门语言的语法再优美，如果它的生态里没有足够多的“轮子”，那么在追求快速迭代的今天，它就必然会被边缘化。…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】小结：一场没有硝烟的“换核”战争</h3>
+  <p><strong>在讲什么问题：</strong>小结：一场没有硝烟的“换核”战争</p>
+  <p><strong>关键理解：</strong>Bun 的这次实验性“叛逃”，无论最终是否会合并到主干，都已经为我们揭示了未来十年技术演进的残酷真相： 在 AI 这头“效率巨兽”的面前，所有的技术壁垒、社区信仰、甚至是个人情感，都可能被无情地碾碎。 当你的第三个员工是一个名叫 Claude Code 的 AI 时，选择一个它最擅长、能让它发挥最大威力的语言，似乎成了一个无可辩驳的“最优解”。 这场从 Zig 到 Rust 的“换核”战争，或许只是未来无数场“AI 驱动的技术栈重构”的…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Bun 的这次实验性“叛逃”，无论最终是否会合并到主干，都已经为我们揭示了未来十年技术演进的残酷真相： 在 AI 这头“效率巨兽”的面前，所有的技术壁垒、社区信仰、甚至是个人情感，都可能被无情地碾碎。 当你的第三个员工是一个名叫 Claud…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>铁证如山：从 CLAUDE.md 到 2.8 万行代码变更：起初，很多人以为这只是一个愚人节玩笑。 但随着 Simon Willison 等社区大佬的深挖，越来越多的“铁证”浮出水…</li><li>动机拆解：我们为什么要背叛“全世界最好的语言”？：这就引出了所有人都想问的那个问题： 为什么？ Zig 语言以其简单的语法、对 C 语言的无缝兼容、以及对底层内存的精准控…</li><li>AI 作案现场：当“代码重构”成为一种“指令集”：这次事件中最具未来感的，是 Jarred Sumner 选择的重构方式。 他没有去组建一个庞大的“重写小组”，而是把自己…</li><li>反思：在 AI 时代，我们该如何选择技术栈？：Bun 与 Zig 的这次“决裂”，像一面镜子，照出了 AI 时代技术选型的新法则。 法则一：生态的“引力”，正在变得比…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

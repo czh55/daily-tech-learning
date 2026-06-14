@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4743" viewBox="0 0 1320 4743">
+  <foreignObject x="0" y="0" width="1320" height="4743">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>Go Command 工作组成立：这几个用了十年的命令可能要被废！</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/11/go-command-working-group-formed-legacy-commands-deprecated</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">第一刀：砍向 go list ，</div><span class="arrow-sym">→</span><div class="node">第二刀：GO111MODULE=</div><span class="arrow-sym">→</span><div class="node">第三刀：终结 go.mod 里的</div><span class="arrow-sym">→</span><div class="node">小结：一场“静默的革命”</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】第一刀：砍向 go list ，这个“万能匹配”为何成了大坑？</h3>
+  <p><strong>在讲什么问题：</strong>第一刀：砍向 go list ，这个“万能匹配”为何成了大坑？</p>
+  <p><strong>关键理解：</strong>如果你写过稍微复杂一点的 Go 项目，甚至只是写过一些 Makefile，你大概率见过 go list 。 在早期，go list 中的这三个点的省略号 意味着“匹配所有（Everything）”。 但在 Go Modules 时代，这条命令成了一个彻头彻尾的“陷阱”。 在最新的 Issue #78387 提案中，工作组负责人 Matloob 毫不客气地指出： “在Go 模块模式下，go list 几乎永远做不出用户期望它做的事！” 大…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：如果你写过稍微复杂一点的 Go 项目，甚至只是写过一些 Makefile，你大概率见过 go list 。 在早期，go list 中的这三个点的省略号 意味着“匹配所有（Everything）”。 但在 Go Modules 时代，这条命…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】第二刀：GO111MODULE=auto 的黄昏，彻底关上 GOPATH 的大门</h3>
+  <p><strong>在讲什么问题：</strong>第二刀：GO111MODULE=auto 的黄昏，彻底关上 GOPATH 的大门</p>
+  <p><strong>关键理解：</strong>GO111MODULE 这个环境变量，是无数 Gopher 从 GOPATH 时代痛苦过渡到 Modules 时代的“阵痛记忆”。 它有三个值：on（强制开启模块）、off（强制关闭）、以及 auto（自动检测）。 在 Issue #78350 提案中，工作组决定对 auto 下达最终的“死亡通知书”。 大佬辩论现场还原： Matloob ：我们提议，将 GO111MODULE=auto 的行为直接等同于 on。实际上这就是把它给“移除…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：GO111MODULE 这个环境变量，是无数 Gopher 从 GOPATH 时代痛苦过渡到 Modules 时代的“阵痛记忆”。 它有三个值：on（强制开启模块）、off（强制关闭）、以及 auto（自动检测）。 在 Issue #783…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】第三刀：终结 go.mod 里的版本号“无意义内卷”</h3>
+  <p><strong>在讲什么问题：</strong>第三刀：终结 go.mod 里的版本号“无意义内卷”</p>
+  <p><strong>关键理解：</strong>除了上述两个直接废弃的命令，会议纪要中还透露了一个极具前瞻性、也最能体现 Go 团队“工程哲学”的重磅提议： 关于 go.mod 文件中 Go 版本号的简化。 如果你现在运行 go mod init my-module，生成的 go.mod 文件里会包含一个精确到补丁号（Patch version）的版本，比如 go 1.26.2。 这引发了一个极其无聊，却又在开源界反复上演的“内卷”： 每次 Go 发布一个新的小补丁版本，Github…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：除了上述两个直接废弃的命令，会议纪要中还透露了一个极具前瞻性、也最能体现 Go 团队“工程哲学”的重磅提议： 关于 go.mod 文件中 Go 版本号的简化。 如果你现在运行 go mod init my-module，生成的 go.mod…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】小结：一场“静默的革命”</h3>
+  <p><strong>在讲什么问题：</strong>小结：一场“静默的革命”</p>
+  <p><strong>关键理解：</strong>Go Command 工作组的这两次会议，没有像泛型那样引入任何惊天动地的新语法。 但它对 Go 语言生态的影响，可能比任何一个新特性都要深远。 它像一个经验丰富的老园丁，正在小心翼翼但又果断地修剪 Go 这棵大树上那些已经枯萎、或者长歪了的枝桠。 砍掉 go list ，是为了让模块查询的逻辑更清晰。 砍掉 GO111MODULE=auto，是为了让构建环境更具确定性。 简化 go.mod 的补丁号，是为了让整个生态的协作更高效。 在…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Go Command 工作组的这两次会议，没有像泛型那样引入任何惊天动地的新语法。 但它对 Go 语言生态的影响，可能比任何一个新特性都要深远。 它像一个经验丰富的老园丁，正在小心翼翼但又果断地修剪 Go 这棵大树上那些已经枯萎、或者长歪了…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】添加新评论</h3>
+  <p><strong>在讲什么问题：</strong>添加新评论</p>
+  <p><strong>关键理解：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人Blog，欢迎访问、订阅和留言！ 订阅Feed请点击上面图片 。 如果您觉得这里的文章对您有帮助，请扫描上方二维码进行捐赠 ，加油后的Tony Bai将会为您呈现更多精彩的文章，谢谢！ 如果您希望通过…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>第一刀：砍向 go list ，这个“万能匹配”为何成了大坑？：如果你写过稍微复杂一点的 Go 项目，甚至只是写过一些 Makefile，你大概率见过 go list 。 在早期，go…</li><li>第二刀：GO111MODULE=auto 的黄昏，彻底关上 GOPATH 的大门：GO111MODULE 这个环境变量，是无数 Gopher 从 GOPATH 时代痛苦过渡到 Modules 时代的“阵…</li><li>第三刀：终结 go.mod 里的版本号“无意义内卷”：除了上述两个直接废弃的命令，会议纪要中还透露了一个极具前瞻性、也最能体现 Go 团队“工程哲学”的重磅提议： 关于 go…</li><li>小结：一场“静默的革命”：Go Command 工作组的这两次会议，没有像泛型那样引入任何惊天动地的新语法。 但它对 Go 语言生态的影响，可能比…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

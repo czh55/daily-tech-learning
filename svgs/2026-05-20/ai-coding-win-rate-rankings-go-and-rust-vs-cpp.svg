@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4647" viewBox="0 0 1320 4647">
+  <foreignObject x="0" y="0" width="1320" height="4647">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>AI 编码胜率榜：Go 与 Rust 完胜 C++</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/20/ai-coding-win-rate-rankings-go-and-rust-vs-cpp</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">诸神黄昏：Claude 对 GP</div><span class="arrow-sym">→</span><div class="node">语言偏好：AI 也有自己的“舒适</div><span class="arrow-sym">→</span><div class="node">深度解析：为什么 Go 与 Ru</div><span class="arrow-sym">→</span><div class="node">1. 构建系统：AI 开发者的“</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】诸神黄昏：Claude 对 GPT 家族的“工程级”碾压</h3>
+  <p><strong>在讲什么问题：</strong>诸神黄昏：Claude 对 GPT 家族的“工程级”碾压</p>
+  <p><strong>关键理解：</strong>在程序员的认知中，GPT 家族曾代表着 AI 的巅峰。但在 ProgramBench 的 Leaderboard（排行榜）上，局势发生了戏剧性的反转，但也正如我们预料的那样。 根据论文统计，在衡量“几乎完成”（即通过 95% 以上的测试用例）这一指标时，排名如下： 头号种子：Claude Opus 4.7 。它是全场唯一一个在 3.0% 的复杂项目中展现出近乎完美复刻能力的模型。 二号梯队：Claude Opus 4.6 (2.5%) …</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在程序员的认知中，GPT 家族曾代表着 AI 的巅峰。但在 ProgramBench 的 Leaderboard（排行榜）上，局势发生了戏剧性的反转，但也正如我们预料的那样。 根据论文统计，在衡量“几乎完成”（即通过 95% 以上的测试用例…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】语言偏好：AI 也有自己的“舒适区”</h3>
+  <p><strong>在讲什么问题：</strong>语言偏好：AI 也有自己的“舒适区”</p>
+  <p><strong>关键理解：</strong>ProgramBench 给 AI 提供了完全的自由：AI 可以用任何语言来复刻目标程序。这产生了一个极其有趣的“语言混乱矩阵（Confusion Matrix）”。 1. GPT 的 Python 执念 GPT 5.4 表现出了近乎偏执的 Python 依赖。在所有任务中，它有 79% 的方案是用 Python 写的。无论原程序是用更底层的 C 还是 Rust 写的，GPT 的第一反应往往是：“我能不能用 Python 给它糊出来？”…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：ProgramBench 给 AI 提供了完全的自由：AI 可以用任何语言来复刻目标程序。这产生了一个极其有趣的“语言混乱矩阵（Confusion Matrix）”。 1. GPT 的 Python 执念 GPT 5.4 表现出了近乎偏执的…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】深度解析：为什么 Go 与 Rust 是 AI 的“天命之子”？</h3>
+  <p><strong>在讲什么问题：</strong>深度解析：为什么 Go 与 Rust 是 AI 的“天命之子”？</p>
+  <p><strong>关键理解：</strong>这是本次研究中最具行业指导意义的发现。通过研究数据对比，我们发现不同语言在 AI 手下的“存活率”天差地别： Go 语言项目：AI 成功通过率 38.4% Rust 语言项目：AI 成功通过率 38.5% C/C++ 项目：AI 成功通过率仅为 27.7% 为什么同样是系统编程语言，Go 和 Rust 就能完胜 C++？这不仅仅是语法的问题，更是 现代工程化基建 的降维打击。 不同语言生态下的测试通过率对比图</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这是本次研究中最具行业指导意义的发现。通过研究数据对比，我们发现不同语言在 AI 手下的“存活率”天差地别： Go 语言项目：AI 成功通过率 38.4% Rust 语言项目：AI 成功通过率 38.5% C/C++ 项目：AI 成功通过率…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】1. 构建系统：AI 开发者的“生死线”</h3>
+  <p><strong>在讲什么问题：</strong>1. 构建系统：AI 开发者的“生死线”</p>
+  <p><strong>关键理解：</strong>在 C/C++ 的世界里，构建系统是混乱的代名词。CMakeLists.txt、Makefile、系统特定的动态链接库（.so/.dll）路径……对于 AI 智能体（SWE-agent）来说，这些是致命的障碍。 调研显示，AI 在 C++ 任务中，往往还没开始写业务代码，就已经在配置环境时陷入了死循环。 反观 Go 和 Rust ： Go ：一个 go mod tidy 加一个 go build 解决了全球 99% 的构建问题。 Rus…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在 C/C++ 的世界里，构建系统是混乱的代名词。CMakeLists.txt、Makefile、系统特定的动态链接库（.so/.dll）路径……对于 AI 智能体（SWE-agent）来说，这些是致命的障碍。 调研显示，AI 在 C++ …</div>
+</div>
+<div class="card">
+  <h3>【模板 A】2. 标准库的“全家桶”效应</h3>
+  <p><strong>在讲什么问题：</strong>2. 标准库的“全家桶”效应</p>
+  <p><strong>关键理解：</strong>Go 语言一直以“自带电池（Batteries included）”著称。它的标准库涵盖了网络、加密、编解码等大部分现代互联网开发所需的功能。AI 调用 Go 的标准库就像从兜里掏东西一样自然。 而 C++ 的标准库相对贫瘠，往往需要引入第三方库（如 Boost, libcurl）。一旦涉及到第三方依赖，AI 的出错概率就会呈指数级上升。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Go 语言一直以“自带电池（Batteries included）”著称。它的标准库涵盖了网络、加密、编解码等大部分现代互联网开发所需的功能。AI 调用 Go 的标准库就像从兜里掏东西一样自然。 而 C++ 的标准库相对贫瘠，往往需要引入第…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>诸神黄昏：Claude 对 GPT 家族的“工程级”碾压：在程序员的认知中，GPT 家族曾代表着 AI 的巅峰。但在 ProgramBench 的 Leaderboard（排行榜…</li><li>语言偏好：AI 也有自己的“舒适区”：ProgramBench 给 AI 提供了完全的自由：AI 可以用任何语言来复刻目标程序。这产生了一个极其有趣的“语言混…</li><li>深度解析：为什么 Go 与 Rust 是 AI 的“天命之子”？：这是本次研究中最具行业指导意义的发现。通过研究数据对比，我们发现不同语言在 AI 手下的“存活率”天差地别： Go 语言…</li><li>1. 构建系统：AI 开发者的“生死线”：在 C/C++ 的世界里，构建系统是混乱的代名词。CMakeLists.txt、Makefile、系统特定的动态链接库（…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

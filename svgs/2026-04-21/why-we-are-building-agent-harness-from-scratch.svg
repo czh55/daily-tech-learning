@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4695" viewBox="0 0 1320 4695">
+  <foreignObject x="0" y="0" width="1320" height="4695">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>聊聊为什么我要花这么大精力，带大家手写 Agent Harness？</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/21/why-we-are-building-agent-harness-from-scratch</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">拐点已至：被框架掩盖的“失控”</div><span class="arrow-sym">→</span><div class="node">什么是 Harness？为什么要</div><span class="arrow-sym">→</span><div class="node">AI 应用的新阶段：Agent </div><span class="arrow-sym">→</span><div class="node">极简哲学：为什么手写能带来认知跃</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】拐点已至：被框架掩盖的“失控”</h3>
+  <p><strong>在讲什么问题：</strong>拐点已至：被框架掩盖的“失控”</p>
+  <p><strong>关键理解：</strong>如果你在一年多前开发过 AI Agent，你大概率深度使用过 LangChain、AutoGen 等框架。在那个大模型（如 GPT-3.5 时代）推理能力还比较薄弱的时期，我们需要框架来帮模型做意图路由、做任务拆解，框架扮演的是一个“事无巨细的微管家”。 但现在的技术发展，已经到了一个明确的“拐点”。 随着 Claude Sonnet 4.6/Opus 4.7、GPT-5.4、Gemini 3.1 Pro 等前沿模型的问世，模型原生已经…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：如果你在一年多前开发过 AI Agent，你大概率深度使用过 LangChain、AutoGen 等框架。在那个大模型（如 GPT-3.5 时代）推理能力还比较薄弱的时期，我们需要框架来帮模型做意图路由、做任务拆解，框架扮演的是一个“事无巨…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】什么是 Harness？为什么要独立研究它？</h3>
+  <p><strong>在讲什么问题：</strong>什么是 Harness？为什么要独立研究它？</p>
+  <p><strong>关键理解：</strong>在剖析了近期震撼业界的顶级原生智能体（如 Claude Code、开源神作 OpenClaw、以及自带进化能力的 Hermes等）的工作机制后，我看到了一个不可逆转的趋势： 传统的框架层正在加速坍塌，作为独立工程研究的 Harness（驾驭工程）正在全面崛起。 什么是 Harness？简单来说，如果把大模型比作 CPU，把上下文（Context Window）比作极其昂贵的内存，那么 Harness 就是为这个 CPU 打造的微型操作系…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在剖析了近期震撼业界的顶级原生智能体（如 Claude Code、开源神作 OpenClaw、以及自带进化能力的 Hermes等）的工作机制后，我看到了一个不可逆转的趋势： 传统的框架层正在加速坍塌，作为独立工程研究的 Harness（驾驭…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】AI 应用的新阶段：Agent 正在成为一类完整的 Application</h3>
+  <p><strong>在讲什么问题：</strong>AI 应用的新阶段：Agent 正在成为一类完整的 Application</p>
+  <p><strong>关键理解：</strong>当我们拥有了一个健壮的 Harness 之后，我们对 AI 应用的认知也会随之重塑。 以前，AI 只是应用里的一个 Feature（功能），比如挂在网页右下角的一个聊天框。 但今天，当你把一个配置了特定 System Prompt 和专属 Skills（技能 SOP）的 Harness 引擎，丢进某一个特定的业务目录里运行时， 这个 Agent 本身，就成了一个完整的 Application。 当然，AI 应用的形态是多元的，Agent…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：当我们拥有了一个健壮的 Harness 之后，我们对 AI 应用的认知也会随之重塑。 以前，AI 只是应用里的一个 Feature（功能），比如挂在网页右下角的一个聊天框。 但今天，当你把一个配置了特定 System Prompt 和专属 …</div>
+</div>
+<div class="card">
+  <h3>【模板 B】极简哲学：为什么手写能带来认知跃迁？</h3>
+  <p><strong>在讲什么问题：</strong>极简哲学：为什么手写能带来认知跃迁？</p>
+  <p><strong>关键理解：</strong>相较于一两年前的开发模式，今天顶尖的 Agent 项目展现出了一种令人拍案叫绝的“返璞归真”。 以 OpenClaw 为代表的新一代驾驭工程，抛弃了复杂： 最简工具法则 ：不再堆砌几十个专用 API 导致上下文膨胀，只给模型暴露 Read、Write、Edit 和 Bash 等基础原语工具。让大模型用自然语言去驱动底层的操作系统。 状态外部化 ：彻底抛弃内存里人类不可读的复杂状态机。强制大模型把宏观计划写在 PLAN.md 里，把微观进…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：相较于一两年前的开发模式，今天顶尖的 Agent 项目展现出了一种令人拍案叫绝的“返璞归真”。 以 OpenClaw 为代表的新一代驾驭工程，抛弃了复杂： 最简工具法则 ：不再堆砌几十个专用 API 导致上下文膨胀，只给模型暴露 Read、…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】专栏的策划：从骨架到全息监控</h3>
+  <p><strong>在讲什么问题：</strong>专栏的策划：从骨架到全息监控</p>
+  <p><strong>关键理解：</strong>为了把这些前沿的理念落地，我没有选择纸上谈兵。我决定带着大家用 Go 语言 （云原生时代构建基础设施的最佳语言），手敲一个名为 go-tiny-claw 的工业级引擎。 我们的旅程不走捷径，专栏规划了极具层次感的 24 讲大纲： 细心的朋友会发现，除了核心引擎和工具链，我在专栏的后期（模块五），花了不小的篇幅去写 成本追踪（Cost Tracker） 、 链路回放（Tracing） 和 自动化跑分（Benchmark） 。 之所以加入这…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为了把这些前沿的理念落地，我没有选择纸上谈兵。我决定带着大家用 Go 语言 （云原生时代构建基础设施的最佳语言），手敲一个名为 go-tiny-claw 的工业级引擎。 我们的旅程不走捷径，专栏规划了极具层次感的 24 讲大纲： 细心的朋友…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>拐点已至：被框架掩盖的“失控”：如果你在一年多前开发过 AI Agent，你大概率深度使用过 LangChain、AutoGen 等框架。在那个大模型（…</li><li>什么是 Harness？为什么要独立研究它？：在剖析了近期震撼业界的顶级原生智能体（如 Claude Code、开源神作 OpenClaw、以及自带进化能力的 Her…</li><li>AI 应用的新阶段：Agent 正在成为一类完整的 Application：当我们拥有了一个健壮的 Harness 之后，我们对 AI 应用的认知也会随之重塑。 以前，AI 只是应用里的一个 Fe…</li><li>极简哲学：为什么手写能带来认知跃迁？：相较于一两年前的开发模式，今天顶尖的 Agent 项目展现出了一种令人拍案叫绝的“返璞归真”。 以 OpenClaw 为…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4739" viewBox="0 0 1320 4739">
+  <foreignObject x="0" y="0" width="1320" height="4739">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>别傻了，写出极致整洁的代码，是你升不了职的根本原因</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/15/over-engineering-trap-no-promotion-for-simplicity</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么“PPT架构师”总能赢你？</div><span class="arrow-sym">→</span><div class="node">克制，才是最高级的炫技</div><span class="arrow-sym">→</span><div class="node">破局路径：如何包装你的“简单”？</div><span class="arrow-sym">→</span><div class="node">场景一：写晋升材料 / 简历</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】为什么“PPT架构师”总能赢你？</h3>
+  <p><strong>在讲什么问题：</strong>为什么“PPT架构师”总能赢你？</p>
+  <p><strong>关键理解：</strong>想象一个极其真实的职场年度晋升场景。 你是工程师 A 。你接到了一个核心需求，经过缜密思考，你砍掉了伪需求，用 50 行极其优雅、无状态、无需外部依赖的代码解决了问题。两天上线，零 Bug，下一个接手的人一眼就能看懂。然后你默默回去修下一个 Bug。 你的同事 B 接到了类似的需求。他敏锐地嗅到了“搞一波大动作”的机会。他引入了最新的消息队列，搞了一套基于 Pub/Sub 的微服务解耦机制，外加一个极度灵活的动态配置中心。他拉着各部门开…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：想象一个极其真实的职场年度晋升场景。 你是工程师 A 。你接到了一个核心需求，经过缜密思考，你砍掉了伪需求，用 50 行极其优雅、无状态、无需外部依赖的代码解决了问题。两天上线，零 Bug，下一个接手的人一眼就能看懂。然后你默默回去修下一个…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】克制，才是最高级的炫技</h3>
+  <p><strong>在讲什么问题：</strong>克制，才是最高级的炫技</p>
+  <p><strong>关键理解：</strong>难道老实人就活该吃亏吗？面对职场里这种“未挣得的复杂性（Unearned complexity，那些不必要的、额外的复杂元素）”，我们到底该怎么办？ 作为一名写了多年代码、也面试过N多人的老兵，我想带你看看Go 语言的生存哲学。 如果你把编程语言拟人化，Go 就是那个在技术圈里坚持写简单代码的“老实人”。 在众多技术论坛上，用 Rust 编写一个极其复杂的生命周期标注，或者玩弄高级宏，往往能赢得满堂喝彩，被视为“真正的技术极客”。而 G…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：难道老实人就活该吃亏吗？面对职场里这种“未挣得的复杂性（Unearned complexity，那些不必要的、额外的复杂元素）”，我们到底该怎么办？ 作为一名写了多年代码、也面试过N多人的老兵，我想带你看看Go 语言的生存哲学。 如果你把编…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】破局路径：如何包装你的“简单”？</h3>
+  <p><strong>在讲什么问题：</strong>破局路径：如何包装你的“简单”？</p>
+  <p><strong>关键理解：</strong>如果你认同“简单”的价值，但又不想在绩效和晋升上吃亏，你就必须学会一套 “防御性职场包装术” 。 记住这个核心心法：你的代码可以很简单，但你必须让别人看到你达成简单的“思考过程”有多复杂。 工作成果本身是不会说话的，你需要把“决定不做什么（Value of NOT building）”转化为你的影响力。从今天起，改变你的表达方式。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：如果你认同“简单”的价值，但又不想在绩效和晋升上吃亏，你就必须学会一套 “防御性职场包装术” 。 记住这个核心心法：你的代码可以很简单，但你必须让别人看到你达成简单的“思考过程”有多复杂。 工作成果本身是不会说话的，你需要把“决定不做什么（…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】场景一：写晋升材料 / 简历</h3>
+  <p><strong>在讲什么问题：</strong>场景一：写晋升材料 / 简历</p>
+  <p><strong>关键理解：</strong>❌ 吃亏的普通写法： “独立负责了功能 X 的开发，编写了 50 行核心代码，按时上线，没有出 Bug。” （评委：这活儿实习生也能干。） ✅ 高绩效的降维打击写法： “主导了功能 X 的架构演进。深度评估了包括事件驱动架构、自定义中间件抽象等三种高并发方案，从 ROI（投入产出比）和系统熵增角度，排除了现阶段不必要的过度设计，为团队节省约 15 人日的研发与运维成本。最终敲定极简直白架构，两天内完成交付，并在过去 6 个月内保持零故障…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：❌ 吃亏的普通写法： “独立负责了功能 X 的开发，编写了 50 行核心代码，按时上线，没有出 Bug。” （评委：这活儿实习生也能干。） ✅ 高绩效的降维打击写法： “主导了功能 X 的架构演进。深度评估了包括事件驱动架构、自定义中间件抽…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】场景二：架构评审会遭遇“过度设计”逼问</h3>
+  <p><strong>在讲什么问题：</strong>场景二：架构评审会遭遇“过度设计”逼问</p>
+  <p><strong>关键理解：</strong>当有人在会议上质问你： “难道我们不应该加个抽象层，为了未来百万并发做防范（future-proof）吗？” 不要立刻妥协去加代码。 ✅ 教科书级硬核回击： “我做过推演：如果以后确实需要扩展，添加这个层级只需要大约 2 天的重构代价；但我同样评估了，如果现在就强行加上，会立刻增加 30% 的系统复杂度和长期的维护成本。基于目前的业务增速，这属于‘未挣得的复杂性’。权衡之下，我认为我们现在的架构决策应该是‘等待’。” 你不是在对抗，你是…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：当有人在会议上质问你： “难道我们不应该加个抽象层，为了未来百万并发做防范（future-proof）吗？” 不要立刻妥协去加代码。 ✅ 教科书级硬核回击： “我做过推演：如果以后确实需要扩展，添加这个层级只需要大约 2 天的重构代价；但我…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>为什么“PPT架构师”总能赢你？：想象一个极其真实的职场年度晋升场景。 你是工程师 A 。你接到了一个核心需求，经过缜密思考，你砍掉了伪需求，用 50 行…</li><li>克制，才是最高级的炫技：难道老实人就活该吃亏吗？面对职场里这种“未挣得的复杂性（Unearned complexity，那些不必要的、额外的复杂…</li><li>破局路径：如何包装你的“简单”？：如果你认同“简单”的价值，但又不想在绩效和晋升上吃亏，你就必须学会一套 “防御性职场包装术” 。 记住这个核心心法：你的…</li><li>场景一：写晋升材料 / 简历：❌ 吃亏的普通写法： “独立负责了功能 X 的开发，编写了 50 行核心代码，按时上线，没有出 Bug。” （评委：这活…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

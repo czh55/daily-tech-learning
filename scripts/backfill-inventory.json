@@ -1,0 +1,780 @@
+{
+  "2026-06-07": [
+    {
+      "title": "“辛辛苦苦考上985，却发现AI能替代我90%的工作”：今天的高考，我们还在为什么而战？ - Tony Bai",
+      "source": "https://tonybai.com/2026/06/07/gaokao-in-the-age-of-ai-is-the-top-tier-degree-worthless/",
+      "author": "Tony Bai",
+      "slug": "gaokao-in-the-age-of-ai-is-the-top-tier-degree-worthless"
+    }
+  ],
+  "2026-06-06": [
+    {
+      "title": "传奇黑客 Geohot 炮轰 AI Agent：这是软件工程史上代价最昂贵的灾难！ - Tony Bai",
+      "source": "https://tonybai.com/2026/06/06/geohot-slams-ai-agents-as-the-most-expensive-software-disaster/",
+      "author": "Tony Bai",
+      "slug": "geohot-slams-ai-agents-as-the-most-expensive-software-disast"
+    }
+  ],
+  "2026-06-05": [
+    {
+      "title": "别把 Go 写成 Java：毁掉项目从过度架构开始 - Tony Bai",
+      "source": "https://tonybai.com/2026/06/05/stop-writing-go-like-java-avoid-over-architecting/",
+      "author": "Tony Bai",
+      "slug": "stop-writing-go-like-java-avoid-over-architecting"
+    }
+  ],
+  "2026-06-04": [
+    {
+      "title": "开源维护者的困境 - Tony Bai",
+      "source": "https://tonybai.com/2026/06/04/the-maintainers-dilemma/",
+      "author": "Tony Bai",
+      "slug": "the-maintainers-dilemma"
+    },
+    {
+      "title": "AI 时代如何真正掌握一门新技术？这份非主流学习指南建议永久收藏 - Tony Bai",
+      "source": "https://tonybai.com/2026/06/04/master-new-tech-in-ai-era-counter-intuitive-learning-guide/",
+      "author": "Tony Bai",
+      "slug": "master-new-tech-in-ai-era-counter-intuitive-learning-guide"
+    }
+  ],
+  "2026-06-03": [
+    {
+      "title": "Go 生态17年大浪淘沙：2026年最值得引入的10个“神仙级”QoL工具包 - Tony Bai",
+      "source": "https://tonybai.com/2026/06/03/10-god-tier-go-qol-libraries-to-use-in-2026/",
+      "author": "Tony Bai",
+      "slug": "10-god-tier-go-qol-libraries-to-use-in-2026"
+    }
+  ],
+  "2026-06-02": [
+    {
+      "title": "再见样板代码！Go 官方新提案：函数一键转接口 - Tony Bai",
+      "source": "https://tonybai.com/2026/06/02/no-more-boilerplate-go-proposal-function-to-interface-conversion/",
+      "author": "Tony Bai",
+      "slug": "no-more-boilerplate-go-proposal-function-to-interface-conver"
+    }
+  ],
+  "2026-06-01": [
+    {
+      "title": "写代码快 10 倍，不等于研发快 10 倍！Google 揭秘 AI 系统级瓶颈 - Tony Bai",
+      "source": "https://tonybai.com/2026/06/01/coding-10x-faster-isnt-10x-development-speed-google-ai-bottleneck/",
+      "author": "Tony Bai",
+      "slug": "coding-10x-faster-isnt-10x-development-speed-google-ai-bottl"
+    }
+  ],
+  "2026-05-31": [
+    {
+      "title": "Google I/O 2026：Jeff Dean 携 DeepMind 众神宣告，AI Agent 正在终结“标准化软件”时代 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/31/google-io-2026-defining-the-agentic-ai-era/",
+      "author": "Tony Bai",
+      "slug": "google-io-2026-defining-the-agentic-ai-era"
+    }
+  ],
+  "2026-05-30": [
+    {
+      "title": "AI 优化 1.5ms，手写 0.02ms！Ghostty 作者痛批 AI 编程“平庸陷阱” - Tony Bai",
+      "source": "https://tonybai.com/2026/05/30/ghostty-creator-slams-ai-coding-performance-1-5ms-vs-0-02ms/",
+      "author": "Tony Bai",
+      "slug": "ghostty-creator-slams-ai-coding-performance-1-5ms-vs-0-02ms"
+    }
+  ],
+  "2026-05-29": [
+    {
+      "title": "Redis 之父吐槽现代前端的复杂性：我们到底是在解决问题，还是在制造问题？ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/29/redis-creator-slams-modern-frontend-complexity/",
+      "author": "Tony Bai",
+      "slug": "redis-creator-slams-modern-frontend-complexity"
+    },
+    {
+      "title": "无痛消灭技术债：Google I/O 2026 开启 Go 自动重构时代 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/29/google-io-2026-automated-go-refactoring-eliminating-technical-debt/",
+      "author": "Tony Bai",
+      "slug": "google-io-2026-automated-go-refactoring-eliminating-technica"
+    }
+  ],
+  "2026-05-28": [
+    {
+      "title": "省下 10% CPU！Uber 揭秘 Go 栈扩容的隐秘代价 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/28/uber-reveals-hidden-cost-of-go-stack-growth-10-percent-cpu-savings/",
+      "author": "Tony Bai",
+      "slug": "uber-reveals-hidden-cost-of-go-stack-growth-10-percent-cpu-s"
+    },
+    {
+      "title": "大模型训练全流程实战指南工具篇（十三）—— 大模型评测实战（数据集评测+自动化评测）",
+      "source": "https://juejin.cn/post/7644628777113665588",
+      "author": "大模型真好玩",
+      "slug": "7644628777113665588"
+    }
+  ],
+  "2026-05-27": [
+    {
+      "title": "从 Go 迁移到 Rust - Tony Bai",
+      "source": "https://tonybai.com/2026/05/27/migrate-go-to-rust/",
+      "author": "Tony Bai",
+      "slug": "migrate-go-to-rust"
+    }
+  ],
+  "2026-05-26": [
+    {
+      "title": "悄悄用 Go 重写 AI 基础设施：NVIDIA 的 GPU 云平台为何选择 Go？ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/26/why-nvidia-chose-go-to-rewrite-their-ai-infrastructure/",
+      "author": "Tony Bai",
+      "slug": "why-nvidia-chose-go-to-rewrite-their-ai-infrastructure"
+    }
+  ],
+  "2026-05-24": [
+    {
+      "title": "Shopify 23,000 名工程师背后的 Claude Code 配置方案（你可以直接复刻的完整配置） - Tony Bai",
+      "source": "https://tonybai.com/2026/05/24/shopify-claude-code-configuration-for-23000-engineers/",
+      "author": "Tony Bai",
+      "slug": "shopify-claude-code-configuration-for-23000-engineers"
+    }
+  ],
+  "2026-05-23": [
+    {
+      "title": "Google 开源 AX 与 Agent Substrate：构建以 Agent 为核心的云原生计算底座 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/23/google-open-sources-ax-and-agent-substrate-agent-centric-cloud-native-foundation/",
+      "author": "Tony Bai",
+      "slug": "google-open-sources-ax-and-agent-substrate-agent-centric-clo"
+    }
+  ],
+  "2026-05-22": [
+    {
+      "title": "十年难题终获突破：揭秘 Go 1.27 接口逃逸分析优化 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/22/go-1-27-interface-escape-analysis-optimization-breakthrough/",
+      "author": "Tony Bai",
+      "slug": "go-1-27-interface-escape-analysis-optimization-breakthrough"
+    },
+    {
+      "title": "大模型训练全流程实战指南工具篇（十二）—— 大模型评测方法及典型评测集介绍",
+      "source": "https://juejin.cn/post/7642217352978530323",
+      "author": "大模型真好玩",
+      "slug": "7642217352978530323"
+    }
+  ],
+  "2026-05-21": [
+    {
+      "title": "大洗牌！Google 内部确认：Go 正取代 C++，成为 AI Agent 时代的“通用语言” - Tony Bai",
+      "source": "https://tonybai.com/2026/05/21/go-is-the-new-lingua-franca-for-ai-agents-at-google/",
+      "author": "Tony Bai",
+      "slug": "go-is-the-new-lingua-franca-for-ai-agents-at-google"
+    }
+  ],
+  "2026-05-20": [
+    {
+      "title": "AI 编码胜率榜：Go 与 Rust 完胜 C++ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/20/ai-coding-win-rate-rankings-go-and-rust-vs-cpp/",
+      "author": "Tony Bai",
+      "slug": "ai-coding-win-rate-rankings-go-and-rust-vs-cpp"
+    }
+  ],
+  "2026-05-19": [
+    {
+      "title": "代码可以让 AI 写，但设计得由你做：重塑工程师的“算法直觉” - Tony Bai",
+      "source": "https://tonybai.com/2026/05/19/ai-era-software-engineer-algorithm-map/",
+      "author": "Tony Bai",
+      "slug": "ai-era-software-engineer-algorithm-map"
+    }
+  ],
+  "2026-05-18": [
+    {
+      "title": "别神话 Rust 重写了：搞定1%热路径，Go 性能照样起飞 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/18/go-performance-optimization-over-rust-rewrites/",
+      "author": "Tony Bai",
+      "slug": "go-performance-optimization-over-rust-rewrites"
+    }
+  ],
+  "2026-05-17": [
+    {
+      "title": "如何在大型代码库中运用 Claude Code：最佳实践及入门指南 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/17/how-claude-code-works-in-large-codebases-best-practices-and-where-to-start/",
+      "author": "Tony Bai",
+      "slug": "how-claude-code-works-in-large-codebases-best-practices-and-"
+    }
+  ],
+  "2026-05-16": [
+    {
+      "title": "写了 10 年 Java/TS，Go 语言终于治好了我的“过度设计”绝症 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/16/go-cured-my-over-engineering-addiction-after-java-ts/",
+      "author": "Tony Bai",
+      "slug": "go-cured-my-over-engineering-addiction-after-java-ts"
+    }
+  ],
+  "2026-05-14": [
+    {
+      "title": "AI 时代，软件大师们为什么都倒戈向 Go 和 Rust 了？ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/14/uncle-bob-esr-on-why-we-are-turning-to-go-and-rust-in-the-ai-era/",
+      "author": "Tony Bai",
+      "slug": "uncle-bob-esr-on-why-we-are-turning-to-go-and-rust-in-the-ai"
+    }
+  ],
+  "2026-05-13": [
+    {
+      "title": "别再瞎写 go.mod 了！一行 go 1.xx，竟藏着 7 个足以颠覆你认知的“秘密开关” - Tony Bai",
+      "source": "https://tonybai.com/2026/05/13/go-mod-hidden-features-7-secret-switches-in-go-version/",
+      "author": "Tony Bai",
+      "slug": "go-mod-hidden-features-7-secret-switches-in-go-version"
+    }
+  ],
+  "2026-05-12": [
+    {
+      "title": "谁说 Rust 在中国火了？扒开 2025 全年数据，我看到了令人尴尬的真相 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/12/the-embarrassing-truth-about-rust-adoption-in-china/",
+      "author": "Tony Bai",
+      "slug": "the-embarrassing-truth-about-rust-adoption-in-china"
+    }
+  ],
+  "2026-05-11": [
+    {
+      "title": "“用 Go 打天下，用 Rust 救火”：这才是 2026 年后端架构的唯一正解 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/11/go-vs-rust-backend-architecture-the-2026-strategy/",
+      "author": "Tony Bai",
+      "slug": "go-vs-rust-backend-architecture-the-2026-strategy"
+    }
+  ],
+  "2026-05-10": [
+    {
+      "title": "对话 Uber 前 CTO：我如何用 5000 个微服务驯服这头失控的巨兽 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/10/scaling-uber-with-thuan-pham/",
+      "author": "Tony Bai",
+      "slug": "scaling-uber-with-thuan-pham"
+    }
+  ],
+  "2026-05-09": [
+    {
+      "title": "Anthropic 工程师发文：别用 Markdown 了，HTML 才是 AI 的终极语言！ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/09/anthropic-engineer-say-html-is-the-ultimate-language-for-ai/",
+      "author": "Tony Bai",
+      "slug": "anthropic-engineer-say-html-is-the-ultimate-language-for-ai"
+    },
+    {
+      "title": "火爆外网的 Go 开源神器 CLI Printing Press：一键生成 Agent 专属 CLI 工具 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/09/cli-printing-press-intro/",
+      "author": "Tony Bai",
+      "slug": "cli-printing-press-intro"
+    }
+  ],
+  "2026-05-08": [
+    {
+      "title": "Bun 创始人带头“叛逃”：放弃 Zig，用 AI 把项目重写成 Rust？ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/08/bun-founder-abandons-zig-for-rust-ai-rewrite/",
+      "author": "Tony Bai",
+      "slug": "bun-founder-abandons-zig-for-rust-ai-rewrite"
+    }
+  ],
+  "2026-05-07": [
+    {
+      "title": "AWS 大神发文炮轰：Go 的并发就是个“笑话”，JVM 的方案要更优越 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/07/aws-guru-slams-go-concurrency-as-a-joke-vs-jvm/",
+      "author": "Tony Bai",
+      "slug": "aws-guru-slams-go-concurrency-as-a-joke-vs-jvm"
+    }
+  ],
+  "2026-05-06": [
+    {
+      "title": "Robert Griesemer 亲述：只解决 90% 问题的“箭头函数”该长什么样？ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/06/robert-griesemer-on-go-arrow-functions/",
+      "author": "Tony Bai",
+      "slug": "robert-griesemer-on-go-arrow-functions"
+    },
+    {
+      "title": "LangChain DeepAgents 速通指南（八）—— DeepAgents流式输出详解",
+      "source": "https://juejin.cn/post/7636555069240705075",
+      "author": "大模型真好玩",
+      "slug": "7636555069240705075"
+    }
+  ],
+  "2026-05-05": [
+    {
+      "title": "“AI 让每个人都成了开发者”，就像“相机让每个人都成了摄影师” - Tony Bai",
+      "source": "https://tonybai.com/2026/05/05/ai-makes-everyone-a-developer-like-cameras-for-photographers/",
+      "author": "Tony Bai",
+      "slug": "ai-makes-everyone-a-developer-like-cameras-for-photographers"
+    }
+  ],
+  "2026-05-04": [
+    {
+      "title": "AI 正在把我们推向“双输”深渊：顶级论文揭示“AI 裁员陷阱” - Tony Bai",
+      "source": "https://tonybai.com/2026/05/04/the-ai-layoff-trap/",
+      "author": "Tony Bai",
+      "slug": "the-ai-layoff-trap"
+    }
+  ],
+  "2026-05-03": [
+    {
+      "title": "“AI 正在用垃圾代码摧毁一切！”：Flask 之父对话 Pi 作者，揭开 AI 编程的残酷真相 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/03/flask-creator-pi-author-on-ai-coding-the-cruel-truth/",
+      "author": "Tony Bai",
+      "slug": "flask-creator-pi-author-on-ai-coding-the-cruel-truth"
+    }
+  ],
+  "2026-05-02": [
+    {
+      "title": "从“Vibe-Coding”到“Agentic Engineering”：Andrej Karpathy 的 AI 时代程序员生存法则 - Tony Bai",
+      "source": "https://tonybai.com/2026/05/02/from-vibe-coding-to-agentic-engineering-karpathy-survival-guide/",
+      "author": "Tony Bai",
+      "slug": "from-vibe-coding-to-agentic-engineering-karpathy-survival-gu"
+    }
+  ],
+  "2026-05-01": [
+    {
+      "title": "开源社区“内战”爆发：Bun 创始人预言“未来将禁止人类贡献”，硅谷大佬纷纷站队！ - Tony Bai",
+      "source": "https://tonybai.com/2026/05/01/open-source-civil-war-bun-founder-predicts-ban-on-human-contributions/",
+      "author": "Tony Bai",
+      "slug": "open-source-civil-war-bun-founder-predicts-ban-on-human-cont"
+    }
+  ],
+  "2026-04-30": [
+    {
+      "title": "Ghostty 之父带头“出走”GitHub！官方 CTO 紧急道歉，并揭秘正在使用 Go 语言救火 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/30/ghostty-creator-leads-github-exodus-cto-apology-go-fix/",
+      "author": "Tony Bai",
+      "slug": "ghostty-creator-leads-github-exodus-cto-apology-go-fix"
+    }
+  ],
+  "2026-04-29": [
+    {
+      "title": "Go 1.27 将默认开启 SIMD for amd64，可移植 SIMD 包提案出炉 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/29/go-1-27-default-simd-for-amd64-portable-simd-proposal/",
+      "author": "Tony Bai",
+      "slug": "go-1-27-default-simd-for-amd64-portable-simd-proposal"
+    }
+  ],
+  "2026-04-28": [
+    {
+      "title": "Go 语言“内战”迎来终局？Go 圣经作者亲自下场，为“三元运算符”发起折中提案！ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/28/go-conditional-expressions-propsal/",
+      "author": "Tony Bai",
+      "slug": "go-conditional-expressions-propsal"
+    }
+  ],
+  "2026-04-27": [
+    {
+      "title": "“我们想用 Rust 重写的次数是：零”：云平台 Render 靠“无聊”的 Go 撑起了千亿流量 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/27/render-why-we-wont-rewrite-in-rust-the-power-of-boring-go/",
+      "author": "Tony Bai",
+      "slug": "render-why-we-wont-rewrite-in-rust-the-power-of-boring-go"
+    }
+  ],
+  "2026-04-26": [
+    {
+      "title": "对话 Martin Kleppmann：DDIA 第二版揭秘，以及 AI 将如何颠覆分布式系统 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/26/interview-martin-kleppmann-ddia-2nd-edition-ai-distributed-systems/",
+      "author": "Tony Bai",
+      "slug": "interview-martin-kleppmann-ddia-2nd-edition-ai-distributed-s"
+    }
+  ],
+  "2026-04-25": [
+    {
+      "title": "为什么人人爱 Rust，但 RedMonk 榜单却给它泼了一盆冷水？ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/25/rust-popularity-vs-redmonk-ranking-reality-check/",
+      "author": "Tony Bai",
+      "slug": "rust-popularity-vs-redmonk-ranking-reality-check"
+    }
+  ],
+  "2026-04-24": [
+    {
+      "title": "Go 代码设计的“第一天原则”：一份能让你少走五年弯路的实战模式清单 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/24/go-code-design-day-one-principle-practical-patterns-list/",
+      "author": "Tony Bai",
+      "slug": "go-code-design-day-one-principle-practical-patterns-list"
+    }
+  ],
+  "2026-04-23": [
+    {
+      "title": "HashiCorp 创始人亲口“认错”：AI 让我重新爱上了 Go (文末福利) - Tony Bai",
+      "source": "https://tonybai.com/2026/04/23/hashicorp-founder-admits-go-is-alive-thanks-to-ai/",
+      "author": "Tony Bai",
+      "slug": "hashicorp-founder-admits-go-is-alive-thanks-to-ai"
+    }
+  ],
+  "2026-04-21": [
+    {
+      "title": "聊聊为什么我要花这么大精力，带大家手写 Agent Harness？ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/21/why-we-are-building-agent-harness-from-scratch/",
+      "author": "Tony Bai",
+      "slug": "why-we-are-building-agent-harness-from-scratch"
+    }
+  ],
+  "2026-04-20": [
+    {
+      "title": "“我把公司卖了，却感觉一无所有”：OpenClaw 之父 TED 亲述如何靠 AI 重获新生 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/20/openclaw-father-ted-talk/",
+      "author": "Tony Bai",
+      "slug": "openclaw-father-ted-talk"
+    }
+  ],
+  "2026-04-19": [
+    {
+      "title": "薄驾驭，厚技能：YC 掌门人揭秘拉开 1000 倍效率差距的 AI 工程化心法 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/19/thin-harness-fat-skills/",
+      "author": "Tony Bai",
+      "slug": "thin-harness-fat-skills"
+    }
+  ],
+  "2026-04-18": [
+    {
+      "title": "从“开源英雄”到“社区公敌”，Ollama 到底做错了什么？ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/18/ollama-from-open-source-hero-to-community-enemy/",
+      "author": "Tony Bai",
+      "slug": "ollama-from-open-source-hero-to-community-enemy"
+    },
+    {
+      "title": "大模型训练全流程实战指南工具篇（十一）—— 大模型训练参数调优实战：从小白到调参高手",
+      "source": "https://juejin.cn/post/7629546869708111872",
+      "author": "大模型真好玩",
+      "slug": "7629546869708111872"
+    }
+  ],
+  "2026-04-17": [
+    {
+      "title": "GPU 计算的起源 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/17/the-origins-of-gpu-computing/",
+      "author": "Tony Bai",
+      "slug": "the-origins-of-gpu-computing"
+    },
+    {
+      "title": "Rust 还没进前十，TIOBE 就开始唱衰了？ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/17/tiobe-ranking-and-the-decline-of-rust-hype/",
+      "author": "Tony Bai",
+      "slug": "tiobe-ranking-and-the-decline-of-rust-hype"
+    }
+  ],
+  "2026-04-16": [
+    {
+      "title": "为什么说 go 语句是新时代的 goto？四大法则拯救失控 goroutine - Tony Bai",
+      "source": "https://tonybai.com/2026/04/16/structured-concurrency-in-go-research-oriented-perspective/",
+      "author": "Tony Bai",
+      "slug": "structured-concurrency-in-go-research-oriented-perspective"
+    }
+  ],
+  "2026-04-15": [
+    {
+      "title": "C++ 社区内部大讨论：新特性到底是“生产力革命”，还是“叠加的复杂性”？ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/15/cpp-community-debate-productivity-revolution-vs-complexity/",
+      "author": "Tony Bai",
+      "slug": "cpp-community-debate-productivity-revolution-vs-complexity"
+    },
+    {
+      "title": "GitHub 85K Star 新王挑战 357K Star 霸主：Hermes 还是 OpenClaw？最强Agent框架怎么选",
+      "source": "https://juejin.cn/post/7628854568781545506",
+      "author": "大模型真好玩",
+      "slug": "7628854568781545506"
+    }
+  ],
+  "2026-04-13": [
+    {
+      "title": "别再无脑 go func() 了！Go 资深布道师 Dave Cheney 的 Goroutine 管理哲学 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/13/dave-cheney-goroutine-management-philosophy/",
+      "author": "Tony Bai",
+      "slug": "dave-cheney-goroutine-management-philosophy"
+    }
+  ],
+  "2026-04-12": [
+    {
+      "title": "AI 时代，敏捷宣言已死？听听 Martin Fowler 和 Kent Beck 怎么说 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/12/agile-manifesto-dead-in-ai-era-martin-fowler-kent-beck/",
+      "author": "Tony Bai",
+      "slug": "agile-manifesto-dead-in-ai-era-martin-fowler-kent-beck"
+    }
+  ],
+  "2026-04-11": [
+    {
+      "title": "Go Command 工作组成立：这几个用了十年的命令可能要被废！ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/11/go-command-working-group-formed-legacy-commands-deprecated/",
+      "author": "Tony Bai",
+      "slug": "go-command-working-group-formed-legacy-commands-deprecated"
+    }
+  ],
+  "2026-04-10": [
+    {
+      "title": "Ruby on Rails 之父最新访谈：AI 正在推高顶尖程序员的身价 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/10/rails-father-dhh-on-ai-and-programmer-value/",
+      "author": "Tony Bai",
+      "slug": "rails-father-dhh-on-ai-and-programmer-value"
+    }
+  ],
+  "2026-04-09": [
+    {
+      "title": "别搞“小而美”了！Rust 开发者请愿：求求标准库学学 Go 吧 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/09/stop-being-small-and-beautiful-rust-petition-to-learn-from-go/",
+      "author": "Tony Bai",
+      "slug": "stop-being-small-and-beautiful-rust-petition-to-learn-from-g"
+    },
+    {
+      "title": "一文详解AI圈爆火概念—Harness Engineering：决定智能体系统上限的关键因素",
+      "source": "https://juejin.cn/post/7626595191143546880",
+      "author": "大模型真好玩",
+      "slug": "7626595191143546880"
+    }
+  ],
+  "2026-04-08": [
+    {
+      "title": "倒计时 33 个月？Go 前安全负责人：量子计算机将“摧毁”互联网 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/08/perspective-on-quantum-computing-timeline/",
+      "author": "Tony Bai",
+      "slug": "perspective-on-quantum-computing-timeline"
+    }
+  ],
+  "2026-04-07": [
+    {
+      "title": "从 1960 到 2026：一文看透 Java、Go、Python 垃圾回收器的原理与演进 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/07/garbage-collectors-deep-dive/",
+      "author": "Tony Bai",
+      "slug": "garbage-collectors-deep-dive"
+    }
+  ],
+  "2026-04-06": [
+    {
+      "title": "AI 编程时代，我挖出了一本 1999 年的“删库跑路”指南 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/06/how-to-write-unmaintainable-code/",
+      "author": "Tony Bai",
+      "slug": "how-to-write-unmaintainable-code"
+    }
+  ],
+  "2026-04-04": [
+    {
+      "title": "当AI 榨干了编程所有的乐趣：我不再是程序员，而是“Claude Code”的项目经理 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/04/the-death-of-coding-joy-in-the-age-of-ai-agents/",
+      "author": "Tony Bai",
+      "slug": "the-death-of-coding-joy-in-the-age-of-ai-agents"
+    }
+  ],
+  "2026-04-03": [
+    {
+      "title": "REST 已老，AI 时代的智能体需要怎样的 API？ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/03/agentic-api-in-action/",
+      "author": "Tony Bai",
+      "slug": "agentic-api-in-action"
+    },
+    {
+      "title": "LangChain DeepAgents 速通指南（六）—— DeepAgents SubAgent 子智能体机制",
+      "source": "https://juejin.cn/post/7624416522249175055",
+      "author": "大模型真好玩",
+      "slug": "7624416522249175055"
+    }
+  ],
+  "2026-04-02": [
+    {
+      "title": "2026 编程语言“饱和度”榜单出炉：JavaScript/Python 已“烂大街”，Go/Rust 成最大赢家？ - Tony Bai",
+      "source": "https://tonybai.com/2026/04/02/2026-programming-language-saturation-rankings-go-rust-winners/",
+      "author": "Tony Bai",
+      "slug": "2026-programming-language-saturation-rankings-go-rust-winner"
+    }
+  ],
+  "2026-04-01": [
+    {
+      "title": "一天重写 JSONata，我用 400 美元干掉了公司 50 万美元的 K8s 集群 - Tony Bai",
+      "source": "https://tonybai.com/2026/04/01/rewrote-jsonata-in-golang-with-ai/",
+      "author": "Tony Bai",
+      "slug": "rewrote-jsonata-in-golang-with-ai"
+    },
+    {
+      "title": "大模型训练全流程实战指南工具篇（十）—— 小白也能懂的大模型训练参数万字详解",
+      "source": "https://juejin.cn/post/7623413811005685775",
+      "author": "大模型真好玩",
+      "slug": "7623413811005685775"
+    }
+  ],
+  "2026-03-31": [
+    {
+      "title": "当 Go 还在追求极简时，C++ 26 却又加了四大“史诗级”新特性 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/31/go-minimalism-vs-cpp26-epic-new-features/",
+      "author": "Tony Bai",
+      "slug": "go-minimalism-vs-cpp26-epic-new-features"
+    }
+  ],
+  "2026-03-30": [
+    {
+      "title": "降低 74% 的 P99 尾延迟：揭秘 Go HTTP 客户端的“请求对冲”魔法 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/30/reduced-p99-latency-by-request-hedging-in-go/",
+      "author": "Tony Bai",
+      "slug": "reduced-p99-latency-by-request-hedging-in-go"
+    }
+  ],
+  "2026-03-29": [
+    {
+      "title": "别再用 AI 疯狂撸代码了！我们正在把自己逼入“死胡同” - Tony Bai",
+      "source": "https://tonybai.com/2026/03/29/stop-mindless-ai-coding-we-are-heading-to-a-dead-end/",
+      "author": "Tony Bai",
+      "slug": "stop-mindless-ai-coding-we-are-heading-to-a-dead-end"
+    }
+  ],
+  "2026-03-28": [
+    {
+      "title": "谷歌一篇论文砸崩内存巨头？不懂“显存墙”，怎么做 AI 时代的工程师！ - Tony Bai",
+      "source": "https://tonybai.com/2026/03/28/ai-engineer-gpu-introduction-course/",
+      "author": "Tony Bai",
+      "slug": "ai-engineer-gpu-introduction-course"
+    }
+  ],
+  "2026-03-27": [
+    {
+      "title": "Rust 看了流泪，AI 看了沉默：扒开 Go 泛型最让你抓狂的“残疾”类型推断 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/27/function-type-inference-should-work-in-all-assignment-contexts/",
+      "author": "Tony Bai",
+      "slug": "function-type-inference-should-work-in-all-assignment-contex"
+    }
+  ],
+  "2026-03-26": [
+    {
+      "title": "Rust 核心团队大吐苦水：求求你们别再用 AI 提交“垃圾 PR”了！ - Tony Bai",
+      "source": "https://tonybai.com/2026/03/26/rust-project-perspectives-on-ai/",
+      "author": "Tony Bai",
+      "slug": "rust-project-perspectives-on-ai"
+    }
+  ],
+  "2026-03-25": [
+    {
+      "title": "Go 语言之父亲自下场道歉：藏在 Spec 里的十年“笔误”，终于要修正了！ - Tony Bai",
+      "source": "https://tonybai.com/2026/03/25/go-spec-contradiction-in-types-section/",
+      "author": "Tony Bai",
+      "slug": "go-spec-contradiction-in-types-section"
+    },
+    {
+      "title": "LangChain DeepAgents 速通指南（五）—— 快速了解DeepAgents框架及其核心特性",
+      "source": "https://juejin.cn/post/7620801241317605417",
+      "author": "大模型真好玩",
+      "slug": "7620801241317605417"
+    }
+  ],
+  "2026-03-24": [
+    {
+      "title": "告别古法编程黄金时代：AI 时代不会再有新编程语言诞生的土壤 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/24/no-soil-for-new-programming-languages-in-ai-era/",
+      "author": "Tony Bai",
+      "slug": "no-soil-for-new-programming-languages-in-ai-era"
+    }
+  ],
+  "2026-03-23": [
+    {
+      "title": "OpenAI 创始人盛赞 Rust，却遭开发者反驳：Go 才是大模型眼里的“香饽饽”！ - Tony Bai",
+      "source": "https://tonybai.com/2026/03/23/go-is-the-best-programming-language-for-llm/",
+      "author": "Tony Bai",
+      "slug": "go-is-the-best-programming-language-for-llm"
+    }
+  ],
+  "2026-03-22": [
+    {
+      "title": "看了 100 小时教程，你为什么依然写不好代码？扒开技术人的“成长环”真相 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/22/stop-tactical-diligence-start-stretch-zone-growth/",
+      "author": "Tony Bai",
+      "slug": "stop-tactical-diligence-start-stretch-zone-growth"
+    }
+  ],
+  "2026-03-21": [
+    {
+      "title": "你的 Go 报错信息正在“出卖”你！扒一扒大厂是如何做错误隔离与日志脱敏的 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/21/best-practices-for-secure-error-handling-in-go/",
+      "author": "Tony Bai",
+      "slug": "best-practices-for-secure-error-handling-in-go"
+    }
+  ],
+  "2026-03-20": [
+    {
+      "title": "如果服务器悄悄“猝死”，你的系统还能活几秒？揭秘分布式集群的“续命”保底机制 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/20/heartbeats-in-distributed-systems/",
+      "author": "Tony Bai",
+      "slug": "heartbeats-in-distributed-systems"
+    },
+    {
+      "title": "大模型训练全流程实战指南工具篇（九）——LLamaFactory大模型训练工具使用指南",
+      "source": "https://juejin.cn/post/7619137437068771369",
+      "author": "大模型真好玩",
+      "slug": "7619137437068771369"
+    }
+  ],
+  "2026-03-19": [
+    {
+      "title": "刚刚，2025图灵奖揭晓！面对即将瘫痪的传统密码学，Go 语言的“抗量子”底牌曝光 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/19/2025-turing-award-go-quantum-resistant-cryptography/",
+      "author": "Tony Bai",
+      "slug": "2025-turing-award-go-quantum-resistant-cryptography"
+    },
+    {
+      "title": "别再无脑 go get @latest 了！你的服务器可能下一秒就被黑客接管 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/19/proposal-support-dependency-cooldown-in-go-tooling/",
+      "author": "Tony Bai",
+      "slug": "proposal-support-dependency-cooldown-in-go-tooling"
+    }
+  ],
+  "2026-03-18": [
+    {
+      "title": "为什么你的 AI Agent 总是像个智障？来自 Manus 大佬的 2 年血泪避坑指南 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/18/why-ai-agents-act-stupid-manus-expert-pitfall-guide/",
+      "author": "Tony Bai",
+      "slug": "why-ai-agents-act-stupid-manus-expert-pitfall-guide"
+    },
+    {
+      "title": "手工作坊的终结：为什么你必须把 Agent Skills 开发，变成严谨的软件工程? - Tony Bai",
+      "source": "https://tonybai.com/2026/03/18/building-industrial-grade-agent-skills/",
+      "author": "Tony Bai",
+      "slug": "building-industrial-grade-agent-skills"
+    }
+  ],
+  "2026-03-17": [
+    {
+      "title": "泡沫消退后的冷思考：2026年，AI 工程师的真实生存图景 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/17/ai-engineer-survival-2026-post-hype/",
+      "author": "Tony Bai",
+      "slug": "ai-engineer-survival-2026-post-hype"
+    },
+    {
+      "title": "被嘲笑比 Python 还慢？扒开 Go 正则表达式的底层，看看它为了防范“系统猝死”付出了什么 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/17/why-is-go-regex-so-slow/",
+      "author": "Tony Bai",
+      "slug": "why-is-go-regex-so-slow"
+    }
+  ],
+  "2026-03-16": [
+    {
+      "title": "真相调查：Go 语言真的消灭了 Undefined Behavior 吗？ - Tony Bai",
+      "source": "https://tonybai.com/2026/03/16/go-language-eliminated-undefined-behavior-truth-investigation/",
+      "author": "Tony Bai",
+      "slug": "go-language-eliminated-undefined-behavior-truth-investigatio"
+    }
+  ],
+  "2026-03-15": [
+    {
+      "title": "别傻了，写出极致整洁的代码，是你升不了职的根本原因 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/15/over-engineering-trap-no-promotion-for-simplicity/",
+      "author": "Tony Bai",
+      "slug": "over-engineering-trap-no-promotion-for-simplicity"
+    },
+    {
+      "title": "都在用 OpenClaw 跑 Skill，但你写的“技能”为什么总让 AI 频繁罢工？ - Tony Bai",
+      "source": "https://tonybai.com/2026/03/15/why-your-openclaw-skills-make-ai-go-on-strike/",
+      "author": "Tony Bai",
+      "slug": "why-your-openclaw-skills-make-ai-go-on-strike"
+    },
+    {
+      "title": "一文详解2026年技术圈最火概念——Agent Engineering智能体工程",
+      "source": "https://juejin.cn/post/7616681500684091419",
+      "author": "大模型真好玩",
+      "slug": "7616681500684091419"
+    }
+  ],
+  "2026-03-14": [
+    {
+      "title": "拒绝“偷天换日”！深度拆解 Go sumdb 的密码学防线 - Tony Bai",
+      "source": "https://tonybai.com/2026/03/14/go-sumdb-transparent-logs-supply-chain-trust/",
+      "author": "Tony Bai",
+      "slug": "go-sumdb-transparent-logs-supply-chain-trust"
+    }
+  ],
+  "2026-05-15": [
+    {
+      "title": "从RAG到LLM Wiki：一文看懂大模型+知识的演进路线",
+      "source": "https://juejin.cn/post/7639677402314588200",
+      "author": "大模型真好玩",
+      "slug": "7639677402314588200"
+    }
+  ],
+  "2026-04-22": [
+    {
+      "title": "LangChain DeepAgents 速通指南（七）—— DeepAgents使用Agent Skill",
+      "source": "https://juejin.cn/post/7631477294100021282",
+      "author": "大模型真好玩",
+      "slug": "7631477294100021282"
+    }
+  ]
+}

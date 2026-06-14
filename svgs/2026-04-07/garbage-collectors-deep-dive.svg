@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4775" viewBox="0 0 1320 4775">
+  <foreignObject x="0" y="0" width="1320" height="4775">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>从 1960 到 2026：一文看透 Java、Go、Python 垃圾回收器的原理与演进</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/07/garbage-collectors-deep-dive</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">McCarthy (1960):</div><span class="arrow-sym">→</span><div class="node">Wilson (1992): U</div><span class="arrow-sym">→</span><div class="node">两种基本方法</div><span class="arrow-sym">→</span><div class="node">Reference Counti</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computati</h3>
+  <p><strong>在讲什么问题：</strong>McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computati</p>
+  <p><strong>关键理解：</strong>这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。McCarthy 需要一种方法来管理符号表达式的内存。Lisp 程序操作的是嵌套的列表（lists of lists of lists），这种递归结构使得要求程序员手动释放内存变得不切实际。因此，他描述了一种自动执行此操作的机制。 该机制分为两个阶段。首先，从程序正在活跃使用的 root（根）变量开始，遍历它们引用的每一个对象，将每个对象标记为 reacha…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。McCarthy 需要一种方法来管理符号表达式的内存。Lisp 程序操作的是嵌套的列表（lists of lists of lists），这种递归结构使得要求程…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】Wilson (1992): Uniprocessor Garbage Collection Techniques</h3>
+  <p><strong>在讲什么问题：</strong>Wilson (1992): Uniprocessor Garbage Collection Techniques</p>
+  <p><strong>关键理解：</strong>到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。Wilson 的综述论文将这一切组织了起来。它不是一种新算法，而是一个分类学，为散落在几十年论文中的思想赋予了名称和结构。 Wilson 正式确立了所有后续算法构建其上的三种经典算法。 第一种是 mark-and-sweep （标记-清除），即 McCarthy 的原始算法。从 roots 开始，遍历对象图，标记你能触达的所有内容，然后扫过堆并释放任何未标记的内…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。Wilson 的综述论文将这一切组织了起来。它不是一种新算法，而是一个分类学，为散落在几十年论文中的思想赋予了名称和结构。 Wilson 正式确立了所有后续算法构建…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】两种基本方法</h3>
+  <p><strong>在讲什么问题：</strong>两种基本方法</p>
+  <p><strong>关键理解：</strong>几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。Wilson 的论文围绕这一划分进行组织，三十年后依然成立。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。Wilson 的论文围绕这一划分进行组织，三十年后依然成立。</div>
+</div>
+<div class="card">
+  <h3>【模板 B】Reference Counting (引用计数)</h3>
+  <p><strong>在讲什么问题：</strong>Reference Counting (引用计数)</p>
+  <p><strong>关键理解：</strong>每个对象维护一个指向它的引用计数。当引用创建时，计数增加。当引用移除时，计数减少。当计数归零时，对象立即被释放。 这是 CPython 所使用的其主要机制。它很简单，并能提供确定性的销毁。当指向文件句柄的最后一个引用消失时， del 运行，文件当场关闭，而不是在以后的某个 GC cycle中。 有两个问题使得引用计数无法独立胜任。 Cycles (循环引用)。 如果对象 A 指向对象 B，且对象 B 指向 A，那么即使程序中没有任何其他…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：每个对象维护一个指向它的引用计数。当引用创建时，计数增加。当引用移除时，计数减少。当计数归零时，对象立即被释放。 这是 CPython 所使用的其主要机制。它很简单，并能提供确定性的销毁。当指向文件句柄的最后一个引用消失时， del 运行，…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】Tracing (追踪式，即 Mark-and-Sweep)</h3>
+  <p><strong>在讲什么问题：</strong>Tracing (追踪式，即 Mark-and-Sweep)</p>
+  <p><strong>关键理解：</strong>追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。它能触达的每个对象都被标记为存活。其他所有对象都被释放。 Root set 是起点，因此什么算作 root（根）至关重要。不同语言的答案是相同的：root 是 runtime（运行时）无需追踪就能找到的任何引用。这些指针锚定在程序当前的执行状态中，是在任何遍历开始之前你就知道是存活的东西。 在实践中，roots 分为以下几类。 每…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。它能触达的每个对象都被标记为存活。其他所有对象都被释放。 Root set 是起点，因此什么算作 root（根）至关重要。不同语言的…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computati：这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。McCarthy 需要一种方法来管理符号…</li><li>Wilson (1992): Uniprocessor Garbage Collection Techniques：到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。Wilson 的综述论文将这一切组织了起来。…</li><li>两种基本方法：几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者…</li><li>Reference Counting (引用计数)：每个对象维护一个指向它的引用计数。当引用创建时，计数增加。当引用移除时，计数减少。当计数归零时，对象立即被释放。 这是 …</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

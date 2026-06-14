@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4871" viewBox="0 0 1320 4871">
+  <foreignObject x="0" y="0" width="1320" height="4871">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>被嘲笑比 Python 还慢？扒开 Go 正则表达式的底层，看看它为了防范“系统猝死”付出了什么</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/17/why-is-go-regex-so-slow</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">原罪：你以为的慢，其实是替 CG</div><span class="arrow-sym">→</span><div class="node">路线之争：为了防止系统“猝死”，</div><span class="arrow-sym">→</span><div class="node">硬核剖析：Go 的正则，时间到底</div><span class="arrow-sym">→</span><div class="node">社区的探索：SIMD 降维打击与</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】原罪：你以为的慢，其实是替 CGO 负重前行</h3>
+  <p><strong>在讲什么问题：</strong>原罪：你以为的慢，其实是替 CGO 负重前行</p>
+  <p><strong>关键理解：</strong>面对“为什么 Go 的正则比 Python 还慢”的灵魂拷问，Go 核心团队成员 Ian Lance Taylor 给出了第一层解释。 在 Python、PHP 甚至 Node.js 中，你以为你是在运行脚本，其实它们底层都在悄悄“作弊”。这些语言的正则表达式引擎，几乎全部是用高度优化的 C 语言库（主要是 PCRE，Perl Compatible Regular Expressions）编写的。 当你在 Python 里调用 re.m…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：面对“为什么 Go 的正则比 Python 还慢”的灵魂拷问，Go 核心团队成员 Ian Lance Taylor 给出了第一层解释。 在 Python、PHP 甚至 Node.js 中，你以为你是在运行脚本，其实它们底层都在悄悄“作弊”。…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】路线之争：为了防止系统“猝死”，Go 抛弃了速度</h3>
+  <p><strong>在讲什么问题：</strong>路线之争：为了防止系统“猝死”，Go 抛弃了速度</p>
+  <p><strong>关键理解：</strong>真正让 Go 正则变得“慢”的，是算法架构上的降维选择。这牵扯到 Go 语言的缔造者之一、大神 Russ Cox (rsc) 的一段往事。 在正则表达式的底层世界里，存在着两大流派： 基于回溯（Backtracking）的 NFA 引擎 ：代表人物是 PCRE（被 Python、Java、PHP 广泛使用）。 基于 Thompson NFA / DFA 的引擎 ：代表人物是 RE2（被 Go、Rust 采用）。 PCRE 引擎极快，它支…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：真正让 Go 正则变得“慢”的，是算法架构上的降维选择。这牵扯到 Go 语言的缔造者之一、大神 Russ Cox (rsc) 的一段往事。 在正则表达式的底层世界里，存在着两大流派： 基于回溯（Backtracking）的 NFA 引擎 ：…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】硬核剖析：Go 的正则，时间到底去哪了？</h3>
+  <p><strong>在讲什么问题：</strong>硬核剖析：Go 的正则，时间到底去哪了？</p>
+  <p><strong>关键理解：</strong>既然算法是 O(n) 的，为什么 Go 依然比同样采用 RE2/DFA 思想的 Rust 慢那么多呢？ 如果你去追踪 Go 官方的 Issue #19629 和 Issue #11646 ，通过 pprof 分析 Go 正则匹配的 CPU 耗时，你会看到几个令人头疼的瓶颈： 1. 沉重的 UTF-8 解析税 Rust 和 C 的很多正则引擎，底层是直接在“字节（Byte）”级别游走的。而 Go 为了贯彻它对 Unicode 的原生支持，…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：既然算法是 O(n) 的，为什么 Go 依然比同样采用 RE2/DFA 思想的 Rust 慢那么多呢？ 如果你去追踪 Go 官方的 Issue #19629 和 Issue #11646 ，通过 pprof 分析 Go 正则匹配的 CPU …</div>
+</div>
+<div class="card">
+  <h3>【模板 B】社区的探索：SIMD 降维打击与 100倍加速的 coregex</h3>
+  <p><strong>在讲什么问题：</strong>社区的探索：SIMD 降维打击与 100倍加速的 coregex</p>
+  <p><strong>关键理解：</strong>官方的克制固然令人敬佩，但对于身处一线的业务开发者来说，由于正则太慢导致的 CPU 告警，是实实在在的痛点。 “既然官方不愿意改，那我们就自己造轮子！” 在近期的 Issue #26623 中，一位名为 kolkov 的开发者带着他的开源库 coregex 杀入了战场，向 Go 标准库发起了直接的挑战。 coregex 是一个完全用纯 Go 编写的正则库，它的出现直接将 Go 的正则性能拉到了与 Rust 并驾齐驱，甚至在某些场景下超越…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：官方的克制固然令人敬佩，但对于身处一线的业务开发者来说，由于正则太慢导致的 CPU 告警，是实实在在的痛点。 “既然官方不愿意改，那我们就自己造轮子！” 在近期的 Issue #26623 中，一位名为 kolkov 的开发者带着他的开源库…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】在 Go 中写正则的正确姿势</h3>
+  <p><strong>在讲什么问题：</strong>在 Go 中写正则的正确姿势</p>
+  <p><strong>关键理解：</strong>大致了解了底层原理，回到日常开发中，我们该如何应对 Go 正则的性能瓶颈？作为高级 Go 开发者，请务必将以下三条军规刻在脑子里： 第一条：能不用正则，就坚决不用 如果你只是想检查字符串是否包含子串，或者进行简单的前后缀匹配， 永远优先使用 strings.Contains()、strings.HasPrefix() 等内置函数。 它们底层有优化的实现，在这样简单场景下，速度是 regexp 包不可比拟的。 第二条：将编译前置，远离循环…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：大致了解了底层原理，回到日常开发中，我们该如何应对 Go 正则的性能瓶颈？作为高级 Go 开发者，请务必将以下三条军规刻在脑子里： 第一条：能不用正则，就坚决不用 如果你只是想检查字符串是否包含子串，或者进行简单的前后缀匹配， 永远优先使用…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>原罪：你以为的慢，其实是替 CGO 负重前行：面对“为什么 Go 的正则比 Python 还慢”的灵魂拷问，Go 核心团队成员 Ian Lance Taylor 给出…</li><li>路线之争：为了防止系统“猝死”，Go 抛弃了速度：真正让 Go 正则变得“慢”的，是算法架构上的降维选择。这牵扯到 Go 语言的缔造者之一、大神 Russ Cox (rs…</li><li>硬核剖析：Go 的正则，时间到底去哪了？：既然算法是 O(n) 的，为什么 Go 依然比同样采用 RE2/DFA 思想的 Rust 慢那么多呢？ 如果你去追踪 G…</li><li>社区的探索：SIMD 降维打击与 100倍加速的 coregex：官方的克制固然令人敬佩，但对于身处一线的业务开发者来说，由于正则太慢导致的 CPU 告警，是实实在在的痛点。 “既然官方…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

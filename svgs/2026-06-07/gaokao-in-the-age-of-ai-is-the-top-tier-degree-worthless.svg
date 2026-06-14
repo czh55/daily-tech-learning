@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5010" viewBox="0 0 1320 5010">
+  <foreignObject x="0" y="0" width="1320" height="5010">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>“辛辛苦苦考上985，却发现AI能替代我90%的工作”：今天的高考，我们还在为什么而战？</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/07/gaokao-in-the-age-of-ai-is-the-top-tier-degree-worthless</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">斯坦福的残酷研究：为什么我们的大</div><span class="arrow-sym">→</span><div class="node">入学时，中国高考生是无可争议的“</div><span class="arrow-sym">→</span><div class="node">毕业时，我们的学生经历了残酷的“</div><span class="arrow-sym">→</span><div class="node">AI时代的清算：被替代的90%，</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】斯坦福的残酷研究：为什么我们的大学无法对抗AI的清算？</h3>
+  <p><strong>在讲什么问题：</strong>斯坦福的残酷研究：为什么我们的大学无法对抗AI的清算？</p>
+  <p><strong>关键理解：</strong>要回答“今天的高考还在为什么而战”，我们必须先看清一个长期被我们忽视的真相： 我们的高等教育，正在让最聪明的年轻人“停止成长”。 斯坦福大学联合北京大学、清华大学、俄罗斯高等经济学院等全球顶尖机构，在《Nature Human Behaviour》（自然-人类行为）上发表了 一篇具有里程碑意义的长期追踪研究 。 研究团队对中国、美国、印度、俄罗斯数万名计算机和电子工程专业的学生进行了长达四年的标准化测试，得出了两个极具颠覆性的结论：</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：要回答“今天的高考还在为什么而战”，我们必须先看清一个长期被我们忽视的真相： 我们的高等教育，正在让最聪明的年轻人“停止成长”。 斯坦福大学联合北京大学、清华大学、俄罗斯高等经济学院等全球顶尖机构，在《Nature Human Behavi…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】入学时，中国高考生是无可争议的“世界霸主”</h3>
+  <p><strong>在讲什么问题：</strong>入学时，中国高考生是无可争议的“世界霸主”</p>
+  <p><strong>关键理解：</strong>在18岁踏入大学校门的那一天，中国大一新生的学术能力和数理基础处于全球同龄人的金字塔尖，其批判性思维（Critical Thinking）能力也与美国同龄人完全持平。 这证明，我们高强度的高考选拔，确实筛选出了这个星球上最聪明、最能吃苦、逻辑最严密的一批年轻人。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在18岁踏入大学校门的那一天，中国大一新生的学术能力和数理基础处于全球同龄人的金字塔尖，其批判性思维（Critical Thinking）能力也与美国同龄人完全持平。 这证明，我们高强度的高考选拔，确实筛选出了这个星球上最聪明、最能吃苦、逻…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】毕业时，我们的学生经历了残酷的“技能退化”</h3>
+  <p><strong>在讲什么问题：</strong>毕业时，我们的学生经历了残酷的“技能退化”</p>
+  <p><strong>关键理解：</strong>然而，追踪到大四毕业时，情况发生了戏剧性的逆转。 在大学四年里，美国学生的批判性思维能力实现了大幅度增长（约0.5个标准差）。而 中国、印度和俄罗斯的学生，在四年里批判性思维几乎“零增长”，甚至在后两年出现了绝对值上的显著下降。 在数学和物理等专业学术能力上， 中国学生在大一结束后，也出现了明显的、绝对的技能损失（下降约0.3标准差）。 这篇《Nature》论文揭示了一个近乎残酷的事实： 中国的高考生在18岁那年达到了认知和技能的巅峰，…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：然而，追踪到大四毕业时，情况发生了戏剧性的逆转。 在大学四年里，美国学生的批判性思维能力实现了大幅度增长（约0.5个标准差）。而 中国、印度和俄罗斯的学生，在四年里批判性思维几乎“零增长”，甚至在后两年出现了绝对值上的显著下降。 在数学和物…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】AI时代的清算：被替代的90%，到底是什么？</h3>
+  <p><strong>在讲什么问题：</strong>AI时代的清算：被替代的90%，到底是什么？</p>
+  <p><strong>关键理解：</strong>为什么那位985毕业生会感叹“AI替代了我90%的工作”？ 因为在2026年的今天，AI首先消灭的，恰恰是那些 “有明确标准、有套路可循、依赖信息检索和加工” 的白领工作。 而这些工作，正是过去的大学教育最擅长培养、也是中产家庭最向往的就业方向： 初级程序员 ：AI自动编程工具已经能完成大部分基础代码的编写与测试。 翻译与文案策划 ：多模态大模型能够瞬间生成符合各种文化语境的译文和营销方案。 基础数据分析师 ：复杂的报表统计、趋势预测，…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为什么那位985毕业生会感叹“AI替代了我90%的工作”？ 因为在2026年的今天，AI首先消灭的，恰恰是那些 “有明确标准、有套路可循、依赖信息检索和加工” 的白领工作。 而这些工作，正是过去的大学教育最擅长培养、也是中产家庭最向往的就业…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】2026年的质问：今天的高考，我们还在为什么而战？</h3>
+  <p><strong>在讲什么问题：</strong>2026年的质问：今天的高考，我们还在为什么而战？</p>
+  <p><strong>关键理解：</strong>既然如此，我们为什么还要支持孩子去考场？高考在今天，究竟还有什么意义？ 如果我们依然把高考当成“通往高薪工作的自动售票机”，那我们一定会失望。 因为那台售票机，已经坏了。 但如果我们换一个视角，高考在2026年，依然是一场不可替代的 “成人礼” 。我们今天在高考中战斗，是为了拿回三样AI永远无法夺走的东西：</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：既然如此，我们为什么还要支持孩子去考场？高考在今天，究竟还有什么意义？ 如果我们依然把高考当成“通往高薪工作的自动售票机”，那我们一定会失望。 因为那台售票机，已经坏了。 但如果我们换一个视角，高考在2026年，依然是一场不可替代的 “成人…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>斯坦福的残酷研究：为什么我们的大学无法对抗AI的清算？：要回答“今天的高考还在为什么而战”，我们必须先看清一个长期被我们忽视的真相： 我们的高等教育，正在让最聪明的年轻人“停止…</li><li>入学时，中国高考生是无可争议的“世界霸主”：在18岁踏入大学校门的那一天，中国大一新生的学术能力和数理基础处于全球同龄人的金字塔尖，其批判性思维（Critical …</li><li>毕业时，我们的学生经历了残酷的“技能退化”：然而，追踪到大四毕业时，情况发生了戏剧性的逆转。 在大学四年里，美国学生的批判性思维能力实现了大幅度增长（约0.5个标准…</li><li>AI时代的清算：被替代的90%，到底是什么？：为什么那位985毕业生会感叹“AI替代了我90%的工作”？ 因为在2026年的今天，AI首先消灭的，恰恰是那些 “有明确…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

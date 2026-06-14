@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4599" viewBox="0 0 1320 4599">
+  <foreignObject x="0" y="0" width="1320" height="4599">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>悄悄用 Go 重写 AI 基础设施：NVIDIA 的 GPU 云平台为何选择 Go？</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/26/why-nvidia-chose-go-to-rewrite-their-ai-infrastructure</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">它是什么</div><span class="arrow-sym">→</span><div class="node">三平面架构：Go 是粘合剂</div><span class="arrow-sym">→</span><div class="node">一次请求的完整生命周期</div><span class="arrow-sym">→</span><div class="node">Scale-to-Zero 的关</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】它是什么</h3>
+  <p><strong>在讲什么问题：</strong>它是什么</p>
+  <p><strong>关键理解：</strong>NVCF 全称 NVIDIA Cloud Functions，是一个用于部署、管理和运行 GPU 加速工作负载的平台。你可以把它理解为”GPU 版的 AWS Lambda”——但更贴近生产级 AI 推理场景的设计。 你注册一个 Docker 容器或 Helm Chart，指定 GPU 类型，NVCF 负责处理一切：路由、队列、自动扩缩容、多租户隔离。GPU 云合作商在自己的 Kubernetes 集群上运行 NVIDIA Cluster…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：NVCF 全称 NVIDIA Cloud Functions，是一个用于部署、管理和运行 GPU 加速工作负载的平台。你可以把它理解为”GPU 版的 AWS Lambda”——但更贴近生产级 AI 推理场景的设计。 你注册一个 Docker…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】三平面架构：Go 是粘合剂</h3>
+  <p><strong>在讲什么问题：</strong>三平面架构：Go 是粘合剂</p>
+  <p><strong>关键理解：</strong>NVCF 的整体架构围绕三个独立可扩展的平面展开，通过 NATS JetStream 连接。 控制平面（Control Plane） 运行在专用 Kubernetes 集群上，负责函数生命周期管理、自动扩缩容决策和密钥管理。核心服务： function-autoscaler（Rust）：30 秒扩缩容循环，从 VictoriaMetrics 读取利用率，决策写入 Cassandra helm-reval（ Go ）：在计算平面部署前验证…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：NVCF 的整体架构围绕三个独立可扩展的平面展开，通过 NATS JetStream 连接。 控制平面（Control Plane） 运行在专用 Kubernetes 集群上，负责函数生命周期管理、自动扩缩容决策和密钥管理。核心服务： fu…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】一次请求的完整生命周期</h3>
+  <p><strong>在讲什么问题：</strong>一次请求的完整生命周期</p>
+  <p><strong>关键理解：</strong>从调用方的 POST /v2/nvcf/pexec/functions/{id} 开始，到响应返回，完整链路如下： http-invocation 检查速率限制（via ratelimiter gRPC） 请求发布到 NATS stream: Create.NVCA. .{clusterID}. .* NVCA queue manager 消费消息 创建 ICMSRequest Kubernetes CR（通过 NATS sequenc…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：从调用方的 POST /v2/nvcf/pexec/functions/{id} 开始，到响应返回，完整链路如下： http-invocation 检查速率限制（via ratelimiter gRPC） 请求发布到 NATS stream…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】Scale-to-Zero 的关键设计：NATS 作为持久化请求缓冲区</h3>
+  <p><strong>在讲什么问题：</strong>Scale-to-Zero 的关键设计：NATS 作为持久化请求缓冲区</p>
+  <p><strong>关键理解：</strong>NVCF 解决的最有趣的工程问题，是 GPU 工作负载的 Scale-to-Zero。 传统方案（如 Knative）在 Scale-up 期间请求会面临超时压力或重试。对于加载大型模型可能需要数十秒乃至数分钟的 GPU 推理来说，这个问题会非常严重。 NVCF 的解法是把 NATS JetStream 当做一个 持久化请求缓冲区 ： 自动扩缩容器将期望实例数降为 0，没有 Pod 运行 新请求到达，发布到 NATS JetStream…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：NVCF 解决的最有趣的工程问题，是 GPU 工作负载的 Scale-to-Zero。 传统方案（如 Knative）在 Scale-up 期间请求会面临超时压力或重试。对于加载大型模型可能需要数十秒乃至数分钟的 GPU 推理来说，这个问题…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】为什么需要 AICR</h3>
+  <p><strong>在讲什么问题：</strong>为什么需要 AICR</p>
+  <p><strong>关键理解：</strong>搭建一个 GPU 加速的 Kubernetes 集群是出了名的难。内核版本、驱动、容器运行时、Operator、Kubernetes 版本——任何一个环节的细微差异都可能导致难以诊断的问题，而且极难复现。 这些知识以前只存在于 NVIDIA 内部的验证流水线和运维手册里。 AICR 把这些知识公开了。 项目地址： github.com/NVIDIA/aicr AICR 全称 AI Cluster Runtime，将已知可行的驱动、Ope…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：搭建一个 GPU 加速的 Kubernetes 集群是出了名的难。内核版本、驱动、容器运行时、Operator、Kubernetes 版本——任何一个环节的细微差异都可能导致难以诊断的问题，而且极难复现。 这些知识以前只存在于 NVIDIA…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>它是什么：NVCF 全称 NVIDIA Cloud Functions，是一个用于部署、管理和运行 GPU 加速工作负载的平台。你…</li><li>三平面架构：Go 是粘合剂：NVCF 的整体架构围绕三个独立可扩展的平面展开，通过 NATS JetStream 连接。 控制平面（Control …</li><li>一次请求的完整生命周期：从调用方的 POST /v2/nvcf/pexec/functions/{id} 开始，到响应返回，完整链路如下： ht…</li><li>Scale-to-Zero 的关键设计：NATS 作为持久化请求缓冲区：NVCF 解决的最有趣的工程问题，是 GPU 工作负载的 Scale-to-Zero。 传统方案（如 Knative）在…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

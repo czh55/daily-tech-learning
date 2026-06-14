@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4770" viewBox="0 0 1320 4770">
+  <foreignObject x="0" y="0" width="1320" height="4770">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>手工作坊的终结：为什么你必须把 Agent Skills 开发，变成严谨的软件工程?</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/18/building-industrial-grade-agent-skills</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么你觉得无力？因为你在用“黑</div><span class="arrow-sym">→</span><div class="node">打破黑盒：把 AI 技能开发，变</div><span class="arrow-sym">→</span><div class="node">你将在这个微专栏中获得什么？</div><span class="arrow-sym">→</span><div class="node">添加新评论</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】为什么你觉得无力？因为你在用“黑盒”对抗“黑盒”</h3>
+  <p><strong>在讲什么问题：</strong>为什么你觉得无力？因为你在用“黑盒”对抗“黑盒”</p>
+  <p><strong>关键理解：</strong>为了解决这个问题，业界开始推出各种“技能（Skill）”或者“智能体（Agent）”框架。你可以把一套工作流、最佳实践、甚至是工具库打包成一个 Skill，让 AI 在需要的时候调用。 这听起来很完美，对吧？ 于是，你开始尝试用一些自动化工具（比如 Anthropic 的 skill-creator 或者各种自研的 Agent 平台）来帮你写 Skill。你输入一句“帮我写一个分析日志的技能”，工具咔咔咔一顿输出，生成了一堆配置文件和 …</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为了解决这个问题，业界开始推出各种“技能（Skill）”或者“智能体（Agent）”框架。你可以把一套工作流、最佳实践、甚至是工具库打包成一个 Skill，让 AI 在需要的时候调用。 这听起来很完美，对吧？ 于是，你开始尝试用一些自动化工…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】打破黑盒：把 AI 技能开发，变成严谨的软件工程</h3>
+  <p><strong>在讲什么问题：</strong>打破黑盒：把 AI 技能开发，变成严谨的软件工程</p>
+  <p><strong>关键理解：</strong>如果我们要真正驾驭 AI，让它成为我们可靠的队友，而不是一颗随时会爆的定时炸弹，我们就必须抛弃“调包侠”和“按键猴子”的心态。 我们需要将 AI 技能（Agent Skill）的开发，视为一项 严肃的软件工程 。 这也是我策划这门微专栏的初衷。我将它命名为： 《打破黑盒：用工程思维构建工业级 Agent Skill》 。 在这门专栏中，我不会教你那些几个月后就会失效的“Prompt 奇技淫巧”。相反，我将带你 深入底层 ，拆解一个高质量…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：如果我们要真正驾驭 AI，让它成为我们可靠的队友，而不是一颗随时会爆的定时炸弹，我们就必须抛弃“调包侠”和“按键猴子”的心态。 我们需要将 AI 技能（Agent Skill）的开发，视为一项 严肃的软件工程 。 这也是我策划这门微专栏的初…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】你将在这个微专栏中获得什么？</h3>
+  <p><strong>在讲什么问题：</strong>你将在这个微专栏中获得什么？</p>
+  <p><strong>关键理解：</strong>这门专栏共 7 讲，每一讲都是一次认知升级和实战演练： 第 1 讲 | 开篇：手工作坊的终结，为什么你必须学会“用 AI 制造 AI”？ （就是你现在看到的这篇） 第 2 讲 | 拆解 Skill Spec：揭秘 AI “理解”与“按需加载”技能的底层逻辑 第 3 讲 | 启动引擎：从“模糊意图”到“高潜草稿”的自动化生成之路 第 4 讲 | 拒绝玄学：构建可量化的 Eval 断言与全自动测试流水线 第 5 讲 | 盲测与进化：让 AI…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这门专栏共 7 讲，每一讲都是一次认知升级和实战演练： 第 1 讲 | 开篇：手工作坊的终结，为什么你必须学会“用 AI 制造 AI”？ （就是你现在看到的这篇） 第 2 讲 | 拆解 Skill Spec：揭秘 AI “理解”与“按需加载…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】添加新评论</h3>
+  <p><strong>在讲什么问题：</strong>添加新评论</p>
+  <p><strong>关键理解：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人Blog，欢迎访问、订阅和留言！ 订阅Feed请点击上面图片 。 如果您觉得这里的文章对您有帮助，请扫描上方二维码进行捐赠 ，加油后的Tony Bai将会为您呈现更多精彩的文章，谢谢！ 如果您希望通过…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】文章</h3>
+  <p><strong>在讲什么问题：</strong>文章</p>
+  <p><strong>关键理解：</strong>别再省 Token 了！硅谷新共识：浪费算力才是唯一捷径 Linux 内核顶级维护者：写了 35 年 C，是 Rust 让我重新找回了编程的乐趣 拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？ 写地道的 Go 语言，是否能让你成为了一个更好的开发者？ RSA 将死？Let s Encrypt 押注 MTCs 迎战后量子时代 C++ 的权力游戏：一部关于妥协、背叛与重生的“史诗神剧” 终结十年纠结：Go 新提案允许 Ex…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：别再省 Token 了！硅谷新共识：浪费算力才是唯一捷径 Linux 内核顶级维护者：写了 35 年 C，是 Rust 让我重新找回了编程的乐趣 拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？ 写地道的 Go 语言，是否能…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>为什么你觉得无力？因为你在用“黑盒”对抗“黑盒”：为了解决这个问题，业界开始推出各种“技能（Skill）”或者“智能体（Agent）”框架。你可以把一套工作流、最佳实践、…</li><li>打破黑盒：把 AI 技能开发，变成严谨的软件工程：如果我们要真正驾驭 AI，让它成为我们可靠的队友，而不是一颗随时会爆的定时炸弹，我们就必须抛弃“调包侠”和“按键猴子”的…</li><li>你将在这个微专栏中获得什么？：这门专栏共 7 讲，每一讲都是一次认知升级和实战演练： 第 1 讲 | 开篇：手工作坊的终结，为什么你必须学会“用 AI…</li><li>添加新评论：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 …</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

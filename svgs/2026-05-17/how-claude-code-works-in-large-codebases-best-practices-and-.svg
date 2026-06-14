@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4574" viewBox="0 0 1320 4574">
+  <foreignObject x="0" y="0" width="1320" height="4574">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>如何在大型代码库中运用 Claude Code：最佳实践及入门指南</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/17/how-claude-code-works-in-large-codebases-best-practices-and-where-to-start</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">Claude Code 如何导航</div><span class="arrow-sym">→</span><div class="node">Harness 与模型同样重要</div><span class="arrow-sym">→</span><div class="node">成功部署的三种配置模式</div><span class="arrow-sym">→</span><div class="node">使代码库在大规模下可导航</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】Claude Code 如何导航大型代码库</h3>
+  <p><strong>在讲什么问题：</strong>Claude Code 如何导航大型代码库</p>
+  <p><strong>关键理解：</strong>Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵循引用。它运行在开发人员的机器上，不需要构建、维护代码库索引或上传到服务器。 基于 RAG（检索增强生成）的 AI 编码工具通过嵌入整个代码库并在查询时检索相关块来工作。在大规模场景下，这些系统可能会失败，因为嵌入管道无法跟上活跃的工程团队。当开发人员查询索引时，它反映的是几周、几天甚至几小时前存在的代码库。检索可能会…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵循引用。它运行在开发人员的机器上，不需要构建、维护代码库索引或上传到服务器。 基于 RAG（检索增强生成）的 AI 编码…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】Harness 与模型同样重要</h3>
+  <p><strong>在讲什么问题：</strong>Harness 与模型同样重要</p>
+  <p><strong>关键理解：</strong>关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中的表现。实际上，围绕模型的生态系统——即“Harness”——比模型本身更能决定 Claude Code 的表现。 该Harness 由五个扩展点构建——CLAUDE.md 文件、钩子（Hooks）、技能（Skills）、插件（Plugins）和 MCP 服务器——每个扩展点服务于不同的功能。团队构建它们的顺序也很重要…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中的表现。实际上，围绕模型的生态系统——即“Harness”——比模型本身更能决定 Claude Code 的表现。 该H…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】成功部署的三种配置模式</h3>
+  <p><strong>在讲什么问题：</strong>成功部署的三种配置模式</p>
+  <p><strong>关键理解：</strong>你如何为大型代码库配置 Claude Code 取决于代码库的结构。尽管如此，我们观察到的部署中始终出现三种模式。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：你如何为大型代码库配置 Claude Code 取决于代码库的结构。尽管如此，我们观察到的部署中始终出现三种模式。</div>
+</div>
+<div class="card">
+  <h3>【模板 B】使代码库在大规模下可导航</h3>
+  <p><strong>在讲什么问题：</strong>使代码库在大规模下可导航</p>
+  <p><strong>关键理解：</strong>Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 Claude 盲目导航。最有效的部署会在前期投入，使代码库对 Claude 可读。以下模式始终出现： 保持 CLAUDE.md 文件精简且分层。 Claude 在代码库中移动时会累积加载它们：根目录提供大局观，子目录提供本地约定。根目录应仅包含指针和关键注意事项；其余所有内容都会造成噪音。 在子目录中初始化，而不是在代…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 Claude 盲目导航。最有效的部署会在前期投入，使代码库对 Claude 可读。以下模式始终出现： 保持 CLAUDE…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】随着模型智能的发展积极维护 CLAUDE.md 文件</h3>
+  <p><strong>在讲什么问题：</strong>随着模型智能的发展积极维护 CLAUDE.md 文件</p>
+  <p><strong>关键理解：</strong>为当前模型编写的指令可能会在面对未来模型时产生反作用。引导 Claude 遵循其难以处理的模式的 CLAUDE.md 文件，在下一代模型出现时，可能会变得不必要或起到积极的限制作用。例如，一条告诉 Claude 分解每次重构的 CLAUDE.md 规则可能曾帮助旧模型保持在轨道上，但会阻止新模型完成它所处理的更高级的跨文件编辑。 在模型的推理能力或 Claude Code 自身工具的开销变得不再重要时，这些限制就成了负担。一个截获文件写…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为当前模型编写的指令可能会在面对未来模型时产生反作用。引导 Claude 遵循其难以处理的模式的 CLAUDE.md 文件，在下一代模型出现时，可能会变得不必要或起到积极的限制作用。例如，一条告诉 Claude 分解每次重构的 CLAUDE…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>Claude Code 如何导航大型代码库：Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵…</li><li>Harness 与模型同样重要：关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中…</li><li>成功部署的三种配置模式：你如何为大型代码库配置 Claude Code 取决于代码库的结构。尽管如此，我们观察到的部署中始终出现三种模式。…</li><li>使代码库在大规模下可导航：Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 …</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>
