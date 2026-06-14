@@ -1,0 +1,154 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'zig-father-no-1-0.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:20px 28px;text-align:center;min-width:160px;font-weight:700;font-size:16px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:24px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Zig 语言</span>
+  <span class="tag tag-green">系统编程</span>
+  <span class="tag tag-orange">开源哲学</span>
+  <span class="tag tag-red">No-AI Policy</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在 C/Rust/Go 已占据系统编程市场的今天，Zig 凭什么存在，以及 Andrew Kelley 如何用「反主流」策略（拒 AI PR、拒扩张、拒 GitHub）守护一门语言的纯粹与自由。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3>
+  <div class="diagram">
+    <div class="node">DAW 失败<br/>语言痛点</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Better C<br/>显式控制</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">zig build<br/>零依赖工具链</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">微型非营利<br/>说「不」的自由</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「10 年无 1.0 = 项目失败」—— Andrew 认为 1.0 是向后兼容承诺，不是商业 KPI；Rust 有 Editions，Go 1.0 后语法也长期稳定，仓促 1.0 才是对用户不负责。</p>
+</div>
+
+<div class="card">
+  <h3>【模板 A】Zig 定位：Better C，而非 Rust Lite</h3>
+  <p><strong>在讲什么问题：</strong>已有 C/Rust/Go，世界为什么还需要 Zig？</p>
+  <p><strong>核心机制：</strong>保留 C 的全部底层能力，消除 footguns；显式分配器（Arena）替代 Rust 借用检查器的类型理论扭曲。</p>
+  <p><strong>关键理解：</strong>Andrew 的定位是「思考 CPU 该做什么，然后写代码让它做」——不迎合编译器类型理论。</p>
+  <p><strong>典型场景：</strong>TigerBeetle 金融数据库（启动预分配、运行时零动态分配）、Uber 用 zig cc 解决 Go CGO 交叉编译。</p>
+  <p><strong>边界说明：</strong>Go 因 GC 无法替代 C 写 OS 内核；Zig 不适合需要 Rust 级所有权自动证明的安全关键域。</p>
+  <div class="quote">原文：「在 Zig 中，你思考的是『我希望 CPU 做什么』，然后你写出让它这么做的代码。」</div>
+</div>
+
+<div class="card">
+  <h3>【模板 B】杀手锏工具链：一句 zig build 走天下</h3>
+  <p><strong>方法名：</strong>零外部依赖构建系统 + C/C++ 交叉编译器</p>
+  <p><strong>核心思路：</strong>消除 CMake/Makefile/依赖地狱——任何 OS 上永远只需 <code>zig build</code>。</p>
+  <p><strong>操作步骤：</strong>① 安装 Zig ② <code>zig init</code> ③ <code>zig build</code> 编译 ④ 需要时用 <code>zig cc</code> 作为 drop-in C 编译器。</p>
+  <p><strong>选型条件：</strong>嵌入式/交叉编译/混合 C 项目选 Zig 工具链；已有成熟 Bazel/CMake 生态的大厂单体不必迁移。</p>
+  <div class="highlight"><strong>落地建议：</strong>Go 项目 CGO 交叉编译卡 ARM 时，尝试 <code>CC=&quot;zig cc -target aarch64-linux-gnu&quot;</code> 替代传统交叉工具链。</div>
+  <div class="relation"><strong>与 Rust cargo 的区别：</strong>Zig 工具链同时是 C 编译器；Rust 侧重包管理与借用检查，构建复杂度更高。</div>
+</div>
+
+<div class="card">
+  <h3>【模板 F】No-AI Policy：守护导师制与 Review 质量</h3>
+  <p><strong>原则：</strong>严禁 LLM 生成的 Issue 和 PR——「那些贡献无一例外，全是垃圾。」</p>
+  <p><strong>为什么重要：</strong>5 人核心团队面对海量 PR；开源 Review 目的是 mentorship 而非收代码；AI 贡献者学不到东西且消耗 Review 时间。</p>
+  <p><strong>怎么落地：</strong>核心项目可设 CONTRIBUTING 明确禁止 AI 生成补丁；Review 重点培养长期维护者而非合并率。</p>
+  <p><strong>适用边界：</strong>应用层/原型项目可宽松；系统语言核心库、安全关键项目应严控。</p>
+  <div class="quote">原文：「我想要软件拥有『绝不妥协的完美』。『出乎意料地没有 Bug』是糟糕透顶的质量标准。」</div>
+</div>
+
+<div class="card">
+  <h3>【模板 E】系统语言三角对比</h3>
+  <table>
+    <tr><th>对比维度</th><th>C</th><th>Rust</th><th>Zig</th><th>一句话结论</th></tr>
+    <tr><td>内存模型</td><td>手动，海量 footgun</td><td>借用检查 + RAII</td><td>显式 Allocator</td><td>Zig 像 C 但更安全可控</td></tr>
+    <tr><td>学习曲线</td><td>低入门高踩坑</td><td>高（生命周期）</td><td>中等（显式分配）</td><td>Zig 避开了 borrow checker 折磨</td></tr>
+    <tr><td>构建体验</td><td>CMake 地狱</td><td>cargo 较好</td><td>zig build 零依赖</td><td>Zig 工具链是差异化王牌</td></tr>
+    <tr><td>实时/低延迟</td><td>可控</td><td>可控</td><td>Arena 零运行时分配</td><td>音频/金融场景 Zig 有优势</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【模板 D】融资与治理选型</h3>
+  <table>
+    <tr><th>场景</th><th>推荐模式</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>语言/编译器核心</td><td>501(c)(3) 非营利 + 小额多元赞助</td><td>可对赞助商说「不」</td><td>亿级 VC 扩张</td><td>资本腐蚀（Oxidation）</td></tr>
+    <tr><td>拿 1 亿美元赞助</td><td>存银行保 100 年，不扩张</td><td>Andrew 原话：不管理 100 人团队</td><td>迅速扩招</td><td>失去技术纯粹性</td></tr>
+    <tr><td>CI/托管平台</td><td>非营利 Codeberg</td><td>GitHub CI 对 Zig 不稳定</td><td>绑定 GitHub Sponsors</td><td>为流量牺牲工程稳定性</td></tr>
+    <tr><td>版本策略</td><td>0.16 自研 x86 后端后再议 1.0</td><td>1.0 = 向后兼容承诺</td><td>为商业指标赶 1.0</td><td>仓促决策需用户买单</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【模板 C】避坑清单</h3>
+  <p><strong>坑：把 Zig 当作「更简单的 Rust 替代品」</strong></p>
+  <p><strong>原因：</strong>Zig 不帮你自动证明内存安全，显式 Allocator 需要开发者自律。</p>
+  <p><strong>解法：</strong>高频场景用 Arena/预分配；参考 TigerBeetle 零运行时分配模式。</p>
+  <p><strong>严重程度：</strong>致命——错误内存管理在系统层仍是灾难。</p>
+  <div class="pitfall"><strong>另一个坑：</strong>期待 Bun 式生态爆发。Bun 已从 Zig 迁移 Rust——Zig 更适合工具链和极致性能 niche，而非通用运行时赌注。</div>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Zig 诞生于 DAW 开发中对 C++/Rust/Go 的真实痛点，定位是 Better C + 最强工具链</li>
+    <li>Andrew 的 67 万美元非营利模式换取对 AI PR、大厂控制、GitHub 依赖说「不」的自由</li>
+    <li>No-AI Policy 守护 5 人团队的 Review 质量与 mentorship 传承，非迂腐而是工程现实</li>
+    <li>10 年无 1.0 是向后兼容承诺的审慎，0.16 自研后端（50ms 增量编译）才是当前里程碑</li>
+    <li>Zig 是「纯粹程序员乌托邦」——几百 K 预算、五六人团队、对技术的热爱是核心竞争力</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>安装 Zig 0.16+，用 <code>zig build</code> 跑通 hello world 感受零依赖构建</li>
+    <li>若有 Go CGO 交叉编译痛点，试用 <code>zig cc</code> 作为 C 编译器</li>
+    <li>观看 JetBrains 专访原片（YouTube: iqddnwKF8HQ）理解 Andrew 哲学</li>
+    <li>评估项目：需要 Arena/零分配实时性能 → 研究 TigerBeetle 架构</li>
+    <li>参与开源前：手写代码、准备长期 mentorship，别扔 AI 生成的 PR</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「快发 1.0、拿融资、拥抱 AI 提效」到「独立、精简、绝不妥协的质量标准才是系统语言的长寿之道」。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
