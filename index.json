@@ -4,15 +4,18 @@
     "files": [
       {
         "path": "svgs/2026-06-14/stop-saving-tokens.svg",
-        "title": "别再省 Token 了！硅谷新共识：浪费算力才是唯一捷径"
+        "title": "别再省 Token 了！硅谷新共识：浪费算力才是唯一捷径",
+        "source": "https://tonybai.com/2026/06/14/stop-saving-tokens-silicon-valley-consensus-waste-compute-shortcut/"
       },
       {
         "path": "svgs/2026-06-14/hermes-agent-docker-deployment.svg",
-        "title": "Hermes Agent Docker 部署实战：VPS 上 24/7 运行的完整方案"
+        "title": "Hermes Agent Docker 部署实战：VPS 上 24/7 运行的完整方案",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-docker-deployment/"
       },
       {
         "path": "svgs/2026-06-14/veo-video-prompt-guide.svg",
-        "title": "Google Veo 3.1 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词"
+        "title": "Google Veo 3.1 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词",
+        "source": "https://xiangyugongzuoliu.com/veo-video-prompt-guide/"
       }
     ]
   },
@@ -21,7 +24,8 @@
     "files": [
       {
         "path": "svgs/2026-06-13/linux-maintainer-rust-joy.svg",
-        "title": "Linux 内核顶级维护者：写了 35 年 C，是 Rust 让我重新找回了编程的乐趣"
+        "title": "Linux 内核顶级维护者：写了 35 年 C，是 Rust 让我重新找回了编程的乐趣",
+        "source": "https://tonybai.com/2026/06/13/linux-maintainer-greg-kh-switched-to-rust-after-35-years-of-c/"
       }
     ]
   },
@@ -30,7 +34,8 @@
     "files": [
       {
         "path": "svgs/2026-06-12/zig-father-no-1-0.svg",
-        "title": "拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？"
+        "title": "拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？",
+        "source": "https://tonybai.com/2026/06/12/zig-father-refuses-funding-bans-ai-why-no-1-0-in-a-decade/"
       }
     ]
   },
@@ -39,11 +44,13 @@
     "files": [
       {
         "path": "svgs/2026-06-11/writing-idiomatic-go.svg",
-        "title": "写地道的 Go 语言，是否能让你成为了一个更好的开发者？"
+        "title": "写地道的 Go 语言，是否能让你成为了一个更好的开发者？",
+        "source": "https://tonybai.com/2026/06/11/writing-idiomatic-go-make-you-better/"
       },
       {
         "path": "svgs/2026-06-11/claude-code-github-projects.svg",
-        "title": "别拿Claude Code当对话框：这6个GitHub项目让你吃透代码智能体"
+        "title": "别拿Claude Code当对话框：这6个GitHub项目让你吃透代码智能体",
+        "source": "https://juejin.cn/post/7649754424471273482"
       }
     ]
   },
@@ -52,15 +59,18 @@
     "files": [
       {
         "path": "svgs/2026-06-10/lets-encrypt-mtcs-post-quantum.svg",
-        "title": "RSA 将死？Let's Encrypt 押注 MTCs 迎战后量子时代"
+        "title": "RSA 将死？Let's Encrypt 押注 MTCs 迎战后量子时代",
+        "source": "https://tonybai.com/2026/06/10/lets-encrypt-adopts-mtcs-preparing-for-post-quantum-security/"
       },
       {
         "path": "svgs/2026-06-10/cpp-power-game-documentary.svg",
-        "title": "C++ 的权力游戏：一部关于妥协、背叛与重生的「史诗神剧」"
+        "title": "C++ 的权力游戏：一部关于妥协、背叛与重生的「史诗神剧」",
+        "source": "https://tonybai.com/2026/06/10/the-story-of-cpp/"
       },
       {
         "path": "svgs/2026-06-10/kling-video-prompt-guide.svg",
-        "title": "可灵 3.0 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词"
+        "title": "可灵 3.0 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词",
+        "source": "https://xiangyugongzuoliu.com/kling-video-prompt-guide/"
       }
     ]
   },
@@ -69,11 +79,13 @@
     "files": [
       {
         "path": "svgs/2026-06-09/go-example-arbitrary-signatures.svg",
-        "title": "终结十年纠结：Go 新提案允许 Example 支持任意函数签名"
+        "title": "终结十年纠结：Go 新提案允许 Example 支持任意函数签名",
+        "source": "https://tonybai.com/2026/06/09/go-proposal-examples-to-support-arbitrary-function-signatures/"
       },
       {
         "path": "svgs/2026-06-09/agent-github-projects.svg",
-        "title": "智能体从入门到精通：6个必学GitHub开源项目"
+        "title": "智能体从入门到精通：6个必学GitHub开源项目",
+        "source": "https://juejin.cn/post/7648832804669292607"
       }
     ]
   },
@@ -82,7 +94,8 @@
     "files": [
       {
         "path": "svgs/2026-06-08/big-tech-switching-to-go.svg",
-        "title": "2026年，大厂重构核心系统为何集体投向 Go？"
+        "title": "2026年，大厂重构核心系统为何集体投向 Go？",
+        "source": "https://tonybai.com/2026/06/08/the-real-reason-big-tech-is-switching-to-go/"
       }
     ]
   }

@@ -11,8 +11,11 @@
   .sub{color:#94a3b8;margin-bottom:24px}
   .day{margin-bottom:32px}
   .day h2{font-size:18px;color:#38bdf8;margin-bottom:8px}
-  .day a{display:block;color:#e2e8f0;text-decoration:none;padding:6px 0;font-size:15px}
-  .day a:hover{color:#38bdf8}
+  .item{display:flex;align-items:baseline;gap:8px;padding:6px 0;font-size:15px}
+  .item a.title{color:#e2e8f0;text-decoration:none;flex:1}
+  .item a.title:hover{color:#38bdf8}
+  .item a.source{color:#64748b;font-size:12px;text-decoration:none;white-space:nowrap}
+  .item a.source:hover{color:#38bdf8}
   footer{color:#475569;font-size:13px;margin-top:48px;text-align:center}
 </style>
 </head>
@@ -25,7 +28,9 @@
     fetch('index.json').then(r=>r.json()).then(days=>{
       document.getElementById('list').innerHTML = days.map(d=>
         '<div class="day"><h2>'+d.date+'</h2>'+
-        d.files.map(f=>'<a href="'+f.path+'">'+f.title+'</a>').join('')+
+        d.files.map(f=>'<div class="item"><a class="title" href="'+f.path+'">'+f.title+'</a>'+
+          (f.source?' <a class="source" href="'+f.source+'" target="_blank" rel="noopener">[原文]</a>':'')+
+          '</div>').join('')+
         '</div>'
       ).join('');
     });
