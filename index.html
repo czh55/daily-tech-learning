@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>每日技术学习 · AI 增量知识库</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#0f172a;color:#e2e8f0;padding:32px}
+  h1{font-size:28px;margin-bottom:8px}
+  .sub{color:#94a3b8;margin-bottom:24px}
+  .day{margin-bottom:32px}
+  .day h2{font-size:18px;color:#38bdf8;margin-bottom:8px}
+  .day a{display:block;color:#e2e8f0;text-decoration:none;padding:6px 0;font-size:15px}
+  .day a:hover{color:#38bdf8}
+  footer{color:#475569;font-size:13px;margin-top:48px;text-align:center}
+</style>
+</head>
+<body>
+  <h1>📚 每日技术深度总结</h1>
+  <p class="sub">AI 自动抓取顶级博主最新文章 → 生成 SVG 复习卡片 → 日积月累</p>
+  <div id="list">加载中...</div>
+  <footer>由 Cursor Automations 每日自动更新</footer>
+  <script>
+    fetch('index.json').then(r=>r.json()).then(days=>{
+      document.getElementById('list').innerHTML = days.map(d=>
+        '<div class="day"><h2>'+d.date+'</h2>'+
+        d.files.map(f=>'<a href="'+f.path+'">'+f.title+'</a>').join('')+
+        '</div>'
+      ).join('');
+    });
+  </script>
+</body>
+</html>
