@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4722" viewBox="0 0 1320 4722">
+  <foreignObject x="0" y="0" width="1320" height="4722">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>OpenAI 创始人盛赞 Rust，却遭开发者反驳：Go 才是大模型眼里的“香饽饽”！</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/23/go-is-the-best-programming-language-for-llm</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">大模型写 Rust，真的安全吗？</div><span class="arrow-sym">→</span><div class="node">Go 的“无趣”，成了最顶级的生</div><span class="arrow-sym">→</span><div class="node">AI 时代的软件工程师，该选什么</div><span class="arrow-sym">→</span><div class="node">添加新评论</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】大模型写 Rust，真的安全吗？</h3>
+  <p><strong>在讲什么问题：</strong>大模型写 Rust，真的安全吗？</p>
+  <p><strong>关键理解：</strong>发起反驳的开发者 Emil Privér 一针见血地指出了用大模型写 Rust 的最大陷阱： “逃课”心理 。 Greg Brockman 认为 Rust 编译器能阻止大模型犯错。但这有一个前提：大模型必须老老实实地去解生命周期（Lifetime）和所有权（Ownership）的方程。 然而现实是，大模型也是会“偷懒”的。 Emil 敏锐地指出，当现代 LLM 在生成复杂的 Rust 业务逻辑，且实在绕不过编译器的各种借用检查报错时，它…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：发起反驳的开发者 Emil Privér 一针见血地指出了用大模型写 Rust 的最大陷阱： “逃课”心理 。 Greg Brockman 认为 Rust 编译器能阻止大模型犯错。但这有一个前提：大模型必须老老实实地去解生命周期（Lifet…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】Go 的“无趣”，成了最顶级的生产力</h3>
+  <p><strong>在讲什么问题：</strong>Go 的“无趣”，成了最顶级的生产力</p>
+  <p><strong>关键理解：</strong>既然 Rust 太“聪明”导致大模型容易弄巧成拙，那大模型到底喜欢什么样的语言？ Emil 给出的答案是： Go。 他的底层逻辑非常硬核。 他认为，大模型（LLMs）的本质是基于大量预训练语料进行 下一个 Token 的概率预测 。对于这种预测机制来说， 一段代码的上下文看起来越“同质化（Looks the same）”，大模型生成的准确率就越高。 这就牵扯到了 Go 语言一个常年被群嘲的“缺点”： 啰嗦、缺乏表现力、没有花里胡哨的语法…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：既然 Rust 太“聪明”导致大模型容易弄巧成拙，那大模型到底喜欢什么样的语言？ Emil 给出的答案是： Go。 他的底层逻辑非常硬核。 他认为，大模型（LLMs）的本质是基于大量预训练语料进行 下一个 Token 的概率预测 。对于这种…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】AI 时代的软件工程师，该选什么语言？</h3>
+  <p><strong>在讲什么问题：</strong>AI 时代的软件工程师，该选什么语言？</p>
+  <p><strong>关键理解：</strong>推特评论区里，争论依然在继续。 但透过这场口水战，我们作为一线的软件工程师，应该看透一个更深层次的时代演进： 在过去十年，程序员们热衷于发明各种奇技淫巧，比拼谁的代码写得更短、更具“魔法”；但在未来，当 80%以上 的代码都将由 AI Agent 自动生成时，“可读性”与“无歧义”将成为一门编程语言最核心的生产力。 Go 语言的联合缔造者 Rob Pike 当年顶着巨大的压力，坚持不给 Go 加各种复杂的特性。很多人觉得他固执、老派。但…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：推特评论区里，争论依然在继续。 但透过这场口水战，我们作为一线的软件工程师，应该看透一个更深层次的时代演进： 在过去十年，程序员们热衷于发明各种奇技淫巧，比拼谁的代码写得更短、更具“魔法”；但在未来，当 80%以上 的代码都将由 AI Ag…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】添加新评论</h3>
+  <p><strong>在讲什么问题：</strong>添加新评论</p>
+  <p><strong>关键理解：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人Blog，欢迎访问、订阅和留言！ 订阅Feed请点击上面图片 。 如果您觉得这里的文章对您有帮助，请扫描上方二维码进行捐赠 ，加油后的Tony Bai将会为您呈现更多精彩的文章，谢谢！ 如果您希望通过…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】文章</h3>
+  <p><strong>在讲什么问题：</strong>文章</p>
+  <p><strong>关键理解：</strong>别再省 Token 了！硅谷新共识：浪费算力才是唯一捷径 Linux 内核顶级维护者：写了 35 年 C，是 Rust 让我重新找回了编程的乐趣 拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？ 写地道的 Go 语言，是否能让你成为了一个更好的开发者？ RSA 将死？Let s Encrypt 押注 MTCs 迎战后量子时代 C++ 的权力游戏：一部关于妥协、背叛与重生的“史诗神剧” 终结十年纠结：Go 新提案允许 Ex…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：别再省 Token 了！硅谷新共识：浪费算力才是唯一捷径 Linux 内核顶级维护者：写了 35 年 C，是 Rust 让我重新找回了编程的乐趣 拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？ 写地道的 Go 语言，是否能…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>大模型写 Rust，真的安全吗？：发起反驳的开发者 Emil Privér 一针见血地指出了用大模型写 Rust 的最大陷阱： “逃课”心理 。 Greg…</li><li>Go 的“无趣”，成了最顶级的生产力：既然 Rust 太“聪明”导致大模型容易弄巧成拙，那大模型到底喜欢什么样的语言？ Emil 给出的答案是： Go。 他的…</li><li>AI 时代的软件工程师，该选什么语言？：推特评论区里，争论依然在继续。 但透过这场口水战，我们作为一线的软件工程师，应该看透一个更深层次的时代演进： 在过去十年…</li><li>添加新评论：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 …</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

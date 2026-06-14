@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4709" viewBox="0 0 1320 4709">
+  <foreignObject x="0" y="0" width="1320" height="4709">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>别神话 Rust 重写了：搞定1%热路径，Go 性能照样起飞</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/18/go-performance-optimization-over-rust-rewrites</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">现代软件最大的毒瘤：“不必要的复</div><span class="arrow-sym">→</span><div class="node">你的 99% 代码根本不需要瞎折</div><span class="arrow-sym">→</span><div class="node">VictoriaMetrics </div><span class="arrow-sym">→</span><div class="node">放弃盲猜，用 Profiler </div></div></div>
+
+<div class="card">
+  <h3>【模板 A】现代软件最大的毒瘤：“不必要的复杂性”</h3>
+  <p><strong>在讲什么问题：</strong>现代软件最大的毒瘤：“不必要的复杂性”</p>
+  <p><strong>关键理解：</strong>为什么我们总是忍不住想要用极其复杂的语言或架构去重写现有的系统？ Stewart Lynch 在讨论中一针见血地指出了现代软件工程的通病： “Everything that s wrong with modern software can be summed up in two words: Unnecessary Complexity”（现代软件所有的毛病，可以用两个词来概括：不必要的复杂性）。 这背后其实隐藏着一个程序员群体独有的心…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为什么我们总是忍不住想要用极其复杂的语言或架构去重写现有的系统？ Stewart Lynch 在讨论中一针见血地指出了现代软件工程的通病： “Everything that s wrong with modern software can …</div>
+</div>
+<div class="card">
+  <h3>【模板 B】你的 99% 代码根本不需要瞎折腾</h3>
+  <p><strong>在讲什么问题：</strong>你的 99% 代码根本不需要瞎折腾</p>
+  <p><strong>关键理解：</strong>既然复杂性是死敌，那性能问题怎么办？难道我们就任由 GC 导致程序卡顿吗？ 这时候，前 Tailscale CTO David Crawshaw 抛出了一个极具颠覆性的观点。他指出，整个行业现在正把海量的资源倾注到像 Rust 这样没有 GC 的程序中，但大家忽略了一个极其残酷的统计学事实： “Almost all your code paths are cold and GC is net positive. 1% of your c…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：既然复杂性是死敌，那性能问题怎么办？难道我们就任由 GC 导致程序卡顿吗？ 这时候，前 Tailscale CTO David Crawshaw 抛出了一个极具颠覆性的观点。他指出，整个行业现在正把海量的资源倾注到像 Rust 这样没有 G…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】VictoriaMetrics CTO 的 1% 极简榨干指南</h3>
+  <p><strong>在讲什么问题：</strong>VictoriaMetrics CTO 的 1% 极简榨干指南</p>
+  <p><strong>关键理解：</strong>好，逻辑理顺了：我们决定坚持使用 Go 语言，享受它极高的开发效率和并发优势。但我们确实遇到了那 1% 的核心瓶颈——比如高频交易的核心撮合引擎、时序数据库的底层写入循环。这部分代码极其吃 CPU，且 GC 带来的 STW（Stop The World）让人无法忍受。 不换语言，怎么破局？ 别急，让我们来看看目前世界上性能最强悍的开源时序数据库之一： VictoriaMetrics 的做法。这个数据库完全是由 Go 语言编写的，但在各项…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：好，逻辑理顺了：我们决定坚持使用 Go 语言，享受它极高的开发效率和并发优势。但我们确实遇到了那 1% 的核心瓶颈——比如高频交易的核心撮合引擎、时序数据库的底层写入循环。这部分代码极其吃 CPU，且 GC 带来的 STW（Stop The…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】放弃盲猜，用 Profiler 精准定位热路径（Hot Paths）</h3>
+  <p><strong>在讲什么问题：</strong>放弃盲猜，用 Profiler 精准定位热路径（Hot Paths）</p>
+  <p><strong>关键理解：</strong>你永远不可能靠“直觉”找到性能瓶颈。Aliaksandr 强调，Go 语言拥有极度强大的内置 Profiler（pprof）。不要一上来就重构，先让程序跑起来，打入真实流量，然后用 pprof 精准定位出那消耗了 80% CPU 和大量内存分配的 1% “热路径”究竟在哪几个函数里。 这 1% 的代码，代码量往往极小，寻找它们并不困难。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：你永远不可能靠“直觉”找到性能瓶颈。Aliaksandr 强调，Go 语言拥有极度强大的内置 Profiler（pprof）。不要一上来就重构，先让程序跑起来，打入真实流量，然后用 pprof 精准定位出那消耗了 80% CPU 和大量内存…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】在热路径中“完全移除”内存分配（Zero Allocation）</h3>
+  <p><strong>在讲什么问题：</strong>在热路径中“完全移除”内存分配（Zero Allocation）</p>
+  <p><strong>关键理解：</strong>这是 Go 性能优化的核心灵魂。Aliaksandr 的原话是：“This is how I optimize programs written in Go by removing memory allocations from hot paths ”。 只要你在热路径中不产生新的对象（不触发 malloc 和堆分配），垃圾回收器（GC）就根本不会被唤醒。没有分配，就没有垃圾；没有垃圾，就没有 GC 压力和停顿。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这是 Go 性能优化的核心灵魂。Aliaksandr 的原话是：“This is how I optimize programs written in Go by removing memory allocations from hot p…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>现代软件最大的毒瘤：“不必要的复杂性”：为什么我们总是忍不住想要用极其复杂的语言或架构去重写现有的系统？ Stewart Lynch 在讨论中一针见血地指出了现…</li><li>你的 99% 代码根本不需要瞎折腾：既然复杂性是死敌，那性能问题怎么办？难道我们就任由 GC 导致程序卡顿吗？ 这时候，前 Tailscale CTO Da…</li><li>VictoriaMetrics CTO 的 1% 极简榨干指南：好，逻辑理顺了：我们决定坚持使用 Go 语言，享受它极高的开发效率和并发优势。但我们确实遇到了那 1% 的核心瓶颈——比…</li><li>放弃盲猜，用 Profiler 精准定位热路径（Hot Paths）：你永远不可能靠“直觉”找到性能瓶颈。Aliaksandr 强调，Go 语言拥有极度强大的内置 Profiler（ppro…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

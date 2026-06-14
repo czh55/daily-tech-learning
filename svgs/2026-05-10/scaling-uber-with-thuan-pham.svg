@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4887" viewBox="0 0 1320 4887">
+  <foreignObject x="0" y="0" width="1320" height="4887">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>对话 Uber 前 CTO：我如何用 5000 个微服务驯服这头失控的巨兽</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/10/scaling-uber-with-thuan-pham</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">从船民到 MIT：一段关于生存的</div><span class="arrow-sym">→</span><div class="node">血泪的教训：两场失败，塑造了 U</div><span class="arrow-sym">→</span><div class="node">30小时的“魔鬼面试”：与 TK</div><span class="arrow-sym">→</span><div class="node">微服务之殇：我们根本不想搞 50</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】从船民到 MIT：一段关于生存的开端</h3>
+  <p><strong>在讲什么问题：</strong>从船民到 MIT：一段关于生存的开端</p>
+  <p><strong>关键理解：</strong>Tuan Pham 的人生开局，堪称地狱模式。 他出生于越南，是战争的亲历者。1975 年后，由于家庭背景，他和家人被迫成为“越南船民”，挤在破旧的渔船上，冒着不足 50% 的生还率，在深夜逃离故土。 在海上漂泊了四天三夜，躲过风暴和海盗，他们最终在马来西亚登陆，却又被拖回大海，最终被印尼的一个荒岛收留。 一年后，他们以难民身份来到美国。身无分文，不懂英语，第一套衣服来自教堂的捐赠衣橱。 “生存” ，是刻在他骨子里的第一性原理。 和很多…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Tuan Pham 的人生开局，堪称地狱模式。 他出生于越南，是战争的亲历者。1975 年后，由于家庭背景，他和家人被迫成为“越南船民”，挤在破旧的渔船上，冒着不足 50% 的生还率，在深夜逃离故土。 在海上漂泊了四天三夜，躲过风暴和海盗，…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】血泪的教训：两场失败，塑造了 Uber 的基因</h3>
+  <p><strong>在讲什么问题：</strong>血泪的教训：两场失败，塑造了 Uber 的基因</p>
+  <p><strong>关键理解：</strong>在加入 Uber 之前，Tuan 的职业生涯并非一帆风顺。但正是这些宝贵的“失败”，让他积累了足以驾驭 Uber 这头巨兽的认知。 第一场失败，在 SGI（硅谷图形公司） 。 上世纪 90 年代，他参与了一个极其超前的项目——交互式电视。在那个连手机和互联网都还没普及的年代，他们已经实现了“视频点播、在线购物”。斯皮尔伯格、迈克尔·杰克逊都来参观过。但这个项目最终惨败，因为机顶盒的成本高达 4.5 万美元。这让他得到一条教训：光有伟大的…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在加入 Uber 之前，Tuan 的职业生涯并非一帆风顺。但正是这些宝贵的“失败”，让他积累了足以驾驭 Uber 这头巨兽的认知。 第一场失败，在 SGI（硅谷图形公司） 。 上世纪 90 年代，他参与了一个极其超前的项目——交互式电视。在…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】30小时的“魔鬼面试”：与 TK 的灵魂拷问</h3>
+  <p><strong>在讲什么问题：</strong>30小时的“魔鬼面试”：与 TK 的灵魂拷问</p>
+  <p><strong>关键理解：</strong>离开 VMware 后，Tuan 并未主动寻找工作。是 Benchmark 的传奇投资人 Bill Gurley（也是 Uber 的早期投资人）找到了他。Bill Gurley 认识 Tuan，源于十几年前那家失败的广告公司。 Tuan 在访谈中反复强调一个观点： “我从不刻意经营人脉。你只需要把你手头的每一份工作做到极致，真诚地对待你身边的每一个人。随着时间推移，你的声誉会为你打开所有的大门。” 当他见到 Uber 的创始人 Trav…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：离开 VMware 后，Tuan 并未主动寻找工作。是 Benchmark 的传奇投资人 Bill Gurley（也是 Uber 的早期投资人）找到了他。Bill Gurley 认识 Tuan，源于十几年前那家失败的广告公司。 Tuan 在…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】微服务之殇：我们根本不想搞 5000 个微服务！</h3>
+  <p><strong>在讲什么问题：</strong>微服务之殇：我们根本不想搞 5000 个微服务！</p>
+  <p><strong>关键理解：</strong>Tuan 加入 Uber 时，公司只有 40 个工程师，但系统每周都会宕机数次。整个后端是一个巨大的单体应用，派单系统是用单线程的 Node.js 写的。为了扩容，工程师们只能不断地把程序挪到 CPU 更快的机器上（垂直扩容）。 Tuan 问团队：“如果最快的 CPU 也扛不住了怎么办？” 工程师说：“那就换一个有多颗 CPU 的机器。” Tuan 再问：“那这些进程之间怎么共享状态？” 团队沉默了。 Tuan 迅速算出，当时最大的城市…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Tuan 加入 Uber 时，公司只有 40 个工程师，但系统每周都会宕机数次。整个后端是一个巨大的单体应用，派单系统是用单线程的 Node.js 写的。为了扩容，工程师们只能不断地把程序挪到 CPU 更快的机器上（垂直扩容）。 Tuan …</div>
+</div>
+<div class="card">
+  <h3>【模板 A】中国速度：两个月，拿下中国市场</h3>
+  <p><strong>在讲什么问题：</strong>中国速度：两个月，拿下中国市场</p>
+  <p><strong>关键理解：</strong>在 Uber 的历史上，最能体现这种“速度压倒一切”文化的，莫过于 2014 年底的“中国闪击战”。 圣诞节前，TK 宣布：新年过后，Uber 要全面进军中国。他给了 Tuan 两个月 的时间，在中国本土，从零开始搭建一套完整的、物理隔离的数据中心。 Tuan 的工程团队评估后，给出的最快时间是 6 个月。他在湾区的朋友们听说后，都嘲笑他疯了：“没有 18 个月根本不可能。” TK 不接受，最终两人“折中”到了 4 个月。 4 个月后，…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在 Uber 的历史上，最能体现这种“速度压倒一切”文化的，莫过于 2014 年底的“中国闪击战”。 圣诞节前，TK 宣布：新年过后，Uber 要全面进军中国。他给了 Tuan 两个月 的时间，在中国本土，从零开始搭建一套完整的、物理隔离的…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>从船民到 MIT：一段关于生存的开端：Tuan Pham 的人生开局，堪称地狱模式。 他出生于越南，是战争的亲历者。1975 年后，由于家庭背景，他和家人被迫…</li><li>血泪的教训：两场失败，塑造了 Uber 的基因：在加入 Uber 之前，Tuan 的职业生涯并非一帆风顺。但正是这些宝贵的“失败”，让他积累了足以驾驭 Uber 这头巨…</li><li>30小时的“魔鬼面试”：与 TK 的灵魂拷问：离开 VMware 后，Tuan 并未主动寻找工作。是 Benchmark 的传奇投资人 Bill Gurley（也是 …</li><li>微服务之殇：我们根本不想搞 5000 个微服务！：Tuan 加入 Uber 时，公司只有 40 个工程师，但系统每周都会宕机数次。整个后端是一个巨大的单体应用，派单系统是…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

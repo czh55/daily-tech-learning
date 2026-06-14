@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4647" viewBox="0 0 1320 4647">
+  <foreignObject x="0" y="0" width="1320" height="4647">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>REST 已老，AI 时代的智能体需要怎样的 API？</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/03/agentic-api-in-action</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">AI 智能体的“认知障碍”：RE</div><span class="arrow-sym">→</span><div class="node">罪状一：意图的丢失</div><span class="arrow-sym">→</span><div class="node">罪状二：原子性与编排的噩梦</div><span class="arrow-sym">→</span><div class="node">罪状三：权限的过度宽泛</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】AI 智能体的“认知障碍”：REST API 的三大罪状</h3>
+  <p><strong>在讲什么问题：</strong>AI 智能体的“认知障碍”：REST API 的三大罪状</p>
+  <p><strong>关键理解：</strong>为了理解 REST 的局限性，我们不妨先来做个角色互换。 假设你现在不是一个人类工程师，而是一个被赋予了任务的 AI Agent。你的主人对你说：“帮我把昨天那个发错的订单取消掉，并给客户退款。” 作为 Agent，你拥有一个极其强大的大脑（比如 GPT-5.x 或 DeepSeek-V3.x），并且你被授权访问公司内部的订单系统 API。你兴冲冲地查看了该系统的 Swagger 文档，看到了以下几个端点： GET /orders/{i…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为了理解 REST 的局限性，我们不妨先来做个角色互换。 假设你现在不是一个人类工程师，而是一个被赋予了任务的 AI Agent。你的主人对你说：“帮我把昨天那个发错的订单取消掉，并给客户退款。” 作为 Agent，你拥有一个极其强大的大脑…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】罪状一：意图的丢失</h3>
+  <p><strong>在讲什么问题：</strong>罪状一：意图的丢失</p>
+  <p><strong>关键理解：</strong>你要“取消订单”，但在 REST 的世界里，并没有一个叫“取消”的操作。 你应该调用 DELETE /orders/{id} 吗？如果你真的这么做了，你可能就把这条订单的物理记录从数据库里抹掉了，这在真实的电商系统中是灾难性的（通常我们需要软删除或者状态流转）。 还是说，你应该调用 PUT /orders/{id}，并在 JSON Payload 里传一个 {“status”: “CANCELLED”}？这听起来合理一些，但如果你传的是…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：你要“取消订单”，但在 REST 的世界里，并没有一个叫“取消”的操作。 你应该调用 DELETE /orders/{id} 吗？如果你真的这么做了，你可能就把这条订单的物理记录从数据库里抹掉了，这在真实的电商系统中是灾难性的（通常我们需要…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】罪状二：原子性与编排的噩梦</h3>
+  <p><strong>在讲什么问题：</strong>罪状二：原子性与编排的噩梦</p>
+  <p><strong>关键理解：</strong>更糟糕的是，主人的任务是“取消订单并退款”。 在 REST 架构下，订单资源（/orders）和退款资源（/refunds）通常是分离的。AI Agent 必须自己完成以下编排： 调用 PUT /orders/{id} 将状态改为 CANCELLED。 解析步骤 1 的响应，确认成功。 调用 POST /refunds，并小心翼翼地把订单的金额、支付流水号等信息拼装到 Payload 中。 如果步骤 1 成功了，但步骤 2 因为网络超时…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：更糟糕的是，主人的任务是“取消订单并退款”。 在 REST 架构下，订单资源（/orders）和退款资源（/refunds）通常是分离的。AI Agent 必须自己完成以下编排： 调用 PUT /orders/{id} 将状态改为 CANC…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】罪状三：权限的过度宽泛</h3>
+  <p><strong>在讲什么问题：</strong>罪状三：权限的过度宽泛</p>
+  <p><strong>关键理解：</strong>为了让 AI 能够完成上述操作，你需要给它分配什么样的权限？ 在传统的 OAuth 2.0 体系中，你可能不得不给它 order:write 和 refund:write 权限。这意味着，这个 AI Agent 不仅能取消订单，它还能修改订单金额，甚至能随意发起退款！ REST API 以“资源”为粒度划分权限，这对于非确定性的 AI 来说，权限敞口太大了。 我们真正想给 AI 的权限是“仅限取消特定状态的订单”，但这在传统的 REST…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为了让 AI 能够完成上述操作，你需要给它分配什么样的权限？ 在传统的 OAuth 2.0 体系中，你可能不得不给它 order:write 和 refund:write 权限。这意味着，这个 AI Agent 不仅能取消订单，它还能修改订…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】破局之道：从“面向资源”到“面向任务”</h3>
+  <p><strong>在讲什么问题：</strong>破局之道：从“面向资源”到“面向任务”</p>
+  <p><strong>关键理解：</strong>面对上述痛点，业界最近非常流行一种解决方案： 让 AI 使用工具（Tool Calling / Function Calling）。 比如 Anthropic 推出的 MCP（Model Context Protocol）协议，它的核心思想是：在 AI 和系统之间架设一个中间件（MCP Server），将系统的能力包装成一个个具体的 Tool（工具）暴露给 AI。 这确实缓解了部分问题，AI 可以直接调用名为 cancel_order_…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：面对上述痛点，业界最近非常流行一种解决方案： 让 AI 使用工具（Tool Calling / Function Calling）。 比如 Anthropic 推出的 MCP（Model Context Protocol）协议，它的核心思想…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>AI 智能体的“认知障碍”：REST API 的三大罪状：为了理解 REST 的局限性，我们不妨先来做个角色互换。 假设你现在不是一个人类工程师，而是一个被赋予了任务的 AI A…</li><li>罪状一：意图的丢失：你要“取消订单”，但在 REST 的世界里，并没有一个叫“取消”的操作。 你应该调用 DELETE /orders/{i…</li><li>罪状二：原子性与编排的噩梦：更糟糕的是，主人的任务是“取消订单并退款”。 在 REST 架构下，订单资源（/orders）和退款资源（/refund…</li><li>罪状三：权限的过度宽泛：为了让 AI 能够完成上述操作，你需要给它分配什么样的权限？ 在传统的 OAuth 2.0 体系中，你可能不得不给它 o…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

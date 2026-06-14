@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4647" viewBox="0 0 1320 4647">
+  <foreignObject x="0" y="0" width="1320" height="4647">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>开源维护者的困境</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/04/the-maintainers-dilemma</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">118 个待处理的拉取请求</div><span class="arrow-sym">→</span><div class="node">进入机器人时代</div><span class="arrow-sym">→</span><div class="node">“受保护”到底保护了什么</div><span class="arrow-sym">→</span><div class="node">我们真正保护的是什么</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】118 个待处理的拉取请求</h3>
+  <p><strong>在讲什么问题：</strong>118 个待处理的拉取请求</p>
+  <p><strong>关键理解：</strong>我上周查看了 GitHub 通知，然后直接关闭了标签页。 Cobra 有 243 个未解决的问题（issues）和 118 个待处理的拉取请求（PR）。 Afero 有 114 个问题和 55 个 PR。这两个项目都是我创建的。 尽管我没有及时行动，但这些都是活跃维护的项目。Cobra 支持着 kubectl、GitHub CLI、hugo 以及成千上万的其他工具。当你输入 kubectl get pods 或 gh pr list 时…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：我上周查看了 GitHub 通知，然后直接关闭了标签页。 Cobra 有 243 个未解决的问题（issues）和 118 个待处理的拉取请求（PR）。 Afero 有 114 个问题和 55 个 PR。这两个项目都是我创建的。 尽管我没有…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】进入机器人时代</h3>
+  <p><strong>在讲什么问题：</strong>进入机器人时代</p>
+  <p><strong>关键理解：</strong>我一直在几个仓库里尝试 AI 工具——比如在 fileflow 上的 Jules 和在 pathologize 上的 AI 尝试，这些仓库依赖较少，有更多尝试空间。我也一直在 Afero 上运行 GitHub Copilot，它有更多依赖，但其模块化架构允许我扩展新后端而不触及其他项目依赖的关键路径。 我去了一次邮轮旅行。当我在海上时，Jules 还在继续工作，每天都会发起新的 PR，因为我还没来得及合并第一个。等我回到家时，这两个项目…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：我一直在几个仓库里尝试 AI 工具——比如在 fileflow 上的 Jules 和在 pathologize 上的 AI 尝试，这些仓库依赖较少，有更多尝试空间。我也一直在 Afero 上运行 GitHub Copilot，它有更多依赖，…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】“受保护”到底保护了什么</h3>
+  <p><strong>在讲什么问题：</strong>“受保护”到底保护了什么</p>
+  <p><strong>关键理解：</strong>Go 项目对我来说真的很美——那是运行了 15 年、极其细致的评审、设计讨论和精炼的评审文化。那是理想状态。但 Go 是个例外，大多数项目无法企及：由 Google 资助的全职贡献者，一项旨在持续 50 年且不受外部截止日期压力的任务。 Go 团队最近有一个长长的讨论， 关于是否接受 AI 生成的贡献 ——Russ Cox 的名言也源自那个讨论。这些人我共事多年——同样的评审、同样的方案、在同样的白板前争论。阅读那个论坛线程，我能听到他…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Go 项目对我来说真的很美——那是运行了 15 年、极其细致的评审、设计讨论和精炼的评审文化。那是理想状态。但 Go 是个例外，大多数项目无法企及：由 Google 资助的全职贡献者，一项旨在持续 50 年且不受外部截止日期压力的任务。 G…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】我们真正保护的是什么</h3>
+  <p><strong>在讲什么问题：</strong>我们真正保护的是什么</p>
+  <p><strong>关键理解：</strong>当维护者评审贡献者的 PR 时，存在一个潜规则（契约）。贡献者投入数小时理解代码库、编写测试并提交干净的内容。评审者投入数小时进行评估、打回并提出改进建议。双方都在学习。评审者理解了项目的一个新角落。贡献者学会了更好地使用代码库的惯用法。这种关系形式。这种交流是使开源成为一个社区，而不仅仅是供应链的重要原因。 Bryan Cantrill 在 Oxide 描述了这种关于 LLM 使用的 内部政策 ：通常，“读者和作者都默认，是编写者付出…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：当维护者评审贡献者的 PR 时，存在一个潜规则（契约）。贡献者投入数小时理解代码库、编写测试并提交干净的内容。评审者投入数小时进行评估、打回并提出改进建议。双方都在学习。评审者理解了项目的一个新角落。贡献者学会了更好地使用代码库的惯用法。这…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】前方的实验</h3>
+  <p><strong>在讲什么问题：</strong>前方的实验</p>
+  <p><strong>关键理解：</strong>我决定弄清楚到底怎么回事。我在 Afero 上看到了 55 个尚未处理的 PR 请求，显然，这种拖延态度本身就已经构成了一种忽视行为。 AI 工具会让我更投入，让我从那些本不需要我的决策中解脱出来吗？还是会让我感觉连接更少——人类元素又减少了一层？我不知道让 AI 评审 PR 而不是人类评审是什么感觉，也不知道当双方的努力都减弱时，问责制是否还存在。这就是实验。 Russ 在那个讨论中还说了另一句话，我一直在回味：“最重要的事情是保持思…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：我决定弄清楚到底怎么回事。我在 Afero 上看到了 55 个尚未处理的 PR 请求，显然，这种拖延态度本身就已经构成了一种忽视行为。 AI 工具会让我更投入，让我从那些本不需要我的决策中解脱出来吗？还是会让我感觉连接更少——人类元素又减少…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>118 个待处理的拉取请求：我上周查看了 GitHub 通知，然后直接关闭了标签页。 Cobra 有 243 个未解决的问题（issues）和 11…</li><li>进入机器人时代：我一直在几个仓库里尝试 AI 工具——比如在 fileflow 上的 Jules 和在 pathologize 上的 A…</li><li>“受保护”到底保护了什么：Go 项目对我来说真的很美——那是运行了 15 年、极其细致的评审、设计讨论和精炼的评审文化。那是理想状态。但 Go 是…</li><li>我们真正保护的是什么：当维护者评审贡献者的 PR 时，存在一个潜规则（契约）。贡献者投入数小时理解代码库、编写测试并提交干净的内容。评审者投入…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4674" viewBox="0 0 1320 4674">
+  <foreignObject x="0" y="0" width="1320" height="4674">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>火爆外网的 Go 开源神器 CLI Printing Press：一键生成 Agent 专属 CLI 工具</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/09/cli-printing-press-intro</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">先说一个反常识的故事</div><span class="arrow-sym">→</span><div class="node">AI Agent 的”工具饥渴”</div><span class="arrow-sym">→</span><div class="node">它到底是什么？</div><span class="arrow-sym">→</span><div class="node">为什么选 Go？</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】先说一个反常识的故事</h3>
+  <p><strong>在讲什么问题：</strong>先说一个反常识的故事</p>
+  <p><strong>关键理解：</strong>Discord 有 300 多个官方 API 端点。 按常理，一个覆盖所有端点的 CLI 工具，应该是最好用的那个。但事实恰恰相反。 OpenClaw 之父 Peter Steinberger 用 Go 写了一个叫 discrawl 的工具，只提供 11 个命令：sync、search、sql、tail、mentions、members……就这些。结果？700多 颗 GitHub Star，社区口口相传，被无数 AI Agent 开发者…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Discord 有 300 多个官方 API 端点。 按常理，一个覆盖所有端点的 CLI 工具，应该是最好用的那个。但事实恰恰相反。 OpenClaw 之父 Peter Steinberger 用 Go 写了一个叫 discrawl 的工具…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】AI Agent 的”工具饥渴”时代</h3>
+  <p><strong>在讲什么问题：</strong>AI Agent 的”工具饥渴”时代</p>
+  <p><strong>关键理解：</strong>在聊这个工具之前，我们需要先理解 2026 年的 AI 开发现状。 Claude Code、Codex、OpenClaw、Gemini CLI等 AI Agent 的能力已经突飞猛进。它们可以写代码、查数据、做分析、自主决策。但有一个瓶颈正在成为所有人的噩梦： 现有的 CLI 工具，根本不是为 Agent 设计的。 想象一下 Agent 在调用一个普通 CLI 时会遇到什么： 输出格式不稳定，有时是表格，有时是纯文本，Agent 根本无…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在聊这个工具之前，我们需要先理解 2026 年的 AI 开发现状。 Claude Code、Codex、OpenClaw、Gemini CLI等 AI Agent 的能力已经突飞猛进。它们可以写代码、查数据、做分析、自主决策。但有一个瓶颈正…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】它到底是什么？</h3>
+  <p><strong>在讲什么问题：</strong>它到底是什么？</p>
+  <p><strong>关键理解：</strong>用一句话描述： CLI Printing Press 是一台 CLI 工厂。给它一个 API 地址（或者任意一个网站），它输出一个专门为 AI Agent 设计的 Go CLI 工具 + MCP 服务器 + Claude Code Skill。 安装方式极其简单（Go需要&gt;=1.26版本）： # 安装工厂本体 go install github.com/mvanhorn/cli-printing-press/v4/cmd/printin…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：用一句话描述： CLI Printing Press 是一台 CLI 工厂。给它一个 API 地址（或者任意一个网站），它输出一个专门为 AI Agent 设计的 Go CLI 工具 + MCP 服务器 + Claude Code Skil…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】为什么选 Go？</h3>
+  <p><strong>在讲什么问题：</strong>为什么选 Go？</p>
+  <p><strong>关键理解：</strong>这是一个值得细聊的设计决策。 在这个 TypeScript、Python 等生产力语言大行其道的时代，CLI Printing Press 选择了 Go，并且坚定地把 Go 作为所有生成产物的语言。原因很现实： 第一，分发极其简单。 go install 一行命令，跨平台，无依赖。Agent 在运行时动态安装工具，最怕的就是依赖地狱。Go 的静态编译二进制文件是最优解。 第二，Go 已经被实践证明。 Peter Steinberger …</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这是一个值得细聊的设计决策。 在这个 TypeScript、Python 等生产力语言大行其道的时代，CLI Printing Press 选择了 Go，并且坚定地把 Go 作为所有生成产物的语言。原因很现实： 第一，分发极其简单。 go …</div>
+</div>
+<div class="card">
+  <h3>【模板 A】每个 API 都有非显见身份（Non-Obvious Insight）</h3>
+  <p><strong>在讲什么问题：</strong>每个 API 都有非显见身份（Non-Obvious Insight）</p>
+  <p><strong>关键理解：</strong>这是整个项目最有哲学深度的设计。 Printing Press 在生成任何 CLI 之前，都要先找到这个 API 的”非显见洞察”（NOI），一句话的格式： “[API] 不只是 [显而易见的功能]。它是 [非显见的东西]。每个 [数据点] 都是关于 [隐藏真相] 的信号。” 几个例子，读完你可能会有点震撼： 这个 NOI 是整个 CLI 的创意 DNA。如果 AI 在研究阶段写不出一个 NOI，说明研究深度不够，Phase 0 不会放…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：这是整个项目最有哲学深度的设计。 Printing Press 在生成任何 CLI 之前，都要先找到这个 API 的”非显见洞察”（NOI），一句话的格式： “[API] 不只是 [显而易见的功能]。它是 [非显见的东西]。每个 [数据点]…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>先说一个反常识的故事：Discord 有 300 多个官方 API 端点。 按常理，一个覆盖所有端点的 CLI 工具，应该是最好用的那个。但事…</li><li>AI Agent 的”工具饥渴”时代：在聊这个工具之前，我们需要先理解 2026 年的 AI 开发现状。 Claude Code、Codex、OpenClaw…</li><li>它到底是什么？：用一句话描述： CLI Printing Press 是一台 CLI 工厂。给它一个 API 地址（或者任意一个网站），…</li><li>为什么选 Go？：这是一个值得细聊的设计决策。 在这个 TypeScript、Python 等生产力语言大行其道的时代，CLI Print…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

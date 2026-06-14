@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4871" viewBox="0 0 1320 4871">
+  <foreignObject x="0" y="0" width="1320" height="4871">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>传奇黑客 Geohot 炮轰 AI Agent：这是软件工程史上代价最昂贵的灾难！</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/06/geohot-slams-ai-agents-as-the-most-expensive-software-disaster</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">典故溯源：什么是“永恒的垃圾九月</div><span class="arrow-sym">→</span><div class="node">“老虎机”效应：Geohot 历</div><span class="arrow-sym">→</span><div class="node">大厂病灶：为什么非技术管理层会成</div><span class="arrow-sym">→</span><div class="node">终局梦醒：当黑盒代码的“账单”到</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】典故溯源：什么是“永恒的垃圾九月”？</h3>
+  <p><strong>在讲什么问题：</strong>典故溯源：什么是“永恒的垃圾九月”？</p>
+  <p><strong>关键理解：</strong>要理解 Geohot 的愤怒，我们首先需要理解他借用的一个历史梗—— “永恒九月（Eternal September）” 。 在互联网早期的 Usenet 时代，每年九月，都会有大批大学新生接入网络。这群新手由于不懂网络礼仪（Netiquette），会短暂地破坏原有技术社区的纯粹与优雅。但过去，老用户们只需花费一个月时间，就能将这些新生“同化”。 直到 1993 年 9 月，美国在线（AOL）向其数百万普通用户全面开放了 Usenet。…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：要理解 Geohot 的愤怒，我们首先需要理解他借用的一个历史梗—— “永恒九月（Eternal September）” 。 在互联网早期的 Usenet 时代，每年九月，都会有大批大学新生接入网络。这群新手由于不懂网络礼仪（Netique…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】“老虎机”效应：Geohot 历时半年的亲身实验</h3>
+  <p><strong>在讲什么问题：</strong>“老虎机”效应：Geohot 历时半年的亲身实验</p>
+  <p><strong>关键理解：</strong>和那些只会纸上谈兵的评论家不同，Geohot 亲自用 AI 进行了长达 6 个月的深度开发实验。 他尝试用 AI Agent 编写他的深度学习框架 tinygrad 的部分代码，甚至尝试用 AI 逆向工程一块 USB 到 PCIe 的芯片。 他的实验结论可以用两个词来概括： 极其失望 。 “AI 确实非常擅长快速搭建一个原型（Prototype），”Geohot 承认。但当你试图去打磨它、消灭最后 5% 的边缘 Bug、让其达到工业级标…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：和那些只会纸上谈兵的评论家不同，Geohot 亲自用 AI 进行了长达 6 个月的深度开发实验。 他尝试用 AI Agent 编写他的深度学习框架 tinygrad 的部分代码，甚至尝试用 AI 逆向工程一块 USB 到 PCIe 的芯片。…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】大厂病灶：为什么非技术管理层会成为“垃圾代码”的帮凶？</h3>
+  <p><strong>在讲什么问题：</strong>大厂病灶：为什么非技术管理层会成为“垃圾代码”的帮凶？</p>
+  <p><strong>关键理解：</strong>既然 AI Agent 开发如此低效，为什么现在各大巨头依然在疯狂推进？ Geohot 揭示了企业管理层一个极其荒谬的逻辑漏洞： 对“虚假指标”的崇拜。 在大型企业中，管理层通常是非技术出身的。他们无法辨别代码的高级设计与品味，他们只能看懂看得见的指标——比如“开发进度图表”和“代码产出行数（Lines of Code, LOC）”。 “那些底层的、平庸的开发者（Bottom Performers），通过使用 AI，突然产出了 10 倍…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：既然 AI Agent 开发如此低效，为什么现在各大巨头依然在疯狂推进？ Geohot 揭示了企业管理层一个极其荒谬的逻辑漏洞： 对“虚假指标”的崇拜。 在大型企业中，管理层通常是非技术出身的。他们无法辨别代码的高级设计与品味，他们只能看懂…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】终局梦醒：当黑盒代码的“账单”到期</h3>
+  <p><strong>在讲什么问题：</strong>终局梦醒：当黑盒代码的“账单”到期</p>
+  <p><strong>关键理解：</strong>Reddit r/webdev 板块上的大批大厂老兵，用自己身边的真实惨剧，印证了 Geohot 的预言。 一位在 Fortune 100 强企业工作的开发者留言道： 他们的管理层在大会上狂热地宣称“AI 将接管一切开发，以后周五下午直接让 AI 部署 1 万行代码上线”。 “我们这些一线的工程师在下面默默看着。 等这波 AI 狂热退去，账单到期，面对一堆无人能懂的‘黑盒代码（Black Boxes）’在半夜 3 点崩溃时，这些管理层会…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Reddit r/webdev 板块上的大批大厂老兵，用自己身边的真实惨剧，印证了 Geohot 的预言。 一位在 Fortune 100 强企业工作的开发者留言道： 他们的管理层在大会上狂热地宣称“AI 将接管一切开发，以后周五下午直接让…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】幸存者法则：别在“AI 妄想症”中自残</h3>
+  <p><strong>在讲什么问题：</strong>幸存者法则：别在“AI 妄想症”中自残</p>
+  <p><strong>关键理解：</strong>面对这场由大厂和 AI 巨头联手制造的“AI 妄想症（AI Psychosis）”，真正的工程师该如何自救？ Geohot 在文章的结尾，给出了一个极具力量、甚至带有一丝英雄主义的生存守则： “这个时代真正的故事，将是谁能在这场‘AI 妄想症’中保持清醒，不伤害到自己。” 回归第一性原理（First-Principles） ：放弃用 AI 盲目试错。当你遇到技术难题时，去读书，去查阅最干净、最硬核的一手的底层文档，搞清楚 CPU、内存和…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：面对这场由大厂和 AI 巨头联手制造的“AI 妄想症（AI Psychosis）”，真正的工程师该如何自救？ Geohot 在文章的结尾，给出了一个极具力量、甚至带有一丝英雄主义的生存守则： “这个时代真正的故事，将是谁能在这场‘AI 妄想…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>典故溯源：什么是“永恒的垃圾九月”？：要理解 Geohot 的愤怒，我们首先需要理解他借用的一个历史梗—— “永恒九月（Eternal September）”…</li><li>“老虎机”效应：Geohot 历时半年的亲身实验：和那些只会纸上谈兵的评论家不同，Geohot 亲自用 AI 进行了长达 6 个月的深度开发实验。 他尝试用 AI Age…</li><li>大厂病灶：为什么非技术管理层会成为“垃圾代码”的帮凶？：既然 AI Agent 开发如此低效，为什么现在各大巨头依然在疯狂推进？ Geohot 揭示了企业管理层一个极其荒谬的逻…</li><li>终局梦醒：当黑盒代码的“账单”到期：Reddit r/webdev 板块上的大批大厂老兵，用自己身边的真实惨剧，印证了 Geohot 的预言。 一位在 Fo…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

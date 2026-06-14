@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4560" viewBox="0 0 1320 4560">
+  <foreignObject x="0" y="0" width="1320" height="4560">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>AI 编程时代，我挖出了一本 1999 年的“删库跑路”指南</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/06/how-to-write-unmaintainable-code</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">底层哲学：把你的同事想象成一个“</div><span class="arrow-sym">→</span><div class="node">命名之罪</div><span class="arrow-sym">→</span><div class="node">注释之罪</div><span class="arrow-sym">→</span><div class="node">结构之罪</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】底层哲学：把你的同事想象成一个“管中窥豹”的傻子</h3>
+  <p><strong>在讲什么问题：</strong>底层哲学：把你的同事想象成一个“管中窥豹”的傻子</p>
+  <p><strong>关键理解：</strong>Roedy Green 在开篇就点明了核心：维护者看代码，就像通过一个卫生纸筒的中心在看世界，视野极其狭窄。 你的任务，就是让他永远无法拼凑出完整的画面。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Roedy Green 在开篇就点明了核心：维护者看代码，就像通过一个卫生纸筒的中心在看世界，视野极其狭窄。 你的任务，就是让他永远无法拼凑出完整的画面。</div>
+</div>
+<div class="card">
+  <h3>【模板 B】命名之罪</h3>
+  <p><strong>在讲什么问题：</strong>命名之罪</p>
+  <p><strong>关键理解：</strong>用 l 冒充 1，用 O 冒充 0 ：利用字体的模糊性，制造视觉混乱。 go // 古法复刻 var l int64 = 11 // 这是 11 还是 1l？ var speed int = O1 // 这是 O1 还是 01？ 创造极其相似的变量名 ：仅通过大小写或一个不显眼的字母进行区分。 go // 古法复刻 var swimmer, swimner string // 99% 的 Code Review 都会看走眼 var ha…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：用 l 冒充 1，用 O 冒充 0 ：利用字体的模糊性，制造视觉混乱。 go // 古法复刻 var l int64 = 11 // 这是 11 还是 1l？ var speed int = O1 // 这是 O1 还是 01？ 创造极其相…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】注释之罪</h3>
+  <p><strong>在讲什么问题：</strong>注释之罪</p>
+  <p><strong>关键理解：</strong>在注释里撒谎 ：最简单的一招，改了代码，但不更新注释。 写废话注释 ：为每一行显而易见的代码配上同样显而易见的注释，用大量的噪音淹没真正有价值的信息。 go // 古法复刻 i++ // i plus 1 永远不要注释一个变量 ：它的单位、取值范围、边界条件，全让维护者自己去猜。</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在注释里撒谎 ：最简单的一招，改了代码，但不更新注释。 写废话注释 ：为每一行显而易见的代码配上同样显而易见的注释，用大量的噪音淹没真正有价值的信息。 go // 古法复刻 i++ // i plus 1 永远不要注释一个变量 ：它的单位、…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】结构之罪</h3>
+  <p><strong>在讲什么问题：</strong>结构之罪</p>
+  <p><strong>关键理解：</strong>极限压行 ：在一行里塞进尽可能多的逻辑，挑战显示器的宽度极限。 深度嵌套 ：以能嵌套 10 层以上的 if-else 为荣，坚决不使用 early return或happy path。 滥用全局变量 ：永远不要使用局部变量，把一切都提升为包级变量，让并发的 Goroutine 们去为了争夺它而自相残杀。 // 古法复刻 var tempResult string // 提升为包级变量 func HandleRequestA() { te…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：极限压行 ：在一行里塞进尽可能多的逻辑，挑战显示器的宽度极限。 深度嵌套 ：以能嵌套 10 层以上的 if-else 为荣，坚决不使用 early return或happy path。 滥用全局变量 ：永远不要使用局部变量，把一切都提升为包…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】Go 语言的反击</h3>
+  <p><strong>在讲什么问题：</strong>Go 语言的反击</p>
+  <p><strong>关键理解：</strong>当然原文中，Roedy Green的“骚操作”不止这些。 但其中的一些“防御”手段对今天的Go语言来说，并不生效。 你会发现 Go 语言在设计之初，就已经对这些“手段”进行了“免疫”，比如： 关于缩进与格式 ：Roedy Green 痛斥当年程序员通过“故意错位”的缩进来制造 if-else 匹配的视觉陷阱。 Go 的反击 ：对不起，我们有 gofmt。在 Go 的世界里，关于代码格式的“圣战”在第一天就结束了。无论你的代码写得多乱，C…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：当然原文中，Roedy Green的“骚操作”不止这些。 但其中的一些“防御”手段对今天的Go语言来说，并不生效。 你会发现 Go 语言在设计之初，就已经对这些“手段”进行了“免疫”，比如： 关于缩进与格式 ：Roedy Green 痛斥当…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>底层哲学：把你的同事想象成一个“管中窥豹”的傻子：Roedy Green 在开篇就点明了核心：维护者看代码，就像通过一个卫生纸筒的中心在看世界，视野极其狭窄。 你的任务，…</li><li>命名之罪：用 l 冒充 1，用 O 冒充 0 ：利用字体的模糊性，制造视觉混乱。 go // 古法复刻 var l int64 =…</li><li>注释之罪：在注释里撒谎 ：最简单的一招，改了代码，但不更新注释。 写废话注释 ：为每一行显而易见的代码配上同样显而易见的注释，用大…</li><li>结构之罪：极限压行 ：在一行里塞进尽可能多的逻辑，挑战显示器的宽度极限。 深度嵌套 ：以能嵌套 10 层以上的 if-else 为…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4722" viewBox="0 0 1320 4722">
+  <foreignObject x="0" y="0" width="1320" height="4722">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>“AI 正在用垃圾代码摧毁一切！”：Flask 之父对话 Pi 作者，揭开 AI 编程的残酷真相</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/03/flask-creator-pi-author-on-ai-coding-the-cruel-truth</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">幻灭的开端：从“代码的奴隶”到“</div><span class="arrow-sym">→</span><div class="node">血泪的教训：当 Agent 失去</div><span class="arrow-sym">→</span><div class="node">架构师的终极拷问：我们正在失去“</div><span class="arrow-sym">→</span><div class="node">两种路线的博弈：MCP vs C</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】幻灭的开端：从“代码的奴隶”到“代码的奴隶主”</h3>
+  <p><strong>在讲什么问题：</strong>幻灭的开端：从“代码的奴隶”到“代码的奴隶主”</p>
+  <p><strong>关键理解：</strong>故事的开端，源于两位大神对 AI 的“第一印象”。 作为 Flask 的作者，Armin Ronacher 最初对 Copilot 的出现充满了警惕。他做的第一件事，就是去“钓鱼执法”， 诱导 Copilot 复现那段著名的《雷神之锤III》中的快速平方根倒数算法 ，并发现 AI 果然在没有正确署名的情况下，吐出了 GPL 协议的代码。 而 Mario Zechner，这位同样拥有数十年开发经验的老炮，则是在厌倦了 Claude Cod…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：故事的开端，源于两位大神对 AI 的“第一印象”。 作为 Flask 的作者，Armin Ronacher 最初对 Copilot 的出现充满了警惕。他做的第一件事，就是去“钓鱼执法”， 诱导 Copilot 复现那段著名的《雷神之锤III…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】血泪的教训：当 Agent 失去“痛感”</h3>
+  <p><strong>在讲什么问题：</strong>血泪的教训：当 Agent 失去“痛感”</p>
+  <p><strong>关键理解：</strong>访谈中，Mario 提出了一个极其深刻的洞见： AI Agent 正在用“无痛”的方式，批量制造“屎山（Slop）”。 “人类是有痛感的。当你写了一段极其恶心的代码，你会感到痛苦。为了避免这种痛苦，你会花时间去重构，去梳理架构。 痛苦，逼着人类去学习和进化。 ” “但 Agent 呢？它是一台没有感情的打字机。它可以在几分钟内生成两万行代码。如果其中包含了一个微小的设计缺陷，它不会感到痛苦。相反，它会在你看不见的地方，将这个缺陷以成百上…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：访谈中，Mario 提出了一个极其深刻的洞见： AI Agent 正在用“无痛”的方式，批量制造“屎山（Slop）”。 “人类是有痛感的。当你写了一段极其恶心的代码，你会感到痛苦。为了避免这种痛苦，你会花时间去重构，去梳理架构。 痛苦，逼着…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】架构师的终极拷问：我们正在失去“摩擦力”</h3>
+  <p><strong>在讲什么问题：</strong>架构师的终极拷问：我们正在失去“摩擦力”</p>
+  <p><strong>关键理解：</strong>在这场对话中，Armin 提出了一个极其反直觉、却又极具哲学思辨的观点： 一个好的工程系统，需要被刻意地注入“摩擦力（Friction）”。 “在最好的工程团队里，为了让服务更成熟，你需要定义 SLO，你需要做 Code Review，你需要让架构委员会审批。这些看似‘官僚’的流程，其实是在故意减慢速度，逼着你去思考： 我真的需要做这个改动吗？ ” “但现在，所有人都想把这些‘摩擦力’去掉，好让 Agent 能更自主地运行。 结果就是，…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在这场对话中，Armin 提出了一个极其反直觉、却又极具哲学思辨的观点： 一个好的工程系统，需要被刻意地注入“摩擦力（Friction）”。 “在最好的工程团队里，为了让服务更成熟，你需要定义 SLO，你需要做 Code Review，你需…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】两种路线的博弈：MCP vs CLI</h3>
+  <p><strong>在讲什么问题：</strong>两种路线的博弈：MCP vs CLI</p>
+  <p><strong>关键理解：</strong>对话中，两位大神还深入探讨了当前 Agent 工具链的两种路线之争： MCP（模型上下文协议） vs CLI（命令行界面） 。 MCP ：被大厂（尤其是 Anthropic）主推，试图为 AI 定义一套标准化的、结构化的工具调用接口。 CLI ：被社区极客（如 OpenClaw）所钟爱，直接把 50 年前的 Unix 命令行哲学，扔给大模型。 Armin 认为，MCP 在企业级的 Auth（认证） 场景下有其价值，但在“组合性（Comp…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：对话中，两位大神还深入探讨了当前 Agent 工具链的两种路线之争： MCP（模型上下文协议） vs CLI（命令行界面） 。 MCP ：被大厂（尤其是 Anthropic）主推，试图为 AI 定义一套标准化的、结构化的工具调用接口。 CL…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】人类的最后防线：从“写代码”到“品代码”</h3>
+  <p><strong>在讲什么问题：</strong>人类的最后防线：从“写代码”到“品代码”</p>
+  <p><strong>关键理解：</strong>在这场充满悲观与反思的对话中，两位大神依然为我们这些身处其中的人类工程师，指明了一条生路。 第一，夺回“说不”的权力。 Mario：“一个好的工程师，是那个经常说‘不’的人。这能让系统的复杂性保持在最低。但当你用 Agent 时，你会忍不住说‘是、是、是’，因为你不需要自己打字了。” 第二，从“代码编写者”进化为“代码品鉴师”。 Armin：“我不再享受‘把一个函数写得天衣无缝’的快感了。因为机器能做得更好。我的乐趣，转移到了‘理解整个…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在这场充满悲观与反思的对话中，两位大神依然为我们这些身处其中的人类工程师，指明了一条生路。 第一，夺回“说不”的权力。 Mario：“一个好的工程师，是那个经常说‘不’的人。这能让系统的复杂性保持在最低。但当你用 Agent 时，你会忍不住…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>幻灭的开端：从“代码的奴隶”到“代码的奴隶主”：故事的开端，源于两位大神对 AI 的“第一印象”。 作为 Flask 的作者，Armin Ronacher 最初对 Co…</li><li>血泪的教训：当 Agent 失去“痛感”：访谈中，Mario 提出了一个极其深刻的洞见： AI Agent 正在用“无痛”的方式，批量制造“屎山（Slop）”。 …</li><li>架构师的终极拷问：我们正在失去“摩擦力”：在这场对话中，Armin 提出了一个极其反直觉、却又极具哲学思辨的观点： 一个好的工程系统，需要被刻意地注入“摩擦力（F…</li><li>两种路线的博弈：MCP vs CLI：对话中，两位大神还深入探讨了当前 Agent 工具链的两种路线之争： MCP（模型上下文协议） vs CLI（命令行界面…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

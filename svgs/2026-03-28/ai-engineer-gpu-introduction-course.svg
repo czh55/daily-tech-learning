@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4722" viewBox="0 0 1320 4722">
+  <foreignObject x="0" y="0" width="1320" height="4722">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>谷歌一篇论文砸崩内存巨头？不懂“显存墙”，怎么做 AI 时代的工程师！</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/28/ai-engineer-gpu-introduction-course</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">AI 时代的底色：算力过剩，访存</div><span class="arrow-sym">→</span><div class="node">为什么后端工程师必须懂 GPU？</div><span class="arrow-sym">→</span><div class="node">这门微专栏将教你什么？</div><span class="arrow-sym">→</span><div class="node">课程目录全景图</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】AI 时代的底色：算力过剩，访存为王</h3>
+  <p><strong>在讲什么问题：</strong>AI 时代的底色：算力过剩，访存为王</p>
+  <p><strong>关键理解：</strong>在传统的软件开发中，我们习惯了用 CPU 的思维去思考性能。我们认为程序跑得慢，是因为“计算太复杂”，我们需要更强的算力（更快的 CPU 频率）。 但在大语言模型（LLM）的世界里，逻辑变了。 大模型在生成文本时，是 逐字生成（自回归） 的。为了不每次都把前面说过的话重新计算一遍，模型会把之前所有上下文的内部特征（Key 和 Value 矩阵）全部保存在显存里。这份庞大的“运行记忆”，就是 KV Cache 。 随着上下文越来越长（比如…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在传统的软件开发中，我们习惯了用 CPU 的思维去思考性能。我们认为程序跑得慢，是因为“计算太复杂”，我们需要更强的算力（更快的 CPU 频率）。 但在大语言模型（LLM）的世界里，逻辑变了。 大模型在生成文本时，是 逐字生成（自回归） 的…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】为什么后端工程师必须懂 GPU？</h3>
+  <p><strong>在讲什么问题：</strong>为什么后端工程师必须懂 GPU？</p>
+  <p><strong>关键理解：</strong>你可以说：“我只是个调 OpenAI 兼容API 的后端工程师，硬件底层关我什么事？” 在过去的一年里，这是行得通的。但随着开源模型（如 GLM、Qwen、MiniMax、DeepSeek、KIMI等）的全面爆发，以及企业对数据隐私、成本控制的极致追求， “本地化/私有化部署大模型” 也正在成为一些中大型企业的刚需。 当你作为架构师或后端主力，被老板要求把一个 70B 的大模型部署到公司的服务器上时，真正的挑战才刚刚开始： 面对 OOM…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：你可以说：“我只是个调 OpenAI 兼容API 的后端工程师，硬件底层关我什么事？” 在过去的一年里，这是行得通的。但随着开源模型（如 GLM、Qwen、MiniMax、DeepSeek、KIMI等）的全面爆发，以及企业对数据隐私、成本控…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】这门微专栏将教你什么？</h3>
+  <p><strong>在讲什么问题：</strong>这门微专栏将教你什么？</p>
+  <p><strong>关键理解：</strong>市面上关于 GPU 和 CUDA 的教程很多，但大多是教你如何写出复杂的 C++ 图形渲染代码，或者如何在学术上推导矩阵乘法。 这门微专栏与众不同。它是专为后端/软件工程师打造的“白盒化” GPU 入门课程。 我们不教图形渲染，不深究复杂的 C++ 语法。我们将直接切入大模型推理的痛点，带你一步步从物理架构走到前沿的 AI 工程技术。 如果你想吃透热门技术： 我们将为你讲透 FlashAttention、PagedAttention (…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：市面上关于 GPU 和 CUDA 的教程很多，但大多是教你如何写出复杂的 C++ 图形渲染代码，或者如何在学术上推导矩阵乘法。 这门微专栏与众不同。它是专为后端/软件工程师打造的“白盒化” GPU 入门课程。 我们不教图形渲染，不深究复杂的…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】课程目录全景图</h3>
+  <p><strong>在讲什么问题：</strong>课程目录全景图</p>
+  <p><strong>关键理解：</strong>为了让你对这趟旅程有一个清晰的预期，以下是本专栏的完整地图： 第一阶段：硬件心智模型 * 第 01 讲 | 硬件解剖：为什么 CPU 是“法拉利”，GPU 是“大巴车”？（含 5090 vs H100 对比） * 第 02 讲 | 内存金字塔：HBM、SRAM 与不可逾越的“内存墙” 第二阶段：编程模型与工具链 * 第 03 讲 | CUDA 编程模型：指挥“千军万马”的线程艺术 * 第 04 讲 | 性能侦探：性能侦探：拆解 Hell…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为了让你对这趟旅程有一个清晰的预期，以下是本专栏的完整地图： 第一阶段：硬件心智模型 * 第 01 讲 | 硬件解剖：为什么 CPU 是“法拉利”，GPU 是“大巴车”？（含 5090 vs H100 对比） * 第 02 讲 | 内存金字…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】小结</h3>
+  <p><strong>在讲什么问题：</strong>小结</p>
+  <p><strong>关键理解：</strong>在算力的装备竞赛里，最锋利的武器未必是更昂贵的芯片，而是深刻理解软硬件边界的人。 正如谷歌 TurboQuant 证明的那样：懂底层的工程师，只需改写一行底层逻辑，就可能撬动万亿级别的市场价值。 算力时代，不要只做“调包”的局外人。 准备好跨越 CPU 的舒适区，跟我一起深入算力的硅基心脏了吗？ 点击 这里 或扫描下方二维码，开启你的GPU与AI推理工程的入门之旅： 我将在第一讲等你。 还在为“复制粘贴喂AI”而烦恼？我的新专栏 《 A…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在算力的装备竞赛里，最锋利的武器未必是更昂贵的芯片，而是深刻理解软硬件边界的人。 正如谷歌 TurboQuant 证明的那样：懂底层的工程师，只需改写一行底层逻辑，就可能撬动万亿级别的市场价值。 算力时代，不要只做“调包”的局外人。 准备好…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>AI 时代的底色：算力过剩，访存为王：在传统的软件开发中，我们习惯了用 CPU 的思维去思考性能。我们认为程序跑得慢，是因为“计算太复杂”，我们需要更强的算力…</li><li>为什么后端工程师必须懂 GPU？：你可以说：“我只是个调 OpenAI 兼容API 的后端工程师，硬件底层关我什么事？” 在过去的一年里，这是行得通的。但…</li><li>这门微专栏将教你什么？：市面上关于 GPU 和 CUDA 的教程很多，但大多是教你如何写出复杂的 C++ 图形渲染代码，或者如何在学术上推导矩阵…</li><li>课程目录全景图：为了让你对这趟旅程有一个清晰的预期，以下是本专栏的完整地图： 第一阶段：硬件心智模型 * 第 01 讲 | 硬件解剖：为…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4796" viewBox="0 0 1320 4796">
+  <foreignObject x="0" y="0" width="1320" height="4796">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+      
+<h1>倒计时 33 个月？Go 前安全负责人：量子计算机将“摧毁”互联网</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/08/perspective-on-quantum-computing-timelines</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">冰山撞来：Google 的论文与</div><span class="arrow-sym">→</span><div class="node">精英的警告：当你还在嘲笑，他们已</div><span class="arrow-sym">→</span><div class="node">SNDL 攻击：你的数据，正在被</div><span class="arrow-sym">→</span><div class="node">行动指南：我们必须立刻开始“造船</div></div></div>
+
+<div class="card">
+  <h3>【模板 A】冰山撞来：Google 的论文与被撕碎的幻想</h3>
+  <p><strong>在讲什么问题：</strong>冰山撞来：Google 的论文与被撕碎的幻想</p>
+  <p><strong>关键理解：</strong>Filippo 指出，在过去的一周里，两篇论文彻底改变了游戏规则。 第一篇 ，来自 Google。 这篇论文极大地修正了破解 256 位椭圆曲线（如我们每天都在用的 HTTPS 证书、比特币签名 secp256k1）所需的逻辑量子比特（qubits）和门电路数量。结论是： 在超导量子比特这种高速架构上，攻击可以在几分钟内完成。 第二篇 ，来自 Oratomic。 这篇论文更加激进。它指出，如果拥有非局部连接能力（如中性原子方案），破解 …</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：Filippo 指出，在过去的一周里，两篇论文彻底改变了游戏规则。 第一篇 ，来自 Google。 这篇论文极大地修正了破解 256 位椭圆曲线（如我们每天都在用的 HTTPS 证书、比特币签名 secp256k1）所需的逻辑量子比特（qu…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】精英的警告：当你还在嘲笑，他们已经开始行动</h3>
+  <p><strong>在讲什么问题：</strong>精英的警告：当你还在嘲笑，他们已经开始行动</p>
+  <p><strong>关键理解：</strong>更让 Filippo 感到警惕的，不是冷冰冰的论文，而是行业顶尖精英们近乎“反常”的表态。 Google 的安全总监 Heather Adkins 和 Sophie Schmieg 公开宣布，他们的 最后期限是 2029 年 。Filippo 强调：“在此之前，从没有人给出过如此激进的时间表。” 著名的量子计算理论家 Scott Aaronson，将当前的状态比作 1939 年到 1940 年之间 ——那段时间，关于核裂变研究的公开发表…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：更让 Filippo 感到警惕的，不是冷冰冰的论文，而是行业顶尖精英们近乎“反常”的表态。 Google 的安全总监 Heather Adkins 和 Sophie Schmieg 公开宣布，他们的 最后期限是 2029 年 。Filipp…</div>
+</div>
+<div class="card">
+  <h3>【模板 A】SNDL 攻击：你的数据，正在被黑客“先存后破”</h3>
+  <p><strong>在讲什么问题：</strong>SNDL 攻击：你的数据，正在被黑客“先存后破”</p>
+  <p><strong>关键理解：</strong>为什么我们必须立刻行动？因为黑客们正在疯狂执行一种极其阴险的战略： “Store Now, Decrypt Later”（先收集，后破解，SNDL）。 他们把现在通过网络截获的、由 RSA/ECC 加密的、看似安全的核心机密数据（比如你的银行交易、公司的商业合同、国家的敏感情报）全部存储在巨大的硬盘阵列里。 等几年后量子计算机成熟，他们就能在一瞬间，把这些尘封的历史数据全部解开，一览无余。 这意味着，我们今天发送的每一封加密邮件，每一次…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：为什么我们必须立刻行动？因为黑客们正在疯狂执行一种极其阴险的战略： “Store Now, Decrypt Later”（先收集，后破解，SNDL）。 他们把现在通过网络截获的、由 RSA/ECC 加密的、看似安全的核心机密数据（比如你的银…</div>
+</div>
+<div class="card">
+  <h3>【模板 B】行动指南：我们必须立刻开始“造船”</h3>
+  <p><strong>在讲什么问题：</strong>行动指南：我们必须立刻开始“造船”</p>
+  <p><strong>关键理解：</strong>面对这场已经兵临城下的风暴，Filippo 作为Go 密码学界的专家，给出了极其具体、甚至有些“痛苦”的行动指南。 1. 密钥交换（Key Exchange）：立即迁移到 ML-KEM 这是抵御 SNDL 攻击的第一道防线。Filippo 强调，任何非抗量子的密钥交换（如经典的 ECDH）都应被视为潜在的“主动破解”行为，并像 OpenSSH 那样向用户发出明确警告。 2. 数字签名（Digital Signatures）：硬着头皮上 …</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：面对这场已经兵临城下的风暴，Filippo 作为Go 密码学界的专家，给出了极其具体、甚至有些“痛苦”的行动指南。 1. 密钥交换（Key Exchange）：立即迁移到 ML-KEM 这是抵御 SNDL 攻击的第一道防线。Filippo …</div>
+</div>
+<div class="card">
+  <h3>【模板 A】小结： weird, but it is what it is</h3>
+  <p><strong>在讲什么问题：</strong>小结： weird, but it is what it is</p>
+  <p><strong>关键理解：</strong>在文章的结尾，Filippo 提到，他本周刚刚开始在博洛尼亚大学教授一门密码学博士课程。他告诉学生，RSA、ECDSA 这些我们曾经引以为傲的算法， 现在只能作为“遗留算法（Legacy Algorithms）”来介绍了 。 他写道： “我知道，这感觉很奇怪。但，现实就是如此（it is what it is）。” Filippo 的这声叹息，既是对一个技术时代的告别，也是对我们所有软件工程师拉响的高级别警报。 当 Go 语言前核心团队…</p>
+  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <div class="quote">原文依据：在文章的结尾，Filippo 提到，他本周刚刚开始在博洛尼亚大学教授一门密码学博士课程。他告诉学生，RSA、ECDSA 这些我们曾经引以为傲的算法， 现在只能作为“遗留算法（Legacy Algorithms）”来介绍了 。 他写道： “我…</div>
+</div>
+<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>冰山撞来：Google 的论文与被撕碎的幻想：Filippo 指出，在过去的一周里，两篇论文彻底改变了游戏规则。 第一篇 ，来自 Google。 这篇论文极大地修正了…</li><li>精英的警告：当你还在嘲笑，他们已经开始行动：更让 Filippo 感到警惕的，不是冷冰冰的论文，而是行业顶尖精英们近乎“反常”的表态。 Google 的安全总监 H…</li><li>SNDL 攻击：你的数据，正在被黑客“先存后破”：为什么我们必须立刻行动？因为黑客们正在疯狂执行一种极其阴险的战略： “Store Now, Decrypt Later”…</li><li>行动指南：我们必须立刻开始“造船”：面对这场已经兵临城下的风暴，Filippo 作为Go 密码学界的专家，给出了极其具体、甚至有些“痛苦”的行动指南。 1.…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+    </div>
+  </foreignObject>
+</svg>
