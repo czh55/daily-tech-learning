@@ -1,0 +1,173 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'hermes-agent-docker-deployment.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:18px 24px;text-align:center;min-width:140px;font-weight:700;font-size:15px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:24px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+pre.data{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:10px;font-size:13px;line-height:1.6;overflow-x:auto;margin:12px 0}`;
+
+const body = `
+<h1>Hermes Agent Docker 部署实战：VPS 24/7 运行完整方案</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Hermes Agent</span>
+  <span class="tag tag-green">Docker Compose</span>
+  <span class="tag tag-orange">VPS 部署</span>
+  <span class="tag tag-purple">安全加固</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：如何把已在本地跑通的 Hermes Agent 搬到 VPS 上 7×24 稳定运行——涵盖容器编排、数据持久化、进程监管、密钥管理与七层安全防御。</p>
+
+<div class="map">
+  <h3 style="text-align:center;color:#1e40af;margin-bottom:20px;font-size:20px">部署架构关系图</h3>
+  <div class="diagram">
+    <div class="node">setup 向导<br/><small>写配置到 ~/.hermes</small></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Docker 容器<br/><small>s6-overlay 监管</small></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Named Volume<br/><small>/opt/data 持久化</small></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">消息平台<br/><small>Telegram/Discord 出站</small></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p>Hermes 与 Docker 有两种交叉：<strong>① Agent 本体跑在容器内</strong>（本文主线）；<strong>② terminal.backend: docker</strong> 让命令在沙箱容器执行。二者可叠加实现双层隔离，但别混为一谈。</p>
+</div>
+
+<div class="card">
+  <h3>【B】最简部署流程：从 0 到 Gateway 运行</h3>
+  <p><strong>方法标签：</strong>生产入门 · Docker Compose · $5/月 VPS</p>
+  <p><strong>核心思路：</strong>setup 一次性写配置（--rm 用完即毁），compose up -d 启动常驻容器；Hermes 本身 &lt;500MB，重活交给远端 API。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. SSH 连 VPS（禁用浏览器终端）→ 2. curl get.docker.com 装 Docker → 3. mkdir ~/.hermes → 4. docker run setup 向导 → 5. docker compose up -d → 6. hermes doctor 验证</p>
+  <pre class="data">mkdir -p ~/.hermes
+docker run -it --rm -v ~/.hermes:/opt/data nousresearch/hermes-agent setup
+docker compose up -d
+docker exec hermes hermes doctor</pre>
+  <p><strong>选型条件：</strong>已本地跑通 Hermes、需 24/7 在线收 Telegram/Discord 消息时选此方案。</p>
+  <div class="pitfall"><strong>避坑：</strong>VPS 浏览器终端会把 : 渲染成 ;、@ 被替换，静默破坏 -v 挂载和 API Key——务必 SSH。</div>
+  <p><strong>对比 adjacent：</strong>vs 裸机 systemd 安装——Docker 隔离好、升级简单；vs Coolify 一键——本文适合要完全掌控配置的用户。</p>
+</div>
+
+<div class="card">
+  <h3>【B】生产级 Compose 关键设计</h3>
+  <p><strong>在讲什么：</strong>最简版能跑，生产还需要健康检查、自动更新、端口安全。</p>
+  <p><strong>关键决策：</strong></p>
+  <p>• 端口绑 127.0.0.1:8642 — 仅本机，公网走 Caddy/Nginx 反代</p>
+  <p>• Named Volume hermes-data — down 不删数据，只有 down -v 才清</p>
+  <p>• Watchtower 每小时自动拉新镜像重建</p>
+  <p>• healthcheck /health 端点，3 次失败 Docker 重启</p>
+  <p>• memory limit 4G — Playwright 浏览器自动化吃内存</p>
+  <div class="highlight"><strong>落地：</strong>纯消息平台场景可去掉端口映射——Telegram/Discord 走出站长轮询，无需入站端口。</div>
+  <div class="relation"><strong>数据目录 /opt/data：</strong>.env、config.yaml、SOUL.md、sessions/、memories/、skills/ 全部在此——备份此目录 = 备份全部状态。</div>
+</div>
+
+<div class="card">
+  <h3>【D】VPS 与终端后端选型表</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>最低成本 24/7</td><td>Oracle Always Free (4 OCPU/24GB)</td><td>VPS $0 + API $2-5/月</td><td>高配云服务器</td><td>Hermes 不做推理，算力浪费</td></tr>
+    <tr><td>最快上手</td><td>Hostinger 应用目录一键模板</td><td>&lt;10 分钟完成</td><td>手动从零搭</td><td>时间成本高</td></tr>
+    <tr><td>命令沙箱隔离</td><td>terminal.backend: docker</td><td>rm -rf 破坏沙箱非宿主机</td><td>local 后端</td><td>无隔离，提示注入可毁宿主机</td></tr>
+    <tr><td>突发 GPU 计算</td><td>Modal 按秒计费</td><td>每天 &lt;2-3h 计算比 VPS 省</td><td>Modal 做常驻网关</td><td>冷启动 + 不适合长连接收消息</td></tr>
+    <tr><td>混合架构</td><td>$5 VPS 网关 + Modal 重计算</td><td>常驻 + 弹性兼得</td><td>全放 Modal</td><td>消息平台需始终在线</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【E】6 种终端后端对比</h3>
+  <table>
+    <tr><th>维度</th><th>local</th><th>docker</th><th>ssh</th><th>modal</th></tr>
+    <tr><td>隔离级别</td><td>无</td><td>容器</td><td>机器级</td><td>云端沙箱</td></tr>
+    <tr><td>成本</td><td>$0</td><td>$0</td><td>另需 VPS</td><td>按秒</td></tr>
+    <tr><td>适用</td><td>开发/可信环境</td><td>生产网关沙箱</td><td>命令分离到独立机</td><td>突发/GPU 负载</td></tr>
+    <tr><td>结论</td><td colspan="4">生产推荐 docker 后端；危险命令检查在 docker 后端下跳过——容器即安全边界</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【A】七层纵深防御：Agent 安全边界</h3>
+  <p><strong>是什么：</strong>AI Agent 能自主执行命令，提示注入可导致真实破坏——Hermes 建立 7 层独立屏障 + 硬编码黑名单（rm -rf /、fork bomb 等 yolo 模式也禁止）。</p>
+  <p><strong>七层：</strong>① 用户授权白名单 ② 危险命令审批(manual/smart) ③ 容器隔离 ④ MCP 凭据过滤 ⑤ 上下文文件扫描 ⑥ 跨 Session 隔离 ⑦ 输入消毒</p>
+  <p><strong>边界：</strong>单机个人部署 .env 够用；多机/团队用 Bitwarden Secrets Manager 集中轮换密钥。</p>
+  <div class="quote">Dashboard 无认证绑非回环地址 → 启动直接 fail closed 拒绝（HERMES_DASHBOARD_INSECURE=1 可绕过但暴露 API Key）。</div>
+  <p><strong>落地：</strong>chmod 600 ~/.hermes/.env；Gateway 仅 127.0.0.1；Dashboard 走 SSH 隧道或 Caddy BasicAuth。</p>
+</div>
+
+<div class="card">
+  <h3>【C】踩坑清单（官方 + 社区验证）</h3>
+  <table>
+    <tr><th>坑</th><th>现象</th><th>解法</th><th>严重度</th></tr>
+    <tr><td>浏览器终端</td><td>API Key 字符被破坏</td><td>只用 SSH</td><td>致命</td></tr>
+    <tr><td>双 Gateway 写同目录</td><td>session/记忆损坏</td><td>一目录一进程；多用 Profile 模式</td><td>致命</td></tr>
+    <tr><td>docker compose down -v</td><td>Named Volume 被删</td><td>生产永远不带 -v；定期备份</td><td>致命</td></tr>
+    <tr><td>无 memory limit + 浏览器</td><td>OOM Kill</td><td>limits.memory: 4G 或关浏览器工具</td><td>小心</td></tr>
+    <tr><td>Dashboard 公网无认证</td><td>启动报错</td><td>BasicAuth/OAuth/SSH 隧道</td><td>致命</td></tr>
+    <tr><td>SELinux</td><td>挂载访问被拒</td><td>卷挂载加 :Z 后缀</td><td>可忽略</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【F】多 Profile vs 多容器：扩展原则</h3>
+  <p><strong>原则：</strong>s6 迁移后推荐「一容器多 Profile」——共享镜像/venv，Profile 秒级创建，s6-supervise 秒级崩溃恢复。</p>
+  <p><strong>怎么落地：</strong>docker exec hermes hermes profile create work → 独立 Telegram/模型/SOUL.md</p>
+  <p><strong>例外：</strong>需 per-Profile 独立 memory/cpu 限制、独立镜像版本、网络分段、合规爆炸半径控制时 → 一 Profile 一容器。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Hermes 本体极轻（&lt;500MB），$5 VPS + $2-5 API = 每月 $7-10 拥有 24/7 AI Agent</li>
+    <li>setup 写配置、compose 跑常驻；Named Volume + 备份是数据生命线</li>
+    <li>消息平台走出站连接，通常无需开放入站端口</li>
+    <li>生产必做：127.0.0.1 绑定、终端 docker 后端、七层防御、chmod 600 .env</li>
+    <li>多 Profile 优于多容器共享数据目录——并发写入不支持</li>
+  </ol>
+  <p style="margin-top:20px;opacity:0.95"><strong>行动清单：</strong></p>
+  <ol>
+    <li>复制生产 Compose（healthcheck + Watchtower + Named Volume）到 VPS</li>
+    <li>运行 setup 时一次性配好 Telegram/Discord，省得进容器改配置</li>
+    <li>设置 cron 备份：docker exec hermes hermes backup 或 volume tar 快照</li>
+    <li>chmod 600 ~/.hermes/.env；确认 GATEWAY_ALLOW_ALL_USERS 未开启</li>
+    <li>docker exec hermes hermes doctor 加入日常巡检</li>
+  </ol>
+  <p style="margin-top:20px;opacity:0.95"><strong>关键认知转变：</strong>从「本地测试玩具」→「带七层防御的生产级自主 Agent」——容器是 Agent 的家，安全边界比功能清单更重要。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
