@@ -15,5 +15,75 @@
         "title": "Google Veo 3.1 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词"
       }
     ]
+  },
+  {
+    "date": "2026-06-13",
+    "files": [
+      {
+        "path": "svgs/2026-06-13/linux-maintainer-rust-joy.svg",
+        "title": "Linux 内核顶级维护者：写了 35 年 C，是 Rust 让我重新找回了编程的乐趣"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-12",
+    "files": [
+      {
+        "path": "svgs/2026-06-12/zig-father-no-1-0.svg",
+        "title": "拒领上亿、封杀 AI：Zig 之父为什么 10 年不发 1.0？"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-11",
+    "files": [
+      {
+        "path": "svgs/2026-06-11/writing-idiomatic-go.svg",
+        "title": "写地道的 Go 语言，是否能让你成为了一个更好的开发者？"
+      },
+      {
+        "path": "svgs/2026-06-11/claude-code-github-projects.svg",
+        "title": "别拿Claude Code当对话框：这6个GitHub项目让你吃透代码智能体"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-10",
+    "files": [
+      {
+        "path": "svgs/2026-06-10/lets-encrypt-mtcs-post-quantum.svg",
+        "title": "RSA 将死？Let's Encrypt 押注 MTCs 迎战后量子时代"
+      },
+      {
+        "path": "svgs/2026-06-10/cpp-power-game-documentary.svg",
+        "title": "C++ 的权力游戏：一部关于妥协、背叛与重生的「史诗神剧」"
+      },
+      {
+        "path": "svgs/2026-06-10/kling-video-prompt-guide.svg",
+        "title": "可灵 3.0 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-09",
+    "files": [
+      {
+        "path": "svgs/2026-06-09/go-example-arbitrary-signatures.svg",
+        "title": "终结十年纠结：Go 新提案允许 Example 支持任意函数签名"
+      },
+      {
+        "path": "svgs/2026-06-09/agent-github-projects.svg",
+        "title": "智能体从入门到精通：6个必学GitHub开源项目"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-08",
+    "files": [
+      {
+        "path": "svgs/2026-06-08/big-tech-switching-to-go.svg",
+        "title": "2026年，大厂重构核心系统为何集体投向 Go？"
+      }
+    ]
   }
 ]

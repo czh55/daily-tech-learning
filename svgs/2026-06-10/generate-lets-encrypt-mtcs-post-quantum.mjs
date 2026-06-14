@@ -1,0 +1,165 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'lets-encrypt-mtcs-post-quantum.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:12px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>RSA 将死？Let's Encrypt 押注 MTCs 迎战后量子时代</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">后量子密码</span>
+  <span class="tag tag-green">MTCs</span>
+  <span class="tag tag-orange">Web PKI</span>
+  <span class="tag tag-red">TLS 安全</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：后量子签名算法 ML-DSA 的体积膨胀如何让 TLS 握手「网速倒退」，以及 Let's Encrypt 如何通过 MTCs 批量 Merkle 签名 + 包含证明将认证数据从 7260 字节压缩到 736 字节，同时原生融入证书透明度。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3>
+  <div class="diagram">
+    <div class="node">CRQC 倒计时<br/>NSA 2035 清退</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">ML-DSA 体积灾难<br/>2420B/签名</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">MTCs 批量签名<br/>Merkle Root 一次签</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">736B 握手<br/>+ CT 原生融合</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「认证不急，量子计算机只能事后伪造」—— NSA CNSA 2.0 强制 2035 后禁用 RSA-2048/P-256，Google 2029 全面迁移；根证书更替周期极长，「认证危机」已从未来变成迫在眉睫。</p>
+</div>
+
+<div class="card">
+  <h3>【模板 A】加密 vs 认证：两个后量子战场</h3>
+  <p><strong>在讲什么问题：</strong>为什么加密已部署后量子算法，认证却刚拉响警报？</p>
+  <p><strong>核心机制：</strong>加密面临「Harvest now, decrypt later」—— 攻击者现在存流量、未来解密；Google/Cloudflare 已部署 X25519MLKEM768 混合密钥交换。</p>
+  <p><strong>关键理解：</strong>认证曾被认为不急（量子需实时伪造签名），但政策清退 + 巨头迁移承诺 + Go 1.27 内置 ML-DSA 使认证危机突然爆发。</p>
+  <p><strong>怎么落地：</strong>立刻检查 Nginx/Envoy/Caddy 是否开启 X25519MLKEM768 混合密钥交换—— 这是今天 ROI 最高的安全升级。</p>
+  <p><strong>边界说明：</strong>MTCs 解决认证（签名）体积；加密危机仍需单独部署混合 KEM，二者不可互相替代。</p>
+  <div class="quote">原文：「后量子加密危机是当下最紧急的问题—— 服务器运营者必须立刻开启 X25519MLKEM768。」</div>
+  <div class="relation"><strong>与 MTCs 的关系：</strong>MTCs 只管认证签名瘦身；密钥交换的 PQC 部署是独立且更紧急的行动项。</div>
+</div>
+
+<div class="card">
+  <h3>【模板 A】ML-DSA 体积灾难：为什么不能直接替换</h3>
+  <p><strong>在讲什么问题：</strong>直接换后量子签名为何让互联网「网速倒退」？</p>
+  <p><strong>核心机制：</strong>典型 TLS 握手含 ~5 签名 + 2 公钥。ECDSA-P256 签名仅 64B；ML-DSA-44 单签名 2420B，公钥 1312B。</p>
+  <p><strong>关键理解：</strong>全替 ML-DSA 后单次握手认证数据超 10KB → TCP 拥塞窗口 + MTU 限制导致连接失败或严重延迟，IoT/低带宽设备首当其冲。</p>
+  <p><strong>典型场景：</strong>Cloudflare 研究证实握手体积膨胀到该规模时大量真实连接直接 Fail。</p>
+  <p><strong>边界说明：</strong>ML-DSA 算法本身安全，问题在 Web PKI 架构下「逐证书签名」的部署模式，非算法缺陷。</p>
+  <div class="highlight"><strong>数据对比：</strong>传统 PQ 架构 7260B vs MTCs 736B — 降维打击，甚至小于现有 RSA/ECDSA 握手。</div>
+</div>
+
+<div class="card">
+  <h3>【模板 B】MTCs 机制：批量 Merkle 签名</h3>
+  <p><strong>方法名：</strong>Merkle Tree Certificates (MTCs)<span class="tag tag-green" style="margin-left:8px">Let's Encrypt</span></p>
+  <p><strong>核心思路：</strong>CA 不再逐张签名，而是将一段时间内所有证书构建 Merkle Tree，仅对 Root 用 ML-DSA 签一次。</p>
+  <p><strong>操作步骤：</strong>① CA 收集一小时证书建 Merkle Tree ② ML-DSA 签 Root ③ 浏览器定期更新 Landmarks（树根）④ 服务器提供 Inclusion Proof（叶子→根路径）⑤ 浏览器验证路径 + 公钥，零后量子签名传输。</p>
+  <p><strong>选型条件：</strong>Web PKI 大规模证书签发场景；Let's Encrypt 2019 年起维护 CT 日志，技术储备成熟。</p>
+  <p><strong>避坑：</strong>不要假设 MTCs 已生产可用—— Staging 2026 末，Production 2027。</p>
+  <div class="quote">Common Case：1 个 Inclusion Proof + 1 公钥 + 0 个后量子签名 = 736 字节。</div>
+</div>
+
+<div class="card">
+  <h3>【模板 A】CT 原生融合：从事后补丁到底层设计</h3>
+  <p><strong>在讲什么问题：</strong>MTCs 如何重塑证书透明度？</p>
+  <p><strong>核心机制：</strong>传统 CT 是事后补丁—— CA 签发后 append 到独立 CT Log 并附签名。MTCs 中 Merkle Tree 本身就是 append-only 日志。</p>
+  <p><strong>关键理解：</strong>每张 MTCs 证书必须存在于树中才生效—— 无证书可脱离监控秘密存在，CT 被完美原生融入。</p>
+  <p><strong>怎么落地：</strong>维护 ACME 客户端/certbot 的开发者关注 IETF PLANTS 工作组和 mtcs@chromium.org 邮件列表。</p>
+  <p><strong>边界说明：</strong>企业内网 TLS 中间人审计可能受 MTCs+CT 原生融合影响—— 需重新评估流量审计架构。</p>
+  <div class="relation"><strong>与现有 CT Logs 的区别：</strong>CT 从「额外签名开销」变为「协议内生机制」，握手体积反而减小。</div>
+</div>
+
+<div class="card">
+  <h3>【模板 E】认证方案体积对比</h3>
+  <table>
+    <tr><th>对比维度</th><th>ECDSA-P256</th><th>直接 ML-DSA</th><th>MTCs</th><th>结论</th></tr>
+    <tr><td>单签名大小</td><td>64B</td><td>2420B</td><td>0（仅 Proof）</td><td>MTCs 消除传输签名</td></tr>
+    <tr><td>握手认证总量</td><td>~几百 B</td><td>&gt;10KB</td><td>736B</td><td>MTCs 最优</td></tr>
+    <tr><td>CT 集成</td><td>事后补丁</td><td>事后补丁</td><td>原生 Merkle 树</td><td>MTCs 架构优势</td></tr>
+    <tr><td>部署状态</td><td>现行</td><td>Go 1.27 已内置</td><td>2027 Production</td><td>加密先行动</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【模板 D】后量子安全行动选型表</h3>
+  <table>
+    <tr><th>场景</th><th>推荐行动</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>Web 服务器运营</td><td>立刻开启 X25519MLKEM768</td><td>加密危机最紧急，浏览器已支持</td><td>等 MTCs 上线再行动</td><td>认证和加密是独立战场</td></tr>
+    <tr><td>ACME/certbot 维护者</td><td>跟踪 PLANTS/draft-ietf-tls-mldsa</td><td>2026 末 Staging 需适配</td><td>忽视 MTCs 标准进展</td><td>2027 生产切换无准备</td></tr>
+    <tr><td>现有 RSA/ECDSA 证书</td><td>继续正常续签</td><td>今天无需恐慌</td><td>提前强制 ML-DSA 逐签</td><td>握手体积灾难</td></tr>
+    <tr><td>企业 TLS 审计</td><td>评估 MTCs 对 MITM 的影响</td><td>CT 原生融合改变审计模型</td><td>假设架构不变</td><td>内网解密策略需更新</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【模板 C】避坑清单</h3>
+  <p><strong>坑：直接全替 ML-DSA 逐证书签名</strong> — 握手 &gt;10KB，低带宽连接 Fail。<strong>解法：</strong>等 MTCs 或采用批量方案。<strong>严重程度：致命。</strong></p>
+  <p><strong>坑：只关注认证忽视加密</strong> — Harvest now decrypt later 已在发生。<strong>解法：</strong>立刻部署 X25519MLKEM768。<strong>严重程度：致命。</strong></p>
+  <p><strong>坑：以为 RSA 今天已不可用</strong> — 2035 前仍正常，Let's Encrypt 继续免费续签。<strong>解法：</strong>保持关注但不恐慌。<strong>严重程度：可忽略。</strong></p>
+  <div class="pitfall"><strong>时间线：</strong>MTCs Staging 2026 末 / Production 2027 — 在此之前勿在生产环境自行实验未标准化 MTCs 实现。</div>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>认证危机因政策清退和巨头承诺从「未来」变为「迫在眉睫」</li>
+    <li>直接替换 ML-DSA 导致握手 &gt;10KB，Cloudflare 证实大量连接 Fail</li>
+    <li>MTCs 批量 Merkle 签名 + Inclusion Proof 将认证数据压至 736B</li>
+    <li>CT 从事后补丁变为 Merkle 树原生机制，无秘密证书</li>
+    <li>加密（X25519MLKEM768）比认证（MTCs）更紧急，今天就能部署</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>检查 Web 服务器配置，开启 X25519MLKEM768 混合后量子密钥交换</li>
+    <li>订阅 mtcs@chromium.org 和 IETF PLANTS 工作组进展</li>
+    <li>若维护 ACME 客户端，预留 2026 末 Staging 适配窗口</li>
+    <li>评估企业内网 TLS 审计架构在 MTCs+CT 融合下的影响</li>
+    <li>阅读 Let's Encrypt 原文：letsencrypt.org/2026/06/03/pq-certs</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>后量子迁移不是「换算法」这么简单—— Web PKI 的架构级创新（MTCs）才能在不牺牲网络体验的前提下完成世代更替。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
