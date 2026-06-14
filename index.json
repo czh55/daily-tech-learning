@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "date": "2026-06-14",
+    "files": [
+      {
+        "path": "svgs/2026-06-14/stop-saving-tokens.svg",
+        "title": "别再省 Token 了！硅谷新共识：浪费算力才是唯一捷径"
+      },
+      {
+        "path": "svgs/2026-06-14/hermes-agent-docker-deployment.svg",
+        "title": "Hermes Agent Docker 部署实战：VPS 上 24/7 运行的完整方案"
+      },
+      {
+        "path": "svgs/2026-06-14/veo-video-prompt-guide.svg",
+        "title": "Google Veo 3.1 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词"
+      }
+    ]
+  }
+]
