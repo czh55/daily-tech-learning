@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-06-15",
+    "files": [
+      {
+        "path": "svgs/2026-06-15/codex-best-practices.svg",
+        "title": "Codex 最佳实践：从 AGENTS.md 到自动化部署的完整实战指南",
+        "source": "https://xiangyugongzuoliu.com/codex-best-practices/"
+      },
+      {
+        "path": "svgs/2026-06-15/ai-coding-tools-comparison.svg",
+        "title": "2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比",
+        "source": "https://xiangyugongzuoliu.com/ai-coding-tools-comparison/"
+      },
+      {
+        "path": "svgs/2026-06-15/google-ai-in-sre.svg",
+        "title": "谷歌 SRE 重磅白皮书：当 AI 自动写出 10 倍代码，谁来阻止系统崩溃？",
+        "source": "https://tonybai.com/2026/06/15/google-ai-in-sre/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-14",
     "files": [
       {
