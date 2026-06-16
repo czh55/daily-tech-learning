@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Go 语言之父亲自下场道歉：藏在 Spec 里的十年“笔误”，终于要修正了！</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/25/go-spec-contradiction-in-types-section</p>
+<p class="subtitle">本文解决的核心问题是：在 Go 语言的世界里，type 是我们每天都在打交道的关键字。但如果我今天问你一个极其基础的问题： Go 语言内置的 bool 类型，到底是不是一个“Defined Type（已定义类型）”？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">一段自相矛盾的官方“圣经”</div><span class="arrow-sym">→</span><div class="node">一场关于“定义”的思辨</div><span class="arrow-sym">→</span><div class="node">Go 语言类型系统的“原罪”</div><span class="arrow-sym">→</span><div class="node">这个“抠字眼”的争论，对我们写代</div></div></div>
 
 <div class="card">

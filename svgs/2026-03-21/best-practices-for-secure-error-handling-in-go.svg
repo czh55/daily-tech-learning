@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>你的 Go 报错信息正在“出卖”你！扒一扒大厂是如何做错误隔离与日志脱敏的</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/21/best-practices-for-secure-error-handling-in-go</p>
+<p class="subtitle">本文解决的核心问题是：你的 Go 错误，是如何变成黑客的“导航图”的？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你的 Go 错误，是如何变成黑客</div><span class="arrow-sym">→</span><div class="node">构建“人格分裂”的安全错误对象</div><span class="arrow-sym">→</span><div class="node">警惕滥用 fmt.Errorf(</div><span class="arrow-sym">→</span><div class="node">日志脱敏的生死防线</div></div></div>
 
 <div class="card">

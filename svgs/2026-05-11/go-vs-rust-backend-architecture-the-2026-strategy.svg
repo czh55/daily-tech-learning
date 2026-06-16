@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>“用 Go 打天下，用 Rust 救火”：这才是 2026 年后端架构的唯一正解</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/11/go-vs-rust-backend-architecture-the-2026-strategy</p>
+<p class="subtitle">本文解决的核心问题是：如果你经常逛各大技术社区，你一定会发现一个永远充满火药味的话题： Go 和 Rust，到底谁才是未来的后端霸主？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">无情的现实：每一个后端系统，最终</div><span class="arrow-sym">→</span><div class="node">Go 的主场：敏捷与编排的绝对王</div><span class="arrow-sym">→</span><div class="node">Rust 的拔剑：在深水区里，手</div><span class="arrow-sym">→</span><div class="node">终极兵法：双剑合璧的实战演练</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>HashiCorp 创始人亲口“认错”：AI 让我重新爱上了 Go (文末福利)</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/23/hashicorp-founder-admits-go-is-alive-thanks-to-ai</p>
+<p class="subtitle">本文解决的核心问题是：他写道： “我又开始写 Go 了……‘等等，我以为你说过 Go 已经没有位置了？’ 我错了。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">惊天反转：“糟糕的人体工程学”，</div><span class="arrow-sym">→</span><div class="node">王者归来：当“无聊”成为 AI </div><span class="arrow-sym">→</span><div class="node">终极答案：Go + Zig，基础</div><span class="arrow-sym">→</span><div class="node">英雄所见略同：Pandas 之父</div></div></div>
 
 <div class="card">

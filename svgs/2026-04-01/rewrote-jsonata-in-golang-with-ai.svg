@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>一天重写 JSONata，我用 400 美元干掉了公司 50 万美元的 K8s 集群</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/01/rewrote-jsonata-in-golang-with-ai</p>
+<p class="subtitle">本文解决的核心问题是：你有没有想过，用 AI 来完成一次“外科手术式”的精准重构，一天之内，就能帮你把公司每年烧掉的 50 万美元（约 360 万人民币）的服务器成本，直接砍到零？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">跨语言 RPC，微服务架构中最昂</div><span class="arrow-sym">→</span><div class="node">Cloudflare 的“抄作业</div><span class="arrow-sym">→</span><div class="node">7 小时，400 美元，1300</div><span class="arrow-sym">→</span><div class="node">百倍性能与意外之喜：“手术刀式”</div></div></div>
 
 <div class="card">

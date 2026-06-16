@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>“AI 正在用垃圾代码摧毁一切！”：Flask 之父对话 Pi 作者，揭开 AI 编程的残酷真相</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/03/flask-creator-pi-author-on-ai-coding-the-cruel-truth</p>
+<p class="subtitle">本文解决的核心问题是：“在最好的工程团队里，为了让服务更成熟，你需要定义 SLO，你需要做 Code Review，你需要让架构委员会审批。这些看似‘官僚’的流程，其实是在故意减慢速度，逼着你去思考： 我真的需要做这个改动吗？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">幻灭的开端：从“代码的奴隶”到“</div><span class="arrow-sym">→</span><div class="node">血泪的教训：当 Agent 失去</div><span class="arrow-sym">→</span><div class="node">架构师的终极拷问：我们正在失去“</div><span class="arrow-sym">→</span><div class="node">两种路线的博弈：MCP vs C</div></div></div>
 
 <div class="card">

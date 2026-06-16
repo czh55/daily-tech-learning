@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>别再无脑 go func() 了！Go 资深布道师 Dave Cheney 的 Goroutine 管理哲学</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/13/dave-cheney-goroutine-management-philosophy</p>
+<p class="subtitle">本文解决的核心问题是：于是，我们习惯了在代码里肆意挥洒： HTTP 请求来了？go handle()。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">哲学一：内存是有价的，而 Gor</div><span class="arrow-sym">→</span><div class="node">哲学二：永远不要启动一个你不知道</div><span class="arrow-sym">→</span><div class="node">哲学三：不要强迫它停，要“优雅地</div><span class="arrow-sym">→</span><div class="node">哲学四：把并发权留给调用者，而不</div></div></div>
 
 <div class="card">

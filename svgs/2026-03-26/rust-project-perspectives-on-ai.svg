@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Rust 核心团队大吐苦水：求求你们别再用 AI 提交“垃圾 PR”了！</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/26/rust-project-perspectives-on-ai</p>
+<p class="subtitle">本文解决的核心问题是：但你有没有想过，站在这些开源项目背后的核心维护者（Maintainers）们，正在经历着怎样的地狱？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">当 AI 沦为“盲目自信”的催化</div><span class="arrow-sym">→</span><div class="node">被“AI 传声筒”折磨到崩溃的维</div><span class="arrow-sym">→</span><div class="node">全面封杀，还是“用魔法打败魔法”</div><span class="arrow-sym">→</span><div class="node">极端一：道德洁癖与坚决抵制</div></div></div>
 
 <div class="card">

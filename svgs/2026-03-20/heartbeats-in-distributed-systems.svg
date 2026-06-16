@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>如果服务器悄悄“猝死”，你的系统还能活几秒？揭秘分布式集群的“续命”保底机制</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/20/heartbeats-in-distributed-systems</p>
+<p class="subtitle">本文解决的核心问题是：那么，Kubernetes、Cassandra、etcd 这些支撑起现代互联网半壁江山的顶级开源项目，是如何在网络极度不可靠的物理世界中，精准、快速地感知到节点死亡的？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">“我很好，我还活着！”——心跳的</div><span class="arrow-sym">→</span><div class="node">架构博弈：心跳频率与超时的“死亡</div><span class="arrow-sym">→</span><div class="node">当普通机制失效，大厂是如何设计故</div><span class="arrow-sym">→</span><div class="node">神级算法 1：Cassandra</div></div></div>
 
 <div class="card">

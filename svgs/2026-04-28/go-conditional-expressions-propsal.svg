@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Go 语言“内战”迎来终局？Go 圣经作者亲自下场，为“三元运算符”发起折中提案！</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/28/go-conditional-expressions-propsal</p>
+<p class="subtitle">本文解决的核心问题是：Go 语言“内战”迎来终局？Go 圣经作者亲自下场，为“三元运算符”发起折中提案！？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为了一个简单的赋值，我被迫写了 </div><span class="arrow-sym">→</span><div class="node">核心团队的“铁壁”：我们到底在恐</div><span class="arrow-sym">→</span><div class="node">社区的声音：这是对开发者的“有罪</div><span class="arrow-sym">→</span><div class="node">折中提案：Go 圣经作者的“第三</div></div></div>
 
 <div class="card">

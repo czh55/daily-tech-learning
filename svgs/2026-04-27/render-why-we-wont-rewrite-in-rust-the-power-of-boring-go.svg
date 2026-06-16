@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>“我们想用 Rust 重写的次数是：零”：云平台 Render 靠“无聊”的 Go 撑起了千亿流量</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/27/render-why-we-wont-rewrite-in-rust-the-power-of-boring-go</p>
+<p class="subtitle">本文解决的核心问题是：那么，回到最初的那个问题： 如果你的余生只能用一种语言，你会选择哪一个？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">隔空交火：Render 的 5.</div><span class="arrow-sym">→</span><div class="node">哲学对撞：Go 的“足够好” v</div><span class="arrow-sym">→</span><div class="node">AI 时代的变量：当“人类编写”</div><span class="arrow-sym">→</span><div class="node">架构师的终局：从“语言之争”到“</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Go Command 工作组成立：这几个用了十年的命令可能要被废！</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/11/go-command-working-group-formed-legacy-commands-deprecated</p>
+<p class="subtitle">本文解决的核心问题是：第一刀：砍向 go list &amp;#8230;，这个“万能匹配”为何成了大坑？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">第一刀：砍向 go list ，</div><span class="arrow-sym">→</span><div class="node">第二刀：GO111MODULE=</div><span class="arrow-sym">→</span><div class="node">第三刀：终结 go.mod 里的</div><span class="arrow-sym">→</span><div class="node">小结：一场“静默的革命”</div></div></div>
 
 <div class="card">

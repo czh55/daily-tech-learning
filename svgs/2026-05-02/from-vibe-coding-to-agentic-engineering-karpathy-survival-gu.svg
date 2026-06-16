@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>从“Vibe-Coding”到“Agentic Engineering”：Andrej Karpathy 的 AI 时代程序员生存法则</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/02/from-vibe-coding-to-agentic-engineering-karpathy-survival-guide</p>
+<p class="subtitle">本文解决的核心问题是：星主 Tony Bai 亲自答疑: 遇到难题？星主第一时间为你深度解析，扫清学习障碍。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">两个时代：当“代码消费者”遇见“</div><span class="arrow-sym">→</span><div class="node">生存法则一：警惕“参差不齐的智能</div><span class="arrow-sym">→</span><div class="node">生存法则二：从“实现者”退到“设</div><span class="arrow-sym">→</span><div class="node">生存法则三：外包你的思考，但别外</div></div></div>
 
 <div class="card">

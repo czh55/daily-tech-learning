@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>开源维护者的困境</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/04/the-maintainers-dilemma</p>
+<p class="subtitle">本文解决的核心问题是：受保护的分支（protected branch）需要第二个人在代码发布前进行审核。这条规则的存在是因为人类会犯错，而第二双眼睛可以捕捉到第一双眼睛遗漏的东西。但如果其中一个审核者是机器人呢？如果两个都是呢？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">118 个待处理的拉取请求</div><span class="arrow-sym">→</span><div class="node">进入机器人时代</div><span class="arrow-sym">→</span><div class="node">“受保护”到底保护了什么</div><span class="arrow-sym">→</span><div class="node">我们真正保护的是什么</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>刚刚，2025图灵奖揭晓！面对即将瘫痪的传统密码学，Go 语言的“抗量子”底牌曝光</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/19/2025-turing-award-go-quantum-resistant-cryptography</p>
+<p class="subtitle">本文解决的核心问题是：今天，借着图灵奖揭晓的热点，我想和大家聊一个极其硬核、且关乎我们所有后端开发者未来饭碗的话题： 当“量子末日（Q-Day）”逼近，作为云原生时代绝对霸主的 Go 语言，手里究竟握着怎样的“抗量子底牌”？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你的数据，正被黑客“先存后破”</div><span class="arrow-sym">→</span><div class="node">Go 团队的“抗量子”谋略</div><span class="arrow-sym">→</span><div class="node">揭开 crypto/mldsa </div><span class="arrow-sym">→</span><div class="node">极简的参数集隔离</div></div></div>
 
 <div class="card">

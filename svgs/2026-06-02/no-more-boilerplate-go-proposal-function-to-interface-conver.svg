@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>再见样板代码！Go 官方新提案：函数一键转接口</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/02/no-more-boilerplate-go-proposal-function-to-interface-conversion</p>
+<p class="subtitle">本文解决的核心问题是：方案博弈：为什么是显式“类型转换”，而不是“自动赋值”？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">痛点拷问：为什么我们讨厌“套娃”</div><span class="arrow-sym">→</span><div class="node">方案博弈：为什么是显式“类型转换</div><span class="arrow-sym">→</span><div class="node">编译器背后的魔法：如何处理反射与</div><span class="arrow-sym">→</span><div class="node">官方自曝：标准库里到底有多少无用</div></div></div>
 
 <div class="card">

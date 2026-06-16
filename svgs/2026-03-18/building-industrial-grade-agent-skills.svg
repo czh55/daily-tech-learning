@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>手工作坊的终结：为什么你必须把 Agent Skills 开发，变成严谨的软件工程?</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/18/building-industrial-grade-agent-skills</p>
+<p class="subtitle">本文解决的核心问题是：为什么你觉得无力？因为你在用“黑盒”对抗“黑盒” 为了解决这个问题，业界开始推出各种“技能（Skill）”或者“智能体（Agent）”框架。你可以把一套工作流、最佳实践、甚至是工具库打包成一个 Skill，让 AI 在需要的时候调用。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么你觉得无力？因为你在用“黑</div><span class="arrow-sym">→</span><div class="node">打破黑盒：把 AI 技能开发，变</div><span class="arrow-sym">→</span><div class="node">你将在这个微专栏中获得什么？</div><span class="arrow-sym">→</span><div class="node">添加新评论</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>写了 10 年 Java/TS，Go 语言终于治好了我的“过度设计”绝症</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/16/go-cured-my-over-engineering-addiction-after-java-ts</p>
+<p class="subtitle">本文解决的核心问题是：结果呢？原本 10 行代码能搞定的事，被你写成了 100 行。半年后你自己回来看，连你都不知道那堆不知所云的接口到底在干嘛。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">痛苦的戒断反应：当语言对你说“不</div><span class="arrow-sym">→</span><div class="node">顿悟的时刻：笨拙的胜利</div><span class="arrow-sym">→</span><div class="node">争议的核心：“烦人的”错误处理，</div><span class="arrow-sym">→</span><div class="node">反思：语言塑造思维</div></div></div>
 
 <div class="card">

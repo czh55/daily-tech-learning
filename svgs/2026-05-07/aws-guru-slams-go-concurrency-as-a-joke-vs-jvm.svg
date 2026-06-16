@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>AWS 大神发文炮轰：Go 的并发就是个“笑话”，JVM 的方案要更优越</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/07/aws-guru-slams-go-concurrency-as-a-joke-vs-jvm</p>
+<p class="subtitle">本文解决的核心问题是：今天，我们就来复盘这场神仙打架，看看当 Go 的“平民法拉利”遭遇现代 JVM 的“德系重装甲”时，到底谁才是真正的并发之王？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">战火的点燃：一道价值千金的“并发</div><span class="arrow-sym">→</span><div class="node">两派的交锋：Go 的“野路子” </div><span class="arrow-sym">→</span><div class="node">Go 的“平民化”哲学 vs J</div><span class="arrow-sym">→</span><div class="node">你的团队，需要匕首还是航母？</div></div></div>
 
 <div class="card">

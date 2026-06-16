@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>OpenAI 创始人盛赞 Rust，却遭开发者反驳：Go 才是大模型眼里的“香饽饽”！</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/23/go-is-the-best-programming-language-for-llm</p>
+<p class="subtitle">本文解决的核心问题是：在这个大模型重塑编程范式的当下，如果你想开发一个自主运行的智能体（Agent），或者想让大模型（LLM）帮你生成上万行的核心业务代码，你会选择哪门编程语言？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">大模型写 Rust，真的安全吗？</div><span class="arrow-sym">→</span><div class="node">Go 的“无趣”，成了最顶级的生</div><span class="arrow-sym">→</span><div class="node">AI 时代的软件工程师，该选什么</div><span class="arrow-sym">→</span><div class="node">添加新评论</div></div></div>
 
 <div class="card">

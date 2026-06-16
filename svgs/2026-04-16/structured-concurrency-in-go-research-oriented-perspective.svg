@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>为什么说 go 语句是新时代的 goto？四大法则拯救失控 goroutine</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/16/structured-concurrency-in-go-research-oriented-perspective</p>
+<p class="subtitle">本文解决的核心问题是：历史的镜像——从 Goto 有害论到 Goroutine 有害论？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">1968年的呼喊：结构化编程的诞</div><span class="arrow-sym">→</span><div class="node">2025年的回响：go 语句 即</div><span class="arrow-sym">→</span><div class="node">打破幻象——Go 并发的三个误区</div><span class="arrow-sym">→</span><div class="node">误区 1：“Goroutine </div></div></div>
 
 <div class="card">

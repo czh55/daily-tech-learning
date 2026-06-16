@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>GPU 计算的起源</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/17/the-origins-of-gpu-computing</p>
+<p class="subtitle">本文解决的核心问题是：你的Go技能，是否也卡在了“熟练”到“精通”的瓶颈期？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">赋能技术</div><span class="arrow-sym">→</span><div class="node">并行计算</div><span class="arrow-sym">→</span><div class="node">并行图形系统</div><span class="arrow-sym">→</span><div class="node">流处理</div></div></div>
 
 <div class="card">

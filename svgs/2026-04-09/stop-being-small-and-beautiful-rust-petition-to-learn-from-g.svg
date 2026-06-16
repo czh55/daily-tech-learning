@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>别搞“小而美”了！Rust 开发者请愿：求求标准库学学 Go 吧</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/09/stop-being-small-and-beautiful-rust-petition-to-learn-from-go</p>
+<p class="subtitle">本文解决的核心问题是：你想做 Web 开发？net/http 原生支持，性能强大到可以直接裸奔在生产环境。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">“小而美”的代价：悬在每个 Ru</div><span class="arrow-sym">→</span><div class="node">隔壁的诱惑：Go 语言的“大一统</div><span class="arrow-sym">→</span><div class="node">社区的挣扎：当“保守”成为“瓶颈</div><span class="arrow-sym">→</span><div class="node">破局之路：从“大一统”到“邦联制</div></div></div>
 
 <div class="card">

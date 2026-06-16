@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>如何在大型代码库中运用 Claude Code：最佳实践及入门指南</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/17/how-claude-code-works-in-large-codebases-best-practices-and-where-to-start</p>
+<p class="subtitle">本文解决的核心问题是：星主 Tony Bai 亲自答疑: 遇到难题？星主第一时间为你深度解析，扫清学习障碍。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">Claude Code 如何导航</div><span class="arrow-sym">→</span><div class="node">Harness 与模型同样重要</div><span class="arrow-sym">→</span><div class="node">成功部署的三种配置模式</div><span class="arrow-sym">→</span><div class="node">使代码库在大规模下可导航</div></div></div>
 
 <div class="card">

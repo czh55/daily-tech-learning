@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>被嘲笑比 Python 还慢？扒开 Go 正则表达式的底层，看看它为了防范“系统猝死”付出了什么</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/17/why-is-go-regex-so-slow</p>
+<p class="subtitle">本文解决的核心问题是：如果有人问你：在处理纯 CPU 密集型的文本匹配时，Go 和 Python 哪个快？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">原罪：你以为的慢，其实是替 CG</div><span class="arrow-sym">→</span><div class="node">路线之争：为了防止系统“猝死”，</div><span class="arrow-sym">→</span><div class="node">硬核剖析：Go 的正则，时间到底</div><span class="arrow-sym">→</span><div class="node">社区的探索：SIMD 降维打击与</div></div></div>
 
 <div class="card">

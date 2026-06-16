@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>从 1960 到 2026：一文看透 Java、Go、Python 垃圾回收器的原理与演进</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/07/garbage-collectors-deep-dive</p>
+<p class="subtitle">本文解决的核心问题是：为什么 Java 的 G1GC 需要设置停顿目标？Go 的混合写屏障是如何消除栈重扫的？Python 又是如何解决引用计数无法处理的循环引用？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">McCarthy (1960):</div><span class="arrow-sym">→</span><div class="node">Wilson (1992): U</div><span class="arrow-sym">→</span><div class="node">两种基本方法</div><span class="arrow-sym">→</span><div class="node">Reference Counti</div></div></div>
 
 <div class="card">

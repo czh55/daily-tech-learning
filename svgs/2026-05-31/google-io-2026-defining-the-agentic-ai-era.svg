@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Google I/O 2026：Jeff Dean 携 DeepMind 众神宣告，AI Agent 正在终结“标准化软件”时代</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/31/google-io-2026-defining-the-agentic-ai-era</p>
+<p class="subtitle">本文解决的核心问题是：软硬件共生：八代 TPU 与 Antigravity 的全栈合围 为什么谷歌能率先在搜索和消费级应用中跑通如此沉重的 Agent 场景？因为谷歌拥有从芯片到应用的最深“护城河”—— 全栈 AI（Full Stack AI）的共生优势 。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">范式转移：从“同步对话框”到“异</div><span class="arrow-sym">→</span><div class="node">用户的“容忍时延”与任务价值成正</div><span class="arrow-sym">→</span><div class="node">异步时代的“任务控制台”</div><span class="arrow-sym">→</span><div class="node">杰夫·迪恩（Jeff Dean）</div></div></div>
 
 <div class="card">

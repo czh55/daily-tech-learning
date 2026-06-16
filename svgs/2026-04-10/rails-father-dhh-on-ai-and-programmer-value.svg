@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Ruby on Rails 之父最新访谈：AI 正在推高顶尖程序员的身价</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/10/rails-father-dhh-on-ai-and-programmer-value</p>
+<p class="subtitle">本文解决的核心问题是：在这个由 AI 主导的、充满不确定性的 2026 年，整个软件行业似乎都被一种集体性的焦虑所笼罩。我们每天都在讨论：当 AI 能在一分钟内写完我们一周的代码时，我们这些“人类程序员”的价值还剩下多少？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">从“令人作呕”到“欲罢不能”：D</div><span class="arrow-sym">→</span><div class="node">我们可能已经度过了“程序员薪资的</div><span class="arrow-sym">→</span><div class="node">当 AI 能写所有代码，我们还剩</div><span class="arrow-sym">→</span><div class="node">大神的日常：我是如何指挥 AI </div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>从“开源英雄”到“社区公敌”，Ollama 到底做错了什么？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/18/ollama-from-open-source-hero-to-community-enemy</p>
+<p class="subtitle">本文解决的核心问题是：从“开源英雄”到“社区公敌”，Ollama 到底做错了什么？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">第一宗罪：对生身之父的“背叛”与</div><span class="arrow-sym">→</span><div class="node">第二宗罪：用“私有格式”构建“数</div><span class="arrow-sym">→</span><div class="node">第三宗罪：“VC 死亡陷阱”的经</div><span class="arrow-sym">→</span><div class="node">社区的反击：大逃杀与“去 Oll</div></div></div>
 
 <div class="card">

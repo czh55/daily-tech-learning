@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Go 代码设计的“第一天原则”：一份能让你少走五年弯路的实战模式清单</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/24/go-code-design-day-one-principle-practical-patterns-list</p>
+<p class="subtitle">本文解决的核心问题是：每一个 Go 开发者，大概都经历过这样的心路历程： 项目启动初期，为了追求“快”，我们怎么方便怎么来。配置到处写，数据库连接随手建，错误日志直接 fmt.Println。我们安慰自己：“先跑起来，以后再重构。” 结果呢？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">原则一：配置集中解析，依赖显式注</div><span class="arrow-sym">→</span><div class="node">原则二：为可观测性而设计：结构化</div><span class="arrow-sym">→</span><div class="node">原则三：永不启动一个你不知道如何</div><span class="arrow-sym">→</span><div class="node">原则四：为可测试性而设计，构建你</div></div></div>
 
 <div class="card">

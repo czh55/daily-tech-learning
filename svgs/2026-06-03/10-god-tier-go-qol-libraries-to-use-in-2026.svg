@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Go 生态17年大浪淘沙：2026年最值得引入的10个“神仙级”QoL工具包</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/03/10-god-tier-go-qol-libraries-to-use-in-2026</p>
+<p class="subtitle">本文解决的核心问题是：在 ORM 选型上，你更青睐传统的 GORM、Ent，还是文中推荐的、编译期安全的 sqlc？为什么？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">数据库编译器：sqlc（类型安全</div><span class="arrow-sym">→</span><div class="node">标准库路由增强：chi（优雅的轻</div><span class="arrow-sym">→</span><div class="node">PostgreSQL 黄金搭档：</div><span class="arrow-sym">→</span><div class="node">终极断言利器：testify（让</div></div></div>
 
 <div class="card">

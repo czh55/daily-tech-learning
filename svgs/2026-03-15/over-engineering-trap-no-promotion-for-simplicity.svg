@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>别傻了，写出极致整洁的代码，是你升不了职的根本原因</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/15/over-engineering-trap-no-promotion-for-simplicity</p>
+<p class="subtitle">本文解决的核心问题是：因为在我们当下的技术职场里，有一个残酷的潜规则：“几乎没人会因为把代码写得太简单，而获得晋升。” “简单是一种伟大的美德，但复杂性往往卖得更好。” —— 艾兹格·迪杰斯特拉 为什么“PPT架构师”总能赢你？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么“PPT架构师”总能赢你？</div><span class="arrow-sym">→</span><div class="node">克制，才是最高级的炫技</div><span class="arrow-sym">→</span><div class="node">破局路径：如何包装你的“简单”？</div><span class="arrow-sym">→</span><div class="node">场景一：写晋升材料 / 简历</div></div></div>
 
 <div class="card">

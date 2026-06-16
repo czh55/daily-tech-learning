@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>别把 Go 写成 Java：毁掉项目从过度架构开始</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/05/stop-writing-go-like-java-avoid-over-architecting</p>
+<p class="subtitle">本文解决的核心问题是：这两个帖子的主题直击了无数 Go 开发者的灵魂深处： 我们该如何构建一个大型的 Go 模块化单体架构，而不被复杂的“架构设计”淹没？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">被“标准规范”毒害的洋葱病</div><span class="arrow-sym">→</span><div class="node">陷阱 1：“死去的” pkg 与</div><span class="arrow-sym">→</span><div class="node">陷阱 2：生搬硬套的 DDD 与</div><span class="arrow-sym">→</span><div class="node">为什么“扁平化”才是 Go 架构</div></div></div>
 
 <div class="card">
