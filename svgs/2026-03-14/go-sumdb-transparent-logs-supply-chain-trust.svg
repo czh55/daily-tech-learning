@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4652" viewBox="0 0 1320 4652">
-  <foreignObject x="0" y="0" width="1320" height="4652">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5234" viewBox="0 0 1320 5234">
+  <foreignObject x="0" y="0" width="1320" height="5234">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -19,6 +19,7 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
@@ -28,14 +29,14 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <h1>拒绝“偷天换日”！深度拆解 Go sumdb 的密码学防线</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：但是，新的问题随之而来：如果连 Google 运营的这个中央数据库也被黑客攻破了呢？或者如果服务器故意向特定用户返回伪造的哈希值呢？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">TOFU 困境与“多疑的客户端”</div><span class="arrow-sym">→</span><div class="node">核心底座：透明日志（Transp</div><span class="arrow-sym">→</span><div class="node">树的构建与防碰撞设计</div><span class="arrow-sym">→</span><div class="node">存在性证明</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">TOFU 困境与“多疑的客户端”</div><span class="arrow-sym">→</span><div class="node">核心底座：透明日志（Transparent Logs）深度解析</div><span class="arrow-sym">→</span><div class="node">树的构建与防碰撞设计</div><span class="arrow-sym">→</span><div class="node">存在性证明</div></div></div>
 
 <div class="card">
   <h3>【模板 A】TOFU 困境与“多疑的客户端”</h3>
   <p><strong>在讲什么问题：</strong>TOFU 困境与“多疑的客户端”</p>
-  <p><strong>关键理解：</strong>自 Go 1.11 引入 Modules 以来，go.sum 文件成为了每个项目不可或缺的部分。它记录了依赖包的预期加密哈希值。只要 go.sum 存在，明天下载的代码就必须和今天一模一样。 但这带来了一个经典的密码学难题： TOFU（Trust On First Use，首次使用时信任） 。 当你在项目中第一次引入某个第三方包时，本地没有它的哈希记录。此时 go 命令只能“盲目”去源站(一般是github)下载，计算哈希并写入 go.…</p>
+  <p><strong>关键理解：</strong>自 Go 1.11 引入 Modules 以来，go.sum 文件成为了每个项目不可或缺的部分。它记录了依赖包的预期加密哈希值。只要 go.sum 存在，明天下载的代码就必须和今天一模一样。 但这带来了一个经典的密码学难题： TOFU（Trust On First Use，首次使用时信任） 。 当你在项目中第一次引入某个第三方包时，本地没有它的哈希记录。此时 go 命令只能“盲目”去源站(一般是github)下载，计算哈希并写入 go.sum。如果恰好在这一次下载时网络被劫持，或者作者刚好推送了恶意代码，那么恶意代码的哈希就会被“合法化”并永久记录在你的项目中。 为了解决 TOFU 问题，Go 官方设立了 sum.golang.org，一个记录全球所有公开 Go 模块版本哈希的中央校验和数据库。 但是，新的问题随之而来：如果连 Google 运营的这个中央数据库也被黑客攻破了呢？或者如果服务器故意向特定用户返回伪造的哈希值呢？ Go 团队的答案是：设计一个“多疑的客户端”。go 命令绝不盲目信任 sumdb 服务器返回的任何一条数据，而是要求服务器提供严密的数学证明。这套证明体系的基石，就是 透明日志（Transparent Logs）。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：自 Go 1.11 引入 Modules 以来，go.sum 文件成为了每个项目不可或缺的部分。它记录了依赖包的预期加密哈希值。只要 go.sum 存在，明天下载的代码就必须和今天一模一样。 但这带来了一个经典的密码学难题： TOFU（Tr…</div>
+  <div class="quote">原文依据：自 Go 1.11 引入 Modules 以来，go.sum 文件成为了每个项目不可或缺的部分。它记录了依赖包的预期加密哈希值。</div>
 </div>
 <div class="card">
   <h3>【模板 B】核心底座：透明日志（Transparent Logs）深度解析</h3>
@@ -47,26 +48,26 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="card">
   <h3>【模板 A】树的构建与防碰撞设计</h3>
   <p><strong>在讲什么问题：</strong>树的构建与防碰撞设计</p>
-  <p><strong>关键理解：</strong>透明日志将每一个模块的版本和哈希记录作为树的叶子节点。两两相邻的叶子节点哈希相加，生成父节点的哈希，层层向上，最终生成一个唯一的 树根哈希（Tree Hash） 。 为了防止经典的“第二原像攻击”（即攻击者构造一个叶子节点，使其哈希值碰巧等于某个内部节点的哈希值），tlog.go 在计算哈希时进行了极其严谨的域隔离（Domain Separation）前缀设计： // 源码文件：sumdb/tlog/tlog.go // 计算叶子节点（…</p>
+  <p><strong>关键理解：</strong>透明日志将每一个模块的版本和哈希记录作为树的叶子节点。两两相邻的叶子节点哈希相加，生成父节点的哈希，层层向上，最终生成一个唯一的 树根哈希（Tree Hash） 。 为了防止经典的“第二原像攻击”（即攻击者构造一个叶子节点，使其哈希值碰巧等于某个内部节点的哈希值），tlog.go 在计算哈希时进行了极其严谨的域隔离（Domain Separation）前缀设计： // 源码文件：sumdb/tlog/tlog.go // 计算叶子节点（Record）哈希，前缀加 0x00 func RecordHash(data []byte) Hash { h := sha256.New() h.Write([]byte{0x00}) // RFC 6962: SHA256(0x00 || data) h.Write(data) // ... } // 计算内部节点哈希，前缀加 0x01 func NodeHash(left, right Hash) Hash { var buf[1 + HashSize + HashSize]byte buf[0] = 0x01 // RFC 6962: SHA256(0x01 || left || right) copy(buf[1:], left[:]) copy(buf[1+HashSize:], right[:]) return sha256.Sum256(buf[:]) } 这个唯一的树根哈希代表了此刻全球 Go 生态所有公开包的完整历史状态。任何一个历史字节的篡改，都会导致根哈希发生雪崩式的变化。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：透明日志将每一个模块的版本和哈希记录作为树的叶子节点。两两相邻的叶子节点哈希相加，生成父节点的哈希，层层向上，最终生成一个唯一的 树根哈希（Tree Hash） 。 为了防止经典的“第二原像攻击”（即攻击者构造一个叶子节点，使其哈希值碰巧等…</div>
+  <div class="quote">原文依据：透明日志将每一个模块的版本和哈希记录作为树的叶子节点。两两相邻的叶子节点哈希相加，生成父节点的哈希，层层向上，最终生成一个唯一的 树根哈希（Tree Hash） 。</div>
 </div>
 <div class="card">
   <h3>【模板 B】存在性证明</h3>
   <p><strong>在讲什么问题：</strong>存在性证明</p>
-  <p><strong>关键理解：</strong>当客户端向 sumdb 查询 rsc.io/quote@v1.5.2 时，服务器不仅返回记录，还会返回一条证明路径。 如上图所示，如果客户端想验证黄绿色的 Record 1 是否在树中，服务器只需提供旁边黄色的节点（Record 0 和 Node Hash L1-1）的哈希值。客户端在本地通过 NodeHash(RecordHash(Record 1), Record 0) 计算出 N1，再与 N2 结合计算出 Root。 如果计算出的…</p>
+  <p><strong>关键理解：</strong>当客户端向 sumdb 查询 rsc.io/quote@v1.5.2 时，服务器不仅返回记录，还会返回一条证明路径。 如上图所示，如果客户端想验证黄绿色的 Record 1 是否在树中，服务器只需提供旁边黄色的节点（Record 0 和 Node Hash L1-1）的哈希值。客户端在本地通过 NodeHash(RecordHash(Record 1), Record 0) 计算出 N1，再与 N2 结合计算出 Root。 如果计算出的 Root 与官方公布的根哈希一致， 这在数学上就绝对证明了：该模块的哈希确实被官方收录，绝无伪造可能。 这一过程的时间复杂度仅为 O(log N)。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：当客户端向 sumdb 查询 rsc.io/quote@v1.5.2 时，服务器不仅返回记录，还会返回一条证明路径。 如上图所示，如果客户端想验证黄绿色的 Record 1 是否在树中，服务器只需提供旁边黄色的节点（Record 0 和 N…</div>
+  <div class="quote">原文依据：当客户端向 sumdb 查询 rsc.io/quote@v1.5.2 时，服务器不仅返回记录，还会返回一条证明路径。如上图所示，如果客户端想验证黄绿色的 Record 1 是否在树中，服务器只需提供旁边黄色的节点（Record 0 和 Node Hash L1-1）的哈希值。</div>
 </div>
 <div class="card">
   <h3>【模板 A】一致性证明</h3>
   <p><strong>在讲什么问题：</strong>一致性证明</p>
-  <p><strong>关键理解：</strong>这是防止服务器“撒谎”的终极杀手锏。 如果 sumdb 服务器被黑客控制，黑客针对“受害者 A”返回一棵包含后门记录的“伪造树”，而对其他用户返回“正常树”（这种攻击被称为 Fork Attack）。该如何防范？ 客户端在每次成功通信后，都会将当前的树大小（N）和根哈希（T）持久化在本地（通常位于 $GOPATH/pkg/sumdb/sum.golang.org/latest）。 下一次通信时，如果服务器声称树长大了（规模变为 N ，新…</p>
+  <p><strong>关键理解：</strong>这是防止服务器“撒谎”的终极杀手锏。 如果 sumdb 服务器被黑客控制，黑客针对“受害者 A”返回一棵包含后门记录的“伪造树”，而对其他用户返回“正常树”（这种攻击被称为 Fork Attack）。该如何防范？ 客户端在每次成功通信后，都会将当前的树大小（N）和根哈希（T）持久化在本地（通常位于 $GOPATH/pkg/sumdb/sum.golang.org/latest）。 下一次通信时，如果服务器声称树长大了（规模变为 N ，新哈希为 T ），客户端会要求服务器出具 一致性证明 。客户端通过比对两条证明路径，在本地强校验：新的树 T ，是否完美且完整地包含了旧树 T 的所有历史记录？ 如果历史被重写，一致性校验必将失败。客户端会立即阻断构建，并抛出带有详细密码学证据的 SECURITY ERROR。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：这是防止服务器“撒谎”的终极杀手锏。 如果 sumdb 服务器被黑客控制，黑客针对“受害者 A”返回一棵包含后门记录的“伪造树”，而对其他用户返回“正常树”（这种攻击被称为 Fork Attack）。该如何防范？ 客户端在每次成功通信后，都…</div>
+  <div class="quote">原文依据：这是防止服务器“撒谎”的终极杀手锏。如果 sumdb 服务器被黑客控制，黑客针对“受害者 A”返回一棵包含后门记录的“伪造树”，而对其他用户返回“正常树”（这种攻击被称为 Fork Attack）。</div>
 </div>
 <div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>TOFU 困境与“多疑的客户端”：自 Go 1.11 引入 Modules 以来，go.sum 文件成为了每个项目不可或缺的部分。它记录了依赖包的预期加密…</li><li>核心底座：透明日志（Transparent Logs）深度解析：透明日志本质上是一个只追加（Append-Only）的防篡改数据结构，其核心是默克尔树（Merkle Tree）。在 s…</li><li>树的构建与防碰撞设计：透明日志将每一个模块的版本和哈希记录作为树的叶子节点。两两相邻的叶子节点哈希相加，生成父节点的哈希，层层向上，最终生成一…</li><li>存在性证明：当客户端向 sumdb 查询 rsc.io/quote@v1.5.2 时，服务器不仅返回记录，还会返回一条证明路径。 如…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>TOFU 困境与“多疑的客户端”：自 Go 1.11 引入 Modules 以来，go.sum 文件成为了每个项目不可或缺的部分。</li><li>核心底座：透明日志（Transparent Logs）深度解析：透明日志本质上是一个只追加（Append-Only）的防篡改数据结构，其核心是默克尔树（Merkle Tree）。</li><li>树的构建与防碰撞设计：透明日志将每一个模块的版本和哈希记录作为树的叶子节点。</li><li>存在性证明：当客户端向 sumdb 查询 rsc.io/quote@v1.5.2 时，服务器不仅返回记录，还会返回一条证明路径。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「TOFU 困境与“多疑的客户端”」在本周工作中做 1 次对照验证</li><li>结合「核心底座：透明日志（Transparent Logs）深度解析」在本周工作中做 1 次对照验证</li><li>结合「树的构建与防碰撞设计」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
     </div>
   </foreignObject>
 </svg>

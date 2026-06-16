@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4919" viewBox="0 0 1320 4919">
-  <foreignObject x="0" y="0" width="1320" height="4919">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5649" viewBox="0 0 1320 5649">
+  <foreignObject x="0" y="0" width="1320" height="5649">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -19,6 +19,7 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
@@ -28,45 +29,45 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <h1>为什么你的 AI Agent 总是像个智障？来自 Manus 大佬的 2 年血泪避坑指南</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：结果呢？面对稍微复杂一点的任务，你的 Agent 瞬间退化成一个“智障”。？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么给 AI 几百个工具，它反</div><span class="arrow-sym">→</span><div class="node">50年前的“管道”魔法，完美解决</div><span class="arrow-sym">→</span><div class="node">把大模型当人看，设计“防智障”导</div><span class="arrow-sym">→</span><div class="node">小结：化繁为简，才是架构的最高境</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么给 AI 几百个工具，它反而成了“智障”？</div><span class="arrow-sym">→</span><div class="node">50年前的“管道”魔法，完美解决了 Agent 编排难题</div><span class="arrow-sym">→</span><div class="node">把大模型当人看，设计“防智障”导航系统</div><span class="arrow-sym">→</span><div class="node">小结：化繁为简，才是架构的最高境界</div></div></div>
 
 <div class="card">
   <h3>【模板 A】为什么给 AI 几百个工具，它反而成了“智障”？</h3>
   <p><strong>在讲什么问题：</strong>为什么给 AI 几百个工具，它反而成了“智障”？</p>
-  <p><strong>关键理解：</strong>目前主流的 Agent 框架（如 LangChain），都在教我们怎么给大模型塞满工具箱。你塞的工具越多，系统看起来越庞大。 但 MorroHsu 指出了这背后的致命逻辑错误： 工具选择的认知过载（Cognitive Load）。 大模型每次行动前，都要在几十个有着不同数据结构（Schemas）的工具中艰难地做选择题： “我到底该用哪一个？参数填什么？” 上下文的注意力被极大地分散了，准确率直线断崖式下跌。 大佬的解法粗暴且优雅： 废弃…</p>
+  <p><strong>关键理解：</strong>目前主流的 Agent 框架（如 LangChain），都在教我们怎么给大模型塞满工具箱。你塞的工具越多，系统看起来越庞大。 但 MorroHsu 指出了这背后的致命逻辑错误： 工具选择的认知过载（Cognitive Load）。 大模型每次行动前，都要在几十个有着不同数据结构（Schemas）的工具中艰难地做选择题： “我到底该用哪一个？参数填什么？” 上下文的注意力被极大地分散了，准确率直线断崖式下跌。 大佬的解法粗暴且优雅： 废弃所有花里胡哨的工具，只给大模型提供唯一的一个函数：run(command=” ”)。 为什么？因为大模型天生就是个 Linux 高手！ 大模型的训练语料库里，充斥着 GitHub 上数十亿行的代码、README.md 中的安装指南、以及 Stack Overflow 上的报错日志。这些语料中，密密麻麻全是 CLI 命令行。 如果你让它去调用你发明的 read_log_file(path) API，它还要去猜测你的参数定义；但如果你让它去找日志里的错误，它会凭着肌肉记忆毫不犹豫地写出： run(command=”cat /var/log/app.log | grep ERROR | tail -n 20 ) 你看，CLI 本身就是大模型最熟悉的母语。 不要发明新的轮子去教大模型做事，直接把它最熟悉的世界交给它。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：目前主流的 Agent 框架（如 LangChain），都在教我们怎么给大模型塞满工具箱。你塞的工具越多，系统看起来越庞大。 但 MorroHsu 指出了这背后的致命逻辑错误： 工具选择的认知过载（Cognitive Load）。 大模型每…</div>
+  <div class="quote">原文依据：目前主流的 Agent 框架（如 LangChain），都在教我们怎么给大模型塞满工具箱。你塞的工具越多，系统看起来越庞大。</div>
 </div>
 <div class="card">
   <h3>【模板 B】50年前的“管道”魔法，完美解决了 Agent 编排难题</h3>
   <p><strong>在讲什么问题：</strong>50年前的“管道”魔法，完美解决了 Agent 编排难题</p>
-  <p><strong>关键理解：</strong>如果只有一个 run 命令，AI 遇到复杂任务怎么办？ 这就引出了 50 年前 Unix 操作系统的伟大设计哲学： 一切皆文件。 Unix 的先驱们设计了大量只做一件事的小工具（cat, grep, sort），然后通过 管道（Pipe |） 将它们串联成无比强大的工作流。 而这，完美契合了大模型的核心本质——大模型只能理解文本输入和文本输出！ 在传统的 Function Calling 中，为了完成“下载数据 -&gt; 过滤错误 -&gt; 排…</p>
+  <p><strong>关键理解：</strong>如果只有一个 run 命令，AI 遇到复杂任务怎么办？ 这就引出了 50 年前 Unix 操作系统的伟大设计哲学： 一切皆文件。 Unix 的先驱们设计了大量只做一件事的小工具（cat, grep, sort），然后通过 管道（Pipe |） 将它们串联成无比强大的工作流。 而这，完美契合了大模型的核心本质——大模型只能理解文本输入和文本输出！ 在传统的 Function Calling 中，为了完成“下载数据 -&gt; 过滤错误 -&gt; 排序前 10 条”这个任务，你的 Agent 可能需要连续调用 3 个不同的自定义函数，经历 3 轮耗时极长的 LLM 推理，中间稍微错一步就满盘皆输。 但在 CLI 模式下，AI 只需要通过一次组合调用就能秒杀： run(command=”curl -sL $URL | grep 500 | sort | head 10 ) 这种强大的“组合编排能力（Composition）”，不是什么 AI 领域的最新黑科技，而是 Unix 管道原生自带的降维打击。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：如果只有一个 run 命令，AI 遇到复杂任务怎么办？ 这就引出了 50 年前 Unix 操作系统的伟大设计哲学： 一切皆文件。 Unix 的先驱们设计了大量只做一件事的小工具（cat, grep, sort），然后通过 管道（Pipe |…</div>
+  <div class="quote">原文依据：如果只有一个 run 命令，AI 遇到复杂任务怎么办？这就引出了 50 年前 Unix 操作系统的伟大设计哲学： 一切皆文件。</div>
 </div>
 <div class="card">
   <h3>【模板 A】把大模型当人看，设计“防智障”导航系统</h3>
   <p><strong>在讲什么问题：</strong>把大模型当人看，设计“防智障”导航系统</p>
-  <p><strong>关键理解：</strong>当然，光把命令行扔给大模型，它依然会因为瞎猜而犯错。MorroHsu 总结了三个极其硬核的实战设计技巧，教你如何打造一个“防智障”的 Agent 导航系统： 绝招 1：渐进式发现（Progressive Discovery） 不要一开始就把所有命令的长篇大论全塞给大模型，那会瞬间撑爆它的上下文窗口。 只要告诉大模型： “你可以运行 run(“command”)。遇到不懂的，运行 command help” 。 大模型其实非常懂得自我探索…</p>
+  <p><strong>关键理解：</strong>当然，光把命令行扔给大模型，它依然会因为瞎猜而犯错。MorroHsu 总结了三个极其硬核的实战设计技巧，教你如何打造一个“防智障”的 Agent 导航系统： 绝招 1：渐进式发现（Progressive Discovery） 不要一开始就把所有命令的长篇大论全塞给大模型，那会瞬间撑爆它的上下文窗口。 只要告诉大模型： “你可以运行 run(“command”)。遇到不懂的，运行 command help” 。 大模型其实非常懂得自我探索。当它发现报错时，它会自动去查阅说明书。这种“按需发现”的能力，极大地节省了宝贵的 Token。 绝招 2：把报错变成“向导” 这是最具启发性的一点！当大模型敲错命令时，千万别只返回一个冷冰冰的 exit code 127 或者 command not found。大模型无法像人类那样去 Google 搜索错误原因，它只会陷入瞎猜的死循环。 你必须在 stderr（标准错误输出）里加上向导信息。 传统报错：cat: photo.png: binary file 给 AI 的防智障报错：[Error] cat: photo.png is a binary image. Use see photo.png instead. 不要试图阻止大模型犯错，而是要让它的每一次犯错，都成为指向正确道路的路标。 绝招 3：双层架构（物理隔离幻觉） 大模型的上下文是极其脆弱的。MorroHsu 分享了一个惨痛的真实案例： 一个用户上传了一张系统架构图，Agent 试图用 cat 命令读取它。结果 182KB 的乱码二进制字节流瞬间冲入了大模型的上下文。大模型当场“失了智”，开始不停地胡言乱语、重试、陷入死循环……足足浪费了 20 次推理的钱。 为了解决这个问题，必须在底层 Unix 执行和大模型展示层之间，建立一道 “二进制守卫（Binary Guard）” 和 “截断溢出守卫（Overflow Mode）” 。 当探测到命令输出超过 200 行，或者包含二进制乱码时，系统绝不把原数据返回给大模型，而是强制拦截并返回提示： “ 输出已截断。请使用 grep 或 tail 命令进行搜索。 ” 这就像给大模型戴上了一副防护眼镜，彻底杜绝了上下文被垃圾数据污染、导致智力下降的可能。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：当然，光把命令行扔给大模型，它依然会因为瞎猜而犯错。MorroHsu 总结了三个极其硬核的实战设计技巧，教你如何打造一个“防智障”的 Agent 导航系统： 绝招 1：渐进式发现（Progressive Discovery） 不要一开始就把…</div>
+  <div class="quote">原文依据：当然，光把命令行扔给大模型，它依然会因为瞎猜而犯错。MorroHsu 总结了三个极其硬核的实战设计技巧，教你如何打造一个“防智障”的 Agent 导航系统： 绝招 1：渐进式发现（Progressive Discovery） 不要一开始就把所有命令的长篇大论全塞给大模型，那会瞬间撑爆它的上下文窗口。</div>
 </div>
 <div class="card">
   <h3>【模板 B】小结：化繁为简，才是架构的最高境界</h3>
   <p><strong>在讲什么问题：</strong>小结：化繁为简，才是架构的最高境界</p>
-  <p><strong>关键理解：</strong>目前，全网依然在乐此不疲地比拼谁的 Agent 框架更庞大、谁支持的 Tool Call 种类更多。但 原 Manus 大佬的这套“返璞归真”的血泪总结，给我们狠狠敲响了警钟。 最前沿的 AI，其实最需要最古老的系统智慧。 将 Unix 哲学的精髓（文本流、组合管道、小而美）与大模型的文本处理能力完美结合，放弃给 AI 制造复杂的隔离层和几十个脆弱的 API 接口，这才是真正属于“顶级工程师”的架构审美。 正如他在文末所言：“CLI 并…</p>
+  <p><strong>关键理解：</strong>目前，全网依然在乐此不疲地比拼谁的 Agent 框架更庞大、谁支持的 Tool Call 种类更多。但 原 Manus 大佬的这套“返璞归真”的血泪总结，给我们狠狠敲响了警钟。 最前沿的 AI，其实最需要最古老的系统智慧。 将 Unix 哲学的精髓（文本流、组合管道、小而美）与大模型的文本处理能力完美结合，放弃给 AI 制造复杂的隔离层和几十个脆弱的 API 接口，这才是真正属于“顶级工程师”的架构审美。 正如他在文末所言：“CLI 并非银弹，对于强类型校验和高安全性要求极高的场景，Typed API 依然不可或缺。 但在广袤的智能体自主探索宇宙中，命令行，就是大模型所需要的全部。 ”</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：目前，全网依然在乐此不疲地比拼谁的 Agent 框架更庞大、谁支持的 Tool Call 种类更多。但 原 Manus 大佬的这套“返璞归真”的血泪总结，给我们狠狠敲响了警钟。 最前沿的 AI，其实最需要最古老的系统智慧。 将 Unix 哲…</div>
+  <div class="quote">原文依据：目前，全网依然在乐此不疲地比拼谁的 Agent 框架更庞大、谁支持的 Tool Call 种类更多。但 原 Manus 大佬的这套“返璞归真”的血泪总结，给我们狠狠敲响了警钟。</div>
 </div>
 <div class="card">
   <h3>【模板 A】添加新评论</h3>
   <p><strong>在讲什么问题：</strong>添加新评论</p>
-  <p><strong>关键理解：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人Blog，欢迎访问、订阅和留言！ 订阅Feed请点击上面图片 。 如果您觉得这里的文章对您有帮助，请扫描上方二维码进行捐赠 ，加油后的Tony Bai将会为您呈现更多精彩的文章，谢谢！ 如果您希望通过…</p>
+  <p><strong>关键理解：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人Blog，欢迎访问、订阅和留言！ 订阅Feed请点击上面图片 。 如果您觉得这里的文章对您有帮助，请扫描上方二维码进行捐赠 ，加油后的Tony Bai将会为您呈现更多精彩的文章，谢谢！ 如果您希望通过微信捐赠，请用微信客户端扫描下方赞赏码： 如果您希望通过比特币或以太币捐赠，可以扫描下方二维码： 比特币： 以太币： 如果您喜欢通过微信浏览本站内容，可以扫描下方二维码，订阅本站官方微信订阅号“iamtonybai”；点击二维码，可直达本人官方微博主页^_^： 本站Powered by Digital Ocean VPS。 选择Digital Ocean VPS主机，即可获得10美元现金充值，可 免费使用两个月哟！ 著名主机提供商Linode 10$优惠码：linode10，在 这里注册 即可免费获 得。阿里云推荐码： 1WFZ0V ， 立享9折！</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人…</div>
+  <div class="quote">原文依据：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！</div>
 </div>
 <div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>为什么给 AI 几百个工具，它反而成了“智障”？：目前主流的 Agent 框架（如 LangChain），都在教我们怎么给大模型塞满工具箱。你塞的工具越多，系统看起来越庞…</li><li>50年前的“管道”魔法，完美解决了 Agent 编排难题：如果只有一个 run 命令，AI 遇到复杂任务怎么办？ 这就引出了 50 年前 Unix 操作系统的伟大设计哲学： 一切…</li><li>把大模型当人看，设计“防智障”导航系统：当然，光把命令行扔给大模型，它依然会因为瞎猜而犯错。MorroHsu 总结了三个极其硬核的实战设计技巧，教你如何打造一个…</li><li>小结：化繁为简，才是架构的最高境界：目前，全网依然在乐此不疲地比拼谁的 Agent 框架更庞大、谁支持的 Tool Call 种类更多。但 原 Manus …</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>为什么给 AI 几百个工具，它反而成了“智障”？：目前主流的 Agent 框架（如 LangChain），都在教我们怎么给大模型塞满工具箱。</li><li>50年前的“管道”魔法，完美解决了 Agent 编排难题：如果只有一个 run 命令，AI 遇到复杂任务怎么办？</li><li>把大模型当人看，设计“防智障”导航系统：当然，光把命令行扔给大模型，它依然会因为瞎猜而犯错。</li><li>小结：化繁为简，才是架构的最高境界：目前，全网依然在乐此不疲地比拼谁的 Agent 框架更庞大、谁支持的 Tool Call 种类更多。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「为什么给 AI 几百个工具，它反而成了“智障”？」在本周工作中做 1 次对照验证</li><li>结合「50年前的“管道”魔法，完美解决了 Agent 编排难题」在本周工作中做 1 次对照验证</li><li>结合「把大模型当人看，设计“防智障”导航系统」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
     </div>
   </foreignObject>
 </svg>

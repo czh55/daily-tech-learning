@@ -47,16 +47,23 @@ export function estimateHeightFromHtml(html, width = 1320) {
   h += flowBlocks * 100;
   h += dualBlocks * 180;
   h += sections * 85;
-  h += cards * 330;
+  // 按卡片内文本量估算（避免长段落被 foreignObject 截断）
+  const cardBlocks = html.match(/class="card"[\s\S]*?(?=class="card"|class="conclusion"|$)/gi) || [];
+  for (const block of cardBlocks) {
+    const plain = block.replace(/<[^>]+>/g, ' ');
+    h += 180 + Math.ceil(plain.length / 120) * 28;
+  }
+  if (!cardBlocks.length) h += cards * 330;
   h += samples * 460;
   h += pres * 110;
   h += Math.max(0, tableRows) * 30;
-  h += listItems * 20;
+  h += listItems * 36;
   h += 64; // footer
 
   // 宽表格/长代码块略增
   if (html.length > 80000) h += 400;
   else if (html.length > 40000) h += 200;
+  else if (html.length > 20000) h += 120;
 
   return Math.ceil(h * 1.02);
 }

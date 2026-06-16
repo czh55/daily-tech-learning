@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4631" viewBox="0 0 1320 4631">
-  <foreignObject x="0" y="0" width="1320" height="4631">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5432" viewBox="0 0 1320 5432">
+  <foreignObject x="0" y="0" width="1320" height="5432">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -19,6 +19,7 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
@@ -28,45 +29,45 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <h1>Shopify 23,000 名工程师背后的 Claude Code 配置方案（你可以直接复刻的完整配置）</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：然后批判你自己的提议：在规模化(scaling)时会出现什么问题？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">基础设施层（为什么他们的配置能奏</div><span class="arrow-sym">→</span><div class="node">模式 1：并行智能体，而非单一对</div><span class="arrow-sym">→</span><div class="node">模式 2：扩展批判循环 (Ext</div><span class="arrow-sym">→</span><div class="node">模式 3：Shopify AI </div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">基础设施层（为什么他们的配置能奏效）</div><span class="arrow-sym">→</span><div class="node">模式 1：并行智能体，而非单一对话</div><span class="arrow-sym">→</span><div class="node">模式 2：扩展批判循环 (Extended critique loops)</div><span class="arrow-sym">→</span><div class="node">模式 3：Shopify AI 工具包 (MCP)</div></div></div>
 
 <div class="card">
   <h3>【模板 A】基础设施层（为什么他们的配置能奏效）</h3>
   <p><strong>在讲什么问题：</strong>基础设施层（为什么他们的配置能奏效）</p>
-  <p><strong>关键理解：</strong>Shopify 没有标准化某一个 AI 工具。他们标准化了底层的架构。 他们构建了一个内部 LLM 代理（Proxy），将每一个 AI 请求路由到同一个网关。无论使用 Claude Code、GitHub Copilot 还是 Cursor，它们都流经相同的基础设施。 Shopify 的 LLM 代理架构： 工程师 - Claude Code / Copilot / Cursor ↓ LLM 代理 (集中式网关) ↓ OpenAI / …</p>
+  <p><strong>关键理解：</strong>Shopify 没有标准化某一个 AI 工具。他们标准化了底层的架构。 他们构建了一个内部 LLM 代理（Proxy），将每一个 AI 请求路由到同一个网关。无论使用 Claude Code、GitHub Copilot 还是 Cursor，它们都流经相同的基础设施。 Shopify 的 LLM 代理架构： 工程师 - Claude Code / Copilot / Cursor ↓ LLM 代理 (集中式网关) ↓ OpenAI / Anthropic / Google 模型 ↓ 使用分析 + 成本控制 + 模型路由 这赋予了他们集中式的成本控制、使用分析，以及在不改变任何工程师工作流的情况下更换模型的能力。 给小团队的启示： 不要只选一个工具就全力投入。先构建基础设施，这样你就可以在保持对成本和数据控制的同时，试验不同的工具。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：Shopify 没有标准化某一个 AI 工具。他们标准化了底层的架构。 他们构建了一个内部 LLM 代理（Proxy），将每一个 AI 请求路由到同一个网关。无论使用 Claude Code、GitHub Copilot 还是 Cursor…</div>
+  <div class="quote">原文依据：Shopify 没有标准化某一个 AI 工具。他们标准化了底层的架构。</div>
 </div>
 <div class="card">
   <h3>【模板 B】模式 1：并行智能体，而非单一对话</h3>
   <p><strong>在讲什么问题：</strong>模式 1：并行智能体，而非单一对话</p>
-  <p><strong>关键理解：</strong>Shopify 的资深工程师不会把 Claude Code 当作一个简单的“提问-回答”工具。 他们会同时启动多个智能体，在代码库的不同部分工作。 一个智能体负责重构认证模块。另一个负责编写测试。第三个更新文档。工程师负责审查输出，丢弃无效内容，合并有效内容。 bash 示例： # 终端 1：负责重构认证的智能体 claude -p &quot;refactor src/auth/ to use the new session handler&quot; …</p>
+  <p><strong>关键理解：</strong>Shopify 的资深工程师不会把 Claude Code 当作一个简单的“提问-回答”工具。 他们会同时启动多个智能体，在代码库的不同部分工作。 一个智能体负责重构认证模块。另一个负责编写测试。第三个更新文档。工程师负责审查输出，丢弃无效内容，合并有效内容。 bash 示例： # 终端 1：负责重构认证的智能体 claude -p &quot;refactor src/auth/ to use the new session handler&quot; # 终端 2：负责编写测试的智能体 claude -p &quot;write integration tests for the payment flow&quot; # 终端 3：负责更新文档的智能体 claude -p &quot;update API documentation for all changed endpoints&quot; 工程师的工作职责从“写代码”转变为“审查和合并”智能体的输出。Shopify 工程副总裁 Farhan Thawar 将此称为“编排智能系统”。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：Shopify 的资深工程师不会把 Claude Code 当作一个简单的“提问-回答”工具。 他们会同时启动多个智能体，在代码库的不同部分工作。 一个智能体负责重构认证模块。另一个负责编写测试。第三个更新文档。工程师负责审查输出，丢弃无效…</div>
+  <div class="quote">原文依据：Shopify 的资深工程师不会把 Claude Code 当作一个简单的“提问-回答”工具。他们会同时启动多个智能体，在代码库的不同部分工作。</div>
 </div>
 <div class="card">
   <h3>【模板 A】模式 2：扩展批判循环 (Extended critique loops)</h3>
   <p><strong>在讲什么问题：</strong>模式 2：扩展批判循环 (Extended critique loops)</p>
-  <p><strong>关键理解：</strong>并非每个任务都能受益于并行化。对于复杂的架构决策，Shopify 工程师会让单个智能体运行扩展的批判循环。 智能体生成一个答案，评估它，修改它，并在漫长的推理周期中继续精炼。 他们不接受第一次输出，而是强迫智能体自我辩论。 提示词模式： “针对 [X] 提出一个架构方案。 然后批判你自己的提议：在规模化(scaling)时会出现什么问题？ 根据你的批判进行修改。 再次批判该修订版。 给出最终版本，并附带每个决策的置信度水平。” 这种方式…</p>
+  <p><strong>关键理解：</strong>并非每个任务都能受益于并行化。对于复杂的架构决策，Shopify 工程师会让单个智能体运行扩展的批判循环。 智能体生成一个答案，评估它，修改它，并在漫长的推理周期中继续精炼。 他们不接受第一次输出，而是强迫智能体自我辩论。 提示词模式： “针对 [X] 提出一个架构方案。 然后批判你自己的提议：在规模化(scaling)时会出现什么问题？ 根据你的批判进行修改。 再次批判该修订版。 给出最终版本，并附带每个决策的置信度水平。” 这种方式产生的结果比单一提示词好得多，因为 Claude 在你发现错误之前就已经抓住了自己的错误。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：并非每个任务都能受益于并行化。对于复杂的架构决策，Shopify 工程师会让单个智能体运行扩展的批判循环。 智能体生成一个答案，评估它，修改它，并在漫长的推理周期中继续精炼。 他们不接受第一次输出，而是强迫智能体自我辩论。 提示词模式： “…</div>
+  <div class="quote">原文依据：并非每个任务都能受益于并行化。对于复杂的架构决策，Shopify 工程师会让单个智能体运行扩展的批判循环。</div>
 </div>
 <div class="card">
   <h3>【模板 B】模式 3：Shopify AI 工具包 (MCP)</h3>
   <p><strong>在讲什么问题：</strong>模式 3：Shopify AI 工具包 (MCP)</p>
-  <p><strong>关键理解：</strong>在 2026 年 4 月，Shopify 发布了一个开源的 MCP (Model Context Protocol) 服务器，将 Claude Code 直接连接到 Shopify 的文档、GraphQL API 模式和在线商店操作。 只需一条命令即可安装： claude mcp add --transport stdio shopify-dev-mcp -- npx -y @shopify/dev 这赋予了 Claude Code 7…</p>
+  <p><strong>关键理解：</strong>在 2026 年 4 月，Shopify 发布了一个开源的 MCP (Model Context Protocol) 服务器，将 Claude Code 直接连接到 Shopify 的文档、GraphQL API 模式和在线商店操作。 只需一条命令即可安装： claude mcp add --transport stdio shopify-dev-mcp -- npx -y @shopify/dev 这赋予了 Claude Code 7 种工具： 根据实时模式验证 GraphQL 查询 通过 Shopify CLI 执行商店操作 创建产品、管理元字段（metafields）、修改主题 用自然语言运行批量操作 如果没有这些，Claude 会产生幻觉、臆造 API 字段或组件模式。有了它，Claude 能够处理真实的平台数据。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：在 2026 年 4 月，Shopify 发布了一个开源的 MCP (Model Context Protocol) 服务器，将 Claude Code 直接连接到 Shopify 的文档、GraphQL API 模式和在线商店操作。 只需…</div>
+  <div class="quote">原文依据：在 2026 年 4 月，Shopify 发布了一个开源的 MCP (Model Context Protocol) 服务器，将 Claude Code 直接连接到 Shopify 的文档、GraphQL API 模式和在线商店操作。只需一条命令即可安装： claude mcp add --transport stdio shopify-dev-mcp -- npx -y @shopify/dev 这赋予了 Claude Code 7 种工具： 根据实时模式验证 GraphQL 查询 通过 Shopify CLI 执行商店操作 创建产品、管理元字段（metafields）、修改主题 用自然语言运行批量操作 如果没有这些，Claude 会产生幻觉、臆造 API 字段或组件模式。</div>
 </div>
 <div class="card">
   <h3>【模板 A】模式 4：CLAUDE.md 作为团队基础设施</h3>
   <p><strong>在讲什么问题：</strong>模式 4：CLAUDE.md 作为团队基础设施</p>
-  <p><strong>关键理解：</strong>Shopify 不把 CLAUDE.md 视为个人配置，它是提交到 Git 并供 23,000 名工程师共享的团队基础设施。 他们的方案示例： # CLAUDE.md (Shopify internal pattern) ## Stack Ruby on Rails, React, GraphQL, MySQL ## Commands - Dev: dev up dev server - Test: dev test [path] - …</p>
+  <p><strong>关键理解：</strong>Shopify 不把 CLAUDE.md 视为个人配置，它是提交到 Git 并供 23,000 名工程师共享的团队基础设施。 他们的方案示例： # CLAUDE.md (Shopify internal pattern) ## Stack Ruby on Rails, React, GraphQL, MySQL ## Commands - Dev: dev up dev server - Test: dev test [path] - Lint: dev style - Type check: bin/srb tc ## Architecture - app/models/ → ActiveRecord models, business logic - app/controllers/ → thin controllers, delegate to services - app/services/ → service objects for complex operations - app/graphql/ → GraphQL types, mutations, resolvers ## Rules - NEVER bypass Sorbet type checking - All new code must have type signatures - Database queries only through established patterns - IMPORTANT: run dev test after every change 来自会议的核心见解：在 CLAUDE.md 中塞入每一个标准和规范会让性能变差，而非变好。你在每一个环节都要为此付出代价。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：Shopify 不把 CLAUDE.md 视为个人配置，它是提交到 Git 并供 23,000 名工程师共享的团队基础设施。 他们的方案示例： # CLAUDE.md (Shopify internal pattern) ## Stack …</div>
+  <div class="quote">原文依据：Shopify 不把 CLAUDE.md 视为个人配置，它是提交到 Git 并供 23,000 名工程师共享的团队基础设施。他们的方案示例： # CLAUDE.md (Shopify internal pattern) ## Stack Ruby on Rails, React, GraphQL, MySQL ## Commands - Dev: dev up dev server - Test: dev test [path] - Lint: dev style - Type check: bin/srb tc ## Architecture - app/models/ → ActiveRecord models, business logic - app/controllers/ → thin controllers, delegate to services - app/services/ → service objects for complex operations - app/graphql/ → GraphQL types, mutations, resolvers ## Rules - NEVER bypass Sorbet type checking - All new code must have type signatures - Database queries only through established patterns - IMPORTANT: run dev test after every change 来自会议的核心见解：在 CLAUDE.md 中塞入每一个标准和规范会让性能变差，而非变好。</div>
 </div>
 <div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>基础设施层（为什么他们的配置能奏效）：Shopify 没有标准化某一个 AI 工具。他们标准化了底层的架构。 他们构建了一个内部 LLM 代理（Proxy），…</li><li>模式 1：并行智能体，而非单一对话：Shopify 的资深工程师不会把 Claude Code 当作一个简单的“提问-回答”工具。 他们会同时启动多个智能体…</li><li>模式 2：扩展批判循环 (Extended critique loops)：并非每个任务都能受益于并行化。对于复杂的架构决策，Shopify 工程师会让单个智能体运行扩展的批判循环。 智能体生成一…</li><li>模式 3：Shopify AI 工具包 (MCP)：在 2026 年 4 月，Shopify 发布了一个开源的 MCP (Model Context Protocol) 服…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>基础设施层（为什么他们的配置能奏效）：Shopify 没有标准化某一个 AI 工具。</li><li>模式 1：并行智能体，而非单一对话：Shopify 的资深工程师不会把 Claude Code 当作一个简单的“提问-回答”工具。</li><li>模式 2：扩展批判循环 (Extended critique loops)：并非每个任务都能受益于并行化。</li><li>模式 3：Shopify AI 工具包 (MCP)：在 2026 年 4 月，Shopify 发布了一个开源的 MCP (Model Context Protocol) 服务器，将 Claude Code 直接连接到 Shopify 的文档、GraphQL API 模式和在线商店操作。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「基础设施层（为什么他们的配置能奏效）」在本周工作中做 1 次对照验证</li><li>结合「模式 1：并行智能体，而非单一对话」在本周工作中做 1 次对照验证</li><li>结合「模式 2：扩展批判循环 (Extended critique loops)」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
     </div>
   </foreignObject>
 </svg>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4574" viewBox="0 0 1320 4574">
-  <foreignObject x="0" y="0" width="1320" height="4574">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6344" viewBox="0 0 1320 6344">
+  <foreignObject x="0" y="0" width="1320" height="6344">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -19,6 +19,7 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
@@ -28,21 +29,21 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <h1>如何在大型代码库中运用 Claude Code：最佳实践及入门指南</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：星主 Tony Bai 亲自答疑: 遇到难题？星主第一时间为你深度解析，扫清学习障碍。？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">Claude Code 如何导航</div><span class="arrow-sym">→</span><div class="node">Harness 与模型同样重要</div><span class="arrow-sym">→</span><div class="node">成功部署的三种配置模式</div><span class="arrow-sym">→</span><div class="node">使代码库在大规模下可导航</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">Claude Code 如何导航大型代码库</div><span class="arrow-sym">→</span><div class="node">Harness 与模型同样重要</div><span class="arrow-sym">→</span><div class="node">成功部署的三种配置模式</div><span class="arrow-sym">→</span><div class="node">使代码库在大规模下可导航</div></div></div>
 
 <div class="card">
   <h3>【模板 A】Claude Code 如何导航大型代码库</h3>
   <p><strong>在讲什么问题：</strong>Claude Code 如何导航大型代码库</p>
-  <p><strong>关键理解：</strong>Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵循引用。它运行在开发人员的机器上，不需要构建、维护代码库索引或上传到服务器。 基于 RAG（检索增强生成）的 AI 编码工具通过嵌入整个代码库并在查询时检索相关块来工作。在大规模场景下，这些系统可能会失败，因为嵌入管道无法跟上活跃的工程团队。当开发人员查询索引时，它反映的是几周、几天甚至几小时前存在的代码库。检索可能会…</p>
+  <p><strong>关键理解：</strong>Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵循引用。它运行在开发人员的机器上，不需要构建、维护代码库索引或上传到服务器。 基于 RAG（检索增强生成）的 AI 编码工具通过嵌入整个代码库并在查询时检索相关块来工作。在大规模场景下，这些系统可能会失败，因为嵌入管道无法跟上活跃的工程团队。当开发人员查询索引时，它反映的是几周、几天甚至几小时前存在的代码库。检索可能会返回一个两周前重命名的函数，或引用一个在上次推送中已删除的模块，而没有任何过时的提示。 智能体搜索（Agentic search）避免了这些故障模式。没有需要维护的嵌入管道或集中式索引，因为成千上万的工程师在提交新代码。每个开发人员的实例都基于实时代码库中工作。 但这种方法有一个权衡：当 Claude 有足够的上下文知道去哪里时，它效果最好。这意味着 Claude 的导航质量取决于代码库配置的好坏，即通过 CLAUDE.md 文件和技能来分层上下文。如果你要求它在十亿行代码中查找某种模糊模式的所有实例，你在工作开始前就会触及上下文窗口限制。投入精力进行代码库设置的团队会看到更好的结果。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵循引用。它运行在开发人员的机器上，不需要构建、维护代码库索引或上传到服务器。 基于 RAG（检索增强生成）的 AI 编码…</div>
+  <div class="quote">原文依据：Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵循引用。它运行在开发人员的机器上，不需要构建、维护代码库索引或上传到服务器。</div>
 </div>
 <div class="card">
   <h3>【模板 B】Harness 与模型同样重要</h3>
   <p><strong>在讲什么问题：</strong>Harness 与模型同样重要</p>
-  <p><strong>关键理解：</strong>关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中的表现。实际上，围绕模型的生态系统——即“Harness”——比模型本身更能决定 Claude Code 的表现。 该Harness 由五个扩展点构建——CLAUDE.md 文件、钩子（Hooks）、技能（Skills）、插件（Plugins）和 MCP 服务器——每个扩展点服务于不同的功能。团队构建它们的顺序也很重要…</p>
+  <p><strong>关键理解：</strong>关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中的表现。实际上，围绕模型的生态系统——即“Harness”——比模型本身更能决定 Claude Code 的表现。 该Harness 由五个扩展点构建——CLAUDE.md 文件、钩子（Hooks）、技能（Skills）、插件（Plugins）和 MCP 服务器——每个扩展点服务于不同的功能。团队构建它们的顺序也很重要，因为每一层都构建在前一层之上。LSP 集成和子智能体（Subagents）完善了整个设置。以下，我们解释了这些组件的功能： CLAUDE.md 文件优先： 这些是 Claude 在每次会话开始时自动读取的上下文文件：根目录用于全局概览，子目录用于本地约定。它们为 Claude 提供无需任何额外操作即可掌握的代码库知识。因为无论任务是什么，它们都会在每次会话中加载，所以确保它们仅包含广泛适用的内容，可以防止它们成为性能负担。 钩子（Hooks）使设置能够自我改进： 大多数团队认为钩子是防止 Claude 做错事的脚本，但它们更有价值的用途是持续改进。一个停止钩子可以在会话期间反思发生了什么，并提出更新 CLAUDE.md 的建议，同时上下文仍然新鲜。启动钩子可以动态加载特定于团队的上下文，因此每位开发人员无需手动配置即可获得适合其模块的设置。对于像代码检查（linting）和格式化这样的自动化任务，钩子可以确定性地强制执行规则，产生比依赖 Claude 记住指令更一致的结果。 技能（Skills）在不使会话臃肿的情况下实现按需专业知识： 在拥有数十个任务的大型代码库中，并非每个专业知识都需要出现在每个会话中。技能通过渐进式披露（progressive disclosure）解决了这个问题，剥离专用的工作流和领域知识，只有当任务需要时才会加载它们。例如，当 Claude 正在评估安全漏洞时，安全审查技能会加载；当进行代码更改且需要更新文档时，文档处理技能会加载。 技能还可以限定在特定路径上，因此它们仅在代码库的相关部分激活。一个拥有支付服务的团队可以将他们的部署技能绑定到该目录，这样当有人在单体仓库的其他地方工作时，它永远不会自动加载。 图 Claude Code扩展层一览 插件（Plugins）分发工作成果： 大型代码库面临的一个挑战是良好的设置会变得“部落化”。插件将技能、钩子和 MCP 配置捆绑到一个可安装的包中，这样当新工程师在第一天安装该插件时，他们将立即获得与那些一直使用 Claude 的人相同的上下文和能力。插件更新可以通过托管市场（managed marketplaces）在整个组织内分发。 例如，一家大型零售商与我们合作，构建了一个技能，将 Claude 连接到他们的内部分析平台，以便业务分析师无需离开工作流即可获得性能数据。他们在全面推广前将此作为插件分发。 语言服务器协议（LSP）集成赋予 Claude 与开发人员在 IDE 中相同的导航能力： 大多数大型代码库的 IDE 已经在运行 LSP，支持“转到定义”和“查找所有引用”。将此呈现给 Claude 赋予了它符号级精度：它可以跟踪函数调用到其定义、跨文件跟踪引用，并区分不同语言中名称相同的符号。如果没有这一点，Claude 会进行文本匹配，并可能落在错误的符号上。一家企业软件公司在全面推广 Claude Code 之前，在全公司范围内集成了 LSP，专门用于 C 和 C++ 的大规模导航。对于多语言代码库，这是最具价值的投资之一。 MCP 服务器扩展一切： MCP 服务器是 Claude 如何连接到它原本无法触及的内部工具、数据源和 API。最复杂的团队构建了 MCP 服务器，通过将结构化搜索作为 Claude 可以直接调用的工具来暴露出来。其他人则将 Claude 连接到内部文档、票务系统或分析平台。 子智能体（Subagents）分离探索与编辑： 子智能体是一个拥有自己上下文窗口的隔离 Claude 实例，它承担任务、完成工作，并仅将最终结果返回给父智能体。一旦Harness框架就位，一些团队会启动一个只读子智能体来映射子系统并将发现结果写入文件，然后由主智能体进行全面编辑。 下表总结了每个组件的作用、加载时间以及我们常见于每个组件的错误：</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中的表现。实际上，围绕模型的生态系统——即“Harness”——比模型本身更能决定 Claude Code 的表现。 该H…</div>
+  <div class="quote">原文依据：关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中的表现。</div>
 </div>
 <div class="card">
   <h3>【模板 A】成功部署的三种配置模式</h3>
@@ -54,19 +55,19 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="card">
   <h3>【模板 B】使代码库在大规模下可导航</h3>
   <p><strong>在讲什么问题：</strong>使代码库在大规模下可导航</p>
-  <p><strong>关键理解：</strong>Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 Claude 盲目导航。最有效的部署会在前期投入，使代码库对 Claude 可读。以下模式始终出现： 保持 CLAUDE.md 文件精简且分层。 Claude 在代码库中移动时会累积加载它们：根目录提供大局观，子目录提供本地约定。根目录应仅包含指针和关键注意事项；其余所有内容都会造成噪音。 在子目录中初始化，而不是在代…</p>
+  <p><strong>关键理解：</strong>Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 Claude 盲目导航。最有效的部署会在前期投入，使代码库对 Claude 可读。以下模式始终出现： 保持 CLAUDE.md 文件精简且分层。 Claude 在代码库中移动时会累积加载它们：根目录提供大局观，子目录提供本地约定。根目录应仅包含指针和关键注意事项；其余所有内容都会造成噪音。 在子目录中初始化，而不是在代码库根目录。 当它被限制在实际开发的代码库部分时，Claude 的工作效果最好。 按子目录限制范围和 lint 命令。 当 Claude 更改一项服务时，运行全套测试会导致超时并浪费无关的输出。子目录级别的 CLAUDE.md 文件应指定适用于代码库该部分的命令。这对于具有深度跨目录依赖关系的编译型单体仓库来说，按目录进行范围限制更难实现，且可能需要特定于项目的构建配置。 使用 .ignore 文件排除生成的文件、构建产物和第三方代码。 在 .claud/settings.json 中提交 permissions.deny 规则意味着排除项是版本控制的，因此每位开发人员无需自己配置即可获得相同的降噪效果。在某些代码库中，生成的文件本身就是开发工作的对象。开发人员可以在其本地设置中覆盖项目级排除项，而不会影响团队的其他成员。 当目录结构无法完成工作时，构建代码库地图。 对于那些没有整理成常规目录结构的组织，一个在 repo 根目录下包含顶层文件夹描述及一行内容摘要的轻量级 markdown 文件，可以在打开文件前提供一个目录索引供 Claude 扫描。对于拥有数百个顶层文件夹的代码库，这种方法作为分层方法效果最好：根文件仅描述最高级别的结构，而子目录 CLAUDE.md 文件在 Claude 遍历目录树时按需提供下一级别的详细信息。对于更简单的情况，通过 @ 引用特定的文件或目录也可以完成同样的工作。 运行 LSP 服务器，以便 Claude 按符号而不是字符串进行搜索。 在大型代码库中，针对通用函数名进行 Grep 会返回数千个匹配项，Claude 会消耗上下文文件来找出哪些内容相关。LSP 仅返回指向同一符号的引用，因此在 Claude 读取之前会进行过滤。设置此项需要为你的语言安装代码智能插件和相应的语言服务器二进制文件；Claude Code 文档涵盖了可用的插件和故障排除。 一个警告：存在分层 CLAUDE.md 方法失效的边缘情况，例如拥有数十万个文件夹和数百万个文件的代码库，或非 git 版本控制系统上的遗留系统。我们将在本系列的后续文章中讨论它们的挑战。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 Claude 盲目导航。最有效的部署会在前期投入，使代码库对 Claude 可读。以下模式始终出现： 保持 CLAUDE…</div>
+  <div class="quote">原文依据：Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 Claude 盲目导航。</div>
 </div>
 <div class="card">
   <h3>【模板 A】随着模型智能的发展积极维护 CLAUDE.md 文件</h3>
   <p><strong>在讲什么问题：</strong>随着模型智能的发展积极维护 CLAUDE.md 文件</p>
-  <p><strong>关键理解：</strong>为当前模型编写的指令可能会在面对未来模型时产生反作用。引导 Claude 遵循其难以处理的模式的 CLAUDE.md 文件，在下一代模型出现时，可能会变得不必要或起到积极的限制作用。例如，一条告诉 Claude 分解每次重构的 CLAUDE.md 规则可能曾帮助旧模型保持在轨道上，但会阻止新模型完成它所处理的更高级的跨文件编辑。 在模型的推理能力或 Claude Code 自身工具的开销变得不再重要时，这些限制就成了负担。一个截获文件写…</p>
+  <p><strong>关键理解：</strong>为当前模型编写的指令可能会在面对未来模型时产生反作用。引导 Claude 遵循其难以处理的模式的 CLAUDE.md 文件，在下一代模型出现时，可能会变得不必要或起到积极的限制作用。例如，一条告诉 Claude 分解每次重构的 CLAUDE.md 规则可能曾帮助旧模型保持在轨道上，但会阻止新模型完成它所处理的更高级的跨文件编辑。 在模型的推理能力或 Claude Code 自身工具的开销变得不再重要时，这些限制就成了负担。一个截获文件写入以在 Perforce 代码库中强制执行 p4 edit 的钩子，在 Claude Code 增加原生 Perforce 模式后变得多余。 团队应预计每三到六个月进行一次有意义的配置审查，但只要在重大模型发布后感觉性能停滞，也值得进行一次审查。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：为当前模型编写的指令可能会在面对未来模型时产生反作用。引导 Claude 遵循其难以处理的模式的 CLAUDE.md 文件，在下一代模型出现时，可能会变得不必要或起到积极的限制作用。例如，一条告诉 Claude 分解每次重构的 CLAUDE…</div>
+  <div class="quote">原文依据：为当前模型编写的指令可能会在面对未来模型时产生反作用。引导 Claude 遵循其难以处理的模式的 CLAUDE.md 文件，在下一代模型出现时，可能会变得不必要或起到积极的限制作用。</div>
 </div>
 <div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>Claude Code 如何导航大型代码库：Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵…</li><li>Harness 与模型同样重要：关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。团队专注于模型的基准测试以及它在任务测试中…</li><li>成功部署的三种配置模式：你如何为大型代码库配置 Claude Code 取决于代码库的结构。尽管如此，我们观察到的部署中始终出现三种模式。…</li><li>使代码库在大规模下可导航：Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。每次会话加载太多上下文会导致性能下降，而加载太少则会使 …</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>Claude Code 如何导航大型代码库：Claude Code 像软件工程师一样导航代码库：它遍历文件系统、读取文件、使用 grep 查找所需内容，并跨代码库遵循引用。</li><li>Harness 与模型同样重要：关于 Claude Code 能力最常见的误解之一是它完全由所使用的模型决定。</li><li>成功部署的三种配置模式：你如何为大型代码库配置 Claude Code 取决于代码库的结构。</li><li>使代码库在大规模下可导航：Claude 帮助大型代码库的能力取决于其查找正确上下文的能力。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「Claude Code 如何导航大型代码库」在本周工作中做 1 次对照验证</li><li>结合「Harness 与模型同样重要」在本周工作中做 1 次对照验证</li><li>结合「成功部署的三种配置模式」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
     </div>
   </foreignObject>
 </svg>

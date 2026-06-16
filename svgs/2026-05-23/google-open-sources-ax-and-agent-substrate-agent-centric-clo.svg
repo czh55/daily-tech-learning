@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4731" viewBox="0 0 1320 4731">
-  <foreignObject x="0" y="0" width="1320" height="4731">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5198" viewBox="0 0 1320 5198">
+  <foreignObject x="0" y="0" width="1320" height="5198">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -19,6 +19,7 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
@@ -28,7 +29,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <h1>Google 开源 AX 与 Agent Substrate：构建以 Agent 为核心的云原生计算底座</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">架构解密：从基础设施到应用层的“</div><span class="arrow-sym">→</span><div class="node">底层解局：Agent Subst</div><span class="arrow-sym">→</span><div class="node">1. 基于 gVisor 的强物</div><span class="arrow-sym">→</span><div class="node">2. Pod 快照技术与冷启动消</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">架构解密：从基础设施到应用层的“三层 Agent 堆栈”</div><span class="arrow-sym">→</span><div class="node">底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？</div><span class="arrow-sym">→</span><div class="node">基于 gVisor 的强物理隔离（Ironclad Security）</div><span class="arrow-sym">→</span><div class="node">Pod 快照技术与冷启动消除（Reduce Idle Compute Low Latency）</div></div></div>
 
 <div class="card">
   <h3>【模板 A】架构解密：从基础设施到应用层的“三层 Agent 堆栈”</h3>
@@ -40,33 +41,33 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="card">
   <h3>【模板 B】底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？</h3>
   <p><strong>在讲什么问题：</strong>底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？</p>
-  <p><strong>关键理解：</strong>传统的 Kubernetes 是为了支撑长期运行、状态相对稳定的“微服务（Microservices）”而设计的。如果直接将数百万个 Agent 部署为普通的 K8s Pod，系统会迅速面临崩溃： 内存与算力浪费 ：许多 Agent 处于非激活状态（等待人类输入或调度触发），如果让它们的 Pod 持续在线，会产生天文数字的算力账单。 控制面过载 ：数百万个 Agent 产生的子秒级内部工具调用，如果全部经过传统的 K8s API Ser…</p>
+  <p><strong>关键理解：</strong>传统的 Kubernetes 是为了支撑长期运行、状态相对稳定的“微服务（Microservices）”而设计的。如果直接将数百万个 Agent 部署为普通的 K8s Pod，系统会迅速面临崩溃： 内存与算力浪费 ：许多 Agent 处于非激活状态（等待人类输入或调度触发），如果让它们的 Pod 持续在线，会产生天文数字的算力账单。 控制面过载 ：数百万个 Agent 产生的子秒级内部工具调用，如果全部经过传统的 K8s API Server 进行调度和授权，会直接导致 K8s 控制平面瘫痪。 安全防线脆弱 ：Agent 具有动态执行解释型代码（如本地运行一段临时生成的 Python 来计算数据）的本能，一旦逃逸，将危害宿主机安全。 为此，Google 联合 GKE 团队和 Kubernetes 社区，推出了 Agent Substrate 与 Agent Sandbox ：</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：传统的 Kubernetes 是为了支撑长期运行、状态相对稳定的“微服务（Microservices）”而设计的。如果直接将数百万个 Agent 部署为普通的 K8s Pod，系统会迅速面临崩溃： 内存与算力浪费 ：许多 Agent 处于非…</div>
+  <div class="quote">原文依据：传统的 Kubernetes 是为了支撑长期运行、状态相对稳定的“微服务（Microservices）”而设计的。如果直接将数百万个 Agent 部署为普通的 K8s Pod，系统会迅速面临崩溃： 内存与算力浪费 ：许多 Agent 处于非激活状态（等待人类输入或调度触发），如果让它们的 Pod 持续在线，会产生天文数字的算力账单。</div>
 </div>
 <div class="card">
-  <h3>【模板 A】1. 基于 gVisor 的强物理隔离（Ironclad Security）</h3>
-  <p><strong>在讲什么问题：</strong>1. 基于 gVisor 的强物理隔离（Ironclad Security）</p>
+  <h3>【模板 A】基于 gVisor 的强物理隔离（Ironclad Security）</h3>
+  <p><strong>在讲什么问题：</strong>基于 gVisor 的强物理隔离（Ironclad Security）</p>
   <p><strong>关键理解：</strong>GKE Agent Sandbox 默认集成了开源的安全容器沙箱 gVisor 。 它在不可信的 Agent 应用代码与 Linux 内核之间插入了一个名为 Sentry 的用户态内核。所有 Agent 试图执行的系统调用（Syscalls）都会在用户态被拦截、审计并安全执行。这确保了即便 Agent 生成的代码带有恶意，也绝无可能穿透容器逃逸到宿主机上，实现了生产级的“Secure-by-design”。</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：GKE Agent Sandbox 默认集成了开源的安全容器沙箱 gVisor 。 它在不可信的 Agent 应用代码与 Linux 内核之间插入了一个名为 Sentry 的用户态内核。所有 Agent 试图执行的系统调用（Syscalls…</div>
+  <div class="quote">原文依据：GKE Agent Sandbox 默认集成了开源的安全容器沙箱 gVisor 。它在不可信的 Agent 应用代码与 Linux 内核之间插入了一个名为 Sentry 的用户态内核。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】2. Pod 快照技术与冷启动消除（Reduce Idle Compute Low Latency）</h3>
-  <p><strong>在讲什么问题：</strong>2. Pod 快照技术与冷启动消除（Reduce Idle Compute Low Latency）</p>
-  <p><strong>关键理解：</strong>为了消灭 Agent 闲置时的算力浪费，Agent Substrate 引入了 Pod 快照技术（Pod Snapshots） ： 主动挂起（Suspend） ：当一个 Agent 进入休眠或长时等待状态时，Agent Substrate 捕获其完整的运行状态并制作快照，释放其占用的物理 CPU 与内存资源。 瞬时恢复（Resume） ：当事件触发或用户响应时，系统通过集成的 温水池（Warm Pool） 技术，利用快照快速恢复运行。 …</p>
+  <h3>【模板 B】Pod 快照技术与冷启动消除（Reduce Idle Compute Low Latency）</h3>
+  <p><strong>在讲什么问题：</strong>Pod 快照技术与冷启动消除（Reduce Idle Compute Low Latency）</p>
+  <p><strong>关键理解：</strong>为了消灭 Agent 闲置时的算力浪费，Agent Substrate 引入了 Pod 快照技术（Pod Snapshots） ： 主动挂起（Suspend） ：当一个 Agent 进入休眠或长时等待状态时，Agent Substrate 捕获其完整的运行状态并制作快照，释放其占用的物理 CPU 与内存资源。 瞬时恢复（Resume） ：当事件触发或用户响应时，系统通过集成的 温水池（Warm Pool） 技术，利用快照快速恢复运行。 根据 Google Cloud 的官方测评，GKE Agent Sandbox 能够在 每秒启动 300 个沙箱 的高并发压力下，保证 90% 的分配在 200 毫秒内完成 。这几乎抹平了传统安全容器长达数秒的冷启动时延，真正做到了“随用随起，用完即挂”。 图：GKE 引入的高性能温水池与 Pod 快照技术</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：为了消灭 Agent 闲置时的算力浪费，Agent Substrate 引入了 Pod 快照技术（Pod Snapshots） ： 主动挂起（Suspend） ：当一个 Agent 进入休眠或长时等待状态时，Agent Substrate …</div>
+  <div class="quote">原文依据：为了消灭 Agent 闲置时的算力浪费，Agent Substrate 引入了 Pod 快照技术（Pod Snapshots） ： 主动挂起（Suspend） ：当一个 Agent 进入休眠或长时等待状态时，Agent Substrate 捕获其完整的运行状态并制作快照，释放其占用的物理 CPU 与内存资源。瞬时恢复（Resume） ：当事件触发或用户响应时，系统通过集成的 温水池（Warm Pool） 技术，利用快照快速恢复运行。</div>
 </div>
 <div class="card">
   <h3>【模板 A】应用层编排：Google AX 如何行使“指挥官”职责？</h3>
   <p><strong>在讲什么问题：</strong>应用层编排：Google AX 如何行使“指挥官”职责？</p>
   <p><strong>关键理解：</strong>在底层的 Agent Substrate 提供了极致的物理隔离与快速调度能力后，位于上层的 Agent Executor (AX) 运行时则真正扮演起了“状态与业务编排指挥官”的角色。 AX 的核心设计并不是去触碰模型细节，而是通过 Single-Writer 架构 和 Durable Execution（持久化执行） 来保障 Agentic 循环的绝对可靠：</p>
   <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：在底层的 Agent Substrate 提供了极致的物理隔离与快速调度能力后，位于上层的 Agent Executor (AX) 运行时则真正扮演起了“状态与业务编排指挥官”的角色。 AX 的核心设计并不是去触碰模型细节，而是通过 Sin…</div>
+  <div class="quote">原文依据：在底层的 Agent Substrate 提供了极致的物理隔离与快速调度能力后，位于上层的 Agent Executor (AX) 运行时则真正扮演起了“状态与业务编排指挥官”的角色。AX 的核心设计并不是去触碰模型细节，而是通过 Single-Writer 架构 和 Durable Execution（持久化执行） 来保障 Agentic 循环的绝对可靠：</div>
 </div>
 <div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>架构解密：从基础设施到应用层的“三层 Agent 堆栈”：要理解这一套复杂的系统，我们需要像拆解传统 TCP/IP 协议栈一样，将其自底向上划分为四个物理层级： 这种分层解耦的系…</li><li>底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？：传统的 Kubernetes 是为了支撑长期运行、状态相对稳定的“微服务（Microservices）”而设计的。如果直…</li><li>1. 基于 gVisor 的强物理隔离（Ironclad Security）：GKE Agent Sandbox 默认集成了开源的安全容器沙箱 gVisor 。 它在不可信的 Agent 应用代码与…</li><li>2. Pod 快照技术与冷启动消除（Reduce Idle Compute Low Latency）：为了消灭 Agent 闲置时的算力浪费，Agent Substrate 引入了 Pod 快照技术（Pod Snapsho…</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>重读原文标记 3 处可立刻实践的操作</li><li>与团队分享一个关键认知转变</li><li>把本文方法加入你的复习卡片库</li></ol></div>
+<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>架构解密：从基础设施到应用层的“三层 Agent 堆栈”：要理解这一套复杂的系统，我们需要像拆解传统 TCP/IP 协议栈一样，将其自底向上划分为四个物理层级： 这种分层解耦的系统设计，标志着 AI 应用开发正式告别了“框架包揽一切”的单体混沌状态，进入了精细化、高可用的系统工程时代。</li><li>底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？：传统的 Kubernetes 是为了支撑长期运行、状态相对稳定的“微服务（Microservices）”而设计的。</li><li>基于 gVisor 的强物理隔离（Ironclad Security）：GKE Agent Sandbox 默认集成了开源的安全容器沙箱 gVisor 。</li><li>Pod 快照技术与冷启动消除（Reduce Idle Compute Low Latency）：为了消灭 Agent 闲置时的算力浪费，Agent Substrate 引入了 Pod 快照技术（Pod Snapshots） ： 主动挂起（Suspend） ：当一个 Agent 进入休眠或长时等待状态时，Agent Substrate 捕获其完整的运行状态并制作快照，释放其占用的物理 CPU 与内存资源。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「架构解密：从基础设施到应用层的“三层 Agent 堆栈”」在本周工作中做 1 次对照验证</li><li>结合「底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？」在本周工作中做 1 次对照验证</li><li>结合「基于 gVisor 的强物理隔离（Ironclad Security）」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
     </div>
   </foreignObject>
 </svg>
