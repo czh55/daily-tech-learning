@@ -95,6 +95,34 @@ SVG 质量取决于是否做到以下六点，缺一不可：
 
 ---
 
+## 反驳区要求（必做）
+
+**位置：** 所有内容卡片之后、结论区之前，独立模块。与「认知纠偏」不同——纠偏纠正读者误解，反驳呈现**对立者的最强一击**。
+
+**写法：**
+
+1. **识别对立者**：找出文章核心论点最可能遭遇的反对者——可以是具体人物/学派、行业惯例、历史先例，或原文已提及的批评声音
+2. **一句话反驳**：站在对立者角度，用**一句完整的话**精简反驳（15-40 字为宜，不得截断加省略号）；手段三选一或组合：逻辑推演、反例、历史类比
+3. **标注视角**：用「对立视角：XXX」点明谁在说话
+
+**禁止：**
+
+-  strawman（稻草人）——反驳必须有力，不能故意弱化
+-  多段展开或列表——严格一句话
+-  与认知纠偏重复——纠偏是「读者错了」，反驳是「作者错了（或至少没那么对）」
+
+**HTML 结构：**
+
+```html
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Java 资深架构师 / 「够用就行」派</p>
+  <p class="rebuttal-text">编译通过只保证类型与内存安全，Heartbleed 级的逻辑漏洞和 async 死锁照样上线——你用编译器刚性换掉的，是 Java 生态二十年迭代速度和招聘池。</p>
+</div>
+```
+
+---
+
 ## 结论区要求
 
 固定三段式：
@@ -109,10 +137,11 @@ SVG 质量取决于是否做到以下六点，缺一不可：
 ### 单篇文章
 ```
 1. WebFetch 抓取原文
-2. 阅读并标注：提取核心论点、方法、数据、坑点、作者态度
+2. 阅读并标注：提取核心论点、方法、数据、坑点、作者态度、**关键对立者**
 3. 选择卡片模板组合（从上面六种中选取合适的 3-5 种）
-4. 写 Node .mjs 脚本生成 SVG（import { buildSvg } from './svg-auto-height.mjs'）
-5. 执行脚本，验证 SVG 完整可滚动
+4. 撰写**反驳区**（对立视角 + 一句话反驳）
+5. 写 Node .mjs 脚本生成 SVG（import { buildSvg } from './svg-auto-height.mjs'）
+6. 执行脚本，验证 SVG 完整可滚动
 ```
 
 ### 多篇文章（批量）
@@ -196,6 +225,10 @@ th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1
 td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 ```
 
@@ -261,5 +294,6 @@ WebFetch 抓取后、写 subtitle 前，**必须先剔除以下 boilerplate**，
 - [ ] 每个概念都说明了适用边界
 - [ ] 多概念间有对比表
 - [ ] 文首有概念关系图
+- [ ] 结论区之前有反驳区（对立视角 + 一句话，逻辑/反例/历史，非 strawman）
 - [ ] 结论区有三段式（总结+行动+认知转变）
 - [ ] SVG 高度正常、XML 无错配标签

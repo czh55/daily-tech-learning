@@ -37,6 +37,10 @@ th{background:#f1f5f9;padding:10px 12px;text-align:left;font-weight:700;color:#1
 td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
 
 const body = `
@@ -127,6 +131,12 @@ const body = `
   <p><strong>怎么落地：</strong>按决策树：要网关？→ 要进化？→ Hermes；要 25+ 平台+Cron？→ OpenClaw；纯编码？→ Claude Code/OpenCode。</p>
   <p><strong>适用边界：</strong>金融交易等确定性输出场景优先 OpenClaw Cron 或 Claude Code 可预测行为。</p>
   <div class="quote">原文：「Stars 反映关注度，不反映质量。建议综合看：Stars 趋势 + CVE 记录 + 社区活跃度 + 是否匹配你的场景。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：OpenClaw 生态原教旨主义者 · 「集成广度即护城河」派</p>
+  <p class="rebuttal-text">Hermes 的学习回路再聪明，也无法 overnight 复制 OpenClaw 25+ 频道原生集成和 ClawHub 四万 Skill 的网络效应——在安全债务面前换 Agent，对已经 all-in OpenClaw 的团队等于推倒重来。</p>
 </div>
 
 <div class="conclusion">

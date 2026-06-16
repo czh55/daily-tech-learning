@@ -36,6 +36,10 @@ th{background:#f1f5f9;padding:10px 12px;text-align:left;font-weight:700;color:#1
 td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
 
 const body = `
@@ -130,6 +134,12 @@ const body = `
   <p><strong>适用边界：</strong>仅当引入新元素、剧烈变化、变形细节、多元素交互时才补视觉描述。</p>
   <div class="highlight"><strong>落地建议：</strong>约束词保存为固定模板每次粘贴：「全程保持坚固刚性，焦点锐利细节丰富，连续无缝的镜头，平稳推进」。</div>
   <div class="quote">原文：「写提示词就像给摄影师下达拍摄指令。你不会说『不要拍模糊的』，而是说『对焦要清晰、细节要丰富』。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「模型决定论」派 · 可灵/Veo 实践者</p>
+  <p class="rebuttal-text">Gen-4.5 的 Elo 第一只说明 Runway 上限高——同一套八层框架搬到可灵或 Veo 上要重写大半，力-反应语法对安静对白镜头是 overkill，探索模式「免费试错」烧掉的时间才是最大的隐藏成本。</p>
 </div>
 
 <div class="conclusion">
