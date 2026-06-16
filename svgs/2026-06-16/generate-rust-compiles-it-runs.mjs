@@ -36,6 +36,10 @@ th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1
 td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
 
 const body = `
@@ -126,6 +130,12 @@ const body = `
   <p><strong>解法：</strong>底层 unsafe 实现 + 公开安全 API 封装；企业业务代码 unsafe 率保持 0%。</p>
   <p><strong>严重程度：</strong>小心——误解会导致团队滥用 unsafe 毁掉安全叙事。</p>
   <div class="pitfall"><strong>另一个坑：</strong>大模型时代写代码门槛降低，但系统可靠性更脆弱——更需 Rust 这类编译期防线，而非放弃类型约束。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
+  <p class="rebuttal-text">编译通过只保证类型与内存安全，Heartbleed 级的逻辑漏洞和 async 死锁照样上线——你用编译器刚性换掉的，是 Java 生态二十年迭代速度和可招到的开发者池。</p>
 </div>
 
 <div class="conclusion">
