@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Rust 还没进前十，TIOBE 就开始唱衰了？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/17/tiobe-ranking-and-the-decline-of-rust-hype</p>
+<p class="subtitle">本文解决的核心问题是：Rust 还没进前十，TIOBE 就开始唱衰了？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">官方的“诊断书”：Rust 的“</div><span class="arrow-sym">→</span><div class="node">榜单的原罪：用“百度指数”去衡量</div><span class="arrow-sym">→</span><div class="node">真实的版图：Rust 正在经历一</div><span class="arrow-sym">→</span><div class="node">我们真正应该关注什么？</div></div></div>
 
 <div class="card">

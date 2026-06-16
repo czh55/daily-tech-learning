@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>别神话 Rust 重写了：搞定1%热路径，Go 性能照样起飞</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/18/go-performance-optimization-over-rust-rewrites</p>
+<p class="subtitle">本文解决的核心问题是：从底层基础设施到上层业务逻辑，无数团队在遇到性能瓶颈时，脑海中蹦出的第一个念头就是：“Go/Java 搞不定了，由于 GC 停顿的存在，我们必须换 Rust 乃至 C++ 来重构核心模块。” 但这真的是解决性能问题的唯一出路吗？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">现代软件最大的毒瘤：“不必要的复</div><span class="arrow-sym">→</span><div class="node">你的 99% 代码根本不需要瞎折</div><span class="arrow-sym">→</span><div class="node">VictoriaMetrics </div><span class="arrow-sym">→</span><div class="node">放弃盲猜，用 Profiler </div></div></div>
 
 <div class="card">

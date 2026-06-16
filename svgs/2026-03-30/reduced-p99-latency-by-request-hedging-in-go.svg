@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>降低 74% 的 P99 尾延迟：揭秘 Go HTTP 客户端的“请求对冲”魔法</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/30/reduced-p99-latency-by-request-hedging-in-go</p>
+<p class="subtitle">本文解决的核心问题是：尾延迟是分布式系统中最难缠的对手。在你的项目中，主要的长尾延迟来源是什么？你会为了降低那 1% 的极端慢请求，而接受 5% 的额外系统负载吗？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">尾延迟的诅咒：为什么重试不是万能</div><span class="arrow-sym">→</span><div class="node">Request Hedging：</div><span class="arrow-sym">→</span><div class="node">实战：构建可压测的 Hedgin</div><span class="arrow-sym">→</span><div class="node">项目布局</div></div></div>
 
 <div class="card">

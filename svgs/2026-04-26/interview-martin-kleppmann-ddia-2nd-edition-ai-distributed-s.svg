@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>对话 Martin Kleppmann：DDIA 第二版揭秘，以及 AI 将如何颠覆分布式系统</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/26/interview-martin-kleppmann-ddia-2nd-edition-ai-distributed-systems</p>
+<p class="subtitle">本文解决的核心问题是：在一个技术日新月异的时代，经典的寿命往往很短。很多人都在问：DDIA 的理论还跟得上这个 AI 时代吗？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">历史的拐点：从“物理磁盘”到“云</div><span class="arrow-sym">→</span><div class="node">MapReduce 之死：一代霸</div><span class="arrow-sym">→</span><div class="node">AI 的重塑：形式化验证的“文艺</div><span class="arrow-sym">→</span><div class="node">身份的危机：当人类不再拥有“挣扎</div></div></div>
 
 <div class="card">

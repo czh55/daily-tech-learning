@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>AI 优化 1.5ms，手写 0.02ms！Ghostty 作者痛批 AI 编程“平庸陷阱”</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/30/ghostty-creator-slams-ai-coding-performance-1-5ms-vs-0-02ms</p>
+<p class="subtitle">本文解决的核心问题是：但 Mitchell 立刻指出了最让人细思极恐的问题：“确实如此。但如果所有人都满足于 AI 给出的‘还可以’的结果， 未来的 S 级程序员从哪里来？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">实验开始：让 AI 去优化“故意</div><span class="arrow-sym">→</span><div class="node">降维打击：人类架构师的恐怖直觉</div><span class="arrow-sym">→</span><div class="node">戳破幻觉：“盲从 AI 的人，正</div><span class="arrow-sym">→</span><div class="node">开发者圈的反思：被剥夺的“系统思</div></div></div>
 
 <div class="card">

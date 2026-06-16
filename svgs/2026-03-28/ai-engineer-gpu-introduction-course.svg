@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>谷歌一篇论文砸崩内存巨头？不懂“显存墙”，怎么做 AI 时代的工程师！</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/28/ai-engineer-gpu-introduction-course</p>
+<p class="subtitle">本文解决的核心问题是：谷歌一篇论文砸崩内存巨头？不懂“显存墙”，怎么做 AI 时代的工程师！？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">AI 时代的底色：算力过剩，访存</div><span class="arrow-sym">→</span><div class="node">为什么后端工程师必须懂 GPU？</div><span class="arrow-sym">→</span><div class="node">这门微专栏将教你什么？</div><span class="arrow-sym">→</span><div class="node">课程目录全景图</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>AI 时代，敏捷宣言已死？听听 Martin Fowler 和 Kent Beck 怎么说</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/12/agile-manifesto-dead-in-ai-era-martin-fowler-kent-beck</p>
+<p class="subtitle">本文解决的核心问题是：25 年后的今天，当生成式 AI 的海啸席卷全球，当“敏捷迭代”被 AI 的“瞬间生成”无情碾压时，我们不禁要问： 敏捷已死吗？我们曾经信奉的那些工程哲学，还剩下什么？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">历史的轮回：AI，不过是又一个“</div><span class="arrow-sym">→</span><div class="node">戳破幻觉：“敏捷”的敌人，从来不</div><span class="arrow-sym">→</span><div class="node">架构师的终极拷问：AI 正在摧毁</div><span class="arrow-sym">→</span><div class="node">手艺人的黄昏：当 AI 剥夺了“</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Rust 看了流泪，AI 看了沉默：扒开 Go 泛型最让你抓狂的“残疾”类型推断</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/27/function-type-inference-should-work-in-all-assignment-contexts</p>
+<p class="subtitle">本文解决的核心问题是：为什么 Rust 和 AI 看了会沉默？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">“薛定谔”式的类型推断</div><span class="arrow-sym">→</span><div class="node">为什么 Rust 和 AI 看了</div><span class="arrow-sym">→</span><div class="node">官方的修补：一场牵一发而动全身的</div><span class="arrow-sym">→</span><div class="node">小结</div></div></div>
 
 <div class="card">

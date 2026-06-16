@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>十年难题终获突破：揭秘 Go 1.27 接口逃逸分析优化</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/22/go-1-27-interface-escape-analysis-optimization-breakthrough</p>
+<p class="subtitle">本文解决的核心问题是：func (l *Leaking) String() string { global = l; return "" } 什么是好市民？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">困局：为什么接口转换成了“性能黑</div><span class="arrow-sym">→</span><div class="node">破局：CL 743200 带来的</div><span class="arrow-sym">→</span><div class="node">1. 核心武器：ifaceRec</div><span class="arrow-sym">→</span><div class="node">2. 逆向溯源：OCONVIFA</div></div></div>
 
 <div class="card">

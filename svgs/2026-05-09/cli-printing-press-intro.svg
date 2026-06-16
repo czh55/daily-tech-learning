@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>火爆外网的 Go 开源神器 CLI Printing Press：一键生成 Agent 专属 CLI 工具</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/09/cli-printing-press-intro</p>
+<p class="subtitle">本文解决的核心问题是：为什么一个”阉割版”打败了”全功能版”？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">先说一个反常识的故事</div><span class="arrow-sym">→</span><div class="node">AI Agent 的”工具饥渴”</div><span class="arrow-sym">→</span><div class="node">它到底是什么？</div><span class="arrow-sym">→</span><div class="node">为什么选 Go？</div></div></div>
 
 <div class="card">

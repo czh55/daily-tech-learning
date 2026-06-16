@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>拒绝“偷天换日”！深度拆解 Go sumdb 的密码学防线</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/14/go-sumdb-transparent-logs-supply-chain-trust</p>
+<p class="subtitle">本文解决的核心问题是：但是，新的问题随之而来：如果连 Google 运营的这个中央数据库也被黑客攻破了呢？或者如果服务器故意向特定用户返回伪造的哈希值呢？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">TOFU 困境与“多疑的客户端”</div><span class="arrow-sym">→</span><div class="node">核心底座：透明日志（Transp</div><span class="arrow-sym">→</span><div class="node">树的构建与防碰撞设计</div><span class="arrow-sym">→</span><div class="node">存在性证明</div></div></div>
 
 <div class="card">

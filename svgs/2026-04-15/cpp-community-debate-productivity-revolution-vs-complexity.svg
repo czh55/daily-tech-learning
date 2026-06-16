@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>C++ 社区内部大讨论：新特性到底是“生产力革命”，还是“叠加的复杂性”？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/15/cpp-community-debate-productivity-revolution-vs-complexity</p>
+<p class="subtitle">本文解决的核心问题是：C++ 社区内部大讨论：新特性到底是“生产力革命”，还是“叠加的复杂性”？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">分裂的社区：C++98 遗老、C</div><span class="arrow-sym">→</span><div class="node">底层矛盾：C++ 的“集市”哲学</div><span class="arrow-sym">→</span><div class="node">反思：“技术债”还是“护城河”？</div><span class="arrow-sym">→</span><div class="node">出路何在？：拥抱“渐进式现代化”</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>为什么你的 AI Agent 总是像个智障？来自 Manus 大佬的 2 年血泪避坑指南</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/18/why-ai-agents-act-stupid-manus-expert-pitfall-guide</p>
+<p class="subtitle">本文解决的核心问题是：结果呢？面对稍微复杂一点的任务，你的 Agent 瞬间退化成一个“智障”。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么给 AI 几百个工具，它反</div><span class="arrow-sym">→</span><div class="node">50年前的“管道”魔法，完美解决</div><span class="arrow-sym">→</span><div class="node">把大模型当人看，设计“防智障”导</div><span class="arrow-sym">→</span><div class="node">小结：化繁为简，才是架构的最高境</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>“AI 让每个人都成了开发者”，就像“相机让每个人都成了摄影师”</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/05/ai-makes-everyone-a-developer-like-cameras-for-photographers</p>
+<p class="subtitle">本文解决的核心问题是：” 这场争论，最终指向了一个更本质的问题： 当工具的门槛被无限降低，我们作为“专业人士”的价值，到底还剩下什么？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">一个非开发者的“玄学 Debug</div><span class="arrow-sym">→</span><div class="node">“Token 猪”与“认知卸载”</div><span class="arrow-sym">→</span><div class="node">当工具抹平了门槛</div><span class="arrow-sym">→</span><div class="node">从“手艺”到“品味”的跃迁</div></div></div>
 
 <div class="card">

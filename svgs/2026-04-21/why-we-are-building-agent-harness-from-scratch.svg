@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>聊聊为什么我要花这么大精力，带大家手写 Agent Harness？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/21/why-we-are-building-agent-harness-from-scratch</p>
+<p class="subtitle">本文解决的核心问题是：聊聊为什么我要花这么大精力，带大家手写 Agent Harness？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">拐点已至：被框架掩盖的“失控”</div><span class="arrow-sym">→</span><div class="node">什么是 Harness？为什么要</div><span class="arrow-sym">→</span><div class="node">AI 应用的新阶段：Agent </div><span class="arrow-sym">→</span><div class="node">极简哲学：为什么手写能带来认知跃</div></div></div>
 
 <div class="card">

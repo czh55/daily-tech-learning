@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>别再无脑 go get @latest 了！你的服务器可能下一秒就被黑客接管</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/19/proposal-support-dependency-cooldown-in-go-tooling</p>
+<p class="subtitle">本文解决的核心问题是：但如果我今天告诉你，你敲下的那个 @latest，其实是黑客精心为你准备的“夺命接引符”呢？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你以为的最新版，其实是黑客的“盲</div><span class="arrow-sym">→</span><div class="node">Go 的三道防线：MVS 与 S</div><span class="arrow-sym">→</span><div class="node">终极杀招：Go 社区的建议——“</div><span class="arrow-sym">→</span><div class="node">如何骗过时间？Go 底层的极度严</div></div></div>
 
 <div class="card">

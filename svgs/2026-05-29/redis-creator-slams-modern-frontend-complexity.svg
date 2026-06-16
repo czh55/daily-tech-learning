@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Redis 之父吐槽现代前端的复杂性：我们到底是在解决问题，还是在制造问题？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/29/redis-creator-slams-modern-frontend-complexity</p>
+<p class="subtitle">本文解决的核心问题是：Redis 之父吐槽现代前端的复杂性：我们到底是在解决问题，还是在制造问题？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">皇帝的新衣：被大厂“PUA”的前</div><span class="arrow-sym">→</span><div class="node">巴别塔的诅咒：为了一个按钮，引入</div><span class="arrow-sym">→</span><div class="node">返璞归真？：HTMX 与“后端文</div><span class="arrow-sym">→</span><div class="node">理性的声音：屁股决定脑袋</div></div></div>
 
 <div class="card">

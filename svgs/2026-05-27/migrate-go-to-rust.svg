@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>从 Go 迁移到 Rust</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/27/migrate-go-to-rust</p>
+<p class="subtitle">本文解决的核心问题是：这并不是“Rust 会更快吗？”或“Go 是否拥有类型系统？”的问题，因为 Go 在这些方面已经做得很好了。这里的讨论主要围绕 正确性保证 、 运行时权衡 以及 开发人员体验 展开。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">我的背景与立场</div><span class="arrow-sym">→</span><div class="node">初看最重要的命令</div><span class="arrow-sym">→</span><div class="node">Go 与 Rust 的关键差异</div><span class="arrow-sym">→</span><div class="node">为什么 Go 开发者会考虑 Ru</div></div></div>
 
 <div class="card">

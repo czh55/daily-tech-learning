@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Google 开源 AX 与 Agent Substrate：构建以 Agent 为核心的云原生计算底座</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/23/google-open-sources-ax-and-agent-substrate-agent-centric-cloud-native-foundation</p>
+<p class="subtitle">本文解决的核心问题是：底层解局：Agent Substrate 与 Sandbox 是如何解决物理局限的？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">架构解密：从基础设施到应用层的“</div><span class="arrow-sym">→</span><div class="node">底层解局：Agent Subst</div><span class="arrow-sym">→</span><div class="node">1. 基于 gVisor 的强物</div><span class="arrow-sym">→</span><div class="node">2. Pod 快照技术与冷启动消</div></div></div>
 
 <div class="card">

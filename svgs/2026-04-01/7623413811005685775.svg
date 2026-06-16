@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>大模型训练全流程实战指南工具篇（十）—— 小白也能懂的大模型训练参数万字详解</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">大模型</span><span class="tag tag-green">Agent 实战</span><span class="tag tag-orange">开源项目</span></div>
-<p class="subtitle">本文解决的核心问题是：本文围绕核心问题展开，提炼关键理解、实践路径与常见误区。</p>
+<p class="subtitle">本文解决的核心问题是：读者应如何理解「大模型训练全流程实战指南工具篇（十）—— 小白也能懂的大模型训练参数万字详解」一文的核心论点与可行动启示。</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">问题</div><span class="arrow-sym">→</span><div class="node">方法</div><span class="arrow-sym">→</span><div class="node">实践</div></div></div>
 
 <div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>

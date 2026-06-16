@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Ghostty 之父带头“出走”GitHub！官方 CTO 紧急道歉，并揭秘正在使用 Go 语言救火</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/30/ghostty-creator-leads-github-exodus-cto-apology-go-fix</p>
+<p class="subtitle">本文解决的核心问题是：压垮骆驼的稻草：被 AI “撑爆”的古老架构 GitHub 到底怎么了？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">压垮骆驼的稻草：被 AI “撑爆</div><span class="arrow-sym">→</span><div class="node">Go 语言的救赎：从 Ruby </div><span class="arrow-sym">→</span><div class="node">从“深情”到“决绝”：一个顶级开</div><span class="arrow-sym">→</span><div class="node">小结：当“基础设施”不再是理所当</div></div></div>
 
 <div class="card">

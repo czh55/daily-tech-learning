@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>薄驾驭，厚技能：YC 掌门人揭秘拉开 1000 倍效率差距的 AI 工程化心法</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/19/thin-harness-fat-skills</p>
+<p class="subtitle">本文解决的核心问题是：在过去一年，你有没有想过，为什么同样用着 GPT 或 Claude 等大模型以及Claude Code这样的Coding Agent，有的人生产力只提升了 2 倍，而有的人却能爆发出 100倍、甚至 1000倍 的惊人能量？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你的“胖驾驭”，正在杀死你的 A</div><span class="arrow-sym">→</span><div class="node">五大心法：从“写 Prompt”</div><span class="arrow-sym">→</span><div class="node">心法一：技能文件（Skill F</div><span class="arrow-sym">→</span><div class="node">心法二：解析器（Resolver</div></div></div>
 
 <div class="card">

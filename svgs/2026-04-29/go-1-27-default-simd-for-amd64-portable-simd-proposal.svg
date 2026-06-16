@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Go 1.27 将默认开启 SIMD for amd64，可移植 SIMD 包提案出炉</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/29/go-1-27-default-simd-for-amd64-portable-simd-proposal</p>
+<p class="subtitle">本文解决的核心问题是：如何调和这个矛盾？Go 团队从标准库中 syscall 和 os 包的关系里，找到了灵感。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">Go 的 SIMD 哲学：sys</div><span class="arrow-sym">→</span><div class="node">硬核拆解：Go 1.27 即将转</div><span class="arrow-sym">→</span><div class="node">Go的野心：可移植的 simd </div><span class="arrow-sym">→</span><div class="node">神仙打架：一场关于“命名哲学”的</div></div></div>
 
 <div class="card">

@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>都在用 OpenClaw 跑 Skill，但你写的“技能”为什么总让 AI 频繁罢工？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/03/15/why-your-openclaw-skills-make-ai-go-on-strike</p>
+<p class="subtitle">本文解决的核心问题是：都在用 OpenClaw 跑 Skill，但你写的“技能”为什么总让 AI 频繁罢工？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你真的会写高阶的 Skill 吗</div><span class="arrow-sym">→</span><div class="node">如何批量“制造” AI 技能？</div><span class="arrow-sym">→</span><div class="node">添加新评论</div><span class="arrow-sym">→</span><div class="node">文章</div></div></div>
 
 <div class="card">

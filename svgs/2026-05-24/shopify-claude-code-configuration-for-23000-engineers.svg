@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>Shopify 23,000 名工程师背后的 Claude Code 配置方案（你可以直接复刻的完整配置）</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/24/shopify-claude-code-configuration-for-23000-engineers</p>
+<p class="subtitle">本文解决的核心问题是：然后批判你自己的提议：在规模化(scaling)时会出现什么问题？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">基础设施层（为什么他们的配置能奏</div><span class="arrow-sym">→</span><div class="node">模式 1：并行智能体，而非单一对</div><span class="arrow-sym">→</span><div class="node">模式 2：扩展批判循环 (Ext</div><span class="arrow-sym">→</span><div class="node">模式 3：Shopify AI </div></div></div>
 
 <div class="card">

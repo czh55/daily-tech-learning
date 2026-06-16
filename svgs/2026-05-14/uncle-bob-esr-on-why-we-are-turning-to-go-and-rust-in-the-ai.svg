@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>AI 时代，软件大师们为什么都倒戈向 Go 和 Rust 了？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/14/uncle-bob-esr-on-why-we-are-turning-to-go-and-rust-in-the-ai-era</p>
+<p class="subtitle">本文解决的核心问题是：AI 时代，软件大师们为什么都倒戈向 Go 和 Rust 了？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">认知颠覆：当 AI 成为主程序员</div><span class="arrow-sym">→</span><div class="node">宗师的抉择：为什么是 Go 和 </div><span class="arrow-sym">→</span><div class="node">时代的阵痛：被 AI 降维打击的</div><span class="arrow-sym">→</span><div class="node">反思：从“写手”到“审查员”的身</div></div></div>
 
 <div class="card">

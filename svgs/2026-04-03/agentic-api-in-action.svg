@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>REST 已老，AI 时代的智能体需要怎样的 API？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/04/03/agentic-api-in-action</p>
+<p class="subtitle">本文解决的核心问题是：REST 已老，AI 时代的智能体需要怎样的 API？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">AI 智能体的“认知障碍”：RE</div><span class="arrow-sym">→</span><div class="node">罪状一：意图的丢失</div><span class="arrow-sym">→</span><div class="node">罪状二：原子性与编排的噩梦</div><span class="arrow-sym">→</span><div class="node">罪状三：权限的过度宽泛</div></div></div>
 
 <div class="card">

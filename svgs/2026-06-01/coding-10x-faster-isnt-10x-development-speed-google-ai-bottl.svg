@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>写代码快 10 倍，不等于研发快 10 倍！Google 揭秘 AI 系统级瓶颈</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/06/01/coding-10x-faster-isnt-10x-development-speed-google-ai-bottleneck</p>
+<p class="subtitle">本文解决的核心问题是：什么意思？就是说，你每天工作的环境，不仅仅是一堆没有感情的服务器和代码库（Technical），它还包括了活生生的人、组织的价值观、激励机制和沟通文化（Socio）。这两个部分紧密咬合，互相塑造。？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">打破“代码崇拜”：你不仅在写代码</div><span class="arrow-sym">→</span><div class="node">灾难推演：当 AI 将代码量放大</div><span class="arrow-sym">→</span><div class="node">代码审查（Code Review</div><span class="arrow-sym">→</span><div class="node">编译时间（Build Time）</div></div></div>
 
 <div class="card">

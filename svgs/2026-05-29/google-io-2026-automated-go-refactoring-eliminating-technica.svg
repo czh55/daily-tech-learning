@@ -27,7 +27,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>无痛消灭技术债：Google I/O 2026 开启 Go 自动重构时代</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
-<p class="subtitle">本文解决的核心问题是：本文永久链接 https://tonybai.com/2026/05/29/google-io-2026-automated-go-refactoring-eliminating-technical-debt</p>
+<p class="subtitle">本文解决的核心问题是：AI 时代的编程语言：为什么“无聊（Boring）”反而成了最大的优势？</p>
 <div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">AI 时代的编程语言：为什么“无</div><span class="arrow-sym">→</span><div class="node">杀手锏：gofix 与现代转换器</div><span class="arrow-sym">→</span><div class="node">征服并发测试：告别 time.S</div><span class="arrow-sym">→</span><div class="node">零代码修改，性能飙升 50%：绿</div></div></div>
 
 <div class="card">
