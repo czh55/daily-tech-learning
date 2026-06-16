@@ -71,7 +71,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 A】「编译即正确」的底层机制</h3>
+  <h3>【概念拆解卡】「编译即正确」的底层机制</h3>
   <p><strong>在讲什么问题：</strong>为什么 Rust 能通过编译器刚性约束，让「编译通过」接近「可正确运行」？</p>
   <p><strong>核心机制：</strong>消灭 null（用 Option 强制解包）、错误即值（Result + ? 操作符强制处理）、Doc Tests 让文档示例自动进 CI。</p>
   <p><strong>关键理解：</strong>不靠开发者自律，而用编译器钢性约束把 NPE、未处理错误、过时文档示例在开发期拦截。</p>
@@ -82,7 +82,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 B】新手撞墙期：改数据结构而非改代码</h3>
+  <h3>【方法/工具卡】新手撞墙期：改数据结构而非改代码</h3>
   <p><strong>方法名：</strong>所有权图谱重构法</p>
   <p><strong>核心思路：</strong>与借用检查器肉搏时，停止局部打补丁，先画清数据所有权 DAG。</p>
   <p><strong>操作步骤：</strong>1. 识别循环引用（Book↔Page）2. 重构为树或 DAG 3. 多所有者共享改用 Arc::clone 4. 再写业务逻辑。</p>
@@ -93,7 +93,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 E】Rust vs Java/TS/C++ 可靠性对比</h3>
+  <h3>【跨概念对比表】Rust vs Java/TS/C++ 可靠性对比</h3>
   <table>
     <tr><th>对比维度</th><th>Rust</th><th>Java/TS/C++</th><th>一句话结论</th></tr>
     <tr><td>空值处理</td><td>无 null，Option 强制检查</td><td>null / undefined 运行时暴雷</td><td>消灭「十亿美元错误」</td></tr>
@@ -104,7 +104,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 D】何时选 Rust 选型表</h3>
+  <h3>【决策/选型表】何时选 Rust</h3>
   <table>
     <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
     <tr><td>高并发后端 / 微服务</td><td>Rust</td><td>类型安全 + 无 GC 停顿</td><td>纯脚本快速原型</td><td>所有权学习曲线陡峭</td></tr>
@@ -115,7 +115,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 F】RFC + Edition：无独裁者的语言演进</h3>
+  <h3>【心法/原则卡】RFC + Edition：无独裁者的语言演进</h3>
   <p><strong>原则：</strong>特性进语言前，先在 RFC 里把用户体验和替代方案论证到极致。</p>
   <p><strong>为什么重要：</strong>Guide-level explanation 逼迫提案者从新手教程视角审视特性，而非堆砌实现细节。</p>
   <p><strong>怎么落地：</strong>大特性走 RFC（含 Alternatives & Prior Art）→ Edition 承载破坏性语法变更 → 旧代码保持旧 Edition 编译。</p>
@@ -124,7 +124,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 C】避坑清单</h3>
+  <h3>【避坑清单卡】unsafe 与编译器误解</h3>
   <p><strong>坑：把 unsafe 当「关闭编译器」的后门</strong></p>
   <p><strong>原因：</strong>借用检查器在 unsafe 块内仍工作；unsafe 仅开放原始指针等特权操作。</p>
   <p><strong>解法：</strong>底层 unsafe 实现 + 公开安全 API 封装；企业业务代码 unsafe 率保持 0%。</p>

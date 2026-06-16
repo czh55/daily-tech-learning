@@ -67,7 +67,7 @@ td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 
 <div class="card">
-  <h3>【模板 A】三种 Agent 哲学拆解</h3>
+  <h3>【概念拆解卡】三种 Agent 哲学拆解</h3>
   <p><strong>在讲什么问题：</strong>8 大 Agent 表面都是「AI 助手」，底层设计目标完全不同。</p>
   <p><strong>核心机制：</strong>Claude Code = 深度编码专注（SWE-bench 70-75%）；OpenClaw = 25+ 平台网关 + 确定性 Cron；Hermes = 完整学习回路 + 跨平台会话连续。</p>
   <p><strong>关键理解：</strong>三者正交——30% 经验用户双修/三修，而非二选一。</p>
@@ -77,7 +77,7 @@ td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 
 <div class="card">
-  <h3>【模板 D】首屏场景选型表</h3>
+  <h3>【决策/选型表】首屏场景选型</h3>
   <table>
     <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
     <tr><td>跨平台消息自动化</td><td>Hermes</td><td>自我进化 + 安全记录更优</td><td>仅看 Stars 选 OpenClaw</td><td>138+ CVE、13.5 万公网暴露实例</td></tr>
@@ -89,7 +89,7 @@ td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 
 <div class="card">
-  <h3>【模板 E】安全维度硬数据对比</h3>
+  <h3>【跨概念对比表】安全维度硬数据对比</h3>
   <table>
     <tr><th>对比维度</th><th>Hermes</th><th>OpenClaw</th><th>Claude Code</th><th>一句话结论</th></tr>
     <tr><td>历史 CVE</td><td>1 低危（gateway）</td><td>138+（2× CVSS 9.9）</td><td>闭源不公开</td><td>公网敏感场景 OpenClaw 是硬约束</td></tr>
@@ -100,7 +100,7 @@ td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 
 <div class="card">
-  <h3>【模板 B】双修架构落地步骤</h3>
+  <h3>【方法/工具卡】双修架构落地步骤</h3>
   <p><strong>方法名：</strong>OpenClaw 编排 + Hermes 执行 + Claude Code 编码</p>
   <p><strong>核心思路：</strong>三层正交——编排层规划调度，执行层快速循环+学习，编码层处理复杂重构。</p>
   <p><strong>操作步骤：</strong>1. OpenClaw 负责 Cron 确定性触发和多频道路由 2. Hermes 执行可重复任务并记录学习回路 3. 编码任务委派 Claude Code，结果经 MCP 回传。</p>
@@ -110,7 +110,7 @@ td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 
 <div class="card">
-  <h3>【模板 C】生产踩坑清单</h3>
+  <h3>【避坑清单卡】生产踩坑</h3>
   <p><strong>坑：自主 Agent Token 成本指数复利</strong></p>
   <p><strong>原因：</strong>每条消息发送完整对话历史，社区有 $131/天 Opus 极端案例。</p>
   <p><strong>解法：</strong>日常路由 GLM/DeepSeek 免费额度；复杂编码才切 Claude/GPT-5；控制会话长度。</p>
@@ -120,7 +120,7 @@ td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 
 <div class="card">
-  <h3>【模板 F】选型心法：Stars 不等于质量</h3>
+  <h3>【心法/原则卡】选型心法：Stars 不等于质量</h3>
   <p><strong>原则：</strong>综合看 Stars 增速、CVE 记录、社区活跃度、场景匹配——不是谁 Star 多选谁。</p>
   <p><strong>为什么重要：</strong>OpenClaw 集成最广但安全债务最重；Hermes 复利化但行为不可预测。</p>
   <p><strong>怎么落地：</strong>按决策树：要网关？→ 要进化？→ Hermes；要 25+ 平台+Cron？→ OpenClaw；纯编码？→ Claude Code/OpenCode。</p>
