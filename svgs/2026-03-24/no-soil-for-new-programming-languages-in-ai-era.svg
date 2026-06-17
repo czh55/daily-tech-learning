@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
-  <p class="rebuttal-text">历史一再证明「这次不一样」的叙事会高估短期颠覆、低估组织惯性——技术可行不等于商业可行，更不等于个人职业生涯可一键切换。</p>
+  <p class="rebuttal-role">对立视角：「AI 辅助而非替代」派</p>
+  <p class="rebuttal-text">把「告别古法编程黄金时代：AI 时代不会」当成行动指南的人，往往忽略了上下文窗口、幻觉率和责任归属这三个生产环境硬约束。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
-  <p class="rebuttal-text">编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。</p>
+  <p class="rebuttal-role">对立视角：「架构即文档」派</p>
+  <p class="rebuttal-text">所谓过度架构往往是事后判断——在需求剧烈变化期，多一层抽象可能是唯一让团队不崩溃的缓冲，极简主义不是万能药。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

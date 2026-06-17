@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：行业怀疑论者 / 「没那么简单」派</p>
-  <p class="rebuttal-text">任何单一框架都无法覆盖真实业务的全部约束——原文的论证再漂亮，落地时仍要回到团队能力、成本预算和历史包袱这三条硬约束。</p>
+  <p class="rebuttal-role">对立视角：「架构即文档」派</p>
+  <p class="rebuttal-text">所谓过度架构往往是事后判断——在需求剧烈变化期，多一层抽象可能是唯一让团队不崩溃的缓冲，极简主义不是万能药。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

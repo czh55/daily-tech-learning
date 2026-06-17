@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Rust/系统编程原教旨主义者</p>
-  <p class="rebuttal-text">Go 的「简单」很多时候是把复杂度推迟到运行时和运维侧——当性能热路径或安全边界收紧时，缺乏所有权模型会让你付出重写代价。</p>
+  <p class="rebuttal-role">对立视角：「项目驱动学习」派</p>
+  <p class="rebuttal-text">非直觉学习指南适合自驱力极强的人——对大多数工程师，没有真实 deadline 和 production bug 约束的「拉伸区练习」很容易变成舒适区摸鱼。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

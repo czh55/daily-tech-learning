@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
-  <p class="rebuttal-text">编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。</p>
+  <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
+  <p class="rebuttal-text">历史一再证明「这次不一样」会高估短期颠覆——对「泡沫消退后的冷思考：2026年，AI 工」这类叙事，更该问：三年后还有多少结论站得住脚？</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

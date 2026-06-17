@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
-  <p class="rebuttal-text">历史一再证明「这次不一样」的叙事会高估短期颠覆、低估组织惯性——技术可行不等于商业可行，更不等于个人职业生涯可一键切换。</p>
+  <p class="rebuttal-role">对立视角：劳动力经济学家</p>
+  <p class="rebuttal-text">囚徒困境模型假设公司理性，却忽略了监管、工会和舆论压力——「AI 裁员陷阱」在欧美可能成立，在中国语境需要不同参数。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

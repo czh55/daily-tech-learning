@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Geohot 式 Agent 怀疑派</p>
-  <p class="rebuttal-text">自主 Agent 的 Token 成本与错误决策半径常被低估——Stars 和 demo 视频好看，生产环境里的死循环、权限事故和 $131/天账单才是真实账单。</p>
+  <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
+  <p class="rebuttal-text">历史一再证明「这次不一样」会高估短期颠覆——对「“AI 正在用垃圾代码摧毁一切！”：Fl」这类叙事，更该问：三年后还有多少结论站得住脚？</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

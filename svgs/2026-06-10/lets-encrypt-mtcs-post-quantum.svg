@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：行业怀疑论者 / 「没那么简单」派</p>
-  <p class="rebuttal-text">任何单一框架都无法覆盖真实业务的全部约束——原文的论证再漂亮，落地时仍要回到团队能力、成本预算和历史包袱这三条硬约束。</p>
+  <p class="rebuttal-role">对立视角：Legacy 系统维护者</p>
+  <p class="rebuttal-text">MTCs 再优雅，也解决不了「90% 流量还在 RSA 链路上」的现实——混合部署十年过渡期里，复杂度只会上升不会下降。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

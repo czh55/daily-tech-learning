@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
-  <p class="rebuttal-text">编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。</p>
+  <p class="rebuttal-role">对立视角：「快速交付」派 CTO</p>
+  <p class="rebuttal-text">Rust 的学习曲线和编译时间本身就是成本——当业务窗口只有三个月，「编译即正确」救不了产品上市速度。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

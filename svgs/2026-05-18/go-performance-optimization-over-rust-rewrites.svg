@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
-  <p class="rebuttal-text">编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。</p>
+  <p class="rebuttal-role">对立视角：Python 数据团队 Tech Lead</p>
+  <p class="rebuttal-text">大厂选 Go 重写的是基础设施，不是算法实验——把「Google 用 Go」当成全员转 Go 的理由，是幸存者偏差。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

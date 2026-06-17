@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
-  <p class="rebuttal-text">编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。</p>
+  <p class="rebuttal-role">对立视角：JVM 架构师 · 「并发模型更成熟」派</p>
+  <p class="rebuttal-text">Go 的 goroutine 轻量但不免费——Uber 栈扩容、接口逃逸等案例说明，不写 Java 不代表没有 GC 和调度器的隐性税。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1671" viewBox="0 0 1320 1671">
-  <foreignObject x="0" y="0" width="1320" height="1671">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1718" viewBox="0 0 1320 1718">
+  <foreignObject x="0" y="0" width="1320" height="1718">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -43,8 +43,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Geohot 式 Agent 怀疑派</p>
-  <p class="rebuttal-text">自主 Agent 的 Token 成本与错误决策半径常被低估——Stars 和 demo 视频好看，生产环境里的死循环、权限事故和 $131/天账单才是真实账单。</p>
+  <p class="rebuttal-role">对立视角：「先证伪再执行」派 · 对本文核心论点</p>
+  <p class="rebuttal-text">就算「读者应如何理解「一文详解2026年技术圈最火概念——Agent Engineering智能体工程」一文的核心论」在纸面上成立，落到真实团队仍会撞上交付周期、遗留代码和组织惯性——原文对这三者的量化讨论不足，不宜无脑照搬。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

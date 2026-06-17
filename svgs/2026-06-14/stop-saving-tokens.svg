@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：「模型决定论」实践者</p>
-  <p class="rebuttal-text">再精妙的提示词框架也绕不开模型性格上限——同一套模板换平台就要重写，探索模式「免费试错」烧掉的时间本身就是隐藏成本。</p>
+  <p class="rebuttal-role">对立视角：FinOps 负责人 · 「能省则省」派</p>
+  <p class="rebuttal-text">「别省 Token」对研究型团队成立，对百万日活产品就是灾难——没有预算护栏的算力浪费，和没有测试的代码一样会拖垮公司。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

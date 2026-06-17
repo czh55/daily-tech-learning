@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5087" viewBox="0 0 1320 5087">
-  <foreignObject x="0" y="0" width="1320" height="5087">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5132" viewBox="0 0 1320 5132">
+  <foreignObject x="0" y="0" width="1320" height="5132">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
-  <p class="rebuttal-text">历史一再证明「这次不一样」的叙事会高估短期颠覆、低估组织惯性——技术可行不等于商业可行，更不等于个人职业生涯可一键切换。</p>
+  <p class="rebuttal-role">对立视角：「先证伪再执行」派 · 对本文核心论点</p>
+  <p class="rebuttal-text">就算「你的Go技能，是否也卡在了“熟练”到“精通”的瓶颈期？」在纸面上成立，落到真实团队仍会撞上交付周期、遗留代码和组织惯性——原文对这三者的量化讨论不足，不宜无脑照搬。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

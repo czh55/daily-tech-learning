@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：行业怀疑论者 / 「没那么简单」派</p>
-  <p class="rebuttal-text">任何单一框架都无法覆盖真实业务的全部约束——原文的论证再漂亮，落地时仍要回到团队能力、成本预算和历史包袱这三条硬约束。</p>
+  <p class="rebuttal-role">对立视角：「项目驱动学习」派</p>
+  <p class="rebuttal-text">非直觉学习指南适合自驱力极强的人——对大多数工程师，没有真实 deadline 和 production bug 约束的「拉伸区练习」很容易变成舒适区摸鱼。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

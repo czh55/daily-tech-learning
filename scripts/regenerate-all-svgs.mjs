@@ -130,39 +130,228 @@ function firstSentence(body) {
   return body.split(/(?<=[。！？])/)[0]?.trim() || body.slice(0, 120);
 }
 
-function buildRebuttal(title, sections) {
-  const t = title + sections.map((s) => s.title).join('');
-  let role = '行业怀疑论者 / 「没那么简单」派';
-  let text =
-    '任何单一框架都无法覆盖真实业务的全部约束——原文的论证再漂亮，落地时仍要回到团队能力、成本预算和历史包袱这三条硬约束。';
+function hashTitle(title) {
+  let h = 0;
+  for (let i = 0; i < title.length; i++) h = (Math.imul(31, h) + title.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
 
-  if (/Rust|rust|所有权|借用/.test(t)) {
-    role = 'Java/Go 务实派 · 「够用就行」工程哲学';
-    text =
-      '编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。';
-  } else if (/Go|golang|goroutine|go\.mod/.test(t)) {
-    role = 'Rust/系统编程原教旨主义者';
-    text =
-      'Go 的「简单」很多时候是把复杂度推迟到运行时和运维侧——当性能热路径或安全边界收紧时，缺乏所有权模型会让你付出重写代价。';
-  } else if (/Agent|智能体|OpenClaw|Hermes|Claude Code|Codex/.test(t)) {
-    role = 'Geohot 式 Agent 怀疑派';
-    text =
-      '自主 Agent 的 Token 成本与错误决策半径常被低估——Stars 和 demo 视频好看，生产环境里的死循环、权限事故和 $131/天账单才是真实账单。';
-  } else if (/提示词|Prompt|视频|Veo|Runway|可灵/.test(t)) {
-    role = '「模型决定论」实践者';
-    text =
-      '再精妙的提示词框架也绕不开模型性格上限——同一套模板换平台就要重写，探索模式「免费试错」烧掉的时间本身就是隐藏成本。';
-  } else if (/AI|大模型|LLM|裁员|替代/.test(t)) {
-    role = '技术乐观主义批评者';
-    text =
-      '历史一再证明「这次不一样」的叙事会高估短期颠覆、低估组织惯性——技术可行不等于商业可行，更不等于个人职业生涯可一键切换。';
-  } else if (/SRE|运维|可靠性|部署/.test(t)) {
-    role = '传统 SRE 守夜人';
-    text =
-      '把 L3/L4 自治交给 AI 之前，先回答谁为 Blast Radius 签字——自动化跑得再快，Actus 规则写错一次比人类手滑更致命。';
+function pickVariant(title, variants) {
+  return variants[hashTitle(title) % variants.length];
+}
+
+/** 仅根据标题判断是否为 Go 语言主题（避免 Google 误匹配 Go） */
+function isGoLanguageTopic(title) {
+  const stripped = title.replace(/Google/gi, '');
+  if (
+    /Go 语言|Golang|goroutine|go\.mod|Go 1\.|Go 的|Go 官方|Go 提案|Go 生态|Go 后端|Go 性能|Go 正则|Go 栈|Go 迁移|Go 并发|Go 模块|Go 命令|Go 泛型|Go 代码|Go 程序员|Go 与 Rust|Go vs|投向 Go|倒戈.*Go|切换.*Go|地道.*Go|写 Go|用 Go|idiomatic Go/i.test(
+      title,
+    )
+  ) {
+    return true;
+  }
+  return /\bGo\b/.test(stripped);
+}
+
+function buildArticleSpecificRebuttal(title, subtitle) {
+  const core = subtitle.replace(/^本文解决的核心问题是：/, '').trim();
+  const hook = core.length >= 15 ? core.slice(0, 55) : title.slice(0, 35);
+  const roles = ['审慎派工程师', '遗留系统维护者', '曾踩过坑的 Tech Lead', '「先证伪再执行」派'];
+  return {
+    role: `${pickVariant(title, roles)} · 对本文核心论点`,
+    text: `就算「${hook}」在纸面上成立，落到真实团队仍会撞上交付周期、遗留代码和组织惯性——原文对这三者的量化讨论不足，不宜无脑照搬。`,
+  };
+}
+
+function buildRebuttal(title, subtitle) {
+  const t = title;
+
+  // ── 最具体规则优先，仅用标题匹配 ──
+
+  if (/编译通过|Rust.*运行|Alice|工程美学|所有权|借用检查|Zig 之父|拒领上亿/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: 'Java/Go 务实派 · 「够用就行」工程哲学',
+        text: '编译通过只保证类型与内存安全，Heartbleed 级的逻辑漏洞和 async 死锁照样上线——你用编译器刚性换掉的，是 Java 生态二十年迭代速度和可招到的开发者池。',
+      },
+      {
+        role: '「快速交付」派 CTO',
+        text: 'Rust 的学习曲线和编译时间本身就是成本——当业务窗口只有三个月，「编译即正确」救不了产品上市速度。',
+      },
+    ]);
   }
 
-  return { role, text };
+  if (/Agent 横评|OpenClaw|Hermes|Codex 最佳|Claude Code.*GitHub|智能体.*GitHub|DeepAgents|OpenClaw|Harness/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: 'OpenClaw 生态原教旨主义者 · 「集成广度即护城河」派',
+        text: 'Hermes 的学习回路再聪明，也无法 overnight 复制 OpenClaw 25+ 频道原生集成和 ClawHub 四万 Skill 的网络效应——对已 all-in OpenClaw 的团队等于推倒重来。',
+      },
+      {
+        role: 'Geohot 式 Agent 怀疑派',
+        text: '自主 Agent 的 Token 成本与错误决策半径常被低估——Stars 和 demo 视频好看，生产环境里的死循环、权限事故和 $131/天账单才是真实账单。',
+      },
+      {
+        role: '「一个工具打天下」保守派',
+        text: '双修三修架构听起来完美，运维复杂度却线性叠加——多数团队连一个 Agent 网关都管不好，更别说编排层+执行层+编码层三层联动。',
+      },
+    ]);
+  }
+
+  if (/Veo|Runway|可灵|Kling|八层框架|视频提示|Prompt.*视频|Gen-4|提示词完全指南/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '「模型决定论」派 · 可灵/Veo 实践者',
+        text: 'Gen-4.5 的 Elo 领先只说明 Runway 上限高——同一套八层框架搬到可灵或 Veo 上要重写大半，力-反应语法对安静对白镜头是 overkill。',
+      },
+      {
+        role: '传统影视从业者',
+        text: 'AI 视频再强也绕不开叙事结构和分镜逻辑——八层框架再精细，也比不上一个懂行的导演在片场喊「再来一条」。',
+      },
+    ]);
+  }
+
+  if (/SRE|运维.*AI|Actus|IRM|InvD|系统崩溃|可靠性.*AI|Google.*SRE/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '传统 SRE 守夜人',
+        text: '把 L3/L4 自治交给 AI 之前，先回答谁为 Blast Radius 签字——自动化跑得再快，Actus 规则写错一次比人类手滑更致命。',
+      },
+      {
+        role: '「人肉救火更靠谱」派',
+        text: 'AI 写代码快 10 倍不等于故障可预测性快 10 倍——在证明 Evaluation Pipeline 可靠之前，把生产自治权交给 LLM 是赌博。',
+      },
+    ]);
+  }
+
+  if (/Token|算力|浪费.*算力|硅谷.*共识/i.test(t)) {
+    return {
+      role: 'FinOps 负责人 · 「能省则省」派',
+      text: '「别省 Token」对研究型团队成立，对百万日活产品就是灾难——没有预算护栏的算力浪费，和没有测试的代码一样会拖垮公司。',
+    };
+  }
+
+  if (/Rust.*Joy|Linux.*Rust|迁移.*Rust|Go 与 Rust|Rust.*后端|Rust.*中国|Rust.* hype/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '「C 永远够用」嵌入式老兵',
+        text: 'Rust 在内核里的成功案例不能外推到业务 CRUD——大多数团队缺的不是内存安全，而是可维护的架构和清晰的领域模型。',
+      },
+      {
+        role: 'Go 存量系统维护者',
+        text: '重写为 Rust 的 ROI 极少算清楚——Greg KH 的乐趣是个人选择，你的公司可能更需要把现有 Go 服务跑稳而不是追逐语言时尚。',
+      },
+    ]);
+  }
+
+  if (/C\+\+|Java.*Go|过度架构|idiomatic|地道.*Go|写 Go 像 Java/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '「架构即文档」派',
+        text: '所谓过度架构往往是事后判断——在需求剧烈变化期，多一层抽象可能是唯一让团队不崩溃的缓冲，极简主义不是万能药。',
+      },
+      {
+        role: 'Java 企业架构师',
+        text: 'Go 的「少即是多」在微服务爆炸时会变成「每个服务一套私有约定」——缺少 Java 级生态约束，大型组织照样会乱。',
+      },
+    ]);
+  }
+
+  if (/高考|裁员|替代.*工作|Layoff|学历|985/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '教育投资保守派',
+        text: 'AI 替代叙事已反复出现又反复落空——完全押注「学历无用论」的人，往往在下一个技术周期来临时最先失业。',
+      },
+      {
+        role: '劳动力经济学家',
+        text: '囚徒困境模型假设公司理性，却忽略了监管、工会和舆论压力——「AI 裁员陷阱」在欧美可能成立，在中国语境需要不同参数。',
+      },
+    ]);
+  }
+
+  if (/Docker|部署|VPS|24\/7|Hermes.*Docker/i.test(t)) {
+    return {
+      role: '「本地先跑通」派',
+      text: '24/7 Agent 网关听起来很酷，但 VPS 宕机、API 限流和密钥轮换的运维负担，往往比手动跑 Claude Code 更折磨人。',
+    };
+  }
+
+  if (/AI 编程工具|Cursor|Windsurf|Codex vs|横评.*Cursor/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '「Vim 够用」老派开发者',
+        text: '十维评分卡再精细，也掩盖不了一个事实——工具切换成本（配置、习惯、团队对齐）常常高于工具本身的能力差距。',
+      },
+      {
+        role: '合规/涉密项目负责人',
+        text: '三大工具横评忽略了一个维度：代码能不能出内网——对金融和政务客户，这往往比 SWE-bench 分数更先决。',
+      },
+    ]);
+  }
+
+  if (/后量子|Let's Encrypt|MTCs|RSA|加密|sumdb|供应链|量子/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '「密码迁移还早」派 CISO',
+        text: '后量子迁移的紧迫性被厂商放大——在 Y2K 和 Heartbleed 之后，我们见过太多「不迁移就死」的恐吓，实际窗口往往比白皮书说的长。',
+      },
+      {
+        role: 'Legacy 系统维护者',
+        text: 'MTCs 再优雅，也解决不了「90% 流量还在 RSA 链路上」的现实——混合部署十年过渡期里，复杂度只会上升不会下降。',
+      },
+    ]);
+  }
+
+  if (/学习.*新技术|成长环|教程.*100 小时|维护者.*困境/i.test(t)) {
+    return {
+      role: '「项目驱动学习」派',
+      text: '非直觉学习指南适合自驱力极强的人——对大多数工程师，没有真实 deadline 和 production bug 约束的「拉伸区练习」很容易变成舒适区摸鱼。',
+    };
+  }
+
+  if (/Geohot|Agent.*灾难|昂贵.*软件/i.test(t)) {
+    return {
+      role: 'Agent 乐观主义者 · AutoGPT 早期信徒',
+      text: 'Geohot 的炮轰忽略了样本偏差——他看到的是失败案例，而 quietly 用 Agent 省掉 30% 重复劳动的团队不会上 Hacker News 发帖。',
+    };
+  }
+
+  if (isGoLanguageTopic(t)) {
+    return pickVariant(t, [
+      {
+        role: 'Rust/系统编程原教旨主义者',
+        text: 'Go 的「简单」很多时候是把复杂度推迟到运行时和运维侧——当性能热路径或安全边界收紧时，缺乏所有权模型会让你付出重写代价。',
+      },
+      {
+        role: 'JVM 架构师 · 「并发模型更成熟」派',
+        text: 'Go 的 goroutine 轻量但不免费——Uber 栈扩容、接口逃逸等案例说明，不写 Java 不代表没有 GC 和调度器的隐性税。',
+      },
+      {
+        role: '「Boring Technology」倡导者',
+        text: 'Go 提案再精彩，你的服务可能只需要 CRUD——追每个新语法糖的时间，不如把监控、告警和回滚做扎实。',
+      },
+      {
+        role: 'Python 数据团队 Tech Lead',
+        text: '大厂选 Go 重写的是基础设施，不是算法实验——把「Google 用 Go」当成全员转 Go 的理由，是幸存者偏差。',
+      },
+    ]);
+  }
+
+  if (/AI|大模型|LLM|GPT|Claude|Gemini|编程.*AI|AI.*编程/i.test(t)) {
+    return pickVariant(t, [
+      {
+        role: '技术乐观主义批评者',
+        text: '历史一再证明「这次不一样」会高估短期颠覆——对「' + t.slice(0, 20) + '」这类叙事，更该问：三年后还有多少结论站得住脚？',
+      },
+      {
+        role: '「AI 辅助而非替代」派',
+        text: '把「' + t.slice(0, 18) + '」当成行动指南的人，往往忽略了上下文窗口、幻觉率和责任归属这三个生产环境硬约束。',
+      },
+    ]);
+  }
+
+  return buildArticleSpecificRebuttal(title, subtitle);
 }
 
 function buildCorrection(title) {
@@ -277,7 +466,7 @@ function buildBody(title, author, sections, subtitle) {
     .join('<span class="arrow-sym">→</span>');
 
   const cards = sections.map((s, i) => buildCard(s, i, sections.length)).join('');
-  const rebuttal = buildRebuttal(title, sections);
+  const rebuttal = buildRebuttal(title, subtitle);
   const correction = buildCorrection(title);
 
   const summary = sections

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5625" viewBox="0 0 1320 5625">
-  <foreignObject x="0" y="0" width="1320" height="5625">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5672" viewBox="0 0 1320 5672">
+  <foreignObject x="0" y="0" width="1320" height="5672">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -86,8 +86,8 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 </div>
 <div class="rebuttal">
   <h3>反驳</h3>
-  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
-  <p class="rebuttal-text">编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。</p>
+  <p class="rebuttal-role">对立视角：曾踩过坑的 Tech Lead · 对本文核心论点</p>
+  <p class="rebuttal-text">就算「为什么人人爱 Rust，但 RedMonk 榜单却给它泼了一盆冷水？」在纸面上成立，落到真实团队仍会撞上交付周期、遗留代码和组织惯性——原文对这三者的量化讨论不足，不宜无脑照搬。</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>

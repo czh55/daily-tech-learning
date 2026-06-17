@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1787" viewBox="0 0 1320 1787">
-  <foreignObject x="0" y="0" width="1320" height="1787">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1833" viewBox="0 0 1320 1833">
+  <foreignObject x="0" y="0" width="1320" height="1833">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -44,7 +44,7 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="rebuttal">
   <h3>反驳</h3>
   <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
-  <p class="rebuttal-text">历史一再证明「这次不一样」的叙事会高估短期颠覆、低估组织惯性——技术可行不等于商业可行，更不等于个人职业生涯可一键切换。</p>
+  <p class="rebuttal-text">历史一再证明「这次不一样」会高估短期颠覆——对「大模型训练全流程实战指南工具篇（十二）—」这类叙事，更该问：三年后还有多少结论站得住脚？</p>
 </div>
 <div class="conclusion">
   <h2>结论</h2>
