@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1746" viewBox="0 0 1320 1746">
-  <foreignObject x="0" y="0" width="1320" height="1746">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5688" viewBox="0 0 1320 5688">
+  <foreignObject x="0" y="0" width="1320" height="5688">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -37,10 +37,53 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>LangChain DeepAgents 速通指南（八）—— DeepAgents流式输出详解</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">AI 架构</span><span class="tag tag-green">前端工程</span><span class="tag tag-orange">Prompt 工程</span></div>
-<p class="subtitle">本文解决的核心问题是：读者应如何理解「LangChain DeepAgents 速通指南（八）—— DeepAgent」一文的核心论点与可行动启示。</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">问题</div><span class="arrow-sym">→</span><div class="node">方法</div><span class="arrow-sym">→</span><div class="node">实践</div></div></div>
+<p class="subtitle">本文解决的核心问题是：需要构建打字机效果的聊天界面，并监控工具调用？选messages。？</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">一、流式输出为什么重要?</div><span class="arrow-sym">→</span><div class="node node-orange">二、架构基石：理解DeepAgents的</div><span class="arrow-sym">→</span><div class="node">三、DeepAgents流式输出实战</div><span class="arrow-sym">→</span><div class="node">四、Stream Mode 模式详解与对</div></div></div>
 <div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：「GitHub Stars 最高 = 最好」—— 应综合看 CVE 记录、场景匹配和真实成本，而非关注度排名。</p></div>
 
+<div class="card">
+  <h3>【概念拆解卡】一、流式输出为什么重要?</h3>
+  <p><strong>在讲什么问题：</strong>一、流式输出为什么重要?</p>
+  <p><strong>核心机制：</strong>试想一下：当大家在终端里输入“分析远程办公对团队生产力的影响”，随后盯着漆黑的屏幕足足几分钟，既没有任何反馈，也没有任何进度提示。</p>
+  <p><strong>关键理解：</strong>试想一下：当大家在终端里输入“分析远程办公对团队生产力的影响”，随后盯着漆黑的屏幕足足几分钟，既没有任何反馈，也没有任何进度提示。这种“体验灾难”足以劝退大半的大模型应用用户——流式输出的出现，正是为了解决这个问题。 流式输出让智能体在执行过程中，每一刻都能向用户汇报进度：模型正在推理、子 Agent 已启动、工具正在调用、Token 逐字生成……这些实时信号不仅能安抚用户的等待焦虑，更是构建大模型应用的基础能力。 DeepAgents 在 LangGraph 强大的流式输出基础上，进一步提供了对子 Agent 的流式支持（毕竟多智能体协作也是DeepAgents的核心特性之一）。当主 Agent 通过task工具将任务委派给子 Agent 时，开发者可以独立地从每一个子 Agent 中流式获取大模型输出和工具调用。这种多层次、可溯源的流式能力，正是 DeepAgents 区别于普通单 Agent 框架的核心特点。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：试想一下：当大家在终端里输入“分析远程办公对团队生产力的影响”，随后盯着漆黑的屏幕足足几分钟，既没有任何反馈，也没有任何进度提示。这种“体验灾难”足以劝退大半的大模型应用用户——流式输出的出现，正是为了解决这个问题。</div>
+</div>
+<div class="card">
+  <h3>【方法/工具卡】二、架构基石：理解DeepAgents的流式机制</h3>
+  <p><strong>核心思路：</strong>在动手编写代码之前，笔者先简单讲解一下 DeepAgents 的底层流式架构，这有助于大家更快理解接下来的流式模式和事件路由。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「二、架构基石：理解DeepAgents的流式机制」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：在动手编写代码之前，笔者先简单讲解一下 DeepAgents 的底层流式架构，这有助于大家更快理解接下来的流式模式和事件路由。DeepAgents 底层采用协调器-工作者架构（对该结构感兴趣的读者可阅读笔者的LangGraph设计模式文章《 LangGraph智能体开发设计模式（二）——协调器-工作者模式、评估器-优化器模式》））：主 Agent 负责任务规划与委派，每个子 Agent 在自己隔离的沙箱中独立执行，彼此互不干扰。</div>
+</div>
+<div class="card">
+  <h3>【避坑清单卡】三、DeepAgents流式输出实战</h3>
+  <p><strong>坑名：</strong>了解了基本概念后，必须通过实战来检验一下。</p>
+  <p><strong>原因：</strong>了解了基本概念后，必须通过实战来检验一下。本示例将沿用《LangChain DeepAgents 速通指南（六）—— DeepAgents SubAgent 子智能体机制》中的代码，完整的代码笔者会在文章最后列出。该智能体的功能为：通过研究子 Agent 查阅资料，再通过总结子 Agent 撰写报告。 research_subagent = { &quot;name&quot;: &quot;research-agent&quot;, &quot;description&quot;: &quot;用于深度搜索网络信息&quot;, &quot;system_prompt&quot;: &quot;你是一个网络搜索大师，可以调用网络搜索工具搜索用户想了解的内容&quot;, &quot;tools&quot;: [internet_</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：了解了基本概念后，必须通过实战来检验一下。本示例将沿用《LangChain DeepAgents 速通指南（六）—— DeepAgents SubAgent 子智能体机制》中的代码，完整的代码笔者会在文章最后列出。</div>
+</div>
+<div class="card">
+  <h3>【决策/选型表】四、Stream Mode 模式详解与对比</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>掌握了基础的事件流式与命名空间路由之后，大家可能也发现：stream_mode='updates'模式每次依然会等到信息积攒到一定量才输出，和常见的那种“逐字流式”体验还有差距。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>【心法/原则卡】五、总结</h3>
+  <p><strong>原则：</strong>本期笔者系统性地分享了 DeepAgents 流式输出的核心路径，并对stream_mode的几种模式进行了横向拆解与对比。</p>
+  <p><strong>为什么重要：</strong>本期笔者系统性地分享了 DeepAgents 流式输出的核心路径，并对stream_mode的几种模式进行了横向拆解与对比。从架构层面的命名空间路由，到updates、messages、custom三大粒度模式的实战，再到生产级的多模式组合——每个环节都配有可运行的代码示例，希望大家能真正掌握这套流式体系。 最后，再划一遍重点，送上几条最佳实践： 1. 始终使用version=&quot;v2&quot; ：统一的StreamPart字典格式消除了不同流式模式下的结构差异，让事件处理代码更加一致。 2. 用命名空间</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：本期笔者系统性地分享了 DeepAgents 流式输出的核心路径，并对stream_mode的几种模式进行了横向拆解与对比。从架构层面的命名空间路由，到updates、messages、custom三大粒度模式的实战，再到生产级的多模式组合——每个环节都配有可运行的代码示例，希望大家能真正掌握这套流式体系。</div>
+</div>
 <div class="rebuttal">
   <h3>反驳</h3>
   <p class="rebuttal-role">对立视角：Geohot 式 Agent 怀疑派</p>
@@ -49,9 +92,9 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol></ol>
+  <ol><li>试想一下：当大家在终端里输入“分析远程办公对团队生产力的影响”，随后盯着漆黑的屏幕足足几分钟，既没有任何反馈，也没有任何进度提示。</li><li>在动手编写代码之前，笔者先简单讲解一下 DeepAgents 的底层流式架构，这有助于大家更快理解接下来的流式模式和事件路由。</li><li>了解了基本概念后，必须通过实战来检验一下。</li><li>掌握了基础的事件流式与命名空间路由之后，大家可能也发现：stream_mode='updates'模式每次依然会等到信息积攒到一定量才输出，和常见的那种“逐字流式”体验还有差距。</li><li>本期笔者系统性地分享了 DeepAgents 流式输出的核心路径，并对stream_mode的几种模式进行了横向拆解与对比。</li></ol>
   <p style="margin-top:20px"><strong>行动清单：</strong></p>
-  <ol><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <ol><li>结合「一、流式输出为什么重要?」在本周做 1 次小范围对照验证</li><li>结合「二、架构基石：理解DeepAgents的流式机制」在本周做 1 次小范围对照验证</li><li>结合「三、DeepAgents流式输出实战」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
   <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
     </div>

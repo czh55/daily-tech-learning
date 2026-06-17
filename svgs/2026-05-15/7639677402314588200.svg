@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1671" viewBox="0 0 1320 1671">
-  <foreignObject x="0" y="0" width="1320" height="1671">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6204" viewBox="0 0 1320 6204">
+  <foreignObject x="0" y="0" width="1320" height="6204">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -37,10 +37,53 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>从RAG到LLM Wiki：一文看懂大模型+知识的演进路线</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">AI 架构</span><span class="tag tag-green">前端工程</span><span class="tag tag-orange">Prompt 工程</span></div>
-<p class="subtitle">本文解决的核心问题是：读者应如何理解「从RAG到LLM Wiki」一文的核心论点与可行动启示。</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">问题</div><span class="arrow-sym">→</span><div class="node">方法</div><span class="arrow-sym">→</span><div class="node">实践</div></div></div>
+<p class="subtitle">本文解决的核心问题是：这引出了一个关键问题：有没有一种方案，能让知识被“编译”一次就沉淀下来，后续所有查询都基于这份沉淀，而不是反复从原始材料中重新提取？</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">一、RAG演进史：从基础到智能</div><span class="arrow-sym">→</span><div class="node node-orange">二、LLM Wiki：Karpathy的</div><span class="arrow-sym">→</span><div class="node">三、实操体验：快速搭建你的第一个LLM </div><span class="arrow-sym">→</span><div class="node">四、选型指南：特性对比与决策建议</div></div></div>
 <div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
+<div class="card">
+  <h3>【概念拆解卡】一、RAG演进史：从基础到智能</h3>
+  <p><strong>在讲什么问题：</strong>一、RAG演进史：从基础到智能</p>
+  <p><strong>核心机制：</strong>1.1 传统RAG技术：给大模型配本参考书 大模型的知识储备虽强，但受训练数据截止时间的限制，同时所有知识都被固化为模型参数，缺乏对私有领域数据的覆盖。</p>
+  <p><strong>关键理解：</strong>1.1 传统RAG技术：给大模型配本参考书 大模型的知识储备虽强，但受训练数据截止时间的限制，同时所有知识都被固化为模型参数，缺乏对私有领域数据的覆盖。为了让大模型也能“读懂”最新信息或企业私域文档，Meta 提出了RAG（Retrieval-Augmented Generation，检索增强生成）技术。 RAG 的工作方式，就像给模型配了一本随用随翻的参考书。首先，把用户上传的文档切成片段，转成向量存入向量数据库；当用户提问时，根据问题从数据库中检索出最相关的文本片段，拼接到提示词里作为参考信息，让模型据此作答。（想深入了解 RAG 核心原理，可阅读笔者的文章一文带你了解RAG核心原理！不再只是文档的搬运工） 这套流程简单有效，但背后藏着三个致命局限： 1. 每次查询从零开始——模型问完即忘，没有任何积累； 2. 检索精度随文档量增加而下降——碎片化的向量匹配很难捕捉深层语义关联； 3. 难以处理跨文档的复杂关联——当答案需要综合多份材料中的矛盾观点时，传统 RAG 就有些力不从心了。 本质上，RAG 就是“临时抱佛脚”——每次都重新翻书、临时拼凑答案 1.2 GraphRAG: 用知识图谱增强关联 为了突破传统 RAG 的瓶颈，微软研究院提出了 GraphRAG。它的核心思路是：不直接检索原始文本块，而是先用大模型从文档中构建知识图谱（实体+关系），再基于图谱进行检索。这样一来，它解决了传统 RAG 的一大痛点——跨文档的实体关联与复杂推理。当多份文档提到同一个人、同一个概念时，知识图谱能把它们链接起来，让模型“看见”文本碎片背后的整体图景。（想全面了解 GraphRAG，推荐阅读笔者的文章准确率飙升！Graph RAG如何利用知识图谱提升RAG答案质量（一）——GraphRAG是什么？） 但 GraphRAG 也付出了显著代价： 1. Token 消耗巨大——构建图谱需要反复调用大模型处理全文； 2. 部署复杂度高——需要引入图数据库和额外的处理链路； 3. 对模型能力依赖强——一旦实体或关系提取错误，会直接污染整个知识库。 最关键的是，GraphRAG 虽然提升了检索精度，却没能改变那个根本事实——每次查询依然是从零开始。图谱虽然可以被复用，但最终生成答案时，模型仍然是在运行时临时拼凑信息。 1.3 AgenticRAG: 让Agent自主决策搜索 Agentic RAG 则更进一步，将检索能力包装为 Agent 可以自主调用的“工具”。不同于传统 RAG 那种“一开始就检索，然后一问一答”的固定流水线，Agentic RAG 构建了一个自主决策循环：Agent 可以基于中间结果动态调整检索策略——如果第一次检索结果不够充分，它会自动更换关键词再搜；如果发现需要跨文档对比，它会主动发起多次查询。 这让检索变得更加智能，但范式并未改变：知识仍然是在运行时临时拼凑，没有任何持久化的积累。说得更直白些，Agent 只是更聪明地在“翻书”，但本质上还是在“翻书”。 1.4 小结：RAG路线上的&quot;共同天花板&quot; 回看这三种方案，无论检索环节怎样优化，RAG 系列都共享一个本质特征：大模型在每次查询时都在重新“发现”知识。就像一个学生，每次考试都直接翻参考书，从不做笔记，也从不复习。 这引出了一个关键问题：有没有一种方案，能让知识被“编译”一次就沉淀下来，后续所有查询都基于这份沉淀，而不是反复从原始材料中重新提取？ 答案正是——LLM Wiki。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：1.1 传统RAG技术：给大模型配本参考书 大模型的知识储备虽强，但受训练数据截止时间的限制，同时所有知识都被固化为模型参数，缺乏对私有领域数据的覆盖。为了让大模型也能“读懂”最新信息或企业私域文档，Meta 提出了RAG（Retrieval-Augmented Generation，检索增强生成）技术。</div>
+</div>
+<div class="card">
+  <h3>【方法/工具卡】二、LLM Wiki：Karpathy的&quot;知识编译器&quot;</h3>
+  <p><strong>核心思路：</strong>2.1 源头：一条千万阅读推文引爆的新技术 2026年4月4日，Andrej Karpathy（OpenAI 联合创始人、前特斯拉 AI 总监）在社交平台上分享了自己用大模型构建个人知识库的工作流，迅速引发技术圈的广泛讨论。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「二、LLM Wiki：Karpathy的&quot;知识编译器&quot;」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：2.1 源头：一条千万阅读推文引爆的新技术 2026年4月4日，Andrej Karpathy（OpenAI 联合创始人、前特斯拉 AI 总监）在社交平台上分享了自己用大模型构建个人知识库的工作流，迅速引发技术圈的广泛讨论。他的核心理念出人意料地朴素：别让模型每次临时翻书，让它替你维护一套持续更新的笔记。</div>
+</div>
+<div class="card">
+  <h3>【避坑清单卡】三、实操体验：快速搭建你的第一个LLM Wiki</h3>
+  <p><strong>坑名：</strong>理论说得再多，不如亲手试一次。</p>
+  <p><strong>原因：</strong>理论说得再多，不如亲手试一次。目前 LLM Wiki 已推出桌面客户端，安装过程非常简单。 1. 下载安装包 在GitHub Releases 页面选择对应系统的版本下载。 1. 安装并创建项目 安装时指定目录，一路点击“Next”即可。打开后界面如下，这里我们新建一个名为test-wiki的项目。 1. 配置大模型 启动前先点击左下角的设置按钮配置模型。这里笔者使用的是 DeepSeek-V4-Flash。 1. 摄入原始资料（Ingest） LLM Wiki 的第一步是摄入（Ingest）原始文档。点击左侧的文件夹图标，上传需要处理的文件——这里笔者上传了一份 Python 学习 PDF </p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：理论说得再多，不如亲手试一次。目前 LLM Wiki 已推出桌面客户端，安装过程非常简单。</div>
+</div>
+<div class="card">
+  <h3>【决策/选型表】四、选型指南：特性对比与决策建议</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>LLM Wiki 的出现，并不意味着传统知识库方案就此作废。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>【心法/原则卡】五、趋势展望：知识编译时代已然到来</h3>
+  <p><strong>原则：</strong>5.1 从“检索”到“编译”是确定性趋势 信息增长的速度，早已超过了人类手动整理信息的速度。</p>
+  <p><strong>为什么重要：</strong>5.1 从“检索”到“编译”是确定性趋势 信息增长的速度，早已超过了人类手动整理信息的速度。单纯的“检索-拼凑”模式，可以让你瞬间找到100篇论文的相关片段，却很难帮你从中提炼出一个真正连贯的知识框架——快速翻书和深度理解之间，始终隔着一道鸿沟。 而 LLM Wiki 所代表的“编译”思路，正在被越来越多的项目和产品采纳。它的本质，是把 LLM 的理解能力前置：将“理解成本”从每次查询的时刻，转移到内容摄入的那一刻。每多摄入一份材料，知识不是被塞进数据库，而是被编织进一张不断生长的网——这正是知</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：5.1 从“检索”到“编译”是确定性趋势 信息增长的速度，早已超过了人类手动整理信息的速度。单纯的“检索-拼凑”模式，可以让你瞬间找到100篇论文的相关片段，却很难帮你从中提炼出一个真正连贯的知识框架——快速翻书和深度理解之间，始终隔着一道鸿沟。</div>
+</div>
 <div class="rebuttal">
   <h3>反驳</h3>
   <p class="rebuttal-role">对立视角：「AI 辅助而非替代」派</p>
@@ -49,9 +92,9 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol></ol>
+  <ol><li>1.1 传统RAG技术：给大模型配本参考书 大模型的知识储备虽强，但受训练数据截止时间的限制，同时所有知识都被固化为模型参数，缺乏对私有领域数据的覆盖。</li><li>2.1 源头：一条千万阅读推文引爆的新技术 2026年4月4日，Andrej Karpathy（OpenAI 联合创始人、前特斯拉 AI 总监）在社交平台上分享了自己用大模型构建个人知识库的工作流，迅速引发技术圈的广泛讨论。</li><li>理论说得再多，不如亲手试一次。</li><li>LLM Wiki 的出现，并不意味着传统知识库方案就此作废。</li><li>5.1 从“检索”到“编译”是确定性趋势 信息增长的速度，早已超过了人类手动整理信息的速度。</li></ol>
   <p style="margin-top:20px"><strong>行动清单：</strong></p>
-  <ol><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <ol><li>结合「一、RAG演进史：从基础到智能」在本周做 1 次小范围对照验证</li><li>结合「二、LLM Wiki：Karpathy的&quot;知识编译器&quot;」在本周做 1 次小范围对照验证</li><li>结合「三、实操体验：快速搭建你的第一个LLM Wiki」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
   <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
     </div>

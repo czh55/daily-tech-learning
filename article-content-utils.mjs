@@ -115,3 +115,59 @@ export function buildSubtitleFromArticle({ paragraphs, title }) {
   }
   return subtitle;
 }
+
+/** 通过 Jina Reader 绕过掘金 WAF，获取 Markdown 正文 */
+export async function fetchJuejinMarkdown(url) {
+  const res = await fetch(`https://r.jina.ai/${url}`, {
+    headers: { Accept: 'text/plain', 'User-Agent': 'daily-tech-learning/1.0' },
+    signal: AbortSignal.timeout(90000),
+  });
+  if (!res.ok) throw new Error(`Jina fetch HTTP ${res.status}`);
+  const text = await res.text();
+  const marker = 'Markdown Content:';
+  const idx = text.indexOf(marker);
+  if (idx === -1) throw new Error('Jina response missing markdown');
+  return text.slice(idx + marker.length).trim();
+}
+
+export function markdownToPlain(md) {
+  return md
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/`{1,3}[^`]+`{1,3}/g, (m) => m.replace(/`/g, ''))
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/^#+\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** 从 Markdown 提取章节（## 标题） */
+export function extractSectionsFromMarkdown(md, options = {}) {
+  const trimBody = options.trimSectionBody ?? ((b) => b);
+  const sections = [];
+  const parts = md.split(/^##\s+/m).filter(Boolean);
+  for (const part of parts) {
+    const nl = part.indexOf('\n');
+    if (nl === -1) continue;
+    const title = part.slice(0, nl).trim();
+    const body = trimBody(markdownToPlain(part.slice(nl + 1)));
+    if (title && body.length > 40 && !isBoilerplateLine(title)) {
+      sections.push({ title, body });
+    }
+  }
+  if (!sections.length) {
+    extractParagraphs(markdownToPlain(md)).slice(0, 5).forEach((p, i) => {
+      sections.push({ title: `要点 ${i + 1}`, body: p });
+    });
+  }
+  return sections.slice(0, 5);
+}
+
+/** 判断 SVG 是否为批量脚本生成的空壳（无实质内容卡片） */
+export function isEmptyShellSvg(content) {
+  const height = parseInt(content.match(/height="(\d+)"/)?.[1] || '0', 10);
+  const cardCount = (content.match(/class="card"/g) || []).length;
+  const genericDiagram = /<div class="node">问题<\/div>/.test(content);
+  return height < 2500 || (cardCount <= 1 && genericDiagram);
+}

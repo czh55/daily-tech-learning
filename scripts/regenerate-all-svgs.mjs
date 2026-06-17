@@ -13,11 +13,16 @@ import {
   buildSubtitleFromArticle,
   isBoilerplateLine,
   stripHtml,
+  fetchJuejinMarkdown,
+  markdownToPlain,
+  extractSectionsFromMarkdown,
+  isEmptyShellSvg,
 } from '../article-content-utils.mjs';
 
 const REPO = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const INDEX = path.join(REPO, 'index.json');
 const force = process.argv.includes('--force');
+const juejinOnly = process.argv.includes('--juejin-only');
 const limitArg = process.argv.find((a) => a.startsWith('--limit='));
 const limit = limitArg ? parseInt(limitArg.split('=')[1], 10) : Infinity;
 const dateFilter = process.argv.find((a) => a.startsWith('--date='))?.split('=')[1];
@@ -500,11 +505,21 @@ ${cards}
 </div>`;
 }
 
+async function fetchArticleContent(url) {
+  if (url.includes('juejin.cn')) {
+    const md = await fetchJuejinMarkdown(url);
+    return { type: 'markdown', content: md };
+  }
+  const html = await fetchHtml(url);
+  return { type: 'html', content: html };
+}
+
 async function regenerateOne(entry, date) {
   const svgPath = path.join(REPO, entry.path);
   const slug = path.basename(entry.path, '.svg');
   const dir = path.dirname(svgPath);
   const mjsPath = path.join(dir, `generate-${slug}.mjs`);
+  const existingContent = fs.existsSync(svgPath) ? fs.readFileSync(svgPath, 'utf8') : '';
 
   if (fs.existsSync(mjsPath)) {
     const src = fs.readFileSync(mjsPath, 'utf8');
@@ -517,31 +532,57 @@ async function regenerateOne(entry, date) {
 
   const title = entry.title.replace(/\s*[-|–—]\s*Tony Bai\s*$/i, '').trim();
 
-  if (fs.existsSync(svgPath) && !force) return { status: 'skip' };
+  if (fs.existsSync(svgPath) && !force && !isEmptyShellSvg(existingContent)) return { status: 'skip' };
 
   fs.mkdirSync(dir, { recursive: true });
 
-  let html = '';
+  let article;
   try {
-    html = await fetchHtml(entry.source);
+    article = await fetchArticleContent(entry.source);
   } catch (e) {
+    if (existingContent && !isEmptyShellSvg(existingContent)) {
+      console.warn('FETCH FAIL keep existing', entry.path, e.message);
+      return { status: 'skip', reason: 'fetch-fail-keep' };
+    }
     console.error('FETCH FAIL', entry.path, e.message);
     return { status: 'fail', error: e.message };
   }
 
-  const content = html.includes('post-content') ? extractPostContentHtml(html) : html;
-  const paragraphs = extractParagraphs(content);
+  let paragraphs;
   let subtitle;
+  let sections;
+
+  if (article.type === 'markdown') {
+    paragraphs = extractParagraphs(markdownToPlain(article.content));
+    sections = extractSectionsFromMarkdown(article.content, { trimSectionBody });
+  } else {
+    const html = article.content;
+    const content = html.includes('post-content') ? extractPostContentHtml(html) : html;
+    paragraphs = extractParagraphs(content);
+    sections = extractSections(html);
+  }
+
   try {
     subtitle = buildSubtitleFromArticle({ paragraphs, title });
   } catch {
     subtitle = `本文解决的核心问题是：读者应如何理解「${title.slice(0, 40)}」的核心论点与可行动启示。`;
   }
 
-  const sections = extractSections(html);
+  const weakSections = sections.length <= 1 && sections.every((s) => s.title.startsWith('要点'));
+  if (weakSections && existingContent && !isEmptyShellSvg(existingContent) && !force) {
+    console.warn('WEAK SECTIONS keep existing', entry.path);
+    return { status: 'skip', reason: 'weak-sections-keep' };
+  }
+
   const author = authorFromUrl(entry.source);
   const body = buildBody(title, author, sections, subtitle);
   const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+
+  if (height < 2500 && existingContent && !isEmptyShellSvg(existingContent) && !force) {
+    console.warn('SKIP would downgrade', entry.path, height);
+    return { status: 'skip', reason: 'would-downgrade' };
+  }
+
   fs.writeFileSync(svgPath, svg, 'utf8');
 
   console.log('OK', date, slug, height);
@@ -557,6 +598,7 @@ let ok = 0,
 for (const day of index) {
   if (dateFilter && day.date !== dateFilter) continue;
   for (const file of day.files) {
+    if (juejinOnly && !file.source?.includes('juejin.cn')) continue;
     if (processed >= limit) break;
     processed++;
     const r = await regenerateOne(file, day.date);

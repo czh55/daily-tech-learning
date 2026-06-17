@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1782" viewBox="0 0 1320 1782">
-  <foreignObject x="0" y="0" width="1320" height="1782">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5514" viewBox="0 0 1320 5514">
+  <foreignObject x="0" y="0" width="1320" height="5514">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -37,10 +37,53 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>LangChain DeepAgents 速通指南（七）—— DeepAgents使用Agent Skill</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">AI 架构</span><span class="tag tag-green">前端工程</span><span class="tag tag-orange">Prompt 工程</span></div>
-<p class="subtitle">本文解决的核心问题是：读者应如何理解「LangChain DeepAgents 速通指南（七）—— DeepAgent」一文的核心论点与可行动启示。</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">问题</div><span class="arrow-sym">→</span><div class="node">方法</div><span class="arrow-sym">→</span><div class="node">实践</div></div></div>
+<p class="subtitle">本文解决的核心问题是：以上就是 DeepAgents 实现 Agent Skill 机制的完整解析。是不是非常简单明了？</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">一、Skills快速回顾</div><span class="arrow-sym">→</span><div class="node node-orange">When to use this ski</div><span class="arrow-sym">→</span><div class="node">How to fill forms</div><span class="arrow-sym">→</span><div class="node">二、 DeepAgents Skills</div></div></div>
 <div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：「GitHub Stars 最高 = 最好」—— 应综合看 CVE 记录、场景匹配和真实成本，而非关注度排名。</p></div>
 
+<div class="card">
+  <h3>【概念拆解卡】一、Skills快速回顾</h3>
+  <p><strong>在讲什么问题：</strong>一、Skills快速回顾</p>
+  <p><strong>核心机制：</strong>为了照顾还不熟悉 Skills 概念的读者，这里先快速回顾一下。</p>
+  <p><strong>关键理解：</strong>为了照顾还不熟悉 Skills 概念的读者，这里先快速回顾一下。（建议先阅读笔者的文章《 Agent Skills完全指南：核心概念丨设计模式丨实战代码》，对 Skills 有一个全面的理解后，再继续看本篇文章，会事半功倍。） Skills 是 Anthropic 提出的一种全新的 Agent 能力注入方式，可以看作是一种轻量级的开放格式。通过 Skills，开发者能够将特定领域的专业知识打包成可被智能体发现和调用的功能模块。 无论是 Claude Code、OpenClaw，还是正在学习的 DeepAgents，Skills 都遵循统一的目录结构规范。一个 Skill 本质上就是一个文件夹，其中至少包含一个SKILL.md描述文件，此外还可以附带可执行脚本、参考文档以及资源文件等。 my-skill/ ├── SKILL.md # 必须: name + description ├── scripts/ # 可选: 执行代码 ├── references/ # 可选: 参考资料文档 └── assets/ # 可选: 模板、图片等资源文件 每个 Skill 文件夹中必须包含SKILL.md文件（注意文件名大小写不要出错）。下面是一个通用的SKILL.md示例： ``` --- name: pdf-processing description: Extract text and tables from PDF files, fill forms, merge documents. --- PDF Processing</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：为了照顾还不熟悉 Skills 概念的读者，这里先快速回顾一下。（建议先阅读笔者的文章《 Agent Skills完全指南：核心概念丨设计模式丨实战代码》，对 Skills 有一个全面的理解后，再继续看本篇文章，会事半功倍。</div>
+</div>
+<div class="card">
+  <h3>【方法/工具卡】When to use this skill</h3>
+  <p><strong>核心思路：</strong>Use this skill when the user needs to work with PDF files...</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「When to use this skill」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：Use this skill when the user needs to work with PDF files...</div>
+</div>
+<div class="card">
+  <h3>【避坑清单卡】How to fill forms</h3>
+  <p><strong>坑名：</strong>... 其中，name是 Skill 的名称，description是该 Skill 的简短描述，这两项不可为空。</p>
+  <p><strong>原因：</strong>... 其中，name是 Skill 的名称，description是该 Skill 的简短描述，这两项不可为空。SKILL.md的正文部分用于定义该 Skill 的专业知识、操作流程或解决思路。此外，用户还可以在文件夹下增加scripts工具脚本、references参考文档或assets资源文件，以进一步丰富 Skill 的能力。 Skill 的核心设计理念是“渐进式加载”。具体来说：智能体在初始化时，只会将每个 Skill 的基本信息（即name和description）加载到系统提示词中。只有当后续对话中智能体根据用户意图判断出需要用到某个具体 Skill 时，才会进一步加载该 Ski</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：... 其中，name是 Skill 的名称，description是该 Skill 的简短描述，这两项不可为空。SKILL.md的正文部分用于定义该 Skill 的专业知识、操作流程或解决思路。</div>
+</div>
+<div class="card">
+  <h3>【决策/选型表】二、 DeepAgents Skills详解</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>2.1 DeepAgents Skills使用说明 DeepAgents 作为 LangChain 团队的明星框架，对 Skill 的支持相当完善。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>【心法/原则卡】三、DeepAgents Skill实战</h3>
+  <p><strong>原则：</strong>掌握了 DeepAgents Agent Skill 的原理之后，接下来大家进入实战环节，看看如何真正在 DeepAgents 框架中使用 Agent Skill。</p>
+  <p><strong>为什么重要：</strong>掌握了 DeepAgents Agent Skill 的原理之后，接下来大家进入实战环节，看看如何真正在 DeepAgents 框架中使用 Agent Skill。 3.1 简单 Skill 尝试 笔者先从一个简单的示例入手，演示 DeepAgents 中 Skills 的接入流程。 1. 准备示例 Skill 选用 GitHub 上官方提供的示例 Skill： https://github.com/langchain-ai/deepagents/tree/main/libs/cli/examp</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：掌握了 DeepAgents Agent Skill 的原理之后，接下来大家进入实战环节，看看如何真正在 DeepAgents 框架中使用 Agent Skill。3.1 简单 Skill 尝试 笔者先从一个简单的示例入手，演示 DeepAgents 中 Skills 的接入流程。</div>
+</div>
 <div class="rebuttal">
   <h3>反驳</h3>
   <p class="rebuttal-role">对立视角：OpenClaw 生态原教旨主义者 · 「集成广度即护城河」派</p>
@@ -49,9 +92,9 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol></ol>
+  <ol><li>为了照顾还不熟悉 Skills 概念的读者，这里先快速回顾一下。</li><li>Use this skill when the user needs to work with PDF files...</li><li>... 其中，name是 Skill 的名称，description是该 Skill 的简短描述，这两项不可为空。</li><li>2.1 DeepAgents Skills使用说明 DeepAgents 作为 LangChain 团队的明星框架，对 Skill 的支持相当完善。</li><li>掌握了 DeepAgents Agent Skill 的原理之后，接下来大家进入实战环节，看看如何真正在 DeepAgents 框架中使用 Agent Skill。</li></ol>
   <p style="margin-top:20px"><strong>行动清单：</strong></p>
-  <ol><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <ol><li>结合「一、Skills快速回顾」在本周做 1 次小范围对照验证</li><li>结合「When to use this skill」在本周做 1 次小范围对照验证</li><li>结合「How to fill forms」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
   <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
     </div>

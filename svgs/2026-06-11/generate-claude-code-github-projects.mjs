@@ -36,6 +36,10 @@ th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1
 td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
 
 const body = `
@@ -69,7 +73,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 B】Everything Claude Code：从实习生到专家团队</h3>
+  <h3>【方法/工具卡】Everything Claude Code：从实习生到专家团队</h3>
   <p><strong>方法名：</strong>Anthropic 黑客松冠军 Affaan Mustafa 的配置体系（非代码库）</p>
   <p><strong>核心思路：</strong>拆分单一 Agent 为规划/架构/代码审查/安全等子代理，各做擅长的事，避免大模型复杂任务幻觉与能力退化。</p>
   <p><strong>操作步骤：</strong>① 配置 Skills 外挂领域知识 ② Commands 压缩 Prompt（/plan、/code-review、/tdd）③ Rules 立规矩（禁硬编码 Key）④ Hooks 触发自动流程。</p>
@@ -79,7 +83,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 B】gstack：YC CEO 的虚拟工程团队</h3>
+  <h3>【方法/工具卡】gstack：YC CEO 的虚拟工程团队</h3>
   <p><strong>方法名：</strong>Garry Tan 开源的角色扮演技能包（Markdown 配置）</p>
   <p><strong>核心思路：</strong>不让一个 Agent 同时扮演 PM/架构师/程序员/QA/运维——拆角色，各有一套提示词和行为模式。</p>
   <p><strong>操作步骤：</strong>① 克隆 gstack ② 运行安装脚本 ③ 在 Claude Code 调用 /ceo /eng-manager /engineer /review /qa /release。</p>
@@ -88,7 +92,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 A】learn-claude-code：20 课递进手搓框架</h3>
+  <h3>【概念拆解卡】learn-claude-code：20 课递进手搓框架</h3>
   <p><strong>在讲什么问题：</strong>生产级代码智能体如何从骨架长成完整系统？</p>
   <p><strong>核心机制：</strong>第 1 课 01_agent_loop.py 不到 50 行实现最小循环；后续逐层叠加工具调用、任务规划、子 Agent、上下文压缩、多 Agent 协作。</p>
   <p><strong>关键理解：</strong>第 5 课——复杂任务必须显式计划；第 8 课——上下文不是数据库，必须管理和压缩。</p>
@@ -97,7 +101,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 B】deepagents-cli (dcode)：LangChain 官方生产参考</h3>
+  <h3>【方法/工具卡】deepagents-cli (dcode)：LangChain 官方生产参考</h3>
   <p><strong>方法名：</strong>基于 DeepAgents + LangGraph 的 Claude Code 模仿 CLI</p>
   <p><strong>核心思路：</strong>架构比 Claude Code 更清晰——Checkpoint 恢复、时间旅行调试、子 Agent 并行、MCP 协议接入。</p>
   <p><strong>操作步骤：</strong>① MIT 协议可随意改 ② 99.4% Python ③ 研究内置工具/子 Agent 调度/代码沙箱实现。</p>
@@ -105,7 +109,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 E】六个项目对比：用好 vs 懂原理</h3>
+  <h3>【对比分析卡】六个项目对比：用好 vs 懂原理</h3>
   <table>
     <tr><th>对比维度</th><th>ECC / gstack</th><th>learn-claude-code</th><th>deepagents / OpenCode</th><th>claw-code</th><th>一句话结论</th></tr>
     <tr><td>目标</td><td>用好多 Agent</td><td>手搓理解</td><td>生产/开源架构</td><td>官方源码存档</td><td>分两阶段学习</td></tr>
@@ -116,7 +120,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 D】代码智能体学习路径选型</h3>
+  <h3>【对比分析卡】代码智能体学习路径选型</h3>
   <table>
     <tr><th>场景</th><th>推荐项目</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
     <tr><td>日常 Claude Code 提效</td><td>ECC + gstack</td><td>多角色分工 + Slash 命令</td><td>只用基础问答</td><td>浪费 80% 能力</td></tr>
@@ -128,13 +132,19 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 C】避坑清单</h3>
+  <h3>【避坑清单卡】Claude Code 对话框误区与源码劝退</h3>
   <p><strong>坑：把 Claude Code 当对话框，问几个问题改几行代码</strong></p>
   <p><strong>原因：</strong>未激活多智能体协作和 Harness 工程化配置。</p>
   <p><strong>解法：</strong>第一部分先 ECC/gstack；第二部分再原理项目。</p>
   <p><strong>严重程度：</strong>小心——效率远低于团队级用法。</p>
   <div class="pitfall"><strong>另一个坑：</strong>直接挑战 instructkr/claw-code 51 万行。作者明确建议先学完前五个项目；OpenCode 的 TS+Bun+Go 混合架构也需中等以上基础。</div>
   <div class="pitfall"><strong>OpenCode 注：</strong>Anthropic 2026 年 3 月对其发律师函——说明开源替代已足够威胁闭源工具，但也需注意法律与合规边界。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Geohot 式 Agent 怀疑派</p>
+  <p class="rebuttal-text">多 Agent 分工和 Harness 配置再精细，也无法 overnight 消除自主编码 Agent 的 Token 账单与错误决策半径——对已经用 Claude Code 基础问答提效的团队，折腾 ECC/gstack 的 ROI 未必划算。</p>
 </div>
 
 <div class="conclusion">

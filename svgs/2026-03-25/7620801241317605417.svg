@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1746" viewBox="0 0 1320 1746">
-  <foreignObject x="0" y="0" width="1320" height="1746">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4652" viewBox="0 0 1320 4652">
+  <foreignObject x="0" y="0" width="1320" height="4652">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -37,10 +37,36 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
       
 <h1>LangChain DeepAgents 速通指南（五）—— 快速了解DeepAgents框架及其核心特性</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">AI 架构</span><span class="tag tag-green">前端工程</span><span class="tag tag-orange">Prompt 工程</span></div>
-<p class="subtitle">本文解决的核心问题是：读者应如何理解「LangChain DeepAgents 速通指南（五）—— 快速了解DeepA」一文的核心论点与可行动启示。</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">问题</div><span class="arrow-sym">→</span><div class="node">方法</div><span class="arrow-sym">→</span><div class="node">实践</div></div></div>
+<p class="subtitle">本文解决的核心问题是：前言 上篇文章《LangChain DeepAgents 速通指南（四）—— FileSystem中间件：让AI Agent拥有系统级记忆管理能力》深入探讨了LangChain的文件管理中间……</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">一、为什么需要DeepAgents框架</div><span class="arrow-sym">→</span><div class="node node-orange">二、DeepAgents快速上手：基本用</div><span class="arrow-sym">→</span><div class="node node-green">三、总结</div></div></div>
 <div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：「GitHub Stars 最高 = 最好」—— 应综合看 CVE 记录、场景匹配和真实成本，而非关注度排名。</p></div>
 
+<div class="card">
+  <h3>【概念拆解卡】一、为什么需要DeepAgents框架</h3>
+  <p><strong>在讲什么问题：</strong>一、为什么需要DeepAgents框架</p>
+  <p><strong>核心机制：</strong>当大家使用 LangChain 的create_agentAPI 构建智能体时，其底层本质是利用 LangGraph 创建了一个 ReAct 图（不熟悉 ReAct 图的朋友，可以参考我的文章《深入浅出LangGraph AI Agent智能体开发教程（八）——LangGraph底层API实现ReACT智能体》）。</p>
+  <p><strong>关键理解：</strong>当大家使用 LangChain 的create_agentAPI 构建智能体时，其底层本质是利用 LangGraph 创建了一个 ReAct 图（不熟悉 ReAct 图的朋友，可以参考我的文章《深入浅出LangGraph AI Agent智能体开发教程（八）——LangGraph底层API实现ReACT智能体》）。在这种架构下，智能体会循环调用工具，直到问题解决——这其实是 Agent 最简单的工作模式。然而，这种简单的架构限制了 Agent 的“深度”，使其难以有效规划并执行更长时序、更复杂的任务。 如何解决构建复杂深度智能体的难题呢？LangChain 团队的 CEO Harrison Chase 从 Claude Code、Manus 等表现出色的深度智能体项目中汲取灵感，编写了最初的 DeepAgents 框架。其核心思路是将详尽提示、任务规划、子代理和文件系统四个能力相结合，推动 Agent 实现从“浅”至“深”的转变。该项目随后经过不断迭代完善，最终被纳入 LangChain 官方库，成为基于 LangChain 和 LangGraph 底层能力的开源框架。 DeepAgents 的核心思想其实非常直观：为了让智能体能够更深入地探讨并完成用户需求，它需要具备规划复杂解决方案、并在更长的时间范围内逐个解决子任务的能力，最终整合达成整体目标。DeepAgents 的核心优势，正是对以下四个基本能力的合理运用： 1. 规划与任务分解能力 DeepAgents 内置了TodoList和File System 工具，使 Agent 能够将复杂任务拆解为离散步骤，实时跟踪进展，并根据新信息的出现动态调整计划。 2. 上下文管理能力 通过 File System 提供的ls、read_file、write_file、edit_file等工具，Agent 可以将复杂的上下文内容“卸载”到外部存储中，有效防止上下文窗口溢出。同时，借助 Summarization 记忆压缩中间件，Agent 可以灵活处理长度不确定的工具返回结果。 3. 子代理生成能力 DeepAgents 内置了Task 工具，使主 Agent 能够针对特定任务动态生成子代理。这样一来，主 Agent 的上下文可以保持“干净”，同时又具备深入处理复杂子任务的能力。（子代理能力笔者会在后续章节详细展开讲解） 4. 长期记忆能力 利用不同类型的后端（Backend）进行信息存储，DeepAgents 可以将具备持久记忆的 Agent 扩展到跨线程场景。这意味着 Agent 能够保存并检索过往对话中的信息，为当前任务提供更智能的辅助。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：当大家使用 LangChain 的create_agentAPI 构建智能体时，其底层本质是利用 LangGraph 创建了一个 ReAct 图（不熟悉 ReAct 图的朋友，可以参考我的文章《深入浅出LangGraph AI Agent智能体开发教程（八）——LangGraph底层API实现ReACT智能体》）。在这种架构下，智能体会循环调用工具，直到问题解决——这其实是 Agent 最简单的工作模式。</div>
+</div>
+<div class="card">
+  <h3>【方法/工具卡】二、DeepAgents快速上手：基本用法与核心特性</h3>
+  <p><strong>核心思路：</strong>2.1 DeepAgents的定位 在具体实现上，大家可以直接导入deepagents包中的create_deep_agent函数，快速构建深度智能体。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「二、DeepAgents快速上手：基本用法与核心特性」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：2.1 DeepAgents的定位 在具体实现上，大家可以直接导入deepagents包中的create_deep_agent函数，快速构建深度智能体。该函数本质上是对 LangChain 中create_agent函数的一层封装，额外配备了处理复杂任务所需的常用配置（例如笔者之前介绍过的各种中间件及内置函数）。</div>
+</div>
+<div class="card">
+  <h3>【心法/原则卡】三、总结</h3>
+  <p><strong>原则：</strong>本文分享了 LangChain DeepAgents 框架的诞生背景与核心优势，并通过实战案例演示了其快速上手的完整流程。</p>
+  <p><strong>为什么重要：</strong>本文分享了 LangChain DeepAgents 框架的诞生背景与核心优势，并通过实战案例演示了其快速上手的完整流程。可以看到，DeepAgents 在任务规划、上下文管理、子代理并行执行等方面展现出强大的能力，仅需少量代码即可构建复杂智能体。下一章节，笔者将深入探究 DeepAgents 中子智能体的运行机制，包括其创建方式、通信机制与任务委托流程，大家敬请期待~ 本系列相关内容均列于笔者的专栏《深入浅出LangChain&amp;LangGraph AI Agent 智能体开发》，该专栏适合所有</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：本文分享了 LangChain DeepAgents 框架的诞生背景与核心优势，并通过实战案例演示了其快速上手的完整流程。可以看到，DeepAgents 在任务规划、上下文管理、子代理并行执行等方面展现出强大的能力，仅需少量代码即可构建复杂智能体。</div>
+</div>
 <div class="rebuttal">
   <h3>反驳</h3>
   <p class="rebuttal-role">对立视角：Geohot 式 Agent 怀疑派</p>
@@ -49,9 +75,9 @@ td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-alig
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol></ol>
+  <ol><li>当大家使用 LangChain 的create_agentAPI 构建智能体时，其底层本质是利用 LangGraph 创建了一个 ReAct 图（不熟悉 ReAct 图的朋友，可以参考我的文章《深入浅出LangGraph AI Agent智能体开发教程（八）——LangGraph底层API实现ReACT智能体》）。</li><li>2.1 DeepAgents的定位 在具体实现上，大家可以直接导入deepagents包中的create_deep_agent函数，快速构建深度智能体。</li><li>本文分享了 LangChain DeepAgents 框架的诞生背景与核心优势，并通过实战案例演示了其快速上手的完整流程。</li></ol>
   <p style="margin-top:20px"><strong>行动清单：</strong></p>
-  <ol><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <ol><li>结合「一、为什么需要DeepAgents框架」在本周做 1 次小范围对照验证</li><li>结合「二、DeepAgents快速上手：基本用法与核心特性」在本周做 1 次小范围对照验证</li><li>结合「三、总结」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
   <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
     </div>
