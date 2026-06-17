@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-06-17",
+    "files": [
+      {
+        "path": "svgs/2026-06-17/deepmind-autoharness.svg",
+        "title": "DeepMind 亮出王炸：别再手写 Agent Harness 了，AI 已经学会自己写了！",
+        "source": "https://tonybai.com/2026/06/17/deepmind-automation-agent-harness-ai-self-coding/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-16",
     "files": [
       {
