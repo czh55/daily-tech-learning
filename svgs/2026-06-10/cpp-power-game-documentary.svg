@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6282" viewBox="0 0 1320 6282">
-  <foreignObject x="0" y="0" width="1320" height="6282">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5547" viewBox="0 0 1320 5547">
+  <foreignObject x="0" y="0" width="1320" height="5547">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
 h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
 .tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
-.tag-blue{background:#dbeafe;color:#1e40af}
-.tag-green{background:#d1fae5;color:#065f46}
-.tag-orange{background:#ffedd5;color:#9a3412}
-.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
 .card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
@@ -19,149 +16,87 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
-.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:12px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
 .node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
 .node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
-.arrow-sym{font-size:18px;color:#94a3b8}
+.arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
 .conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
 td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
-.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
-<h1>C++ 的权力游戏：一部关于妥协、背叛与重生的"史诗神剧"</h1>
-<div style="margin-bottom:16px">
-  <span class="tag tag-blue">C++ 历史</span>
-  <span class="tag tag-green">标准委员会</span>
-  <span class="tag tag-orange">纪录片</span>
-  <span class="tag tag-purple">系统编程</span>
-</div>
-<p class="subtitle">本文解决的核心问题是：C++ 如何在 40 年间多次「被宣布死亡」又浴火重生，以及官方纪录片与 Reddit 社区野史共同揭示的妥协（C 兼容）、背叛（Java/C# 围剿）与重生（C++11/STL）背后的权力博弈。</p>
-
-<div class="map">
-  <h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">C++ 四幕史诗关系图</h3>
-  <div class="diagram">
-    <div class="node">1979 C 兼容<br/>妥协诞生</div>
-    <span class="arrow-sym">→</span>
-    <div class="node-green">1993 STL<br/>Bjarne 背书</div>
-    <span class="arrow-sym">→</span>
-    <div class="node-orange">2000 冰河期<br/>Java/C# 围剿</div>
-    <span class="arrow-sym">→</span>
-    <div class="node">C++11 续命<br/>→ C++26 反射</div>
-  </div>
-</div>
-
-<div class="correction">
-  <h3>认知纠偏</h3>
-  <p style="color:#92400e;font-size:16px">常见误解：「C++ 的问题全是语言复杂度」—— Reddit 社区超过一半火力指向缺失的官方包管理器和 vcpkg/Conan/Bazel 生态割裂；纪录片对 Boost 只字未提，社区认为这掩盖了 C++11 的真正孵化器。</p>
-</div>
+<h1>C++ 的权力游戏：一部关于妥协、背叛与重生的「史诗神剧」</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：1. 缺失的拼图：为什么官方不敢提 Boost？</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">序章：从贝尔实验室逃出的“异类”</div><span class="arrow-sym">→</span><div class="node node-orange">第一幕：STL 的救赎——从被群嘲到绝地</div><span class="arrow-sym">→</span><div class="node">第二幕：巨头的绞杀——微软的野心与 Ja</div><span class="arrow-sym">→</span><div class="node">第三幕：现代 C++ 的绝地反击（C++</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
 <div class="card">
-  <h3>【模板 A】序章：C 兼容的双刃剑</h3>
-  <p><strong>在讲什么问题：</strong>1979 年 Bjarne 为何坚持 100% C 兼容？</p>
-  <p><strong>核心机制：</strong>「C with Classes」在 C 基础上引入类概念；Bjarne 务实目标：让 C 程序员优雅一点写代码，不重新发明轮子。</p>
-  <p><strong>关键理解：</strong>C 兼容是 C++ 早期占领市场的最强杀手锏（无缝对接海量 C 头文件），也是日后无底洞复杂性和编译期灾难的最深隐患。</p>
-  <p><strong>怎么落地：</strong>理解 C++ 代码中 #include C 头文件、extern "C" 链接的历史根源—— 这是设计权衡而非偶然。</p>
-  <p><strong>边界说明：</strong>若今天从零设计系统语言，不会选择 100% C 兼容；但这是 40 年遗产代码存在的根基。</p>
-  <div class="quote">Reddit：「C++ 早期唯一存活理由是与海量 C 头文件无缝对接。」</div>
-  <div class="relation"><strong>与 Rust 的区别：</strong>Rust 选择打破 C 兼容换内存安全；C++ 选择兼容换生态惯性。</div>
+  <h3>【概念拆解卡】序章：从贝尔实验室逃出的“异类”</h3>
+  <p><strong>在讲什么问题：</strong>序章：从贝尔实验室逃出的“异类”</p>
+  <p><strong>核心机制：</strong>时间倒回 1979 年。</p>
+  <p><strong>关键理解：</strong>时间倒回 1979 年。彼时的贝尔实验室（Bell Labs）是全球计算机科学的“麦加圣地”，Ken Thompson和Dennis Ritchie 在这里创造了 C 语言和 Unix 系统。整个世界都沉浸在 C 语言那种贴近硬件、极致简洁的暴力美学中。 就在此时，一个名叫 Bjarne Stroustrup 的丹麦年轻人来到了贝尔实验室。他需要编写复杂的分布式系统模拟器，很快便发现，C 语言那套基于“函数与指针”的过程式编程，在面对巨大且复杂的系统时，就像是在用石器时代的工具建造摩天大楼——代码极易失控，且难以复用。 于是，他做了一个极具叛逆性的决定： 他要在 C 语言的基础上，引入“类（Classes）”的概念。 这就是最初的“C with Classes”。 Bjarne 的初衷极其务实： 他不想重新发明轮子，他只想让现有的 C 程序员能够稍微优雅一点地写代码。 因此，他定下了一条死命令： C++ 必须 100% 兼容 C 语言。 在 Reddit 的讨论中，一位资深 C++ 工程师指出：“ C++ 之所以能在早期存活下来，唯一的理由就是它能够与海量的 C 语言头文件无缝对接。 ” 这条与 C 的“血脉绑定”，成为了 C++ 能够迅速占领企业级市场的最强杀手锏，但也为它日后的无底洞复杂性和编译期灾难埋下了最深远的隐患。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：时间倒回 1979 年。彼时的贝尔实验室（Bell Labs）是全球计算机科学的“麦加圣地”，Ken Thompson和Dennis Ritchie 在这里创造了 C 语言和 Unix 系统。</div>
 </div>
-
 <div class="card">
-  <h3>【模板 A】第一幕：STL 的救赎</h3>
-  <p><strong>在讲什么问题：</strong>1993 年 Stepanov 的 STL 为何差点被委员会否决？</p>
-  <p><strong>核心机制：</strong>泛型编程—— 算法独立于数据结构，通过 Iterator 连接；OOP 绑定数据+算法的「数学谬误」被 Stepanov 嗤之以鼻。</p>
-  <p><strong>关键理解：</strong>1993 标准委员会全场群嘲「太庞大！强奸编译器！」；Bjarne 不惜修改语言规则（Cfront 2.0 bug）为 STL 开绿灯，以微弱优势通过。</p>
-  <p><strong>怎么落地：</strong>现代 C++ 的 vector/map/algorithm 全部源自 STL—— 理解 Iterator 概念是读 C++ 标准库的基础。</p>
-  <p><strong>边界说明：</strong>STL 模板元编程也埋下了编译时间和错误信息的长期痛点。</p>
-  <div class="quote">没有 STL，Google/Amazon/HFT 无法在 C++ 上构建亿万级流量系统。</div>
+  <h3>【方法/工具卡】第一幕：STL 的救赎——从被群嘲到绝地反击</h3>
+  <p><strong>核心思路：</strong>如果说 Bjarne 给了 C++ 骨架，那么真正赋予 C++ 灵魂的，是另一个极具争议的天才： Alexander Stepanov 。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「第一幕：STL 的救赎——从被群嘲到绝地反击」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：如果说 Bjarne 给了 C++ 骨架，那么真正赋予 C++ 灵魂的，是另一个极具争议的天才： Alexander Stepanov 。在 90 年代初，面向对象编程（OOP）如日中天。</div>
 </div>
-
 <div class="card">
-  <h3>【模板 A】第二幕：Java/C# 的黑暗时代</h3>
-  <p><strong>在讲什么问题：</strong>2000 年前后 C++ 为何陷入「冰河期」？</p>
-  <p><strong>核心机制：</strong>Java「Write Once Run Anywhere」+ GC 摧毁企业层统治；微软 .NET/C# 背刺，冻结原生 C++ 工具链投入。</p>
-  <p><strong>关键理解：</strong>C++98→C++11 间十年停滞：无包管理器、跨平台编译噩梦、ABI 地狱；WG21 被 MSVC/IBM 等厂商商业利益裹挟。</p>
-  <p><strong>典型场景：</strong>MSVC _SECURE_SCL 迭代器调试拖慢性能—— STL 本尊解释是安全妥协+编译器理解不足，非故意破坏。</p>
-  <p><strong>边界说明：</strong>纪录片对此轻描淡写；社区视之为 C++ 险些丧命的耻辱时代。</p>
-  <div class="relation"><strong>与 Boost 的关系：</strong>停滞十年里 Boost 几乎凭一己之力撑起生态并孵化 C++11 特性—— 纪录片完全 omission。</div>
+  <h3>【避坑清单卡】第二幕：巨头的绞杀——微软的野心与 Java 的入侵</h3>
+  <p><strong>坑名：</strong>正当 C++ 在系统底层攻城略地时，外部的绞杀战开始了。</p>
+  <p><strong>原因：</strong>正当 C++ 在系统底层攻城略地时，外部的绞杀战开始了。 2000 年前后，C++ 迎来了它生命中最黑暗的“冰河期”。在 Reddit 上，大厂老炮们对这段历史记忆犹新： Java 的降维打击 ：Sun 公司推出的 Java 带着“Write Once, Run Anywhere（一次编写，到处运行）”和自带垃圾回收（GC）的承诺，瞬间摧毁了 C++ 在企业级开发层的统治地位。IBM 等巨头一夜之间倒戈。 微软的背刺 ：为了对抗 Java，微软推出了自己的 .NET 战略和 C# 语言，并在很大程度上“冻结”了对原生 C++ 工具链的投入。 当时的 C++，就像是一个垂暮的老人：没有包管理器、</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：正当 C++ 在系统底层攻城略地时，外部的绞杀战开始了。2000 年前后，C++ 迎来了它生命中最黑暗的“冰河期”。</div>
 </div>
-
 <div class="card">
-  <h3>【模板 A】第三幕：C++11 绝地反击</h3>
-  <p><strong>在讲什么问题：</strong>为何 C++11 是编程语言史上最伟大的续命？</p>
-  <p><strong>核心机制：</strong>auto、智能指针、Lambda、多线程支持—— 生锈老爷车改装成核动力飞船。</p>
-  <p><strong>关键理解：</strong>摩尔定律放缓后，Amazon/Google/Meta/HRT 发现：省数千万服务器账单、微秒级延迟只有 C++ 一条路。</p>
-  <p><strong>怎么落地：</strong>新项目优先 C++17/20 标准；用 std::unique_ptr/shared_ptr 替代 raw pointer；用 std::thread 替代手写 pthread。</p>
-  <p><strong>边界说明：</strong>C++11 后每三年新标准（14/17/20/23/26），但 Feature Bloat 和过度设计成为新诅咒。</p>
-  <div class="highlight"><strong>Reddit 感叹：</strong>「没经历过 C++11 前跨平台多线程 UB 时代，无法理解现代 C++ 有多幸福。」</div>
-</div>
-
-<div class="card">
-  <h3>【模板 E】C++ vs Rust vs Go 对比</h3>
-  <table>
-    <tr><th>对比维度</th><th>C++</th><th>Rust</th><th>Go</th><th>结论</th></tr>
-    <tr><td>遗留代码</td><td>百亿行存量，不可重写</td><td>需完全重写</td><td>Port/Rewrite 均可</td><td>C++ 惯性最强</td></tr>
-    <tr><td>包管理</td><td>无官方，vcpkg/Conan 割裂</td><td>cargo 统一</td><td>go get 统一</td><td>C++ 工程体验最差</td></tr>
-    <tr><td>性能天花板</td><td>微秒级 HFT/GPU</td><td>接近 C++</td><td>高并发 IO</td><td>各守阵地</td></tr>
-    <tr><td>学习曲线</td><td>40 年累积复杂度</td><td>所有权陡峭</td><td>平缓</td><td>新人慎入 C++</td></tr>
-  </table>
-</div>
-
-<div class="card">
-  <h3>【模板 D】系统级语言选型表</h3>
+  <h3>【决策/选型表】第三幕：现代 C++ 的绝地反击（C++11 至今）</h3>
   <table>
     <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
-    <tr><td>高频交易/微秒延迟</td><td>C++</td><td>HRT 等验证，30 年实战</td><td>Go/Rust 重写</td><td>十年内无法替代</td></tr>
-    <tr><td>GPU/LLM 算力矩阵</td><td>C++/CUDA</td><td>硬件深度绑定</td><td>纯 Rust</td><td>生态尚未成熟</td></tr>
-    <tr><td>新项目从零</td><td>Rust 或 Go</td><td>无 C 兼容包袱</td><td>默认 C++</td><td>工具链痛苦</td></tr>
-    <tr><td>维护遗留 C++ 系统</td><td>现代 C++17+</td><td>渐进升级而非重写</td><td>全面转 Rust</td><td>成本不可承受</td></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>就在所有人都以为 C++ 将退化为一门“只配用来写驱动”的边缘语言时， C++11 横空出世。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
   </table>
 </div>
-
 <div class="card">
-  <h3>【模板 F】Bjarne 心法：被抱怨最多的语言</h3>
-  <p><strong>原则：</strong>「世界上只有两种编程语言：一种人们天天抱怨的，一种根本没人用的。」 C++ 是被抱怨最狠却永远无法抛弃的那个。</p>
-  <p><strong>为什么重要：</strong>C++ 已超越语言范畴，成为数字文明的基础物理法则—— 百亿遗留代码、GPU 调度、HFT 系统十年内无法被 Rust/Go 完全重写。</p>
-  <p><strong>怎么落地：</strong>维护 C++ 代码用现代标准渐进升级；新人选型先问「是否有不可替代的遗留约束」。</p>
-  <p><strong>适用边界：</strong>Carbon（Google）和 Rust 围剿下，C++ 在新项目中的份额持续缩小；C++26 静态反射或是最后一搏。</p>
-  <div class="quote">C++ 世界里没有完美乌托邦，只有充满妥协、混乱却无比顽强的工程精神。</div>
+  <h3>【心法/原则卡】终章：C++ 无法摆脱的诅咒与未来</h3>
+  <p><strong>原则：</strong>纪录片以一种充满希望的基调收尾，特别提到了即将到来的 C++26 及其杀手级特性： 静态反射（Static Reflection） 。</p>
+  <p><strong>为什么重要：</strong>纪录片以一种充满希望的基调收尾，特别提到了即将到来的 C++26 及其杀手级特性： 静态反射（Static Reflection） 。 但在 Hacker News 和 Reddit 上，那些每天深陷在 C++ 屎山代码中的一线架构师们，却显得远没有那么乐观。 1. 缺失的拼图：为什么官方不敢提 Boost？ 眼尖的社区极客指出，这部宣称是“官方历史”的纪录片，竟然对 Boost 库 只字未提！要知道，在 C++ 停滞的十年里，是 Boost 库（包含大量实验性的元编程和现代特性）几乎凭借一己之</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：纪录片以一种充满希望的基调收尾，特别提到了即将到来的 C++26 及其杀手级特性： 静态反射（Static Reflection） 。但在 Hacker News 和 Reddit 上，那些每天深陷在 C++ 屎山代码中的一线架构师们，却显得远没有那么乐观。</div>
 </div>
-
-<div class="card">
-  <h3>【模板 C】避坑清单</h3>
-  <p><strong>坑：纪录片当完整历史</strong> — 遗漏 Boost、轻描淡写冰河期。<strong>解法：</strong>对照 Reddit r/cpp 野史。<strong>严重程度：小心。</strong></p>
-  <p><strong>坑：新人直接学 C++</strong> — 40 年包袱 + 无包管理器。<strong>解法：</strong>无遗留约束时优先 Rust/Go。<strong>严重程度：小心。</strong></p>
-  <p><strong>坑：C++98 风格写现代项目</strong> — 手动内存+裸指针。<strong>解法：</strong>C++11 起智能指针+RAII。<strong>严重程度：致命。</strong></p>
-  <div class="pitfall"><strong>包管理地狱：</strong>集成第三方库需在 vcpkg/Conan/Bazel 间痛苦选择+ABI 冲突—— C++ 真正痛点在工具链不在语言。</div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：行业怀疑论者 / 「没那么简单」派</p>
+  <p class="rebuttal-text">任何单一框架都无法覆盖真实业务的全部约束——原文的论证再漂亮，落地时仍要回到团队能力、成本预算和历史包袱这三条硬约束。</p>
 </div>
-
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol>
-    <li>C 兼容是 C++ 存亡的根基，也是复杂性的原罪</li>
-    <li>STL 在 Bjarne 权力背书下绝地通过，赋予 C++ 现代软件工业灵魂</li>
-    <li>Java/C# 围剿造成十年冰河期，Boost 撑起生态却被纪录片 omission</li>
-    <li>C++11 续命 + 摩尔定律放缓使巨头回归—— 账单和延迟驱动</li>
-    <li>真正痛点是包管理/构建工具链，而非语言特性本身</li>
-  </ol>
+  <ol><li>时间倒回 1979 年。</li><li>如果说 Bjarne 给了 C++ 骨架，那么真正赋予 C++ 灵魂的，是另一个极具争议的天才： Alexander Stepanov 。</li><li>正当 C++ 在系统底层攻城略地时，外部的绞杀战开始了。</li><li>就在所有人都以为 C++ 将退化为一门“只配用来写驱动”的边缘语言时， C++11 横空出世。</li><li>纪录片以一种充满希望的基调收尾，特别提到了即将到来的 C++26 及其杀手级特性： 静态反射（Static Reflection） 。</li></ol>
   <p style="margin-top:20px"><strong>行动清单：</strong></p>
-  <ol>
-    <li>观看纪录片 The Story of C++（YouTube: lI7tMxzSJ7w）并对照 Reddit 讨论</li>
-    <li>维护 C++ 代码时升级到 C++17/20，启用智能指针和 RAII</li>
-    <li>新项目选型先评估是否有 C++ 遗留约束，无则考虑 Rust/Go</li>
-    <li>若必须用 C++，选定一个包管理器（vcpkg 或 Conan）并团队统一</li>
-    <li>关注 C++26 静态反射进展，评估对现有元编程代码的影响</li>
-  </ol>
-  <p style="margin-top:20px"><strong>关键认知转变：</strong>C++ 不是「最好的语言」，而是「无法被卸载的操作系统」—— 理解它的权力游戏，才能理解为何被抱怨最狠却永远在场。</p>
+  <ol><li>结合「序章：从贝尔实验室逃出的“异类”」在本周做 1 次小范围对照验证</li><li>结合「第一幕：STL 的救赎——从被群嘲到绝地反击」在本周做 1 次小范围对照验证</li><li>结合「第二幕：巨头的绞杀——微软的野心与 Java 的入侵」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
-
     </div>
   </foreignObject>
 </svg>

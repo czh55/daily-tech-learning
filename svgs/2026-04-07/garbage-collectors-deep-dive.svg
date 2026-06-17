@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6348" viewBox="0 0 1320 6348">
-  <foreignObject x="0" y="0" width="1320" height="6348">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5414" viewBox="0 0 1320 5414">
+  <foreignObject x="0" y="0" width="1320" height="5414">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -11,11 +11,14 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
 .card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
 .node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
@@ -24,50 +27,76 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>从 1960 到 2026：一文看透 Java、Go、Python 垃圾回收器的原理与演进</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：为什么 Java 的 G1GC 需要设置停顿目标？Go 的混合写屏障是如何消除栈重扫的？Python 又是如何解决引用计数无法处理的循环引用？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computation by Machine</div><span class="arrow-sym">→</span><div class="node">Wilson (1992): Uniprocessor Garbage Collection Techniques</div><span class="arrow-sym">→</span><div class="node">两种基本方法</div><span class="arrow-sym">→</span><div class="node">Reference Counting (引用计数)</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">McCarthy (1960): Rec</div><span class="arrow-sym">→</span><div class="node node-orange">Wilson (1992): Unipr</div><span class="arrow-sym">→</span><div class="node">两种基本方法</div><span class="arrow-sym">→</span><div class="node">Reference Counting (</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
 <div class="card">
-  <h3>【模板 A】McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computation by Machine</h3>
+  <h3>【概念拆解卡】McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computation by Machine</h3>
   <p><strong>在讲什么问题：</strong>McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computation by Machine</p>
+  <p><strong>核心机制：</strong>这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。</p>
   <p><strong>关键理解：</strong>这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。McCarthy 需要一种方法来管理符号表达式的内存。Lisp 程序操作的是嵌套的列表（lists of lists of lists），这种递归结构使得要求程序员手动释放内存变得不切实际。因此，他描述了一种自动执行此操作的机制。 该机制分为两个阶段。首先，从程序正在活跃使用的 root（根）变量开始，遍历它们引用的每一个对象，将每个对象标记为 reachable（可达）。其次，扫描所有内存。任何未被标记的对象都是垃圾。将它们重新添加回 free list（空闲列表）。 这就是 mark-and-sweep（标记-清除）。它能自然地处理 cycles（循环引用，因为不可达的循环永远不会被标记），不需要逐个对象的簿记工作，并让程序员可以完全忽略内存管理。 其代价是程序在收集器运行时必须完全停止。每一次分配、每一次计算，所有一切都会冻结，直到标记和清除完成。对于 McCarthy 在 1960 年编写的程序来说，这完全是合理的。 随着程序规模变大并进入对延迟敏感的环境（如处理每秒数千次请求的 Web 服务器），stop-the-world（全线停顿）成了一个难以接受的权衡。现代 GC 研究产生的大部分成果都是为了回答一个问题：如何在不停止世界的情况下进行垃圾内存回收？</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
   <div class="quote">原文依据：这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。McCarthy 需要一种方法来管理符号表达式的内存。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】Wilson (1992): Uniprocessor Garbage Collection Techniques</h3>
-  <p><strong>在讲什么问题：</strong>Wilson (1992): Uniprocessor Garbage Collection Techniques</p>
-  <p><strong>关键理解：</strong>到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。Wilson 的综述论文将这一切组织了起来。它不是一种新算法，而是一个分类学，为散落在几十年论文中的思想赋予了名称和结构。 Wilson 正式确立了所有后续算法构建其上的三种经典算法。 第一种是 mark-and-sweep （标记-清除），即 McCarthy 的原始算法。从 roots 开始，遍历对象图，标记你能触达的所有内容，然后扫过堆并释放任何未标记的内容。它自然处理循环引用，实现简单。缺点是经过足够多的分配和回收循环后，堆会变得 fragmented（碎片化）。存活对象最终散落在各处，中间夹杂着细小的空闲间隙，分配器(allocator)必须更费力地寻找空间。 第二种是 copying （复制算法），有时被称为 semi-space（半空间）。其想法是将堆分成两个相等的部分。你在其中一半进行分配，当它填满时，将所有存活对象拷贝到另一半，然后将第一半完全丢弃。碎片消失了，因为存活对象在拷贝过程中被紧密排列在一起。分配速度很快，因为你只需移动一个 bump pointer（碰撞指针）。代价是有一半的内存始终处于空闲状态，等待成为下一次拷贝的目标。 第三种是 reference counting （引用计数）。每个对象都记录有多少个指针指向它。当创建一个新引用时，计数增加；当移除一个引用时，计数减少。当计数归零时，对象立即被释放。没有追踪过程，没有停顿，销毁是确定性的。问题在于 cycles（循环引用）。如果两个对象相互指向，即使程序中没有任何其他部分可以触达它们，它们的计数也至少为 1。仅靠引用计数，它们永远不会被释放。 除了这三种算法，Wilson 还探讨了现代垃圾回收器赖以生存的两个观察结果。 第一个是 generational hypothesis （分代假说）：大多数对象死得早。在实践中，程序分配的临时对象（中间值、请求作用域的缓冲区、循环变量）往往很快变成垃圾，而只有一小部分对象会贯穿整个程序生命周期。如果你频繁回收年轻对象，偶尔回收老对象，你就能将大部分工作集中在堆中主要是垃圾的部分，这比每次都扫描所有内容的代价要小得多。 第二个是 tricolor marking （三色标记），这是一种用于增量和并发收集的抽象。你不再简单地将对象标记为已访问或未访问，而是使用三种颜色：white（白色，尚未见到）、grey（灰色，已见到但子节点尚未扫描）和 black（黑色，已完全处理）。收集器一次处理一个灰色对象。结束时，白色对象即为垃圾。这种抽象使得收集器和应用程序可以同时运行，而不会破坏彼此对堆的视图。Go 的并发 mark-and-sweep 和 ZGC 的并发标记都是这一思想的直接后裔。 本文“现代 GC”部分中的所有内容都可以映射回 Wilson 的分类。工程实现已经变得更加复杂，但底层结构依然如故。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。Wilson 的综述论文将这一切组织了起来。</div>
+  <h3>【方法/工具卡】Wilson (1992): Uniprocessor Garbage Collection Techniques</h3>
+  <p><strong>核心思路：</strong>到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「Wilson (1992): Uniprocessor Garbage Collection Techniques」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。Wilson 的综述论文将这一切组织了起来。</div>
 </div>
 <div class="card">
-  <h3>【模板 A】两种基本方法</h3>
-  <p><strong>在讲什么问题：</strong>两种基本方法</p>
-  <p><strong>关键理解：</strong>几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。Wilson 的论文围绕这一划分进行组织，三十年后依然成立。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。Wilson 的论文围绕这一划分进行组织，三十年后依然成立。</div>
+  <h3>【避坑清单卡】两种基本方法</h3>
+  <p><strong>坑名：</strong>几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。</p>
+  <p><strong>原因：</strong>几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。Wilson 的论文围绕这一划分进行组织，三十年后依然成立。</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。Wilson 的论文围绕这一划分进行组织，三十年后依然成立。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】Reference Counting (引用计数)</h3>
-  <p><strong>在讲什么问题：</strong>Reference Counting (引用计数)</p>
-  <p><strong>关键理解：</strong>每个对象维护一个指向它的引用计数。当引用创建时，计数增加。当引用移除时，计数减少。当计数归零时，对象立即被释放。 这是 CPython 所使用的其主要机制。它很简单，并能提供确定性的销毁。当指向文件句柄的最后一个引用消失时， del 运行，文件当场关闭，而不是在以后的某个 GC cycle中。 有两个问题使得引用计数无法独立胜任。 Cycles (循环引用)。 如果对象 A 指向对象 B，且对象 B 指向 A，那么即使程序中没有任何其他部分能触达它们，两者的计数也至少为 1。两者都不会被释放。 这并非理论上的边缘案例。循环引用在链表数据结构、父子关系、观察者模式和缓存中自然出现。稍后在介绍 CPython 的 GC 时，我将讨论 Python 如何处理这个问题。 Per-mutation overhead (每次修改的开销)。 每次指针赋值都需要更新引用计数。在多线程程序中，这些必须是 atomic（原子）操作，成本昂贵得多。每当你将对象传递给函数、返回它或将其赋值给字段时，你都要支付这种代价。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：每个对象维护一个指向它的引用计数。当引用创建时，计数增加。</div>
+  <h3>【决策/选型表】Reference Counting (引用计数)</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>每个对象维护一个指向它的引用计数。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
 </div>
 <div class="card">
-  <h3>【模板 A】Tracing (追踪式，即 Mark-and-Sweep)</h3>
-  <p><strong>在讲什么问题：</strong>Tracing (追踪式，即 Mark-and-Sweep)</p>
-  <p><strong>关键理解：</strong>追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。它能触达的每个对象都被标记为存活。其他所有对象都被释放。 Root set 是起点，因此什么算作 root（根）至关重要。不同语言的答案是相同的：root 是 runtime（运行时）无需追踪就能找到的任何引用。这些指针锚定在程序当前的执行状态中，是在任何遍历开始之前你就知道是存活的东西。 在实践中，roots 分为以下几类。 每个活跃 stack frame（栈帧）中的 local variables （局部变量）和函数参数都是 roots。程序正在活跃地运行这些函数，因此它们引用的任何内容定义上都是在使用中的。 Global and static variables （全局变量和静态变量）是 roots，因为它们在程序的整个生命周期内都存在。 CPU registers （CPU 寄存器）是 roots。因为当 JIT 编译器优化一个热点方法时，它可能会将频繁访问的对象引用保留在 CPU 寄存器中，而不是写回栈。如果 GC 此时运行，寄存器保存着该对象的唯一存活引用。如果 GC 不扫描寄存器，它就会释放一个仍在使用中的对象。为了防止这种情况，运行时在代码中定义了 safe points（安全点），GC 只能在这些点发生，并且在这些点，它会快照寄存器状态以寻找持有的任何引用。 Runtime（运行时）本身 也持有与用户代码无关的 roots。在 JVM 中，class loaders 是 roots：你加载的每个类都由其类加载器引用，只要类加载器存活，它加载的每个类（包括它们的静态字段）就保持存活。Interned strings（常量池字符串）是 roots，因为 String.intern() 将字符串存储在 JVM 维护的共享池中。JNI handles 是 roots，因为当原生 C 或 C++ 代码通过 Java Native Interface 持有 Java 对象的引用时，该引用存在于 Java 堆外的句柄表中，GC 必须扫描它。每个活跃线程都是一个 root，其整个调用栈帧都是 root set 的一部分。 Go 的运行时遵循同样的原则。每个 goroutine 都有自己的栈，必须扫描所有 goroutine 栈以寻找 roots。运行时还跟踪自己的内部数据结构，例如 finalizer 队列，作为 root set 的一部分。 核心见解是：roots 是由运行时在无需追踪的情况下就已经知道是存活的东西定义的。其他所有东西必须通过从 root 可达来证明自己的生存权。这就是为什么这个概念是与语言无关的。Java、Go 和 Python 之间的具体 roots 集合有所不同，但原则是一样的：从你知道是存活的地方开始，向外追踪，并回收其余部分。 循环引用被自然处理。如果 A 和 B 相互指向，但都无法从任何 root 到达，则标记阶段永远不会访问它们。它们保持未标记状态并被清除。 代价：朴素的 mark-and-sweep 必须在追踪堆时暂停整个程序。这种 stop-the-world（全线停顿）是早期垃圾回收器的核心问题，也是现代 GC 几十年来工程化改进的重点。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。它能触达的每个对象都被标记为存活。</div>
+  <h3>【心法/原则卡】Tracing (追踪式，即 Mark-and-Sweep)</h3>
+  <p><strong>原则：</strong>追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。</p>
+  <p><strong>为什么重要：</strong>追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。它能触达的每个对象都被标记为存活。其他所有对象都被释放。 Root set 是起点，因此什么算作 root（根）至关重要。不同语言的答案是相同的：root 是 runtime（运行时）无需追踪就能找到的任何引用。这些指针锚定在程序当前的执行状态中，是在任何遍历开始之前你就知道是存活的东西。 在实践中，roots 分为以下几类。 每个活跃 stack frame（栈帧）中的 local va</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。它能触达的每个对象都被标记为存活。</div>
 </div>
-<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computation by Machine：这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。</li><li>Wilson (1992): Uniprocessor Garbage Collection Techniques：到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。</li><li>两种基本方法：几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。</li><li>Reference Counting (引用计数)：每个对象维护一个指向它的引用计数。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computation by Machine」在本周工作中做 1 次对照验证</li><li>结合「Wilson (1992): Uniprocessor Garbage Collection Techniques」在本周工作中做 1 次对照验证</li><li>结合「两种基本方法」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Rust/系统编程原教旨主义者</p>
+  <p class="rebuttal-text">Go 的「简单」很多时候是把复杂度推迟到运行时和运维侧——当性能热路径或安全边界收紧时，缺乏所有权模型会让你付出重写代价。</p>
+</div>
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol><li>这篇论文因引入 Lisp 而闻名，但垃圾回收器几乎是作为实现细节被埋藏在其中的。</li><li>到 1992 年，三十年的 GC 研究已经产生了许多想法，但缺乏统一的词汇。</li><li>几乎所有的垃圾回收器要么是 reference counting（引用计数），要么是 tracing（追踪），或者是两者的某种结合。</li><li>每个对象维护一个指向它的引用计数。</li><li>追踪式收集器不跟踪单个引用，而是从一组已知的存活引用（称为 root set，根集合）开始，遍历整个对象图。</li></ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol><li>结合「McCarthy (1960): Recursive Functions of Symbolic Expressions and Their Computation by Machine」在本周做 1 次小范围对照验证</li><li>结合「Wilson (1992): Uniprocessor Garbage Collection Techniques」在本周做 1 次小范围对照验证</li><li>结合「两种基本方法」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
+</div>
     </div>
   </foreignObject>
 </svg>

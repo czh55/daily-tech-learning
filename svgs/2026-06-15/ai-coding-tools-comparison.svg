@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5490" viewBox="0 0 1320 5490">
-  <foreignObject x="0" y="0" width="1320" height="5490">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5139" viewBox="0 0 1320 5139">
+  <foreignObject x="0" y="0" width="1320" height="5139">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
 h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
 .tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
-.tag-blue{background:#dbeafe;color:#1e40af}
-.tag-green{background:#d1fae5;color:#065f46}
-.tag-orange{background:#ffedd5;color:#9a3412}
-.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
 .card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
@@ -18,135 +15,88 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
-.diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 0}
-.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:20px 28px;text-align:center;min-width:140px;font-weight:700;font-size:15px;color:#1e40af}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
 .node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
 .node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
-.arrow-sym{font-size:24px;color:#94a3b8}
+.arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
 .conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
-th{background:#f1f5f9;padding:10px 12px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
-.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比</h1>
-<div style="margin-bottom:16px">
-  <span class="tag tag-blue">AI 编程</span>
-  <span class="tag tag-green">工具选型</span>
-  <span class="tag tag-orange">成本分析</span>
-  <span class="tag tag-purple">三工具协作</span>
-</div>
-<p class="subtitle">本文解决的核心问题是：2026 年六大 AI 编程工具（Cursor、Claude Code、Codex、Windsurf、Copilot、Trae）不存在「唯一最好」，但存在最适合你场景和预算的组合——如何用十维评分、隐藏成本和场景矩阵做出可执行决策。</p>
-
-<div class="map">
-  <h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3>
-  <div class="diagram">
-    <div class="node-green">Claude Code<br/>大脑·编排</div>
-    <span class="arrow-sym">+</span>
-    <div class="node">Codex<br/>双手·并行</div>
-    <span class="arrow-sym">+</span>
-    <div class="node-orange">Cursor<br/>眼睛·可视化</div>
-    <span class="arrow-sym">→</span>
-    <div class="node-green">场景路由<br/>非互斥组合</div>
-  </div>
-</div>
-
-<div class="correction">
-  <h3>认知纠偏</h3>
-  <p style="color:#92400e;font-size:16px">常见误解：「总分最高的工具就是最适合我的」—— Codex 81 分、Cursor 77.5 分、Claude Code 73 分，但按场景排名完全不同；59% 开发者同时运行 3 个以上工具，问题不是选哪个而是怎么组合。</p>
-</div>
+<div style="margin-bottom:16px"><span class="tag tag-blue">AI 编程</span><span class="tag tag-green">自动化</span><span class="tag tag-orange">实战教程</span></div>
+<p class="subtitle">本文解决的核心问题是：Claude Code 的 CLAUDE.md 是什么？</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">2026 年 8 大 AI Agent </div><span class="arrow-sym">→</span><div class="node node-orange">Runway Gen-4.5 视频提示词</div><span class="arrow-sym">→</span><div class="node">2026 AI 编程工具横评：Curso</div><span class="arrow-sym">→</span><div class="node">六大工具一句话定位</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：「GitHub Stars 最高 = 最好」—— 应综合看 CVE 记录、场景匹配和真实成本，而非关注度排名。</p></div>
 
 <div class="card">
-  <h3>【模板 A】六大工具物种定位</h3>
-  <p><strong>在讲什么问题：</strong>六个工具表面都是「AI 写代码」，底层架构差异巨大。</p>
-  <p><strong>核心机制：</strong>Cursor = VS Code 原生 IDE + 多模型路由；Claude Code = 终端 Agent + 100 万 token 上下文；Codex = ChatGPT 生态四入口 + 云沙盒自主执行；Trae = 国内免费 AI IDE。</p>
-  <p><strong>关键理解：</strong>84% 开发者已用 AI 编程工具，但 46% 不信任产出——效率提升太明显，即使不信任也停不下来。</p>
-  <p><strong>边界说明：</strong>Trae 国内可用但 Agent 深度不及 Claude Code；Claude Code 被封锁中国 IP；Cursor 标称 128K 上下文实际可用仅 70K-120K。</p>
-  <div class="quote">通俗讲：Cursor 像会写代码的 VS Code，Claude Code 像住在终端里的高级开发者，Codex 像 ChatGPT 学会了自己开电脑干活。</div>
+  <h3>【概念拆解卡】2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？</h3>
+  <p><strong>在讲什么问题：</strong>2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？</p>
+  <p><strong>核心机制：</strong>8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。</p>
+  <p><strong>关键理解：</strong>8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。 翔宇 2026年6月16日 AI 编程 / 提示词工程</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。翔宇 2026年6月16日 AI 编程 / 提示词工程</div>
 </div>
-
 <div class="card">
-  <h3>【模板 E】翔宇十维评分对比（节选）</h3>
+  <h3>【方法/工具卡】Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词</h3>
+  <p><strong>核心思路：</strong>从零掌握 Runway Gen-4.5 视频提示词写法。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：从零掌握 Runway Gen-4.5 视频提示词写法。一个八层统一框架融合五维自然语言、时间戳分段和力-反应语法，附 10 个精选模板和可直接使用的元提示词。</div>
+</div>
+<div class="card">
+  <h3>【避坑清单卡】2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比</h3>
+  <p><strong>坑名：</strong>全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。</p>
+  <p><strong>原因：</strong>全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。六大主力工具十维评分卡、精确定价表、隐藏成本案例、场景决策矩阵、省钱策略——一篇看完不用再翻别的。 翔宇 2026年6月16日 关注 Download more icon variants from https://tabler-icons.io/i/brand-youtube YouTube Bilibili B 站 Download more icon variants from https://tabler-icons.io/i/brand-github GitHub X 微信公众号 RSS A</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。六大主力工具十维评分卡、精确定价表、隐藏成本案例、场景决策矩阵、省钱策略——一篇看完不用再翻别的。</div>
+</div>
+<div class="card">
+  <h3>【决策/选型表】六大工具一句话定位</h3>
   <table>
-    <tr><th>维度</th><th>Codex</th><th>Claude Code</th><th>Cursor</th><th>Trae</th><th>一句话结论</th></tr>
-    <tr><td>代码质量</td><td>9.0</td><td>9.5</td><td>8.5</td><td>7.0</td><td>Claude 盲测赢 67%</td></tr>
-    <tr><td>上下文深度</td><td>8.5</td><td>10</td><td>7.0</td><td>5.5</td><td>100 万 token 是碾压级</td></tr>
-    <tr><td>Agent 自主</td><td>10</td><td>9.5</td><td>7.0</td><td>6.0</td><td>Codex 云沙盒 8 子 Agent</td></tr>
-    <tr><td>国内可用</td><td>3.0</td><td>2.0</td><td>4.0</td><td>10</td><td>Trae 唯一满分</td></tr>
-    <tr><td>总分</td><td>81.0</td><td>73.0</td><td>77.5</td><td>72.0</td><td>总分会误导，看场景</td></tr>
-  </table>
-  <div class="relation"><strong>Token 效率实测：</strong>同一任务 Claude Code 33K token vs Cursor 188K token（5.5 倍差距）；Composer 2.5 成本仅为 Opus 的 1/8.7。</div>
-</div>
-
-<div class="card">
-  <h3>【模板 F】三工具协作心法：大脑、双手、眼睛</h3>
-  <p><strong>原则：</strong>不是同时打开三个工具互打，而是按任务类型精确路由。</p>
-  <p><strong>为什么重要：</strong>双工具协作在「架构+打磨」类任务上比单工具快约 40%（Blake Crosley 30 次会话数据）。</p>
-  <p><strong>怎么落地：</strong>Claude Code 编排多 Agent + 200 文件重构；Codex 批量修改 + 发射后不管的 Cloud Task；Cursor 仅用于 UI 微调和内联补全。</p>
-  <p><strong>适用边界：</strong>10 分钟以下任务不值得双工具拆分——3-5 分钟上下文切换会吃掉收益。</p>
-  <div class="highlight"><strong>落地建议：</strong>「$40/月双持 Claude Code + Cursor」被 Fireship 称为 2026 开发者 meta；再加 DeepSeek 降级简单任务可月省 $150-200。</div>
-</div>
-
-<div class="card">
-  <h3>【模板 D】场景决策矩阵</h3>
-  <table>
-    <tr><th>场景</th><th>首选</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
-    <tr><td>异步委派/并行执行</td><td>Codex</td><td>云沙盒 8 子 Agent，发射后不管</td><td>Cursor Agent</td><td>自主能力差距大</td></tr>
-    <tr><td>200+ 文件大规模重构</td><td>Claude Code</td><td>100 万 token 全程一致</td><td>Cursor</td><td>50 文件后开始遗忘</td></tr>
-    <tr><td>日常 IDE 编辑/补全</td><td>Cursor</td><td>VS Code 生态 + &lt;100ms 补全</td><td>Claude Code</td><td>终端不适合频繁可视化</td></tr>
-    <tr><td>零预算/国内直接可用</td><td>Trae</td><td>全功能免费 + 豆包/DeepSeek</td><td>Claude Code</td><td>封锁中国 IP</td></tr>
-    <tr><td>企业合规/团队部署</td><td>Copilot</td><td>470 万付费 + SOC 2</td><td>Trae</td><td>团队协作能力弱</td></tr>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>选型之前，先搞清楚这六个工具到底是什么物种。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
   </table>
 </div>
-
 <div class="card">
-  <h3>【模板 C】隐藏成本避坑清单</h3>
-  <p><strong>坑：被入门价 $20/月 误导实际账单</strong></p>
-  <p><strong>原因：</strong>12 个月内 Cursor/Windsurf/Copilot 先后从固定价转向用量计费；「无限使用」承诺全行业消失。</p>
-  <p><strong>原文案例：</strong>Cursor 手动选 Opus 一天烧完信用池；Claude Code 子 Agent 扇出单次 $47,000；Copilot 从 $29 飙到 $750/月。</p>
-  <p><strong>解法：</strong>禁止 AI 处理支付/认证/DB 迁移等关键路径；建立 AI 代码审查清单；10 人团队真实年成本可达 $192,666（含隐藏成本）。</p>
-  <p><strong>严重程度：</strong>致命——Stripe 超时导致 47 笔重复扣款 $12,400 退款的真实案例。</p>
-  <div class="pitfall"><strong>SWE-bench 陷阱：</strong>Verified 基准 32% 验证器错误率；顶级模型 Verified 70-80% 但 Pro 仅 23-58%。别用刷坏的基准做唯一判据。</div>
+  <h3>【心法/原则卡】精确定价对比（2026 年 6 月数据）</h3>
+  <p><strong>原则：</strong>定价是选型的第一道门槛。</p>
+  <p><strong>为什么重要：</strong>定价是选型的第一道门槛。下面这张表是截至 2026 年 6 月 10 日的最新数据，精确到每个档位。</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：定价是选型的第一道门槛。下面这张表是截至 2026 年 6 月 10 日的最新数据，精确到每个档位。</div>
 </div>
-
-<div class="card">
-  <h3>【模板 B】按预算选型操作指南</h3>
-  <p><strong>操作步骤：</strong>1. 确定月预算档位 2. 对照场景矩阵选主工具 3. 评估是否需要双持/三持 4. 设置 API 上限防账单爆炸 5. 用真实项目试一周再定。</p>
-  <table>
-    <tr><th>月预算</th><th>推荐方案</th><th>覆盖能力</th></tr>
-    <tr><td>$0</td><td>Trae + Copilot Free</td><td>日常 70% 需求</td></tr>
-    <tr><td>$20</td><td>Cursor Pro 或 Claude Code Pro 二选一</td><td>完整 IDE 或终端 Agent</td></tr>
-    <tr><td>$40</td><td>Claude Code Pro + Cursor Pro</td><td>2026 开发者 meta</td></tr>
-    <tr><td>$200+</td><td>Claude Max 20x + Codex Pro 20x + Cursor</td><td>三工具协作顶配</td></tr>
-  </table>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Geohot 式 Agent 怀疑派</p>
+  <p class="rebuttal-text">自主 Agent 的 Token 成本与错误决策半径常被低估——Stars 和 demo 视频好看，生产环境里的死循环、权限事故和 $131/天账单才是真实账单。</p>
 </div>
-
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol>
-    <li>不存在「最好的」AI 编程工具，59% 开发者同时用 3 个以上——关键是场景路由</li>
-    <li>三大计费变革（信用池/日配额/用量计费）使标价 ≠ 实际花费，隐藏成本可达直接费用的 20 倍</li>
-    <li>翔宇三工具体系：Claude Code 大脑编排、Codex 双手并行、Cursor 眼睛可视化</li>
-    <li>国内开发者 Trae 是零成本主力；海外深度工作流 Claude Code + Codex 组合最强</li>
-    <li>SWE-bench Verified 分数已被刷坏，用真实项目试一周比看基准靠谱</li>
-  </ol>
+  <ol><li>8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。</li><li>从零掌握 Runway Gen-4.5 视频提示词写法。</li><li>全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。</li><li>选型之前，先搞清楚这六个工具到底是什么物种。</li><li>定价是选型的第一道门槛。</li></ol>
   <p style="margin-top:20px"><strong>行动清单：</strong></p>
-  <ol>
-    <li>列出你最高频的 3 类任务，对照场景决策矩阵确定主工具</li>
-    <li>设月度 API 预算上限，审查是否有 AI 处理关键路径（支付/认证）的违规</li>
-    <li>用同一 CLI 工具任务分别在 Claude Code 和 Cursor 各跑一次，对比介入次数</li>
-    <li>国内用户先装 Trae 覆盖日常，复杂任务再考虑代理 + Claude Code</li>
-    <li>10 分钟以上「架构+打磨」任务尝试双工具协作，短任务坚持单工具</li>
-  </ol>
-  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「找一个最好的工具」到「按任务路由工具组合」——工具排名没有标准答案，适合自己工作方式的组合才是正解。</p>
+  <ol><li>结合「2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？」在本周做 1 次小范围对照验证</li><li>结合「Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词」在本周做 1 次小范围对照验证</li><li>结合「2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
-
     </div>
   </foreignObject>
 </svg>

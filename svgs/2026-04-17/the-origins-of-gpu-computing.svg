@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6036" viewBox="0 0 1320 6036">
-  <foreignObject x="0" y="0" width="1320" height="6036">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5087" viewBox="0 0 1320 5087">
+  <foreignObject x="0" y="0" width="1320" height="5087">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -11,11 +11,14 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
 .card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
 .node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
@@ -24,50 +27,76 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>GPU 计算的起源</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：你的Go技能，是否也卡在了“熟练”到“精通”的瓶颈期？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">赋能技术</div><span class="arrow-sym">→</span><div class="node">并行计算</div><span class="arrow-sym">→</span><div class="node">并行图形系统</div><span class="arrow-sym">→</span><div class="node">技术转移</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">赋能技术</div><span class="arrow-sym">→</span><div class="node node-orange">并行计算</div><span class="arrow-sym">→</span><div class="node">并行图形系统</div><span class="arrow-sym">→</span><div class="node">技术转移</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
 <div class="card">
-  <h3>【模板 A】赋能技术</h3>
+  <h3>【概念拆解卡】赋能技术</h3>
   <p><strong>在讲什么问题：</strong>赋能技术</p>
+  <p><strong>核心机制：</strong>GPU 计算建立在并行计算、并行图形系统和流处理的早期工作基础上。</p>
   <p><strong>关键理解：</strong>GPU 计算建立在并行计算、并行图形系统和流处理的早期工作基础上。这些技术是通过超过 30 年的政府资助学术研究发展而来的。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
   <div class="quote">原文依据：GPU 计算建立在并行计算、并行图形系统和流处理的早期工作基础上。这些技术是通过超过 30 年的政府资助学术研究发展而来的。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】并行计算</h3>
-  <p><strong>在讲什么问题：</strong>并行计算</p>
-  <p><strong>关键理解：</strong>当你学习计算时，你了解到的是中央处理器（CPU）按顺序执行一系列指令。 实际上，芯片包含数十亿个并行切换并由导线连接的晶体管。开关和导线是物理计算机的基本构建块，它们同时运行。 此外，晶体管切换消耗的能量很少，而沿导线的通信消耗的能量要多得多。 通信需要功率来将信号从一点发送到另一点；功率随着距离的增加而增加，如果是在芯片之间进行信号传输，功率消耗将非常巨大。 虽然顺序计算机可能比并行计算机更容易理解，但顺序计算机必须通过同时切换的晶体管和同时传输信息的导线来实现。顺序计算机使用许多晶体管并行计算结果，然后仔细地以与顺序执行一致的方式组装这些结果。 创建这种执行是顺序的“幻觉”，在功率和性能上都是低效的。随着可用晶体管数量的增加，这种低效性也随之增加。在现代半导体技术中构建计算机的自然方式是设计并行计算机。GPU 比 CPU 更高效，因为它们是大规模并行计算机。 GPU 计算建立在并行计算的早期工作之上。与所有并行计算机一样，在 GPU 上运行的并行任务或线程必须相互同步和通信。 线程需要通信来使用由另一个线程产生的数据。同步是必要的，以在数据可用时发出信号，确保消耗的是正确的值。 并行计算、同步和通信的许多基础知识是由政府资助的学术研究开发的。由加州理工学院 Chuck Seitz 领导的 DARPA 资助的“宇宙立方”（Cosmic Cube）项目发展了并行计算的许多基础知识。在该项目上开发的硬件是英特尔 iPSC、Delta 和 Paragon 机器的蓝图，以及几台早期的能源部 ASCI 机器。“Cosmic-C”编程语言引入了异步消息传递和集合通信，后来以消息传递接口（MPI）的形式成为编程大型并行机器的标准。 麻省理工学院（MIT）的 DARPA 资助的 J-Machine 和 M-Machine 项目开发了用于通信和同步的低开销机制，以及现代互连网络的许多关键方面。这些机制使得并行性可以在非常细的粒度上被利用，最少只需 10 或 20 条指令即可作为一个可调度的工作单元。J-Machine 的许多特性被 Cray T3D 和 T3E 计算机直接采用。 并行计算有着超越这一特定历史分支的丰富历史。由于篇幅有限，我们无法进行完整的综述。Culler 等人的文章提供了一个很好的回顾。 GPU 计算与所有高性能计算一样，深受这一遗产的影响。它使用 MPI 进行节点间的通信，使用互连网络连接这些节点，并且在此研究过程中开发的许多通信和同步机制被用于协调并行计算。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：当你学习计算时，你了解到的是中央处理器（CPU）按顺序执行一系列指令。实际上，芯片包含数十亿个并行切换并由导线连接的晶体管。</div>
+  <h3>【方法/工具卡】并行计算</h3>
+  <p><strong>核心思路：</strong>当你学习计算时，你了解到的是中央处理器（CPU）按顺序执行一系列指令。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「并行计算」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：当你学习计算时，你了解到的是中央处理器（CPU）按顺序执行一系列指令。实际上，芯片包含数十亿个并行切换并由导线连接的晶体管。</div>
 </div>
 <div class="card">
-  <h3>【模板 A】并行图形系统</h3>
-  <p><strong>在讲什么问题：</strong>并行图形系统</p>
-  <p><strong>关键理解：</strong>虽然不如传统的并行计算和超级计算机广为人知，但并行图形和成像计算机有着悠久的历史。 处理和生成图像需要巨大的计算量。例如，如果一台每秒处理一百万条指令的计算机（1MIPS）对百万像素图像的每个像素应用一次算术运算，计算机需要一秒钟来处理一张图像。 渲染电影和游戏中的 3D 虚拟世界比图像处理每像素需要的计算量大几个数量级。例如，为现代电影生成的图像每个像素需要大约十亿次浮点运算。因此，为了在实践中有用，图形和成像需要高性能的并行超级计算机。这些计算机在大规模数据集合上并行计算。 一个早期的 DARPA 资助研究项目是吉姆·克拉克（Jim Clark）在斯坦福大学领导的几何引擎（Geometry Engine）。 几何引擎促成了硅谷图形公司（Silicon Graphics）的成立，该公司率先开发了 3D 图形工作站。SGI 硬件架构和 OpenGL 软件库定义了现代 GPU 架构。 另一个值得注意的政府资助研究项目是亨利·福克斯（Henry Fuchs）及其合作者在北卡罗来纳大学领导的 Pixel Planes 系列高性能图形系统。事实上，Pixel Planes 5 是一台相当通用的单指令多数据（SIMD）计算机，它在 128 x 128 图像上运行并行计算。其他早期并行图形和图像计算机的例子包括 NASA 的大规模并行处理器（MPP）、Ikonas 图形系统和 Pixar 图像计算机。 早期 GPU 实现了类似于早期 SGI 工作站的固定功能图形流水线。当整个 OpenGL 图形流水线可以在单个芯片上实现时，英伟达引入了“GPU”一词。1999 年推出的英伟达 Geforce 256 由 1700 万个晶体管组成，是第一款商用 GPU。 在此之前，在皮克斯（Pixar）工作期间，Hanrahan 开发了 RenderMan，这是一个生成照片级逼真图像的系统。该系统彻底改变了电影行业，因为它能够生成可以与相机拍摄的实景无缝结合的图像。RenderMan 的一个关键组件是着色语言，它使用户能够扩展系统以模拟复杂的材质和光照。 虽然最初的 GPU 实现了固定功能流水线，但它们是由可编程组件构成的。不幸的是，这些处理单元因系统而异，因代而异。需要的是一种可移植的编程模型。由于 GPU 的主要应用是电脑游戏，因此将 RenderMan 着色语言适配到 GPU，以便游戏开发者可以创造新的光照和着色效果似乎是自然而然的。 在斯坦福大学的一个 DARPA 资助项目下，为当时的 GPU 设计并实现了一种实时着色语言（RTSL）。着色语言程序现在被称为着色器（shaders）。博士后学者 Bill Mark 领导了斯坦福 RTSL 的设计，后来加入了英伟达。他与另一位前斯坦福研究生 Kurt Akeley 一起增强了该技术，并创建了 Cg 着色语言。Cg 导致了微软 HLSL 和 OpenGL GLSL 的开发。 人们很快意识到，这些早期的着色语言足够灵活，可以实现科学计算中的许多算法。研究人员采用了诸如矩阵乘法、线性求解器、流体动力学求解器和分子动力学等算法在着色器上运行。这导致了 GPGPU（通用 GPU）计算运动的兴起。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：虽然不如传统的并行计算和超级计算机广为人知，但并行图形和成像计算机有着悠久的历史。处理和生成图像需要巨大的计算量。</div>
+  <h3>【避坑清单卡】并行图形系统</h3>
+  <p><strong>坑名：</strong>虽然不如传统的并行计算和超级计算机广为人知，但并行图形和成像计算机有着悠久的历史。</p>
+  <p><strong>原因：</strong>虽然不如传统的并行计算和超级计算机广为人知，但并行图形和成像计算机有着悠久的历史。 处理和生成图像需要巨大的计算量。例如，如果一台每秒处理一百万条指令的计算机（1MIPS）对百万像素图像的每个像素应用一次算术运算，计算机需要一秒钟来处理一张图像。 渲染电影和游戏中的 3D 虚拟世界比图像处理每像素需要的计算量大几个数量级。例如，为现代电影生成的图像每个像素需要大约十亿次浮点运算。因此，为了在实践中有用，图形和成像需要高性能的并行超级计算机。这些计算机在大规模数据集合上并行计算。 一个早期的 DARPA 资助研究项目是吉姆·克拉克（Jim Clark）在斯坦福大学领导的几何引擎（Geometry</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：虽然不如传统的并行计算和超级计算机广为人知，但并行图形和成像计算机有着悠久的历史。处理和生成图像需要巨大的计算量。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】技术转移</h3>
-  <p><strong>在讲什么问题：</strong>技术转移</p>
-  <p><strong>关键理解：</strong>流处理架构和编程系统通过人员流动从斯坦福转移到了英伟达。英伟达的一位架构师 John Nickolls 听说过流处理，并招募了 Bill Dally 在 2003 年为英伟达的 NV50 架构提供咨询。（NV50 于 2006 年作为 G80 发布）。流处理器的许多特性被合并到了该架构中。NV50 的“共享内存”发挥了 Imagine 和 Merrimac 中 SRF 的作用。 Ian Buck（Merrimac 项目的研究生和 Brook 的主要开发人员）于 2004 年加入英伟达。Ian 与 John Nickolls 合作将 Brook 演进为 CUDA。CUDA 合并了 Brook 和 Cg（一种图形着色语言）的最佳特性，并采纳了 Brook 程序员的反馈。关于该技术如何从斯坦福转移到英伟达的故事在一篇演示文稿中进行了描述。Mike Houston（该项目的另一位研究生）加入了 AMD，并直接使用 Brook 作为其 GPU 的编程语言。G80（NV50）和 CUDA 于 2006 年在超级计算大会上发布。 当 CUDA 于 2006 年发布时，很少有人了解并行编程，更不用说 GPU 流编程了。为了克服这一劳动力短缺，Wen-Mei Hwu 和 David Kirk 通过为教授讲授 CUDA 编程课程来推广 GPU 计算。参加这些课程的教师随后教授了成千上万的学生使用 CUDA 进行并行编程。从 Cosmic Cube、J-Machine 和 M-Machine 借来的并行计算技术既被应用于 GPU 内部（以协调多个 SM），也被应用于跨 GPU（构建多节点 GPU 系统以解决大型问题）。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：流处理架构和编程系统通过人员流动从斯坦福转移到了英伟达。英伟达的一位架构师 John Nickolls 听说过流处理，并招募了 Bill Dally 在 2003 年为英伟达的 NV50 架构提供咨询。</div>
+  <h3>【决策/选型表】技术转移</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>流处理架构和编程系统通过人员流动从斯坦福转移到了英伟达。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
 </div>
 <div class="card">
-  <h3>【模板 A】赋能 AI</h3>
-  <p><strong>在讲什么问题：</strong>赋能 AI</p>
-  <p><strong>关键理解：</strong>现代机器学习依赖于三个关键要素——海量数据集、具有许多层和权重的庞大模型，以及优化权重的计算能力。核心算法（深度神经网络、卷积网络、使用反向传播的训练和随机梯度下降）自 20 世纪 80 年代或更早以来就一直存在。大型标注数据集，例如 PASCAL 和 Imagenet，出现在 21 世纪初。最近的进展，例如将文本嵌入到向量空间中，使得自然语言深度学习成为可能。Transformers（“注意力就是你所需要的”）用带有历史记录的易于训练的神经网络取代了难以训练的循环神经网络。GPU 计算使得大规模数据集的网络训练在经济上变得可行。一旦展示了这种能力（Alexnet, GPT），AI 的能力就得到了迅速提升。AI 的快速采用为改进 GPU 计算系统提供了更大的动力。 英伟达的机器学习也得益于学术界与产业界的协同效应。2010 年，作者之一（Dally）与吴恩达（Andrew Ng）的一次早餐交谈促成了一个英伟达与斯坦福之间的联合项目，旨在 GPU 上构建深度神经网络。Bryan Catanzaro 领导了该项目的英伟达部分。在此项目中开发的软件成为了 CuDNN，它为英伟达 GPU 上的深度学习提供了一个现成的库——从而推动了深度学习的普及。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：现代机器学习依赖于三个关键要素——海量数据集、具有许多层和权重的庞大模型，以及优化权重的计算能力。核心算法（深度神经网络、卷积网络、使用反向传播的训练和随机梯度下降）自 20 世纪 80 年代或更早以来就一直存在。</div>
+  <h3>【心法/原则卡】赋能 AI</h3>
+  <p><strong>原则：</strong>现代机器学习依赖于三个关键要素——海量数据集、具有许多层和权重的庞大模型，以及优化权重的计算能力。</p>
+  <p><strong>为什么重要：</strong>现代机器学习依赖于三个关键要素——海量数据集、具有许多层和权重的庞大模型，以及优化权重的计算能力。核心算法（深度神经网络、卷积网络、使用反向传播的训练和随机梯度下降）自 20 世纪 80 年代或更早以来就一直存在。大型标注数据集，例如 PASCAL 和 Imagenet，出现在 21 世纪初。最近的进展，例如将文本嵌入到向量空间中，使得自然语言深度学习成为可能。Transformers（“注意力就是你所需要的”）用带有历史记录的易于训练的神经网络取代了难以训练的循环神经网络。GPU 计算使得大规</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：现代机器学习依赖于三个关键要素——海量数据集、具有许多层和权重的庞大模型，以及优化权重的计算能力。核心算法（深度神经网络、卷积网络、使用反向传播的训练和随机梯度下降）自 20 世纪 80 年代或更早以来就一直存在。</div>
 </div>
-<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>赋能技术：GPU 计算建立在并行计算、并行图形系统和流处理的早期工作基础上。</li><li>并行计算：当你学习计算时，你了解到的是中央处理器（CPU）按顺序执行一系列指令。</li><li>并行图形系统：虽然不如传统的并行计算和超级计算机广为人知，但并行图形和成像计算机有着悠久的历史。</li><li>技术转移：流处理架构和编程系统通过人员流动从斯坦福转移到了英伟达。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「赋能技术」在本周工作中做 1 次对照验证</li><li>结合「并行计算」在本周工作中做 1 次对照验证</li><li>结合「并行图形系统」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
+  <p class="rebuttal-text">历史一再证明「这次不一样」的叙事会高估短期颠覆、低估组织惯性——技术可行不等于商业可行，更不等于个人职业生涯可一键切换。</p>
+</div>
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol><li>GPU 计算建立在并行计算、并行图形系统和流处理的早期工作基础上。</li><li>当你学习计算时，你了解到的是中央处理器（CPU）按顺序执行一系列指令。</li><li>虽然不如传统的并行计算和超级计算机广为人知，但并行图形和成像计算机有着悠久的历史。</li><li>流处理架构和编程系统通过人员流动从斯坦福转移到了英伟达。</li><li>现代机器学习依赖于三个关键要素——海量数据集、具有许多层和权重的庞大模型，以及优化权重的计算能力。</li></ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol><li>结合「赋能技术」在本周做 1 次小范围对照验证</li><li>结合「并行计算」在本周做 1 次小范围对照验证</li><li>结合「并行图形系统」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
+</div>
     </div>
   </foreignObject>
 </svg>

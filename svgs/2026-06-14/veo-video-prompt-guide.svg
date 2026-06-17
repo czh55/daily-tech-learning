@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5162" viewBox="0 0 1320 5162">
-  <foreignObject x="0" y="0" width="1320" height="5162">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5256" viewBox="0 0 1320 5256">
+  <foreignObject x="0" y="0" width="1320" height="5256">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
 h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
 .tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
-.tag-blue{background:#dbeafe;color:#1e40af}
-.tag-green{background:#d1fae5;color:#065f46}
-.tag-orange{background:#ffedd5;color:#9a3412}
-.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
 .card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
@@ -19,130 +16,87 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
-.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:12px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
 .node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
 .node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
-.arrow-sym{font-size:18px;color:#94a3b8}
+.arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
 td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
-.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
-<h1>Google Veo 3.1 视频提示词完全指南：八层框架</h1>
-<div style="margin-bottom:16px">
-  <span class="tag tag-blue">Veo 3.1</span>
-  <span class="tag tag-green">提示词工程</span>
-  <span class="tag tag-orange">AI 视频</span>
-  <span class="tag tag-purple">同步音频</span>
-</div>
-<p class="subtitle">本文解决的核心问题是：同样使用 Veo 3.1，如何用统一的八层提示词框架稳定产出电影级画面（含同步音频），而非模糊抖动的废片。</p>
-
-<div class="map">
-  <h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">八层框架递进关系</h3>
-  <div class="diagram">
-    <div class="node">①素材声明</div><span class="arrow-sym">→</span>
-    <div class="node">②镜头标签</div><span class="arrow-sym">→</span>
-    <div class="node-green">③景别主体<br/>④动作</div><span class="arrow-sym">→</span>
-    <div class="node-orange">⑤运镜<br/>⑥光影</div><span class="arrow-sym">→</span>
-    <div class="node">⑦音频三层</div><span class="arrow-sym">→</span>
-    <div class="node-green">⑧全局收尾</div>
-  </div>
-</div>
-
-<div class="correction">
-  <h3>认知纠偏</h3>
-  <p style="color:#92400e;font-size:16px">常见误解：「提示词越长越好」—— 单镜头最佳 100-150 词，超过 200 词后半段易被忽略；低于 50 词模型会随机脑补。核心是写得准，不是写得长。</p>
-</div>
+<h1>Google Veo 3.1 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词</h1>
+<div style="margin-bottom:16px"><span class="tag tag-blue">AI 编程</span><span class="tag tag-green">自动化</span><span class="tag tag-orange">实战教程</span></div>
+<p class="subtitle">本文解决的核心问题是：常见问题 Veo 3.1 和 Veo 3 有什么区别？</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">2026 年 8 大 AI Agent </div><span class="arrow-sym">→</span><div class="node node-orange">Runway Gen-4.5 视频提示词</div><span class="arrow-sym">→</span><div class="node">2026 AI 编程工具横评：Curso</div><span class="arrow-sym">→</span><div class="node">Veo 3.1 是什么：2026 年写实</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：「JSON 格式提示词更结构化」—— Runway 等模型忽略 JSON 结构，真正起作用的是自然语言描述本身。</p></div>
 
 <div class="card">
-  <h3>【模板 A】Veo 3.1 是什么：能力与边界</h3>
-  <p><strong>定性：</strong>Google DeepMind 文本转视频模型，2026 年写实度与场景一致性领先，原生同步生成对话口型+音效+环境音。</p>
-  <p><strong>输出规格：</strong>4/6/8 秒片段，720p/1080p，16:9 或 9:16；支持 T2V、素材转视频、首尾帧转场。</p>
-  <p><strong>访问路径：</strong>Vertex AI（企业 API）/ Google Flow（专业编辑）/ Gemini App（基础）/ AI Studio（原型）。</p>
-  <p><strong>边界说明：</strong>擅长写实与一致性；超长叙事需拆多片段；复杂多动作单提示词易冲突。</p>
-  <div class="relation"><strong>与可灵/Seedance 关系：</strong>各家模型能力趋同，但 Veo 3.1 在写实渲染、时间戳多镜头、同步音频上有差异化优势。</div>
+  <h3>【概念拆解卡】2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？</h3>
+  <p><strong>在讲什么问题：</strong>2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？</p>
+  <p><strong>核心机制：</strong>8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。</p>
+  <p><strong>关键理解：</strong>8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。 翔宇 2026年6月16日 AI 编程 / 提示词工程</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。翔宇 2026年6月16日 AI 编程 / 提示词工程</div>
 </div>
-
 <div class="card">
-  <h3>【模板 B】八层统一框架操作手册</h3>
-  <p><strong>核心思路：</strong>把 Google 五要素、十要素、音频三层、多镜头工作流合并为一个结构，单镜头只写「镜头 1」，多镜头扩展到 2-4 个时间戳段。</p>
-  <p><strong>操作步骤：</strong></p>
-  <p>1. <strong>素材声明</strong>（有图时）：明确每张参考图角色（角色/场景/首尾帧）</p>
-  <p>2. <strong>镜头标签</strong>：「镜头 1：」或 [00:00-00:02] 时间戳（Veo 独有能力，最多 4 连续镜头）</p>
-  <p>3. <strong>景别+主体</strong>：2-3 个具体静态特征，禁 beautiful/nice 等模糊词</p>
-  <p>4. <strong>动作</strong>：身体部位级描述+幅度速度；一提示词一主动作</p>
-  <p>5. <strong>运镜</strong>：每镜头仅一个运镜，格式「缓慢推进（dolly in）」；可用「推进 5%」精确控制</p>
-  <p>6. <strong>光影</strong>：光源方向+色温（如 5600K）+氛围元素；用伦勃朗光等术语</p>
-  <p>7. <strong>音频三层</strong>：角色 says: "台词" / SFX: 音效 / Ambient: 环境音</p>
-  <p>8. <strong>全局收尾</strong>（写一次）：风格锚点 + 负面提示词（描述性名词，不用「不要」） + 质量后缀（1080p 16:9 8秒）</p>
-  <div class="highlight"><strong>落地：</strong>层顺序不可换——Veo 对前部权重更高，素材声明和主体必须靠前。</div>
+  <h3>【方法/工具卡】Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词</h3>
+  <p><strong>核心思路：</strong>从零掌握 Runway Gen-4.5 视频提示词写法。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：从零掌握 Runway Gen-4.5 视频提示词写法。一个八层统一框架融合五维自然语言、时间戳分段和力-反应语法，附 10 个精选模板和可直接使用的元提示词。</div>
 </div>
-
 <div class="card">
-  <h3>【模板 E】提示词长度与权重对比</h3>
+  <h3>【避坑清单卡】2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比</h3>
+  <p><strong>坑名：</strong>全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。</p>
+  <p><strong>原因：</strong>全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。六大主力工具十维评分卡、精确定价表、隐藏成本案例、场景决策矩阵、省钱策略——一篇看完不用再翻别的。 翔宇 2026年6月16日 关注 Download more icon variants from https://tabler-icons.io/i/brand-youtube YouTube Bilibili B 站 Download more icon variants from https://tabler-icons.io/i/brand-github GitHub X 微信公众号 RSS A</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。六大主力工具十维评分卡、精确定价表、隐藏成本案例、场景决策矩阵、省钱策略——一篇看完不用再翻别的。</div>
+</div>
+<div class="card">
+  <h3>【决策/选型表】Veo 3.1 是什么：2026 年写实度最强的视频生成模型</h3>
   <table>
-    <tr><th>维度</th><th>单镜头 (100-150词)</th><th>多镜头 (200-300词)</th><th>结论</th></tr>
-    <tr><td>信息密度</td><td>3-6 句精准描述</td><td>每时间段独立迷你提示词</td><td>准 &gt; 长</td></tr>
-    <tr><td>失败模式</td><td>&lt;50词随机脑补</td><td>&gt;200词后半忽略</td><td>控制区间</td></tr>
-    <tr><td>权重分布</td><td>前部景别主体最关键</td><td>镜头间需变化节奏</td><td>重要内容写前面</td></tr>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>Veo 是 Google DeepMind 开发的文本转视频模型系列。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
   </table>
 </div>
-
 <div class="card">
-  <h3>【模板 C】避坑清单</h3>
-  <p><strong>坑：对话不用 says: 格式</strong> — 触发画面内字幕。<strong>解法：</strong>侦探 says: "你的故事有漏洞。"<strong>严重程度：小心。</strong></p>
-  <p><strong>坑：一提示词多运镜</strong> — 模型在运动模式间摇摆，画面不稳定。<strong>解法：</strong>每镜头只写一个运镜。<strong>严重程度：致命。</strong></p>
-  <p><strong>坑：负面提示词写「不要建筑」</strong> — 否定指令反而强化该元素。<strong>解法：</strong>用「城市背景，人造建筑，暗沉氛围」描述性排除。<strong>严重程度：小心。</strong></p>
-  <p><strong>坑：抽象情绪词</strong> — 「悲伤的男人」无效。<strong>解法：</strong>外化为动作：低下头，肩膀微抖，眼眶泛红。<strong>严重程度：小心。</strong></p>
-  <div class="pitfall"><strong>8 秒对话规则：</strong>单个 8 秒片段对话控制 1-2 句；不想要某种声音要显式写「无音乐」「没有观众声」。</div>
+  <h3>【心法/原则卡】提示词为什么重要：同样的模型，输出天差地别</h3>
+  <p><strong>原则：</strong>用 Veo 生成视频的成本因平台而异——通过 Vertex AI 按量计费，Gemini App 需要 Advanced 订阅，AI Studio 提供开发者免费额度。</p>
+  <p><strong>为什么重要：</strong>用 Veo 生成视频的成本因平台而异——通过 Vertex AI 按量计费，Gemini App 需要 Advanced 订阅，AI Studio 提供开发者免费额度。但同样的投入，有人生成出电影级画面，有人得到的是模糊、抖动、角色变形的废片。差距就在提示词。 提示词长度的最佳区间 类型 推荐词数 说明 单镜头 100-150 词 3 到 6 句话，太短缺细节，太长指令冲突 时间戳多镜头 200-300 词 每个时间段是独立的迷你提示词 最佳平衡点 100-150 词 大多数单镜头的最优区间 G</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：用 Veo 生成视频的成本因平台而异——通过 Vertex AI 按量计费，Gemini App 需要 Advanced 订阅，AI Studio 提供开发者免费额度。但同样的投入，有人生成出电影级画面，有人得到的是模糊、抖动、角色变形的废片。</div>
 </div>
-
-<div class="card">
-  <h3>【模板 D】工作流与平台选型</h3>
-  <table>
-    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
-    <tr><td>快速单镜头迭代</td><td>八层框架省略第①层</td><td>纯文本 T2V 直接从镜头标签开始</td><td>照搬十要素全写</td><td>信息冗余冲突</td></tr>
-    <tr><td>品牌多镜头短片</td><td>时间戳 [00:00-00:02] 标签</td><td>单次生成最多 4 连续镜头</td><td>单提示词塞多场景</td><td>动作冲突</td></tr>
-    <tr><td>精确 A→B 转场</td><td>首尾帧模式+第①层声明</td><td>提示词只描述「从 A 到 B 怎么变」</td><td>纯文本硬描述</td><td>一致性差</td></tr>
-    <tr><td>不会写提示词</td><td>元提示词让 Claude/GPT 生成</td><td>AI 按八层结构输出</td><td>随机试错</td><td>浪费生成额度</td></tr>
-  </table>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Rust/系统编程原教旨主义者</p>
+  <p class="rebuttal-text">Go 的「简单」很多时候是把复杂度推迟到运行时和运维侧——当性能热路径或安全边界收紧时，缺乏所有权模型会让你付出重写代价。</p>
 </div>
-
-<div class="card">
-  <h3>【模板 F】音频三层心法</h3>
-  <p><strong>原则：</strong>Veo 音频是与画面同步生成的，不是后期配音——这是被低估的核心优势。</p>
-  <p><strong>为什么重要：</strong>多数教程只讲画面，忽略音频三层导致「哑片感」或意外字幕。</p>
-  <p><strong>怎么落地：</strong>每镜头独立写对话层（says:）+ 音效层（SFX:）+ 环境音层（Ambient:）；发音难念的词用拼音标注（foh-fur）。</p>
-  <p><strong>适用边界：</strong>极短 4 秒片段音频信息宜精简；复杂交响乐场景需显式排除不需要的层次。</p>
-  <div class="quote">Veo 专属技巧：摄像机定位后加 (thats where the camera is) 可显著提升机位理解准确度。</div>
-</div>
-
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol>
-    <li>Veo 3.1 差距在提示词不在模型——八层框架统一单镜头与多镜头场景</li>
-    <li>最佳词数：单镜头 100-150，多镜头 200-300；前部权重最高</li>
-    <li>画面：具体名词材质 &gt; 模糊形容词；动作外化情绪；一镜头一运镜一主动作</li>
-    <li>音频：says:/SFX:/Ambient: 三层同步设计，对话用冒号防字幕</li>
-    <li>负面提示词用描述性名词排除，禁用「不要 XXX」</li>
-  </ol>
-  <p style="margin-top:20px;opacity:0.95"><strong>行动清单：</strong></p>
-  <ol>
-    <li>下载八层框架模板，用下一个视频任务填空式写作</li>
-    <li>把现有废片提示词对照检查：词数、运镜数量、情绪是否外化</li>
-    <li>用元提示词让 Claude 将你的创意转为八层结构 Veo 提示词</li>
-    <li>测试时间戳多镜头 [00:00-00:02] 格式做 8 秒品牌短片</li>
-    <li>在第八层固定你的风格锚点（如 35mm 胶片 + 伦勃朗光）形成品牌一致性</li>
-  </ol>
-  <p style="margin-top:20px;opacity:0.95"><strong>关键认知转变：</strong>视频提示词不是「描述梦想画面」，而是「给 AI 导演写拍摄表」—— 层序即优先级，精准约束比华丽辞藻更重要。</p>
+  <ol><li>8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。</li><li>从零掌握 Runway Gen-4.5 视频提示词写法。</li><li>全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。</li><li>Veo 是 Google DeepMind 开发的文本转视频模型系列。</li><li>用 Veo 生成视频的成本因平台而异——通过 Vertex AI 按量计费，Gemini App 需要 Advanced 订阅，AI Studio 提供开发者免费额度。</li></ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol><li>结合「2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？」在本周做 1 次小范围对照验证</li><li>结合「Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词」在本周做 1 次小范围对照验证</li><li>结合「2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
-
     </div>
   </foreignObject>
 </svg>

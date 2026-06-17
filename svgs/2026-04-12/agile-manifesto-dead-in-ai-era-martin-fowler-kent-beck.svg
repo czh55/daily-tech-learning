@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5820" viewBox="0 0 1320 5820">
-  <foreignObject x="0" y="0" width="1320" height="5820">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5771" viewBox="0 0 1320 5771">
+  <foreignObject x="0" y="0" width="1320" height="5771">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -11,11 +11,14 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
 .card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
 .node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
@@ -24,50 +27,76 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>AI 时代，敏捷宣言已死？听听 Martin Fowler 和 Kent Beck 怎么说</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：25 年后的今天，当生成式 AI 的海啸席卷全球，当“敏捷迭代”被 AI 的“瞬间生成”无情碾压时，我们不禁要问： 敏捷已死吗？我们曾经信奉的那些工程哲学，还剩下什么？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">历史的轮回：AI，不过是又一个“微处理器”</div><span class="arrow-sym">→</span><div class="node">戳破幻觉：“敏捷”的敌人，从来不是瀑布开发</div><span class="arrow-sym">→</span><div class="node">架构师的终极拷问：AI 正在摧毁程序员的“社交”</div><span class="arrow-sym">→</span><div class="node">手艺人的黄昏：当 AI 剥夺了“重构的快感”</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">历史的轮回：AI，不过是又一个“微处理器</div><span class="arrow-sym">→</span><div class="node node-orange">戳破幻觉：“敏捷”的敌人，从来不是瀑布开</div><span class="arrow-sym">→</span><div class="node">架构师的终极拷问：AI 正在摧毁程序员的</div><span class="arrow-sym">→</span><div class="node">手艺人的黄昏：当 AI 剥夺了“重构的快</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
 <div class="card">
-  <h3>【模板 A】历史的轮回：AI，不过是又一个“微处理器”</h3>
+  <h3>【概念拆解卡】历史的轮回：AI，不过是又一个“微处理器”</h3>
   <p><strong>在讲什么问题：</strong>历史的轮回：AI，不过是又一个“微处理器”</p>
+  <p><strong>核心机制：</strong>面对台下年轻开发者对 AI 的狂热与恐慌，Kent Beck 的开场异常平静。</p>
   <p><strong>关键理解：</strong>面对台下年轻开发者对 AI 的狂热与恐慌，Kent Beck 的开场异常平静。他把时间拉回到了自己还是个孩子的时候。 “在微处理器（Microprocessor）诞生之前，电脑是一个你根本搬不动的庞然大物。当英特尔 4004 芯片问世时，我们突然意识到，‘等等，这也是一台电脑！’ 突然之间，你能做的事情的想象空间被无限放大了。” Kent Beck 认为，今天的 AI，在本质上与当年的微处理器、后来的面向对象、再后来的互联网浪潮并无不同。它们都是“想象力的放大器”。 他坦言自己现在正在用 AI 去做一些“极其离谱的、野心勃勃的项目”，比如用 Rust 写库级别的高质量代码。“很多都会失败，但这没关系，这就是探索的一部分。” 而 Martin Fowler 则补充了他对技术浪潮的“二阶思考”： “你必须在‘怀疑主义’和‘好奇心’之间找到完美的平衡。我对区块链就极其怀疑。但我的怀疑主义必须是绝对的——这意味着，我必须连我自己的怀疑本身，都保持怀疑。” 他坦言，自己一开始对 Copilot 这种东西也极度不屑，觉得它生成的都是垃圾。直到他读了 Simon Willison 的博客，才意识到：要用好一个工具，你必须先学会如何用好它。这和当年很多人嘲笑“面向对象”没用，但其实只是他们自己没有用对，是同一个道理。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
   <div class="quote">原文依据：面对台下年轻开发者对 AI 的狂热与恐慌，Kent Beck 的开场异常平静。他把时间拉回到了自己还是个孩子的时候。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】戳破幻觉：“敏捷”的敌人，从来不是瀑布开发</h3>
-  <p><strong>在讲什么问题：</strong>戳破幻觉：“敏捷”的敌人，从来不是瀑布开发</p>
-  <p><strong>关键理解：</strong>当被问及“AI 承诺的‘更快、更好、更便宜’，与 25 年前敏捷宣言的初衷是否一致”时，Kent Beck 抛出了一个极其扎心的观点： “事实证明，企业根本不想要更快、更好、更便宜。在一个公司内部，各种激励机制的错位，导致他们会惩罚那些真正追求效率的人。” Martin Fowler 对此深有同感。他认为，AI 与敏捷最大的不同在于，当年他们需要费尽口舌去说服企业“敏捷有多重要”，而今天， 没有任何一家公司敢对 AI 的重要性视而不见。 但这恰恰是最大的陷阱。 当年的“敏捷转型”，在无数企业中最终都演变成了一场“形式主义的灾难”，催生了庞大的“敏捷工业复合体”。 而今天，同样的剧本正在 AI 身上重演。无数根本不懂技术的咨询公司，正在兜售着各种“AI 转型”的灵丹妙药。 AI 正在成为新的“蛇油（Snake Oil）”。 注：“蛇油”是19 世纪的美国民间骗局，有人贩卖一种据说能治百病的“蛇油”之类的神药。其核心特征是用夸张的疗效宣传、用故事/神秘疗法包装、同时缺乏科学依据，最后你花钱买到的往往是没用甚至有害的东西。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：当被问及“AI 承诺的‘更快、更好、更便宜’，与 25 年前敏捷宣言的初衷是否一致”时，Kent Beck 抛出了一个极其扎心的观点： “事实证明，企业根本不想要更快、更好、更便宜。在一个公司内部，各种激励机制的错位，导致他们会惩罚那些真正追求效率的人。</div>
+  <h3>【方法/工具卡】戳破幻觉：“敏捷”的敌人，从来不是瀑布开发</h3>
+  <p><strong>核心思路：</strong>当被问及“AI 承诺的‘更快、更好、更便宜’，与 25 年前敏捷宣言的初衷是否一致”时，Kent Beck 抛出了一个极其扎心的观点： “事实证明，企业根本不想要更快、更好、更便宜。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「戳破幻觉：“敏捷”的敌人，从来不是瀑布开发」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：当被问及“AI 承诺的‘更快、更好、更便宜’，与 25 年前敏捷宣言的初衷是否一致”时，Kent Beck 抛出了一个极其扎心的观点： “事实证明，企业根本不想要更快、更好、更便宜。在一个公司内部，各种激励机制的错位，导致他们会惩罚那些真正追求效率的人。</div>
 </div>
 <div class="card">
-  <h3>【模板 A】架构师的终极拷问：AI 正在摧毁程序员的“社交”</h3>
-  <p><strong>在讲什么问题：</strong>架构师的终极拷问：AI 正在摧毁程序员的“社交”</p>
-  <p><strong>关键理解：</strong>如果说对“蛇油”的警惕还只是宏观层面的担忧，那么 Kent Beck 接下来提出的观点，则直接刺向了每一个正在享受 AI 编码便利的开发者。 他认为，AI 正在让软件开发 “重新孤岛化（Re-soloing of programming）” 。 “极限编程（XP）很大一部分工作，是为那些天生不善社交的程序员，创造一个安全的社交环境。在一个 XP 团队里，人们每天花几个小时进行结对编程、激烈讨论，并乐在其中。” “但我现在看到的是什么？‘我是一个程序员，我手下有 6 个 Agent，所以我是一个小团队的管理者。’ 不，你不是。你只是在同时使用 6 个工具。 ” 在过去，我们把程序员从一个个封闭的办公室里解放出来，让他们围坐在一起，通过“混乱、复杂、充满人味儿”的社交过程，去创造伟大的软件。 而现在，我们似乎又在主动退回那个“把程序员关进小黑屋，从门缝底下塞披萨”的时代。只不过，这次陪伴你的，是几个冰冷的 AI 机器人。 Martin Fowler 也表达了同样的担忧： “未来的团队，到底是‘一个披萨的团队’（因为 Agent 不吃披萨），还是一个‘两个披萨的团队，但效率翻倍’？ 我赌后者。 ” 他认为， “两个人类 + N 个 AI” 的结对编程模式，可能是未来的答案。因为两个人类可以更好地控制 AI 的方向，同时保留了宝贵的人类交互。 有趣的是，Kent Beck 甚至觉得现在的 AI 有点“太快了”。 “当 AI 需要 3 分钟才能返回结果时，我们正好可以利用这段时间，去讨论一下变量命名的哲学，或者下一步的架构方向。但如果它 15 秒就返回了，我们就失去了交流的时间。”</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：如果说对“蛇油”的警惕还只是宏观层面的担忧，那么 Kent Beck 接下来提出的观点，则直接刺向了每一个正在享受 AI 编码便利的开发者。他认为，AI 正在让软件开发 “重新孤岛化（Re-soloing of programming）” 。</div>
+  <h3>【避坑清单卡】架构师的终极拷问：AI 正在摧毁程序员的“社交”</h3>
+  <p><strong>坑名：</strong>如果说对“蛇油”的警惕还只是宏观层面的担忧，那么 Kent Beck 接下来提出的观点，则直接刺向了每一个正在享受 AI 编码便利的开发者。</p>
+  <p><strong>原因：</strong>如果说对“蛇油”的警惕还只是宏观层面的担忧，那么 Kent Beck 接下来提出的观点，则直接刺向了每一个正在享受 AI 编码便利的开发者。 他认为，AI 正在让软件开发 “重新孤岛化（Re-soloing of programming）” 。 “极限编程（XP）很大一部分工作，是为那些天生不善社交的程序员，创造一个安全的社交环境。在一个 XP 团队里，人们每天花几个小时进行结对编程、激烈讨论，并乐在其中。” “但我现在看到的是什么？‘我是一个程序员，我手下有 6 个 Agent，所以我是一个小团队的管理者。’ 不，你不是。你只是在同时使用 6 个工具。 ” 在过去，我们把程序员从一个个封闭的</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：如果说对“蛇油”的警惕还只是宏观层面的担忧，那么 Kent Beck 接下来提出的观点，则直接刺向了每一个正在享受 AI 编码便利的开发者。他认为，AI 正在让软件开发 “重新孤岛化（Re-soloing of programming）” 。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】手艺人的黄昏：当 AI 剥夺了“重构的快感”</h3>
-  <p><strong>在讲什么问题：</strong>手艺人的黄昏：当 AI 剥夺了“重构的快感”</p>
-  <p><strong>关键理解：</strong>在对话的最后，当被问及“AI 时代，程序员该如何自处”时，Kent Beck 的一段独白，充满了“手艺人”的失落与悲情，足以让每一个热爱编码的资深开发者瞬间破防。 “我过去在编程中获得的一种‘强迫症’般的享受，正在消失。那种把一个文件从一坨屎山，通过无数个微小、安全的步骤，最终重构成一件艺术品的快感，再也没有了。” “我依然可以从宏观上理解我正在做什么。但我需要把我的关注点，从享受‘雕琢程序本身’，转移到享受‘理解业务领域’上。因为在‘雕琢程序’这件事上，我们已经失去了杠杆。” Martin Fowler 则给出了更具操作性的建议： “一个有趣的现象是：开发者体验（Developer Experience）和智能体体验（Agent Experience）的维恩图，是一个完美的圆。对 Agent 友好的代码，对人类也友好。” 他认为，拥有良好模块化、清晰接口和完备测试的代码，AI 处理起来会更得心应手。我们过去几十年积累的那些“手艺”，并没有过时，它们只是从“指导人类”变成了“指导 AI”。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：在对话的最后，当被问及“AI 时代，程序员该如何自处”时，Kent Beck 的一段独白，充满了“手艺人”的失落与悲情，足以让每一个热爱编码的资深开发者瞬间破防。“我过去在编程中获得的一种‘强迫症’般的享受，正在消失。</div>
+  <h3>【决策/选型表】手艺人的黄昏：当 AI 剥夺了“重构的快感”</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>在对话的最后，当被问及“AI 时代，程序员该如何自处”时，Kent Beck 的一段独白，充满了“手艺人”的失落与悲情，足以让每一个热爱编码的资深开发者瞬间破防。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
 </div>
 <div class="card">
-  <h3>【模板 A】小结：在不确定的浪潮中，抓住不变的礁石</h3>
-  <p><strong>在讲什么问题：</strong>小结：在不确定的浪潮中，抓住不变的礁石</p>
-  <p><strong>关键理解：</strong>这场持续了一个多小时的对话，没有给出任何关于“如何写 Prompt”、“用哪个模型”的答案。 但这两位穿越了数个技术周期的智者，用他们的人生经验，为我们指明了在 AI 这场史无前例的巨浪中，唯一能抓住的几块礁石： 保持绝对的怀疑，包括对怀疑本身的怀疑。 学会设计最小化的实验，亲自去验证那些天花乱坠的说法。 不要放弃与人交流，那才是创造力的真正源泉。 把你的代码写得更清晰、更模块化、测试更完备。这不仅是为了你自己，更是为了你未来的 AI 同事。 最后，Kent Beck 给出了一个极其悲壮的建议： 或许，我们是时候放弃享受“雕琢代码”的乐趣，而去享受“理解世界”的乐趣了。 这或许是对 AI 时代，我们这些“数字手艺人”最深刻、也最无奈的宿命注解。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：这场持续了一个多小时的对话，没有给出任何关于“如何写 Prompt”、“用哪个模型”的答案。但这两位穿越了数个技术周期的智者，用他们的人生经验，为我们指明了在 AI 这场史无前例的巨浪中，唯一能抓住的几块礁石： 保持绝对的怀疑，包括对怀疑本身的怀疑。</div>
+  <h3>【心法/原则卡】小结：在不确定的浪潮中，抓住不变的礁石</h3>
+  <p><strong>原则：</strong>这场持续了一个多小时的对话，没有给出任何关于“如何写 Prompt”、“用哪个模型”的答案。</p>
+  <p><strong>为什么重要：</strong>这场持续了一个多小时的对话，没有给出任何关于“如何写 Prompt”、“用哪个模型”的答案。 但这两位穿越了数个技术周期的智者，用他们的人生经验，为我们指明了在 AI 这场史无前例的巨浪中，唯一能抓住的几块礁石： 保持绝对的怀疑，包括对怀疑本身的怀疑。 学会设计最小化的实验，亲自去验证那些天花乱坠的说法。 不要放弃与人交流，那才是创造力的真正源泉。 把你的代码写得更清晰、更模块化、测试更完备。这不仅是为了你自己，更是为了你未来的 AI 同事。 最后，Kent Beck 给出了一个极其悲壮的建议：</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：这场持续了一个多小时的对话，没有给出任何关于“如何写 Prompt”、“用哪个模型”的答案。但这两位穿越了数个技术周期的智者，用他们的人生经验，为我们指明了在 AI 这场史无前例的巨浪中，唯一能抓住的几块礁石： 保持绝对的怀疑，包括对怀疑本身的怀疑。</div>
 </div>
-<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>历史的轮回：AI，不过是又一个“微处理器”：面对台下年轻开发者对 AI 的狂热与恐慌，Kent Beck 的开场异常平静。</li><li>戳破幻觉：“敏捷”的敌人，从来不是瀑布开发：当被问及“AI 承诺的‘更快、更好、更便宜’，与 25 年前敏捷宣言的初衷是否一致”时，Kent Beck 抛出了一个极其扎心的观点： “事实证明，企业根本不想要更快、更好、更便宜。</li><li>架构师的终极拷问：AI 正在摧毁程序员的“社交”：如果说对“蛇油”的警惕还只是宏观层面的担忧，那么 Kent Beck 接下来提出的观点，则直接刺向了每一个正在享受 AI 编码便利的开发者。</li><li>手艺人的黄昏：当 AI 剥夺了“重构的快感”：在对话的最后，当被问及“AI 时代，程序员该如何自处”时，Kent Beck 的一段独白，充满了“手艺人”的失落与悲情，足以让每一个热爱编码的资深开发者瞬间破防。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「历史的轮回：AI，不过是又一个“微处理器”」在本周工作中做 1 次对照验证</li><li>结合「戳破幻觉：“敏捷”的敌人，从来不是瀑布开发」在本周工作中做 1 次对照验证</li><li>结合「架构师的终极拷问：AI 正在摧毁程序员的“社交”」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：技术乐观主义批评者</p>
+  <p class="rebuttal-text">历史一再证明「这次不一样」的叙事会高估短期颠覆、低估组织惯性——技术可行不等于商业可行，更不等于个人职业生涯可一键切换。</p>
+</div>
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol><li>面对台下年轻开发者对 AI 的狂热与恐慌，Kent Beck 的开场异常平静。</li><li>当被问及“AI 承诺的‘更快、更好、更便宜’，与 25 年前敏捷宣言的初衷是否一致”时，Kent Beck 抛出了一个极其扎心的观点： “事实证明，企业根本不想要更快、更好、更便宜。</li><li>如果说对“蛇油”的警惕还只是宏观层面的担忧，那么 Kent Beck 接下来提出的观点，则直接刺向了每一个正在享受 AI 编码便利的开发者。</li><li>在对话的最后，当被问及“AI 时代，程序员该如何自处”时，Kent Beck 的一段独白，充满了“手艺人”的失落与悲情，足以让每一个热爱编码的资深开发者瞬间破防。</li><li>这场持续了一个多小时的对话，没有给出任何关于“如何写 Prompt”、“用哪个模型”的答案。</li></ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol><li>结合「历史的轮回：AI，不过是又一个“微处理器”」在本周做 1 次小范围对照验证</li><li>结合「戳破幻觉：“敏捷”的敌人，从来不是瀑布开发」在本周做 1 次小范围对照验证</li><li>结合「架构师的终极拷问：AI 正在摧毁程序员的“社交”」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
+</div>
     </div>
   </foreignObject>
 </svg>

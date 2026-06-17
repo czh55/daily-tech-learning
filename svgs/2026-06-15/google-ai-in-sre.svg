@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5426" viewBox="0 0 1320 5426">
-  <foreignObject x="0" y="0" width="1320" height="5426">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5480" viewBox="0 0 1320 5480">
+  <foreignObject x="0" y="0" width="1320" height="5480">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
 h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
 .tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
-.tag-blue{background:#dbeafe;color:#1e40af}
-.tag-green{background:#d1fae5;color:#065f46}
-.tag-orange{background:#ffedd5;color:#9a3412}
-.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
 .card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
@@ -18,130 +15,88 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
-.diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 0}
-.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:20px 28px;text-align:center;min-width:160px;font-weight:700;font-size:16px;color:#1e40af}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
 .node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
 .node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
-.arrow-sym{font-size:24px;color:#94a3b8}
+.arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
 .conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
 .conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
-th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
-.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>谷歌 SRE 重磅白皮书：当 AI 自动写出 10 倍代码，谁来阻止系统崩溃？</h1>
-<div style="margin-bottom:16px">
-  <span class="tag tag-blue">SRE 运维</span>
-  <span class="tag tag-green">AI Agent</span>
-  <span class="tag tag-orange">系统可靠性</span>
-  <span class="tag tag-purple">Go + MCP</span>
-</div>
-<p class="subtitle">本文解决的核心问题是：当 AI 将代码产出与部署速度放大 4-10 倍时，传统人工 Code Review 和静态告警为何失效，以及谷歌如何用「决策与执行冷热解耦」构建下一代自愈式运维体系。</p>
-
-<div class="map">
-  <h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3>
-  <div class="diagram">
-    <div class="node">AI 编码加速<br/>4-10x 产出</div>
-    <span class="arrow-sym">→</span>
-    <div class="node-orange">复杂度爆炸<br/>故障涌入 10x</div>
-    <span class="arrow-sym">→</span>
-    <div class="node-green">IRM/InvD/Antigravity<br/>黄金数据 + 排障</div>
-    <span class="arrow-sym">→</span>
-    <div class="node">Actus 安全闸口<br/>L3/L4 自治</div>
-  </div>
-</div>
-
-<div class="correction">
-  <h3>认知纠偏</h3>
-  <p style="color:#92400e;font-size:16px">常见误解：「AI 写代码更快 = 运维可以照旧」—— 谷歌指出，代码提交量暴涨 10 倍意味着未知技术债和故障涌入速度也暴涨 10 倍，人类分钟级响应在微秒级故障蔓延面前毫无抵抗力。</p>
-</div>
+<div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
+<p class="subtitle">本文解决的核心问题是：谷歌 SRE 重磅白皮书：当 AI 自动写出 10 倍代码，谁来阻止系统崩溃？</p>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">为什么 AI 编码越快，运维死得越早？</div><span class="arrow-sym">→</span><div class="node node-orange">谷歌 SRE 的核武器：三大内部 AI </div><span class="arrow-sym">→</span><div class="node">IRM-Analyzer：将人类“救火轨</div><span class="arrow-sym">→</span><div class="node">InvD（Investigation D</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
 <div class="card">
-  <h3>【模板 A】SRE AI 自治五级：从辅助到完全自治</h3>
-  <p><strong>在讲什么问题：</strong>AI 在运维系统中能自主到什么程度？人类何时必须介入？</p>
-  <p><strong>核心机制：</strong>谷歌定义 L0-L4 五级自治：L0/L1 人类是绝对消防员；L3 高度自治可无需确认执行变更；L4 完全自治。AI 编码加速迫使 SRE 必须向 L3/L4 推进。</p>
-  <p><strong>关键理解：</strong>传统 SRE（SLO、错误预算、消除琐碎）建立在「人类写代码速度有限」的物理前提上，该前提已被 AI 打破。</p>
-  <p><strong>怎么落地：</strong>① 评估当前运维处于哪一级 ② 为 L3 推进设计 Actus 安全闸口 ③ 用 IRM-Analyzer 积累黄金训练数据 ④ 人类转向定义安全边界而非冲进火场。</p>
-  <p><strong>边界说明：</strong>L4 完全自治需 Actus + Evaluation Pipeline 成熟；金融/医疗等强合规场景短期内不宜跳过人类确认。</p>
-  <div class="quote">原文：「一旦拥有自主执行权的 AI 智能体做出错误决策，其灾难半径（Blast Radius）将比人类操作失误大上千倍。」</div>
+  <h3>【概念拆解卡】为什么 AI 编码越快，运维死得越早？</h3>
+  <p><strong>在讲什么问题：</strong>为什么 AI 编码越快，运维死得越早？</p>
+  <p><strong>核心机制：</strong>谷歌 SRE 团队在白皮书的摘要中开门见山地指出： Site Reliability Engineering 正处于一场范式转移的阵痛中。</p>
+  <p><strong>关键理解：</strong>谷歌 SRE 团队在白皮书的摘要中开门见山地指出： Site Reliability Engineering 正处于一场范式转移的阵痛中。 传统 SRE 的工作模式（SLO 定义、错误预算、消除琐碎工作）是建立在“人类编写代码的速度有限”这一物理前提下的。当 AI 充当了代码放大器，系统复杂度的膨胀速度已经远远超出了人类的阅读和心智承受极限。 谷歌提出了 AI 在运维系统中的 五个自治级别（SRE AI Autonomy Levels） ： 在 L0 和 L1 阶段，人类还是绝对的“消防员”。但面对海量的机器代码，人类的响应时延（以分钟或小时计）在微秒级的故障蔓延面前毫无抵抗力。 谷歌认为， 未来的 SRE 必须快速向 L3（高度自治）甚至 L4（完全自治）推进——即让 AI 智能体在无需人类确认的情况下，自主检测、诊断并安全地执行线上变更。 但问题是： 谁来保证 AI 智能体本身不会“抽风”？ 一旦拥有自主执行权的 AI 智能体做出了错误的决策（例如在流量高峰期错误地清空了整个集群的负载），其造成的灾难（Blast Radius）将比人类操作失误大上千倍。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
+  <div class="quote">原文依据：谷歌 SRE 团队在白皮书的摘要中开门见山地指出： Site Reliability Engineering 正处于一场范式转移的阵痛中。传统 SRE 的工作模式（SLO 定义、错误预算、消除琐碎工作）是建立在“人类编写代码的速度有限”这一物理前提下的。</div>
 </div>
-
 <div class="card">
-  <h3>【模板 B】三大内部 AI 运维组件</h3>
-  <p><strong>方法名：</strong>IRM-Analyzer + InvD + Antigravity CLI</p>
-  <p><strong>核心思路：</strong>将人类救火轨迹结构化 → 自动生成排障图谱 → 用 Go+MCP 终端让 Agent 操作生产系统。</p>
-  <p><strong>操作步骤：</strong>1. IRM-Analyzer 从 Slack/日志/监控提炼 Human Trajectory 2. InvD 收到告警后自动渲染故障拓扑图并建议隔离 3. Antigravity CLI 通过 MCP 创建 Bug、导出复盘、执行流量排干。</p>
-  <p><strong>选型条件：</strong>需要训练 AI Operator 时优先建 IRM；需要缩短 MTTM 时部署 InvD（谷歌数据：MTTM 降 44%）；需要 Agent 与 Borg/日志交互时用 Antigravity。</p>
-  <div class="highlight"><strong>落地建议：</strong>从现有事故复盘 Slack 频道开始，用 LLM 将混乱救火过程聚合成 Timeline（SLA 异常→Canary 排水→服务恢复验证），作为 AI Operator 训练集。</div>
-  <div class="relation"><strong>与 Grafana 手工排障的区别：</strong>InvD 是「收到告警即生成图谱」，而非 SRE 手忙脚乱打开几十个仪表盘。</div>
+  <h3>【方法/工具卡】谷歌 SRE 的核武器：三大内部 AI 运维王牌组件</h3>
+  <p><strong>核心思路：</strong>为了将 AI 安全地引入生产环境，谷歌在内部研发并上线了三套极具系统美学的底层 AI 平台。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「谷歌 SRE 的核武器：三大内部 AI 运维王牌组件」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：为了将 AI 安全地引入生产环境，谷歌在内部研发并上线了三套极具系统美学的底层 AI 平台。</div>
 </div>
-
 <div class="card">
-  <h3>【模板 F】Safety Trifecta：决策与执行冷热解耦</h3>
-  <p><strong>原则：</strong>「不要让做决策的 AI，直接去碰你的服务器。」</p>
-  <p><strong>为什么重要：</strong>LLM 会「抽风」——流量高峰误清空集群负载的 Blast Radius 远超人类失误。</p>
-  <p><strong>怎么落地：</strong>AI Operator（思考脑）写 CoT 建议 → Actus（执行闸口）强制 dry_run、断路器、零信任 Agent Identity → 通过后才执行变更。</p>
-  <p><strong>适用边界：</strong>Actus 规则需人类 SRE 持续维护；过度宽松等同裸奔，过度严格则退化为 L1。</p>
-  <div class="quote">原文：「将『会犯错的 AI 思考脑』与『绝对遵守确定性安全规则的 Actus 控制面』进行冷热解耦，是谷歌敢于推进 L3/L4 自治的终极底气。」</div>
+  <h3>【避坑清单卡】IRM-Analyzer：将人类“救火轨迹”转化为黄金训练数据</h3>
+  <p><strong>坑名：</strong>AI 智能体要学会如何排障，首先需要向最优秀的人类 SRE 学习。</p>
+  <p><strong>原因：</strong>AI 智能体要学会如何排障，首先需要向最优秀的人类 SRE 学习。但人类在排障时的行为是极其零散且非结构化的（躺在 Slack 聊天记录里、GVC 语音里、或者手动的命令行里）。 为此，谷歌开发了 IRM-Analyzer（事件分析平台） ： IRM-Analyzer 能够自动将零散的 Slack 聊天、日志报错、监控曲线，自动提炼并拼装成结构化、可复现的人类排障轨迹（Human Trajectory）。 IRM-Analyzer 利用大模型，能够将一场长达数小时、涉及数十人的混乱救火过程，自动解析、过滤、去噪并聚合成一条精确的时间线（Timeline），标明： 什么时候观察到了 SLA 异常</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：AI 智能体要学会如何排障，首先需要向最优秀的人类 SRE 学习。但人类在排障时的行为是极其零散且非结构化的（躺在 Slack 聊天记录里、GVC 语音里、或者手动的命令行里）。</div>
 </div>
-
 <div class="card">
-  <h3>【模板 E】传统 SRE vs AI 时代 SRE 对比</h3>
+  <h3>【决策/选型表】InvD（Investigation Dashboard）：一键生成的排障图谱</h3>
   <table>
-    <tr><th>对比维度</th><th>传统 SRE</th><th>AI 时代 SRE（谷歌范式）</th><th>一句话结论</th></tr>
-    <tr><td>核心价值</td><td>手速 + 救火经验</td><td>定义 Actus 策略与安全边界</td><td>从操作者变架构师</td></tr>
-    <tr><td>响应时延</td><td>分钟/小时级</td><td>AI 微秒级检测 + Actus 执行</td><td>人类跟不上机器代码吞吐</td></tr>
-    <tr><td>Code Review</td><td>人工逐行审查</td><td>AI 10x 产出使审查杯水车薪</td><td>需渐进式金丝雀 + 自动评估</td></tr>
-    <tr><td>训练数据</td><td>口头经验传承</td><td>IRM 结构化 Human Trajectory</td><td>救火轨迹是黄金数据</td></tr>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>在发生线上故障时，人类 SRE 往往需要手忙脚乱地打开几十个 Grafana 仪表盘，手动过滤日志。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
   </table>
 </div>
-
 <div class="card">
-  <h3>【模板 D】企业 AI-SRE 落地选型表</h3>
-  <table>
-    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
-    <tr><td>刚引入 AI 编码</td><td>先建 Evaluation Pipeline</td><td>确保 AI Operator 上线前不退化</td><td>直接给 Agent 生产执行权</td><td>Blast Radius 不可控</td></tr>
-    <tr><td>频繁线上救火</td><td>IRM-Analyzer + InvD</td><td>MTTM 可降 44%，数据可训练</td><td>继续纯人工 Grafana</td><td>响应速度跟不上部署频率</td></tr>
-    <tr><td>Agent 需操作基础设施</td><td>Antigravity CLI + MCP + Actus</td><td>Go 是 Google Agent 通用语言</td><td>Agent 直接用开发者个人凭证</td><td>零信任原则被破坏</td></tr>
-    <tr><td>10x 代码产出团队</td><td>敏感渐进式金丝雀发布</td><td>分流比例需自适应 AI 部署速度</td><td>沿用旧发布节奏</td><td>故障涌入速度同步 10x</td></tr>
-  </table>
+  <h3>【心法/原则卡】Antigravity CLI：用 Go 编写的 AI 运维终端</h3>
+  <p><strong>原则：</strong>我们在之前的文章中提到， Go 已经成为了 Google 内部智能体系统的通用语言 。</p>
+  <p><strong>为什么重要：</strong>我们在之前的文章中提到， Go 已经成为了 Google 内部智能体系统的通用语言 。在 SRE 领域，这一趋势得到了最直接的印证：谷歌推出了基于 Go 开发的全新核心终端——Antigravity CLI。 通过集成标准的 MCP（Model Context Protocol）协议，Antigravity CLI 让 AI 智能体可以直接通过命令行与谷歌内部庞大的 Borg 系统、日志系统和 Bug 跟踪系统进行交互： 自动创建并分配故障单（Create/Assign Bugs）； 一键将事故</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：我们在之前的文章中提到， Go 已经成为了 Google 内部智能体系统的通用语言 。在 SRE 领域，这一趋势得到了最直接的印证：谷歌推出了基于 Go 开发的全新核心终端——Antigravity CLI。</div>
 </div>
-
-<div class="card">
-  <h3>【模板 C】避坑清单</h3>
-  <p><strong>坑：让 AI Operator 直接持有服务器操作权限</strong></p>
-  <p><strong>原因：</strong>LLM 决策非确定性，错误决策的 Blast Radius 比人类大上千倍。</p>
-  <p><strong>解法：</strong>强制 Actus 中间层：dry_run 沙箱 → Agentic Circuit Breaker 限流 → 窄权限 Agent Identity。</p>
-  <p><strong>严重程度：</strong>致命——流量高峰误操作可导致全集群灾难。</p>
-  <div class="pitfall"><strong>另一个坑：</strong>以为 AI 编码加速可以不管运维。原文强调：故障和技术债涌入速度同样暴涨 10 倍，SRE 范式必须同步升级。</div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Rust/系统编程原教旨主义者</p>
+  <p class="rebuttal-text">Go 的「简单」很多时候是把复杂度推迟到运行时和运维侧——当性能热路径或安全边界收紧时，缺乏所有权模型会让你付出重写代价。</p>
 </div>
-
 <div class="conclusion">
   <h2>结论</h2>
   <p><strong>总结：</strong></p>
-  <ol>
-    <li>AI 将代码产出放大 4-10 倍，传统人工 Review 和静态告警已无法匹配故障涌入速度</li>
-    <li>谷歌三大组件：IRM（黄金数据）、InvD（自动拓扑，MTTM -44%）、Antigravity CLI（Go+MCP 终端）</li>
-    <li>核心安全哲学：AI Operator 决策 + Actus 执行冷热解耦，是推进 L3/L4 自治的前提</li>
-    <li>人类 SRE 价值从「冲进火场」转向「设计自愈消防网」——定义 Safeguards 与 Evaluation Pipeline</li>
-    <li>系统可靠性终极边界仍在心存敬畏、能设计严密安全闸口的系统架构师手中</li>
-  </ol>
+  <ol><li>谷歌 SRE 团队在白皮书的摘要中开门见山地指出： Site Reliability Engineering 正处于一场范式转移的阵痛中。</li><li>为了将 AI 安全地引入生产环境，谷歌在内部研发并上线了三套极具系统美学的底层 AI 平台。</li><li>AI 智能体要学会如何排障，首先需要向最优秀的人类 SRE 学习。</li><li>在发生线上故障时，人类 SRE 往往需要手忙脚乱地打开几十个 Grafana 仪表盘，手动过滤日志。</li><li>我们在之前的文章中提到， Go 已经成为了 Google 内部智能体系统的通用语言 。</li></ol>
   <p style="margin-top:20px"><strong>行动清单：</strong></p>
-  <ol>
-    <li>阅读谷歌白皮书原文：sre.google/resources/practices-and-processes/ai-engineering-reliable-operations/</li>
-    <li>梳理最近一次线上事故的 Slack/日志时间线，尝试用 LLM 结构化为 Human Trajectory</li>
-    <li>评估团队当前 SRE AI 自治级别（L0-L4），明确向 L3 推进的阻塞项</li>
-    <li>为 AI Agent 设计「决策脑」与「执行面」分离架构，禁止 Agent 直接使用个人凭证</li>
-    <li>针对 AI 加速的部署频率，审查金丝雀发布策略是否足够敏感</li>
-  </ol>
-  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「AI 让开发更快所以运维可以不变」到「AI 负责疯狂奔跑，人类负责用优雅系统工程画出最安全的跑道」。</p>
+  <ol><li>结合「为什么 AI 编码越快，运维死得越早？」在本周做 1 次小范围对照验证</li><li>结合「谷歌 SRE 的核武器：三大内部 AI 运维王牌组件」在本周做 1 次小范围对照验证</li><li>结合「IRM-Analyzer：将人类“救火轨迹”转化为黄金训练数据」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
 </div>
-
     </div>
   </foreignObject>
 </svg>

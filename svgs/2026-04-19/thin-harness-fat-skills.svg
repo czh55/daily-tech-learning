@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5099" viewBox="0 0 1320 5099">
-  <foreignObject x="0" y="0" width="1320" height="5099">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5445" viewBox="0 0 1320 5445">
+  <foreignObject x="0" y="0" width="1320" height="5445">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -11,11 +11,14 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
 .card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
 .node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
@@ -24,50 +27,76 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>薄驾驭，厚技能：YC 掌门人揭秘拉开 1000 倍效率差距的 AI 工程化心法</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：在过去一年，你有没有想过，为什么同样用着 GPT 或 Claude 等大模型以及Claude Code这样的Coding Agent，有的人生产力只提升了 2 倍，而有的人却能爆发出 100倍、甚至 1000倍 的惊人能量？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你的“胖驾驭”，正在杀死你的 AI</div><span class="arrow-sym">→</span><div class="node">五大心法：从“写 Prompt”到“编程 AI”</div><span class="arrow-sym">→</span><div class="node">心法一：技能文件（Skill Files）—— 用 Markdown 写“方法调用”</div><span class="arrow-sym">→</span><div class="node">心法二：解析器（Resolvers）—— AI 的“智能路由表”</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你的“胖驾驭”，正在杀死你的 AI</div><span class="arrow-sym">→</span><div class="node node-orange">五大心法：从“写 Prompt”到“编程</div><span class="arrow-sym">→</span><div class="node">心法一：技能文件（Skill Files</div><span class="arrow-sym">→</span><div class="node">心法二：解析器（Resolvers）——</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
 <div class="card">
-  <h3>【模板 A】你的“胖驾驭”，正在杀死你的 AI</h3>
+  <h3>【概念拆解卡】你的“胖驾驭”，正在杀死你的 AI</h3>
   <p><strong>在讲什么问题：</strong>你的“胖驾驭”，正在杀死你的 AI</p>
+  <p><strong>核心机制：</strong>在文章的开头，Garry Tan 就毫不客气地指出了当下大多数 Agent 框架的“原罪”： 臃肿的驾驭层，和孱弱的技能。</p>
   <p><strong>关键理解：</strong>在文章的开头，Garry Tan 就毫不客气地指出了当下大多数 Agent 框架的“原罪”： 臃肿的驾驭层，和孱弱的技能。 我们大多数人是怎么做的？我们给 AI 挂载了 40 多个 Tool Calls，每一个工具都对应一个外部 API。结果就是，光是这些工具的定义，就吃掉了上下文窗口（Context Window）的一半！ 大模型每次行动前，都要在几十个工具中艰难地做选择题，不仅推理速度慢得像乌龟，出错率更是高得离谱。 Garry Tan 给出的架构哲学恰恰相反： 推崇“薄驾驭（Thin Harness）” ：驾驭层（Harness）只做四件事——循环运行模型、读写文件、管理上下文、执行安全策略。代码量可能只有 200 行。 推崇“厚技能（Fat Skills）” ：将所有复杂的业务逻辑、判断力、领域知识，全部封装成一个个可复用、可参数化的 Markdown 文件，即“技能（Skill）”。 “反面教材就是一个臃肿的驾驭层，配上一堆孱弱的技能。……你想要的是专为特定目的打造的、快速且狭窄的工具。”</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
   <div class="quote">原文依据：在文章的开头，Garry Tan 就毫不客气地指出了当下大多数 Agent 框架的“原罪”： 臃肿的驾驭层，和孱弱的技能。我们大多数人是怎么做的？</div>
 </div>
 <div class="card">
-  <h3>【模板 B】五大心法：从“写 Prompt”到“编程 AI”</h3>
-  <p><strong>在讲什么问题：</strong>五大心法：从“写 Prompt”到“编程 AI”</p>
-  <p><strong>关键理解：</strong>Garry Tan 认为，大模型的瓶颈从来不是智商。它天生就会推理、综合、写代码。它之所以频繁失败，是因为它 不理解你的数据、你的规范、你问题的具体形态。 而下面这五个定义，正是修复这个问题的“架构级补丁”，也是“薄驾驭，厚技能”哲学的具体体现。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：Garry Tan 认为，大模型的瓶颈从来不是智商。它天生就会推理、综合、写代码。</div>
+  <h3>【方法/工具卡】五大心法：从“写 Prompt”到“编程 AI”</h3>
+  <p><strong>核心思路：</strong>Garry Tan 认为，大模型的瓶颈从来不是智商。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「五大心法：从“写 Prompt”到“编程 AI”」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：Garry Tan 认为，大模型的瓶颈从来不是智商。它天生就会推理、综合、写代码。</div>
 </div>
 <div class="card">
-  <h3>【模板 A】心法一：技能文件（Skill Files）—— 用 Markdown 写“方法调用”</h3>
-  <p><strong>在讲什么问题：</strong>心法一：技能文件（Skill Files）—— 用 Markdown 写“方法调用”</p>
-  <p><strong>关键理解：</strong>这是最颠覆认知的一点。Garry Tan 认为， 优秀的 Skill 文件 ，工作起来就像一个函数调用（Method Call）。它接受参数，并且根据不同的参数，产生完全不同的能力。 他举了一个名为 /investigate 的技能为例。这个 Skill 只有 7 个步骤：圈定数据集、构建时间线、标注文档、综合信息、正反方辩论、引用来源。 当你把这个 Skill 指向一个安全科学家的 210 万封邮件，它就变成了一个 医学研究分析师 。 当你把它指向一家空壳公司和 FEC 的文件，它就变成了一个 法务调查员 。 “这根本不是提示词工程。这是软件设计。你用 Markdown 作为编程语言，用人类的判断力作为运行时。”</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：这是最颠覆认知的一点。Garry Tan 认为， 优秀的 Skill 文件 ，工作起来就像一个函数调用（Method Call）。</div>
+  <h3>【避坑清单卡】心法一：技能文件（Skill Files）—— 用 Markdown 写“方法调用”</h3>
+  <p><strong>坑名：</strong>这是最颠覆认知的一点。</p>
+  <p><strong>原因：</strong>这是最颠覆认知的一点。Garry Tan 认为， 优秀的 Skill 文件 ，工作起来就像一个函数调用（Method Call）。它接受参数，并且根据不同的参数，产生完全不同的能力。 他举了一个名为 /investigate 的技能为例。这个 Skill 只有 7 个步骤：圈定数据集、构建时间线、标注文档、综合信息、正反方辩论、引用来源。 当你把这个 Skill 指向一个安全科学家的 210 万封邮件，它就变成了一个 医学研究分析师 。 当你把它指向一家空壳公司和 FEC 的文件，它就变成了一个 法务调查员 。 “这根本不是提示词工程。这是软件设计。你用 Markdown 作为编程语言，用人类</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：这是最颠覆认知的一点。Garry Tan 认为， 优秀的 Skill 文件 ，工作起来就像一个函数调用（Method Call）。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】心法二：解析器（Resolvers）—— AI 的“智能路由表”</h3>
-  <p><strong>在讲什么问题：</strong>心法二：解析器（Resolvers）—— AI 的“智能路由表”</p>
-  <p><strong>关键理解：</strong>技能文件告诉模型“怎么做”，而解析器告诉模型“在什么时候，加载什么上下文”。 Garry Tan 坦白，他自己曾经写过一个长达 20000 行的 CLAUDE.md 文件，里面塞满了各种他遇到过的奇技淫巧。结果导致模型注意力严重下降，甚至 Claude 自己都“告诉”他让他删掉点。 最终的解决方案，是把这个巨大的文件，拆成了一个只有 200 行的“指针”文件，和一个 解析器（Resolver） 。 “当一个开发者改了代码，没有解析器，他直接提交了。有了解析器，模型会先去读取 docs/EVALS.md，这个文件说：先跑评测套件，对比分数，如果准确率下降超过 2%，就回滚并调查。” 解析器就像一个智能的“路由表”，在不污染上下文的情况下，按需加载最精准的知识。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：技能文件告诉模型“怎么做”，而解析器告诉模型“在什么时候，加载什么上下文”。Garry Tan 坦白，他自己曾经写过一个长达 20000 行的 CLAUDE.md 文件，里面塞满了各种他遇到过的奇技淫巧。</div>
+  <h3>【决策/选型表】心法二：解析器（Resolvers）—— AI 的“智能路由表”</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>技能文件告诉模型“怎么做”，而解析器告诉模型“在什么时候，加载什么上下文”。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
 </div>
 <div class="card">
-  <h3>【模板 A】心法三：潜在空间 vs. 确定性—— 别让 AI 做数学题</h3>
-  <p><strong>在讲什么问题：</strong>心法三：潜在空间 vs. 确定性—— 别让 AI 做数学题</p>
-  <p><strong>关键理解：</strong>这是 Agent 设计中最常见的错误： 让 AI 去做它不擅长的事。 潜在空间（Latent Space） ：这是 AI 的主场。它负责阅读、理解、判断、综合、模式识别。 确定性（Deterministic） ：这是传统代码的主场。SQL 查询、代码编译、数学计算。 “一个 LLM 可以帮你安排 8 个人的晚宴座位，它会考虑每个人的性格和社交关系。但你让它去排 800 个人的座位，它会幻觉出一个看似合理、但完全错误的座位表。因为这是一个确定性的组合优化问题，应该交给传统算法。” 最牛逼的系统，对这条边界的划分是冷酷无情的。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：这是 Agent 设计中最常见的错误： 让 AI 去做它不擅长的事。潜在空间（Latent Space） ：这是 AI 的主场。</div>
+  <h3>【心法/原则卡】心法三：潜在空间 vs. 确定性—— 别让 AI 做数学题</h3>
+  <p><strong>原则：</strong>这是 Agent 设计中最常见的错误： 让 AI 去做它不擅长的事。</p>
+  <p><strong>为什么重要：</strong>这是 Agent 设计中最常见的错误： 让 AI 去做它不擅长的事。 潜在空间（Latent Space） ：这是 AI 的主场。它负责阅读、理解、判断、综合、模式识别。 确定性（Deterministic） ：这是传统代码的主场。SQL 查询、代码编译、数学计算。 “一个 LLM 可以帮你安排 8 个人的晚宴座位，它会考虑每个人的性格和社交关系。但你让它去排 800 个人的座位，它会幻觉出一个看似合理、但完全错误的座位表。因为这是一个确定性的组合优化问题，应该交给传统算法。” 最牛逼的系统，对</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：这是 Agent 设计中最常见的错误： 让 AI 去做它不擅长的事。潜在空间（Latent Space） ：这是 AI 的主场。</div>
 </div>
-<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>你的“胖驾驭”，正在杀死你的 AI：在文章的开头，Garry Tan 就毫不客气地指出了当下大多数 Agent 框架的“原罪”： 臃肿的驾驭层，和孱弱的技能。</li><li>五大心法：从“写 Prompt”到“编程 AI”：Garry Tan 认为，大模型的瓶颈从来不是智商。</li><li>心法一：技能文件（Skill Files）—— 用 Markdown 写“方法调用”：这是最颠覆认知的一点。</li><li>心法二：解析器（Resolvers）—— AI 的“智能路由表”：技能文件告诉模型“怎么做”，而解析器告诉模型“在什么时候，加载什么上下文”。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「你的“胖驾驭”，正在杀死你的 AI」在本周工作中做 1 次对照验证</li><li>结合「五大心法：从“写 Prompt”到“编程 AI”」在本周工作中做 1 次对照验证</li><li>结合「心法一：技能文件（Skill Files）—— 用 Markdown 写“方法调用”」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「模型决定论」实践者</p>
+  <p class="rebuttal-text">再精妙的提示词框架也绕不开模型性格上限——同一套模板换平台就要重写，探索模式「免费试错」烧掉的时间本身就是隐藏成本。</p>
+</div>
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol><li>在文章的开头，Garry Tan 就毫不客气地指出了当下大多数 Agent 框架的“原罪”： 臃肿的驾驭层，和孱弱的技能。</li><li>Garry Tan 认为，大模型的瓶颈从来不是智商。</li><li>这是最颠覆认知的一点。</li><li>技能文件告诉模型“怎么做”，而解析器告诉模型“在什么时候，加载什么上下文”。</li><li>这是 Agent 设计中最常见的错误： 让 AI 去做它不擅长的事。</li></ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol><li>结合「你的“胖驾驭”，正在杀死你的 AI」在本周做 1 次小范围对照验证</li><li>结合「五大心法：从“写 Prompt”到“编程 AI”」在本周做 1 次小范围对照验证</li><li>结合「心法一：技能文件（Skill Files）—— 用 Markdown 写“方法调用”」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
+</div>
     </div>
   </foreignObject>
 </svg>

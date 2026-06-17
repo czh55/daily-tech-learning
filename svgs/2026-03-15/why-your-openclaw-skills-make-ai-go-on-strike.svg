@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4914" viewBox="0 0 1320 4914">
-  <foreignObject x="0" y="0" width="1320" height="4914">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4997" viewBox="0 0 1320 4997">
+  <foreignObject x="0" y="0" width="1320" height="4997">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -11,11 +11,14 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
 .card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
 .node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
@@ -24,43 +27,67 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>都在用 OpenClaw 跑 Skill，但你写的“技能”为什么总让 AI 频繁罢工？</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：都在用 OpenClaw 跑 Skill，但你写的“技能”为什么总让 AI 频繁罢工？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你真的会写高阶的 Skill 吗？</div><span class="arrow-sym">→</span><div class="node">如何批量“制造” AI 技能？</div><span class="arrow-sym">→</span><div class="node">添加新评论</div><span class="arrow-sym">→</span><div class="node">翻译项目</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">你真的会写高阶的 Skill 吗？</div><span class="arrow-sym">→</span><div class="node node-orange">如何批量“制造” AI 技能？</div><span class="arrow-sym">→</span><div class="node">添加新评论</div><span class="arrow-sym">→</span><div class="node node-green">翻译项目</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。</p></div>
 
 <div class="card">
-  <h3>【模板 A】你真的会写高阶的 Skill 吗？</h3>
+  <h3>【概念拆解卡】你真的会写高阶的 Skill 吗？</h3>
   <p><strong>在讲什么问题：</strong>你真的会写高阶的 Skill 吗？</p>
+  <p><strong>核心机制：</strong>很多人以为，只要按照规范建几个文件夹，把原来的 Prompt 翻译成英文填进去，就算是掌握了 Skill Engineering。</p>
   <p><strong>关键理解：</strong>很多人以为，只要按照规范建几个文件夹，把原来的 Prompt 翻译成英文填进去，就算是掌握了 Skill Engineering。 大错特错！看懂 YAML 规范，就好比你认识了 Go 语言的 25 个关键字，但这并不意味着你能写出千万级并发的高可用架构。 真正拉开开发者阶层差距的，是如何避开大模型的心智陷阱，用工程化的思维去“编程 AI”。 你可以问问自己以下这三个极其致命的实战问题： 1. 你的 Description 是在写“说明书”，还是在“埋地雷”？ 很多开发者把 Skill 的描述（Description）写得极为详尽客观。但你知不知道，如果你的 Description 写得不够“带攻击性”、不够抢占模型的注意力权重，在复杂的长上下文中，AI 的 触发率会大幅低于你的预期 ？你的技能写得再牛，AI 压根不用！ 2. 你还在用大写的 MUST/NEVER 去“恐吓”大模型吗？ 传统的编程思维告诉我们，指令要绝对强硬。但在面对具备强大“心智理论”的现代大模型时，死板的命令往往会引发模型的“叛逆”或逻辑短路。有一种远比强制命令更高级的沟通架构（即“讲道理（The Why）”范式），能让 AI 的服从性实现质的飞跃。你掌握了吗？ 3. 你的大模型在做“确定性的计算”吗？ 如果你在 Skill 里让 LLM 自己去处理复杂的逻辑流转换，你的工作流迟早会崩溃。顶级的高阶架构，必须是“LLM 负责控制流，外部脚本/程序负责数据流”。 这三个问题，只要踩中一个，你的 Agent 自动化产线就是一个随时会“罢工”的草台班子。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
   <div class="quote">原文依据：很多人以为，只要按照规范建几个文件夹，把原来的 Prompt 翻译成英文填进去，就算是掌握了 Skill Engineering。大错特错！</div>
 </div>
 <div class="card">
-  <h3>【模板 B】如何批量“制造” AI 技能？</h3>
-  <p><strong>在讲什么问题：</strong>如何批量“制造” AI 技能？</p>
-  <p><strong>关键理解：</strong>如果你对上面这几个问题感到迷茫，如果你发现自己写的 Skill 总是跑不出开源大神那样的流畅度，不要慌，你只是缺少了一套系统性的高阶内功。 为了帮你彻底补齐这块最短的木板，让你真正吃透 Skill Engineering 的底层逻辑，我在我的极客时间专栏 《AI 原生开发工作流实战》 中，加更了一篇万字级别的加餐： 《 加餐 | 告别“方言”：全面解析 Agent Skills 行业标准与高阶编写心法 》 在这篇长文中，我做了以下几件事： 扒开 Spec 的底裤 ：为你深度剖析规范中那些极其重要、却鲜为人知的核心机制（比如决定上下文利用效率的 渐进式披露机制（Progressive Disclosure） ）。 四大实战心法 ：把上面提到的那些导致 AI 罢工的致命“暗坑”为你一一填平，教你如何像顶级架构师一样，“精准狙击”大模型的注意力。 在这篇加餐的最后，我还介绍了“评测驱动（Eval-Driven）”的Skill 编写工作流，即用 AI，来规模化地创造和评测AI skill的方法。 如果你不想在这个“万物皆 Agent”的时代，永远只能做一个在后面捡别人开源代码吃灰的“调包侠”；如果你想把你们团队的隐性业务知识，彻底沉淀为高质量、可版本控制、永不罢工的数字资产： 这篇加餐，以及整个《 AI原生开发工作流实战 》专栏的内容，是你绝对不容错过的“时代利器”。 不要犹豫，立刻扫描下方二维码，订阅专栏吧！ 我也非常期待大家能在极客时间的评论区留言，分享你在编写 Skill 时遇到的奇葩幻觉，或者绝妙的工程 Idea。我会在那里等你，我们一起完成最华丽的技能升维！</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：如果你对上面这几个问题感到迷茫，如果你发现自己写的 Skill 总是跑不出开源大神那样的流畅度，不要慌，你只是缺少了一套系统性的高阶内功。为了帮你彻底补齐这块最短的木板，让你真正吃透 Skill Engineering 的底层逻辑，我在我的极客时间专栏 《AI 原生开发工作流实战》 中，加更了一篇万字级别的加餐： 《 加餐 | 告别“方言”：全面解析 Agent Skills 行业标准与高阶编写心法 》 在这篇长文中，我做了以下几件事： 扒开 Spec 的底裤 ：为你深度剖析规范中那些极其重要、却鲜为人知的核心机制（比如决定上下文利用效率的 渐进式披露机制（Progressive Disclosure） ）。</div>
+  <h3>【方法/工具卡】如何批量“制造” AI 技能？</h3>
+  <p><strong>核心思路：</strong>如果你对上面这几个问题感到迷茫，如果你发现自己写的 Skill 总是跑不出开源大神那样的流畅度，不要慌，你只是缺少了一套系统性的高阶内功。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「如何批量“制造” AI 技能？」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：如果你对上面这几个问题感到迷茫，如果你发现自己写的 Skill 总是跑不出开源大神那样的流畅度，不要慌，你只是缺少了一套系统性的高阶内功。为了帮你彻底补齐这块最短的木板，让你真正吃透 Skill Engineering 的底层逻辑，我在我的极客时间专栏 《AI 原生开发工作流实战》 中，加更了一篇万字级别的加餐： 《 加餐 | 告别“方言”：全面解析 Agent Skills 行业标准与高阶编写心法 》 在这篇长文中，我做了以下几件事： 扒开 Spec 的底裤 ：为你深度剖析规范中那些极其重要、却鲜为人知的核心机制（比如决定上下文利用效率的 渐进式披露机制（Progressive Disclosure） ）。</div>
 </div>
 <div class="card">
-  <h3>【模板 A】添加新评论</h3>
-  <p><strong>在讲什么问题：</strong>添加新评论</p>
-  <p><strong>关键理解：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人Blog，欢迎访问、订阅和留言！ 订阅Feed请点击上面图片 。 如果您觉得这里的文章对您有帮助，请扫描上方二维码进行捐赠 ，加油后的Tony Bai将会为您呈现更多精彩的文章，谢谢！ 如果您希望通过微信捐赠，请用微信客户端扫描下方赞赏码： 如果您希望通过比特币或以太币捐赠，可以扫描下方二维码： 比特币： 以太币： 如果您喜欢通过微信浏览本站内容，可以扫描下方二维码，订阅本站官方微信订阅号“iamtonybai”；点击二维码，可直达本人官方微博主页^_^： 本站Powered by Digital Ocean VPS。 选择Digital Ocean VPS主机，即可获得10美元现金充值，可 免费使用两个月哟！ 著名主机提供商Linode 10$优惠码：linode10，在 这里注册 即可免费获 得。阿里云推荐码： 1WFZ0V ， 立享9折！</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！</div>
+  <h3>【避坑清单卡】添加新评论</h3>
+  <p><strong>坑名：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。</p>
+  <p><strong>原因：</strong>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！ 商务合作请联系bigwhite.cn AT aliyun.com 这里是 Tony Bai 的个人Blog，欢迎访问、订阅和留言！ 订阅Feed请点击上面图片 。 如果您觉得这里的文章对您有帮助，请扫描上方二维码进行捐赠 ，加油后的Tony Bai将会为您呈现更多精彩的文章，谢谢！ 如果您希望通过微信捐赠，请用微信客户端扫描下方赞赏码： 如果您希望通过比特币或以太币捐赠，可以</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。十分感谢！</div>
 </div>
 <div class="card">
-  <h3>【模板 B】翻译项目</h3>
-  <p><strong>在讲什么问题：</strong>翻译项目</p>
-  <p><strong>关键理解：</strong>C语言编码风格和标准 《Programming in Haskell》中文翻译项目 View My Stats 2026 Tony Bai . 由 Wordpress 强力驱动. 模板由 maupassant 制作.</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：C语言编码风格和标准 《Programming in Haskell》中文翻译项目 View My Stats 2026 Tony Bai . 由 Wordpress 强力驱动. 模板由 maupassant 制作.</div>
+  <h3>【心法/原则卡】翻译项目</h3>
+  <p><strong>原则：</strong>C语言编码风格和标准 《Programming in Haskell》中文翻译项目 View My Stats &amp;copy; 2026 Tony Bai . 由 Wordpress 强力驱动. 模板由 maupassant 制作.</p>
+  <p><strong>为什么重要：</strong>C语言编码风格和标准 《Programming in Haskell》中文翻译项目 View My Stats &amp;copy; 2026 Tony Bai . 由 Wordpress 强力驱动. 模板由 maupassant 制作.</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：C语言编码风格和标准 《Programming in Haskell》中文翻译项目 View My Stats &amp;copy; 2026 Tony Bai . 由 Wordpress 强力驱动. 模板由 maupassant 制作.</div>
 </div>
-<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>你真的会写高阶的 Skill 吗？：很多人以为，只要按照规范建几个文件夹，把原来的 Prompt 翻译成英文填进去，就算是掌握了 Skill Engineering。</li><li>如何批量“制造” AI 技能？：如果你对上面这几个问题感到迷茫，如果你发现自己写的 Skill 总是跑不出开源大神那样的流畅度，不要慌，你只是缺少了一套系统性的高阶内功。</li><li>添加新评论：称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。</li><li>翻译项目：C语言编码风格和标准 《Programming in Haskell》中文翻译项目 View My Stats 2026 Tony Bai . 由 Wordpress 强力驱动. 模板由 maupassant 制作.</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「你真的会写高阶的 Skill 吗？」在本周工作中做 1 次对照验证</li><li>结合「如何批量“制造” AI 技能？」在本周工作中做 1 次对照验证</li><li>结合「添加新评论」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Geohot 式 Agent 怀疑派</p>
+  <p class="rebuttal-text">自主 Agent 的 Token 成本与错误决策半径常被低估——Stars 和 demo 视频好看，生产环境里的死循环、权限事故和 $131/天账单才是真实账单。</p>
+</div>
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol><li>很多人以为，只要按照规范建几个文件夹，把原来的 Prompt 翻译成英文填进去，就算是掌握了 Skill Engineering。</li><li>如果你对上面这几个问题感到迷茫，如果你发现自己写的 Skill 总是跑不出开源大神那样的流畅度，不要慌，你只是缺少了一套系统性的高阶内功。</li><li>称呼 邮箱 网站 提交评论 Capatcha 搜索 如发现本站页面被黑，比如：挂载广告、挖矿等恶意代码 ，请朋友们及时 联系我 。</li><li>C语言编码风格和标准 《Programming in Haskell》中文翻译项目 View My Stats &amp;copy; 2026 Tony Bai . 由 Wordpress 强力驱动. 模板由 maupassant 制作.</li></ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol><li>结合「你真的会写高阶的 Skill 吗？」在本周做 1 次小范围对照验证</li><li>结合「如何批量“制造” AI 技能？」在本周做 1 次小范围对照验证</li><li>结合「添加新评论」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
+</div>
     </div>
   </foreignObject>
 </svg>

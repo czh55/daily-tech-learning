@@ -5,6 +5,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 import { buildSvg } from '../svg-auto-height.mjs';
 import {
   extractParagraphs,
@@ -310,32 +311,21 @@ ${cards}
 </div>`;
 }
 
-function writeGeneratorScript(dir, slug, css, bodyLiteral) {
-  const mjsPath = path.join(dir, `generate-${slug}.mjs`);
-  const relImport = '../../svg-auto-height.mjs';
-  const content = `import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { buildSvg } from '${relImport}';
-
-const DIR = path.dirname(fileURLToPath(import.meta.url));
-const OUT = path.join(DIR, '${slug}.svg');
-
-const CSS = \`${css}\`;
-
-const body = \`${bodyLiteral.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${')}\`;
-
-const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
-fs.writeFileSync(OUT, svg, 'utf8');
-console.log('Generated:', OUT, 'height:', height, 'px');
-`;
-  fs.writeFileSync(mjsPath, content, 'utf8');
-}
-
 async function regenerateOne(entry, date) {
   const svgPath = path.join(REPO, entry.path);
   const slug = path.basename(entry.path, '.svg');
   const dir = path.dirname(svgPath);
+  const mjsPath = path.join(dir, `generate-${slug}.mjs`);
+
+  if (fs.existsSync(mjsPath)) {
+    const src = fs.readFileSync(mjsPath, 'utf8');
+    if (src.includes('.rebuttal') && src.includes('【概念拆解卡】')) {
+      execSync(`node ${JSON.stringify(`generate-${slug}.mjs`)}`, { cwd: dir, stdio: 'inherit' });
+      console.log('MJS', date, slug);
+      return { status: 'ok', height: 'mjs' };
+    }
+  }
+
   const title = entry.title.replace(/\s*[-|–—]\s*Tony Bai\s*$/i, '').trim();
 
   if (fs.existsSync(svgPath) && !force) return { status: 'skip' };
@@ -364,12 +354,6 @@ async function regenerateOne(entry, date) {
   const body = buildBody(title, author, sections, subtitle);
   const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
   fs.writeFileSync(svgPath, svg, 'utf8');
-
-  try {
-    writeGeneratorScript(dir, slug, CSS, body);
-  } catch (e) {
-    console.warn('MJS write warn', slug, e.message);
-  }
 
   console.log('OK', date, slug, height);
   return { status: 'ok', height };

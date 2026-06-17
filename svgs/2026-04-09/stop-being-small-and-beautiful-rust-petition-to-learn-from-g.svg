@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5705" viewBox="0 0 1320 5705">
-  <foreignObject x="0" y="0" width="1320" height="5705">
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5523" viewBox="0 0 1320 5523">
+  <foreignObject x="0" y="0" width="1320" height="5523">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
@@ -11,11 +11,14 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
 .card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
 .card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
 .card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
 .card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
 .map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
 .node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
 .arrow-sym{font-size:20px;color:#94a3b8}
 .conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
 .conclusion h2{font-size:26px;margin-bottom:16px}
@@ -24,50 +27,76 @@ h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b8
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
 th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
-td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}</style>
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}</style>
       
 <h1>别搞“小而美”了！Rust 开发者请愿：求求标准库学学 Go 吧</h1>
 <div style="margin-bottom:16px"><span class="tag tag-blue">Go/AI 技术</span><span class="tag tag-green">工程实践</span><span class="tag tag-orange">深度解读</span></div>
 <p class="subtitle">本文解决的核心问题是：你想做 Web 开发？net/http 原生支持，性能强大到可以直接裸奔在生产环境。？</p>
-<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">“小而美”的代价：悬在每个 Rust 项目头顶的达摩克利斯之剑</div><span class="arrow-sym">→</span><div class="node">隔壁的诱惑：Go 语言的“大一统”模式</div><span class="arrow-sym">→</span><div class="node">社区的挣扎：当“保守”成为“瓶颈”</div><span class="arrow-sym">→</span><div class="node">破局之路：从“大一统”到“邦联制”</div></div></div>
+<div class="map"><h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">核心概念关系图</h3><div class="diagram"><div class="node">“小而美”的代价：悬在每个 Rust 项</div><span class="arrow-sym">→</span><div class="node node-orange">隔壁的诱惑：Go 语言的“大一统”模式</div><span class="arrow-sym">→</span><div class="node">社区的挣扎：当“保守”成为“瓶颈”</div><span class="arrow-sym">→</span><div class="node">破局之路：从“大一统”到“邦联制”</div></div></div>
+<div class="correction"><h3>认知纠偏</h3><p style="color:#92400e;font-size:16px">常见误解：「Rust 安全 = 没有 unsafe」—— unsafe 是特权封装箱，不是关闭检查的后门；业务代码 unsafe 率应为 0%。</p></div>
 
 <div class="card">
-  <h3>【模板 A】“小而美”的代价：悬在每个 Rust 项目头顶的达摩克利斯之剑</h3>
+  <h3>【概念拆解卡】“小而美”的代价：悬在每个 Rust 项目头顶的达摩克利斯之剑</h3>
   <p><strong>在讲什么问题：</strong>“小而美”的代价：悬在每个 Rust 项目头顶的达摩克利斯之剑</p>
+  <p><strong>核心机制：</strong>长期以来，Rust 社区一直为自己“小核心、强生态”的模式感到自豪。</p>
   <p><strong>关键理解：</strong>长期以来，Rust 社区一直为自己“小核心、强生态”的模式感到自豪。Rust 的标准库（std）极其精简，只提供最基础、最核心的功能。任何稍微高级一点的需求，比如随机数生成、异步运行时、序列化，官方都鼓励你去 crates.io 上找社区“钦定”的“明星库”（Blessed Crates）。 这套模式在早期极大地促进了生态的繁荣。但随着 npm left-pad 事件和各种开源投毒攻击的阴影笼罩全球，这套模式的代价也变得越来越难以承受。 原帖作者一针见血地指出了所有人的噩梦： “是的，你可以采取各种缓解措施。但等你发现某个藏在你依赖树第三层的、不起眼的包被植入了恶意软件时，你的服务器密钥可能早就被偷光了！” 评论区里的一位开发者用一句话概括了所有人的痛点： “我完全同意。有时候 std 里就是缺了那么一点至关重要的东西。我能理解这背后的原因，但为了生成一个随机数就要去装一个第三方包，这实在有点小题大做了。” 这正是 Rust 开发者面临的尴尬：当你只是想生成一个 UUID，或者发起一个 HTTP 请求时，你被迫要对 rand、reqwest、tokio 这些由社区个人或小团体维护的库，付出与 Rust 官方核心团队同等级别的“信任”。 而这种信任，正在变得越来越昂贵和危险。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
+  <p><strong>典型场景：</strong>当团队讨论与本文主题相关的技术选型或工程决策时。</p>
+  <p><strong>边界说明：</strong>需结合自己的规模、栈和合规要求裁剪，不可无脑复制。</p>
   <div class="quote">原文依据：长期以来，Rust 社区一直为自己“小核心、强生态”的模式感到自豪。Rust 的标准库（std）极其精简，只提供最基础、最核心的功能。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】隔壁的诱惑：Go 语言的“大一统”模式</h3>
-  <p><strong>在讲什么问题：</strong>隔壁的诱惑：Go 语言的“大一统”模式</p>
-  <p><strong>关键理解：</strong>在这场大讨论中，一个名字被反复提及，它就是 Go 语言。 Go 从诞生之初，就选择了与 Rust 截然相反的“自带电池（Batteries Included）”哲学。 你想做 Web 开发？net/http 原生支持，性能强大到可以直接裸奔在生产环境。 你想做 JSON/XML 解析？encoding/json(以及实验性的encoding/json/v2)、encoding/xml 是标配。 你想做并发？goroutine 和 channel 是语言级原生特性。 你想生成随机数？math/rand、crypto/rand 随便用。 评论区里，一位 Rust 开发者的对比极其扎心： “把恶意代码偷偷塞进一个（流行的）Crate 的第四层依赖里，比把它塞进 Rust 的 std 里要容易得多。” Go 语言通过一个庞大、稳定、由官方核心团队直接维护的标准库，为开发者提供了一道坚固的“安全护城河”。你可以在不引入任何一个第三方依赖的情况下，构建出一个功能极其完备、性能强大的高并发网络服务。 这种“开箱即用”的安全感和便利性，对于那些深受 供应链安全审计 折磨的企业开发者来说，是致命的诱惑。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：在这场大讨论中，一个名字被反复提及，它就是 Go 语言。Go 从诞生之初，就选择了与 Rust 截然相反的“自带电池（Batteries Included）”哲学。</div>
+  <h3>【方法/工具卡】隔壁的诱惑：Go 语言的“大一统”模式</h3>
+  <p><strong>核心思路：</strong>在这场大讨论中，一个名字被反复提及，它就是 Go 语言。</p>
+  <p><strong>操作步骤：</strong>1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收</p>
+  <p><strong>选型条件：</strong>当团队面临与原文类似约束时优先采用。</p>
+  <div class="highlight"><strong>落地建议：</strong>本周选 1 个与「隔壁的诱惑：Go 语言的“大一统”模式」相关的任务做对照验证。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要跳过边界说明直接照搬工具链或配置。</div>
+  <div class="quote">原文引用：在这场大讨论中，一个名字被反复提及，它就是 Go 语言。Go 从诞生之初，就选择了与 Rust 截然相反的“自带电池（Batteries Included）”哲学。</div>
 </div>
 <div class="card">
-  <h3>【模板 A】社区的挣扎：当“保守”成为“瓶颈”</h3>
-  <p><strong>在讲什么问题：</strong>社区的挣扎：当“保守”成为“瓶颈”</p>
-  <p><strong>关键理解：</strong>面对社区的“呐喊”，Rust 核心团队的成员和社区大佬们也纷纷下场，给出了极其理性和深刻的解释。他们的回复，揭示了 Rust 在标准库扩张上，面临的“三重枷锁”。 枷锁一：向后兼容性的“诅咒” 一位核心成员引用了 Python 社区的一句名言： “标准库，是模块最终的坟场（The standard library is where modules go to die）。” 一旦一个 API 进入了 std，它就必须背上永不破坏向后兼容的沉重承诺。哪怕 10 年后发现这个设计有缺陷，也只能眼睁睁地看着它腐烂，或者推出一个 urllib2、urllib3 这样极其丑陋的补丁。 Rust 团队宁愿让这些库在社区里自由进化、大浪淘沙，等到它们的设计真正成熟、稳定到可以“永恒”时，再考虑纳入 std。比如 once_cell 和最新的 rand（目前在 nightly 版本中）。 枷锁二：无休止的“维护地狱” 另外一名核心成员指出，将一个库纳入 std，意味着它的维护成本将全部转移到人数本就捉襟见肘的官方维护者身上。而在社区，每个 Crate 都有自己专门的维护者。这是两种完全不同的成本模型。 枷锁三：设计的“过早僵化” 最典型的例子就是异步。原帖作者提议：“Rust 能不能偷一下 Zig 的 IO 思想，这样我们就不需要在 Tokio 和 non-Tokio 生态之间分裂了？” 一位社区大佬立刻反驳：Zig 没有 Rust 的 Send/Sync 标记，两者的异步模型有本质区别。Rust 的异步生态之所以看起来“分裂”，恰恰是语言给了开发者在不同场景下做最优选择的自由。如果过早地在 std 里统一一个官方运行时，反而会扼杀创新。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：面对社区的“呐喊”，Rust 核心团队的成员和社区大佬们也纷纷下场，给出了极其理性和深刻的解释。他们的回复，揭示了 Rust 在标准库扩张上，面临的“三重枷锁”。</div>
+  <h3>【避坑清单卡】社区的挣扎：当“保守”成为“瓶颈”</h3>
+  <p><strong>坑名：</strong>面对社区的“呐喊”，Rust 核心团队的成员和社区大佬们也纷纷下场，给出了极其理性和深刻的解释。</p>
+  <p><strong>原因：</strong>面对社区的“呐喊”，Rust 核心团队的成员和社区大佬们也纷纷下场，给出了极其理性和深刻的解释。他们的回复，揭示了 Rust 在标准库扩张上，面临的“三重枷锁”。 枷锁一：向后兼容性的“诅咒” 一位核心成员引用了 Python 社区的一句名言： “标准库，是模块最终的坟场（The standard library is where modules go to die）。” 一旦一个 API 进入了 std，它就必须背上永不破坏向后兼容的沉重承诺。哪怕 10 年后发现这个设计有缺陷，也只能眼睁睁地看着它腐烂，或者推出一个 urllib2、urllib3 这样极其丑陋的补丁。 Rust 团队宁愿让</p>
+  <p><strong>解法：</strong>对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。</p>
+  <p><strong>严重程度：</strong>小心——不验证边界时容易照搬结论。</p>
+  <div class="quote">原文：面对社区的“呐喊”，Rust 核心团队的成员和社区大佬们也纷纷下场，给出了极其理性和深刻的解释。他们的回复，揭示了 Rust 在标准库扩张上，面临的“三重枷锁”。</div>
 </div>
 <div class="card">
-  <h3>【模板 B】破局之路：从“大一统”到“邦联制”</h3>
-  <p><strong>在讲什么问题：</strong>破局之路：从“大一统”到“邦联制”</p>
-  <p><strong>关键理解：</strong>在这场激烈的辩论中，一些极具建设性的“折中方案”也开始浮现。这或许预示着 Rust 未来的演进方向。 方案一：官方背书的“准标准库（Semi-official）” 一位开发者提出，Rust 项目组可以借鉴 C++ Boost 库的模式，官方接管 serde、rand、tokio 这些“钦定”的明星库，将它们纳入一个统一的 extd (extended) 命名空间下。 use extd::regex::Regex; use extd::rand; 这并不会增加 std 的体积，但给了这些库一个“官方认证”的金字招牌，极大地解决了开发者的信任和审计问题。 方案二：引入“孵化期（Incubation Phase）” 一位开发者建议，应该有一个更明确的孵化流程，让那些有潜力进入 std 的库，先在一个类似 Go golang.org/x 的“实验场”里进行检验，而不是直接从某个个人开发者仓库里一步登天。 方案三：强化 Cargo 的安全审计能力 一些核心成员则认为，问题的根源不在于 std 的大小，而在于 crates.io 的分发机制不够安全。与其“因噎废食”地把所有东西都塞进 std，不如去建立更强大的包安全审计机制，比如： 发布隔离期 ：新发布的包必须经过 72 小时自动化扫描才能被下载。 签名与信任链 ：通过 cargo 增强包签名和审计者签名，让企业可以选择只使用“可信审计者”批准的依赖列表。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：在这场激烈的辩论中，一些极具建设性的“折中方案”也开始浮现。这或许预示着 Rust 未来的演进方向。</div>
+  <h3>【决策/选型表】破局之路：从“大一统”到“邦联制”</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>原文主场景</td><td>按作者方案执行</td><td>在这场激烈的辩论中，一些极具建设性的“折中方案”也开始浮现。</td><td>跳过验证直接照搬</td><td>忽略边界导致踩坑</td></tr>
+    <tr><td>资源/预算受限</td><td>裁剪到最小可行子集</td><td>先验证核心价值假设</td><td>全量一次性上线</td><td>失败成本高、回滚难</td></tr>
+    <tr><td>团队经验不足</td><td>小范围试点 + 对照实验</td><td>降低 Blast Radius</td><td>直接替换现有流程</td><td>组织惯性被低估</td></tr>
+  </table>
 </div>
 <div class="card">
-  <h3>【模板 A】小结：一场关于“灵魂”的拷问</h3>
-  <p><strong>在讲什么问题：</strong>小结：一场关于“灵魂”的拷问</p>
-  <p><strong>关键理解：</strong>这场由“非主流观点(Unpopular Opinion)”引发的大讨论，表面上是在争论标准库的大小，但其核心，却是一场关于 Rust 与 Go 两种截然不同建国哲学的灵魂拷问。 Go 语言 ，像一个大一统的、中央集权的帝国。它为你提供了从道路、货币到度量衡的一切基础设施。你享受着极高的安全感和便利性，代价是必须忍受它某些时候的“独裁”与“不灵活”。 Rust 语言 ，则更像一个松散的、充满活力的城邦联盟。官方只提供最基础的法律和军队，剩下的一切都交给各个城邦（Crates）自由发展。你拥有无与伦比的自由和选择权，代价是你必须自己承担选择的风险，并时刻提防“外敌入侵”（供应链攻击）。 这两种哲学没有绝对的优劣，只有不同场景下的取舍。 但 Rust 社区的这场“请愿”，无疑为我们所有技术人敲响了警钟： 在软件供应链日益脆弱的今天，一个强大、可靠、由顶级专家背书的“官方基础设施”，其价值正在被无限放大。 或许，Rust 的未来，真的需要在“自由”与“安全”之间，找到一个新的平衡点。而隔壁 Go 的作业，他们可能真的需要抄一抄了。</p>
-  <p><strong>怎么落地：</strong>对照原文场景，列出可执行步骤并在团队内做一次小范围验证。</p>
-  <div class="quote">原文依据：这场由“非主流观点(Unpopular Opinion)”引发的大讨论，表面上是在争论标准库的大小，但其核心，却是一场关于 Rust 与 Go 两种截然不同建国哲学的灵魂拷问。Go 语言 ，像一个大一统的、中央集权的帝国。</div>
+  <h3>【心法/原则卡】小结：一场关于“灵魂”的拷问</h3>
+  <p><strong>原则：</strong>这场由“非主流观点(Unpopular Opinion)”引发的大讨论，表面上是在争论标准库的大小，但其核心，却是一场关于 Rust 与 Go 两种截然不同建国哲学的灵魂拷问。</p>
+  <p><strong>为什么重要：</strong>这场由“非主流观点(Unpopular Opinion)”引发的大讨论，表面上是在争论标准库的大小，但其核心，却是一场关于 Rust 与 Go 两种截然不同建国哲学的灵魂拷问。 Go 语言 ，像一个大一统的、中央集权的帝国。它为你提供了从道路、货币到度量衡的一切基础设施。你享受着极高的安全感和便利性，代价是必须忍受它某些时候的“独裁”与“不灵活”。 Rust 语言 ，则更像一个松散的、充满活力的城邦联盟。官方只提供最基础的法律和军队，剩下的一切都交给各个城邦（Crates）自由发展。你拥有无与伦</p>
+  <p><strong>怎么落地：</strong>把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。</p>
+  <p><strong>适用边界：</strong>资源极度受限或一次性原型场景可适度放宽。</p>
+  <div class="quote">原文支撑：这场由“非主流观点(Unpopular Opinion)”引发的大讨论，表面上是在争论标准库的大小，但其核心，却是一场关于 Rust 与 Go 两种截然不同建国哲学的灵魂拷问。Go 语言 ，像一个大一统的、中央集权的帝国。</div>
 </div>
-<div class="card"><h3>【模板 C】避坑清单</h3><div class="pitfall"><strong>常见误区：</strong>只记住结论不验证边界，或直接照搬而不结合自己的场景做裁剪。</div><p><strong>解法：</strong>每读完一节，用「什么场景适用 / 什么场景不该用」检验一次。</p></div>
-<div class="conclusion"><h2>结论</h2><p><strong>总结：</strong></p><ol><li>“小而美”的代价：悬在每个 Rust 项目头顶的达摩克利斯之剑：长期以来，Rust 社区一直为自己“小核心、强生态”的模式感到自豪。</li><li>隔壁的诱惑：Go 语言的“大一统”模式：在这场大讨论中，一个名字被反复提及，它就是 Go 语言。</li><li>社区的挣扎：当“保守”成为“瓶颈”：面对社区的“呐喊”，Rust 核心团队的成员和社区大佬们也纷纷下场，给出了极其理性和深刻的解释。</li><li>破局之路：从“大一统”到“邦联制”：在这场激烈的辩论中，一些极具建设性的“折中方案”也开始浮现。</li></ol><p style="margin-top:20px"><strong>行动清单：</strong></p><ol><li>结合「“小而美”的代价：悬在每个 Rust 项目头顶的达摩克利斯之剑」在本周工作中做 1 次对照验证</li><li>结合「隔壁的诱惑：Go 语言的“大一统”模式」在本周工作中做 1 次对照验证</li><li>结合「社区的挣扎：当“保守”成为“瓶颈”」在本周工作中做 1 次对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol><p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p></div>
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Java/Go 务实派 · 「够用就行」工程哲学</p>
+  <p class="rebuttal-text">编译通过只保证类型与内存安全，逻辑漏洞和并发死锁照样上线——你用编译器刚性换掉的，往往是生态成熟度和招聘池深度。</p>
+</div>
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol><li>长期以来，Rust 社区一直为自己“小核心、强生态”的模式感到自豪。</li><li>在这场大讨论中，一个名字被反复提及，它就是 Go 语言。</li><li>面对社区的“呐喊”，Rust 核心团队的成员和社区大佬们也纷纷下场，给出了极其理性和深刻的解释。</li><li>在这场激烈的辩论中，一些极具建设性的“折中方案”也开始浮现。</li><li>这场由“非主流观点(Unpopular Opinion)”引发的大讨论，表面上是在争论标准库的大小，但其核心，却是一场关于 Rust 与 Go 两种截然不同建国哲学的灵魂拷问。</li></ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol><li>结合「“小而美”的代价：悬在每个 Rust 项目头顶的达摩克利斯之剑」在本周做 1 次小范围对照验证</li><li>结合「隔壁的诱惑：Go 语言的“大一统”模式」在本周做 1 次小范围对照验证</li><li>结合「社区的挣扎：当“保守”成为“瓶颈”」在本周做 1 次小范围对照验证</li><li>把本文一个关键认知转变写成 3 句话分享给同事</li></ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。</p>
+</div>
     </div>
   </foreignObject>
 </svg>
