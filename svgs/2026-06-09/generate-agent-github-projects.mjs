@@ -36,6 +36,10 @@ th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1
 td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
 .correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
 .correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
 .subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
 
 const body = `
@@ -71,7 +75,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 A】Agent 本质：思考-行动-观察循环</h3>
+  <h3>【概念拆解卡】Agent 本质：思考-行动-观察循环</h3>
   <p><strong>在讲什么问题：</strong>智能体底层到底在干什么，和「对话框问答」有何不同？</p>
   <p><strong>核心机制：</strong>ReAct 无限循环——模型决定调用哪个工具 → 执行 → 结果追加到对话历史 → 直到任务完成。</p>
   <p><strong>关键理解：</strong>nanoAgent 115 行用 Function Calling 实现 execute_bash/read_file/write_file，即 OpenClaw/Claude Code 工具调用的同一原理。</p>
@@ -81,7 +85,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 B】mini-swe-agent：极简主义 SWE-bench 68%</h3>
+  <h3>【方法/工具卡】mini-swe-agent：极简主义 SWE-bench 68%</h3>
   <p><strong>方法名：</strong>100 行 Agent + bash 通用接口</p>
   <p><strong>核心思路：</strong>模型变强后，复杂工具调用接口不再必要——每步输出思考 + bash 命令，执行结果追加历史。</p>
   <p><strong>操作步骤：</strong>① 克隆 mini-swe-agent ② 读 Agent/Model/Environment 模块划分 ③ 在 SWE-bench Verified 对比原版 12% → 68%。</p>
@@ -90,7 +94,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 B】Nanobot：4000 行生产级最小可行架构</h3>
+  <h3>【方法/工具卡】Nanobot：4000 行生产级最小可行架构</h3>
   <p><strong>方法名：</strong>港大 Data Intelligence Lab 轻量 OpenClaw 替代</p>
   <p><strong>核心思路：</strong>相比 OpenClaw 40 万行缩减 99%，保留 Agent 循环、工具、Telegram/WhatsApp、定时任务、上下文压缩、持久记忆。</p>
   <p><strong>操作步骤：</strong>① 一次性通读 4000 行 ② 研究消息拆分/邮箱循环防护/沙箱 ③ 跑 WebUI 多会话。</p>
@@ -98,7 +102,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 A】Hermes Agent：会自己进化的长期系统</h3>
+  <h3>【概念拆解卡】Hermes Agent：会自己进化的长期系统</h3>
   <p><strong>在讲什么问题：</strong>与一次性执行器 OpenClaw 的本质差异？</p>
   <p><strong>核心机制：</strong>历史会话存本地 DB → 全文检索 + 模型摘要 → 任务完成后抽象为 Skill（步骤/陷阱/验证）→ 下次直接复用。</p>
   <p><strong>关键理解：</strong>四个环节：环境感知 → 技能编译 → 效果评估 → 迭代优化。</p>
@@ -107,7 +111,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 E】六个项目难度与能力矩阵</h3>
+  <h3>【对比分析卡】六个项目难度与能力矩阵</h3>
   <table>
     <tr><th>对比维度</th><th>Hello-Agents / nanoAgent</th><th>mini-swe / Nanobot</th><th>Hermes / OpenClaw</th><th>一句话结论</th></tr>
     <tr><td>代码量</td><td>教程 / 115 行</td><td>100 行 / 4000 行</td><td>大型 / 40 万行</td><td>按量级递进</td></tr>
@@ -118,7 +122,7 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 D】学习路径选型表</h3>
+  <h3>【对比分析卡】学习路径选型表</h3>
   <table>
     <tr><th>场景</th><th>推荐项目</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
     <tr><td>完全零基础</td><td>Hello-Agents → nanoAgent</td><td>系统教程 + 1 小时搞懂循环</td><td>直接 OpenClaw</td><td>40 万行劝退</td></tr>
@@ -130,12 +134,18 @@ const body = `
 </div>
 
 <div class="card">
-  <h3>【模板 C】避坑清单</h3>
+  <h3>【避坑清单卡】OpenClaw 与大型项目阅读陷阱</h3>
   <p><strong>坑：OpenClaw 源码第一眼就关网页，转去 LangChain 自我安慰</strong></p>
   <p><strong>原因：</strong>缺缓坡路径，直接从 40 万行起步必然失败。</p>
   <p><strong>解法：</strong>严格按 6 项目顺序：115 行 → 100 行 bash → 4000 行 → 大型。</p>
   <p><strong>严重程度：</strong>小心——长期停留在 API 调用层，AI 时代竞争力不足。</p>
   <div class="pitfall"><strong>另一个坑：</strong>读 Hermes/OpenClaw 试图理解每一部分。作者建议：列设计思路 → 聚焦一个特性 → 画流程图 → 定位关键代码。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：OpenClaw 生态原教旨主义者 · 「集成广度即护城河」派</p>
+  <p class="rebuttal-text">Hermes 的学习回路再聪明，也无法 overnight 复制 OpenClaw 25+ 频道原生集成和 ClawHub 四万 Skill 的网络效应——对已 all-in OpenClaw 的团队等于推倒重来。</p>
 </div>
 
 <div class="conclusion">
