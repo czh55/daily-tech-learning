@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-06-18",
+    "files": [
+      {
+        "path": "svgs/2026-06-18/go-vs-rust-ai-age.svg",
+        "title": "在 AI 编码时代，为什么我们依然选择 Go 而不是 Rust？",
+        "source": "https://tonybai.com/2026/06/18/why-choose-go-over-rust-today-in-ai-age/"
+      },
+      {
+        "path": "svgs/2026-06-18/claude-code-hermes-mcp.svg",
+        "title": "Claude Code + Hermes MCP 消息桥接实战：任务完成自动通知手机",
+        "source": "https://xiangyugongzuoliu.com/claude-code-hermes-mcp-messaging/"
+      },
+      {
+        "path": "svgs/2026-06-18/ai-knowledge-base.svg",
+        "title": "AI 知识库最佳实践：用纯文件系统构建 Agent 可用的知识库",
+        "source": "https://xiangyugongzuoliu.com/ai-knowledge-base-best-practices/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-17",
     "files": [
       {
