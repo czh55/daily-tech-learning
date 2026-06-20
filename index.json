@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-06-20",
+    "files": [
+      {
+        "path": "svgs/2026-06-20/flat-curve-society.svg",
+        "title": "大模型正在见顶！传奇架构师：欢迎来到「平坦曲线时代」",
+        "source": "https://tonybai.com/2026/06/20/steve-yegge-the-flat-curve-society/"
+      },
+      {
+        "path": "svgs/2026-06-20/hermes-cron-automation.svg",
+        "title": "Hermes Agent Cron 定时自动化：任务链 + 预运行门控 + 零成本触发",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-cron-automation/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-19",
     "files": [
       {
