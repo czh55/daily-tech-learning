@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-06-22",
+    "files": [
+      {
+        "path": "svgs/2026-06-22/go-cncf-dominance.svg",
+        "title": "屠榜 CNCF！为什么在云原生时代，Go 语言能把 Java、C++ 和 Rust 堵在门外？",
+        "source": "https://tonybai.com/2026/06/22/why-is-go-dominating-in-cncf-landscape/"
+      },
+      {
+        "path": "svgs/2026-06-22/loop-engineering-guide.svg",
+        "title": "循环工程 Loop Engineering 指南：一个 Skill 解决终止条件设计难题",
+        "source": "https://xiangyugongzuoliu.com/loop-engineering-guide/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-20",
     "files": [
       {
