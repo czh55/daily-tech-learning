@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-06-24",
+    "files": [
+      {
+        "path": "svgs/2026-06-24/go-1-27-foresight.svg",
+        "title": "Go 1.27新特性前瞻：泛型方法落地，标准库内建 UUID",
+        "source": "https://tonybai.com/2026/06/24/go-1-27-foresight/"
+      },
+      {
+        "path": "svgs/2026-06-24/hermes-skill-evolution.svg",
+        "title": "Hermes Skill 自我进化系统：让 AI 助手越用越聪明",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-skill-evolution/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-23",
     "files": [
       {
