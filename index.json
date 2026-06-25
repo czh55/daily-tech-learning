@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-06-25",
+    "files": [
+      {
+        "path": "svgs/2026-06-25/go-uuidv7-browser.svg",
+        "title": "浏览器里的「安全阴谋」：为什么 Go 1.27 的 UUIDv7 会离奇丧失随机性？",
+        "source": "https://tonybai.com/2026/06/25/go-1-27-uuid-newv7-always-generates-uuid-with-7000-on-browsers/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-24",
     "files": [
       {
