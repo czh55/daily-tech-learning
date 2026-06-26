@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-06-26",
+    "files": [
+      {
+        "path": "svgs/2026-06-26/go-godebug-cleanup.svg",
+        "title": "偿还十年技术债：深度拆解 Go 1.27 的 GODEBUG 强力清理计划",
+        "source": "https://tonybai.com/2026/06/26/policy-for-removing-godebug-flags/"
+      },
+      {
+        "path": "svgs/2026-06-26/hermes-voice-mode.svg",
+        "title": "Hermes 语音模式完全攻略：CLI + Telegram + Discord 三表面免费搭建",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-voice-mode/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-25",
     "files": [
       {
