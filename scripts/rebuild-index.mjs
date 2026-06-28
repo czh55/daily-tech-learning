@@ -15,7 +15,7 @@ const meta = new Map();
 for (const g of gen) meta.set(g.path, { title: cleanTitle(g.title), source: g.source });
 
 // existing index entries (Jun 8-14 manual)
-const existing = JSON.parse(fs.readFileSync(path.join(ROOT, 'index.json'), 'utf8'));
+const existing = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/index.json'), 'utf8'));
 for (const day of existing) {
   for (const f of day.files) {
     if (!meta.has(f.path)) meta.set(f.path, { title: f.title, source: f.source });
@@ -23,7 +23,7 @@ for (const day of existing) {
 }
 
 // scan all svg files
-const svgsDir = path.join(ROOT, 'svgs');
+const svgsDir = path.join(ROOT, 'docs/svgs');
 const byDate = {};
 for (const date of fs.readdirSync(svgsDir).sort().reverse()) {
   const dir = path.join(svgsDir, date);
@@ -43,5 +43,5 @@ for (const date of fs.readdirSync(svgsDir).sort().reverse()) {
 }
 
 const index = Object.keys(byDate).sort().reverse().map(date => ({ date, files: byDate[date] }));
-fs.writeFileSync(path.join(ROOT, 'index.json'), JSON.stringify(index, null, 2), 'utf8');
+fs.writeFileSync(path.join(ROOT, 'data/index.json'), JSON.stringify(index, null, 2), 'utf8');
 console.log('index:', index.length, 'days,', index.reduce((n,d)=>n+d.files.length,0), 'articles');

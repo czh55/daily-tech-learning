@@ -156,7 +156,7 @@ ${cards}
 }
 
 async function generateOne(date, item) {
-  const dir = path.join(REPO, 'svgs', date);
+  const dir = path.join(REPO, 'docs/svgs', date);
   const slug = item.slug.replace(/[^a-zA-Z0-9-]/g, '-').replace(/-+/g, '-').slice(0, 60);
   const svgPath = path.join(dir, `${slug}.svg`);
   if (fs.existsSync(svgPath) && !force) return null;
@@ -187,7 +187,7 @@ let skipped = 0;
 
 for (const date of dates) {
   for (const item of inventory[date]) {
-    const dir = path.join(REPO, 'svgs', date);
+    const dir = path.join(REPO, 'docs/svgs', date);
     const slug = item.slug.replace(/[^a-zA-Z0-9-]/g, '-').replace(/-+/g, '-').slice(0, 60);
     const svgPath = path.join(dir, `${slug}.svg`);
     if (fs.existsSync(svgPath) && !force) {

@@ -20,7 +20,7 @@ import {
 } from '../article-content-utils.mjs';
 
 const REPO = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const INDEX = path.join(REPO, 'index.json');
+const INDEX = path.join(REPO, 'data/index.json');
 const force = process.argv.includes('--force');
 const juejinOnly = process.argv.includes('--juejin-only');
 const limitArg = process.argv.find((a) => a.startsWith('--limit='));
