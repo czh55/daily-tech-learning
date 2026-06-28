@@ -9,7 +9,7 @@ import { spawnSync } from 'child_process';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.dirname(ROOT);
-const index = JSON.parse(fs.readFileSync(path.join(REPO, 'index.json'), 'utf8'));
+const index = JSON.parse(fs.readFileSync(path.join(REPO, 'data/index.json'), 'utf8'));
 const inventory = JSON.parse(fs.readFileSync(path.join(ROOT, 'backfill-inventory.json'), 'utf8'));
 
 const TRUNC_MARKERS = [

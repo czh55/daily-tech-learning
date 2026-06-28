@@ -1,0 +1,169 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'go-uuidv7-browser.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:20px 28px;text-align:center;min-width:160px;font-weight:700;font-size:16px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:24px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>浏览器里的「安全阴谋」：Go 1.27 UUIDv7 为何丧失随机性</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Go 1.27</span>
+  <span class="tag tag-green">UUIDv7</span>
+  <span class="tag tag-orange">WebAssembly</span>
+  <span class="tag tag-red">系统安全</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Go 1.27 标准库 uuid.NewV7() 在浏览器 WASM 环境下为何总生成含「7000」的 UUID，这背后浏览器时钟阉割与 UUIDv7 熵值损失的安全隐患是什么，以及 Go 团队如何用优雅降级修复这一跨层系统问题。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">核心概念关系图</h3>
+  <div class="diagram">
+    <div class="node">uuid.NewV7()<br><span style="font-size:13px;font-weight:400">Go 1.27 标准库</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">RFC 9562 Method 3<br><span style="font-size:13px;font-weight:400">纳秒时间填入 rand_a</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">浏览器 WASM<br><span style="font-size:13px;font-weight:400">时钟精度被阉割</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">7000 幽灵<br><span style="font-size:13px;font-weight:400">rand_a 恒为 000</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">CL 792820<br><span style="font-size:13px;font-weight:400">crypto/rand 补全</span></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「7000 只是格式丑一点，UUID 依然合规可用」—— 实际上 rand_a 恒为 000 意味着单毫秒内丢失 12 位熵值，高并发 WASM 场景碰撞概率呈指数级上升，合规不等于安全。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】UUIDv7 与「7000 幽灵」</h3>
+  <p><strong>在讲什么问题：</strong>Go 1.27 在浏览器 WASM 下调用 uuid.NewV7() 时，第三组字符永远出现「7000」，看似随机实则高度规律。</p>
+  <p><strong>核心机制：</strong>UUIDv7 将 48 位毫秒时间戳放高位，4 位版本号固定为 7，12 位 rand_a 存放亚毫秒精度时间，62 位 rand_b 为加密随机数。Go 采用 RFC 9562 Method 3：把 time.Now() 的纳秒部分填入 rand_a。</p>
+  <p><strong>关键理解：</strong>浏览器沙箱中 time.Now() 只能拿到被四舍五入的毫秒级时钟，亚毫秒部分恒为 0，rand_a 退化为 000，与版本号 7 拼接即「7000」。</p>
+  <p><strong>典型场景：</strong>Ebitengine 等 Go WASM 游戏、Cloudflare Workers 边缘计算、浏览器内高并发 ID 生成。</p>
+  <p><strong>边界说明：</strong>在 Linux/macOS/Windows 原生进程或服务端 Go 程序中不存在此问题；仅 GOOS=js GOARCH=wasm 及类似低精度时钟环境受影响。</p>
+  <div class="quote">「在浏览器（WASM）中运行这段 Go 代码时，由于系统的亚毫秒级高精度时间全部归零，rand_a 的 12 位数据彻底退化为了 000。」</div>
+  <div class="relation"><strong>相关概念：</strong>与 UUIDv4 纯随机不同，UUIDv7 依赖时间有序性；rand_a 既是排序辅助也是单毫秒内防碰撞的熵源。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Spectre 与浏览器时钟阉割</h3>
+  <p><strong>在讲什么问题：</strong>为什么浏览器故意不让 Go 读到纳秒级时间？这不是 Go 的 bug，而是跨层安全防御的副作用。</p>
+  <p><strong>核心机制：</strong>2018 年 Spectre/Meltdown 漏洞利用 CPU 缓存旁路与高精度时钟做侧信道攻击，可跨网页读取内存。浏览器厂商强制削弱 performance.now() 和 Date.now() 精度。</p>
+  <p><strong>关键理解：</strong>Firefox 默认时钟精度约 2ms，开启防指纹追踪时甚至降至 100ms——这是安全与精度的刻意权衡，Go WASM 只是被动承受。</p>
+  <p><strong>典型场景：</strong>任何在浏览器沙箱内运行的 WASM 代码（不仅 Go，任何依赖高精度 wallclock 的逻辑均受影响）。</p>
+  <p><strong>边界说明：</strong>服务端、桌面原生应用、Node.js 后端不受此限制；问题根源在宿主浏览器策略，非 Go 编译器单独可解。</p>
+  <div class="highlight"><strong>落地：</strong>在浏览器 WASM 中设计 ID 生成或性能计时逻辑时，先假设亚毫秒时钟不可用，不要依赖 wallclock 的纳秒字段做唯一性保证。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】浏览器 WASM 使用 UUIDv7 的三重风险</h3>
+  <p><strong>坑名：</strong>单毫秒内高并发生成 UUID 时碰撞概率飙升</p>
+  <p><strong>原因：</strong>rand_a 12 位熵丢失，实际保护从 74 位缩水至 62 位，同毫秒大量生成时 rand_b 成为唯一防线。</p>
+  <p><strong>原文说法：</strong>「在金融交易、分布式主键或敏感会话管理中，这是完全不可接受的安全性崩溃。」</p>
+  <p><strong>解法：</strong>升级到含 CL 792820 修复的 Go 1.27 正式版；或在高并发 WASM 场景改用 uuid.NewRandom()（v4）并自行处理排序。</p>
+  <p><strong>严重程度：</strong>致命（金融主键、会话 ID）/ 小心（低频页面级 ID）/ 可忽略（演示原型）</p>
+  <div class="pitfall"><strong>反模式：</strong>看到 UUID 格式合规就上线生产——未修复版本中「7000」是可预测模式，攻击者可缩小暴力搜索空间。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Go 团队 CL 792820 优雅降级方案</h3>
+  <p><strong>标签：</strong>标准库修复 / 跨平台兼容</p>
+  <p><strong>核心思路：</strong>检测 wallclock 精度不足以填满 rand_a 时，用 crypto/rand 物理随机比特补全空缺，同时保持单毫秒内单调递增。</p>
+  <p><strong>操作步骤：</strong>① 关注 Go 1.27 正式版是否合并 CL 792820；② 在 GOOS=js 环境跑 uuid.NewV7() 单元测试，确认第三组不再固定 7000；③ 高并发场景压测碰撞率；④ 跟踪 Issue #80084 关闭状态。</p>
+  <p><strong>选型条件：</strong>需要 UUIDv7 时间有序性且运行在浏览器/边缘 WASM 时，必须等修复版而非自行 hack time.Now()。</p>
+  <p><strong>避坑：</strong>团队曾否决「循环调用 time.Now() 动态测精度」方案——太重，会拖慢 NewV7() 生成效率。</p>
+  <p><strong>对比相邻方法：</strong>与运行时硬件检测相比，直接针对低精度平台降级更轻量；与放弃 v7 改 v4 相比，保留了索引友好性与合规格式。</p>
+  <div class="quote">「当检测到当前系统的 wallclock 精度不足以填满 rand_a 的 12 位亚毫秒空间时，Go 运行时会直接退回到备用方案——用真正的、通过 crypto/rand 产生的物理随机安全比特，去填满 rand_a 丢失的那 12 位空缺。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】UUIDv4 vs UUIDv7 正常版 vs 浏览器退化版</h3>
+  <table>
+    <tr><th>对比维度</th><th>UUIDv4</th><th>UUIDv7（原生系统）</th><th>UUIDv7（未修复浏览器）</th><th>一句话结论</th></tr>
+    <tr><td>时间有序性</td><td>无，完全随机</td><td>有，毫秒+亚毫秒排序</td><td>仅有毫秒排序</td><td>浏览器版丧失亚毫秒单调性优势</td></tr>
+    <tr><td>有效熵位数</td><td>约 122 位随机</td><td>约 74 位（含 rand_a）</td><td>约 62 位</td><td>浏览器版熵值接近 v4 但格式可预测</td></tr>
+    <tr><td>数据库索引</td><td>随机插入，页分裂多</td><td>时间有序，B+ 树友好</td><td>部分有序</td><td>未修复浏览器版索引优势大打折扣</td></tr>
+    <tr><td>单毫秒并发安全</td><td>依赖 62 位 rand</td><td>rand_a 提供额外 12 位保护</td><td>rand_a 恒 000，仅靠 rand_b</td><td>高并发 WASM 必须等修复或换 v4</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】不同运行环境下的 UUID 选型</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐的方案</th><th>为什么不行</th></tr>
+    <tr><td>Go 服务端/API</td><td>uuid.NewV7()</td><td>完整纳秒精度，时间有序+高熵</td><td>第三方 google/uuid</td><td>1.27 内建包更安全、无供应链依赖</td></tr>
+    <tr><td>浏览器 WASM 高并发</td><td>修复版 NewV7() 或 NewRandom()</td><td>修复版补全 rand_a；v4 熵值充足</td><td>未修复版 NewV7()</td><td>7000 可预测，碰撞风险不可接受</td></tr>
+    <tr><td>边缘 Workers 低频 ID</td><td>修复版 NewV7()</td><td>保持全局唯一+排序，修复后熵完整</td><td>自增整数</td><td>多实例部署会冲突，缺乏分布式语义</td></tr>
+    <tr><td>需要确定性复现</td><td>UUIDv5（命名空间哈希）</td><td>相同输入产生相同输出</td><td>UUIDv7</td><td>v7 含随机分量，无法复现</td></tr>
+  </table>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：浏览器安全策略维护者 / 「精度换安全」派</p>
+  <p class="rebuttal-text">为 UUID 补全 12 位随机熵是在对抗浏览器十年安全投资——你每恢复一比特时钟精度，Spectre 侧信道就多一条攻击路径，分布式 ID 碰撞是应用层问题，不该倒逼沙箱放松时钟阉割。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Go 1.27 uuid.NewV7() 在浏览器 WASM 产生「7000」并非标准库设计失误，而是 RFC 9562 Method 3 与浏览器 Spectre 防御策略的必然碰撞。</li>
+    <li>rand_a 恒为 000 使有效熵从 74 位降至 62 位，高并发场景碰撞风险不可忽视。</li>
+    <li>Go 团队 CL 792820 用 crypto/rand 补全 + 单毫秒单调计数器实现优雅降级，无需昂贵运行时精度检测。</li>
+    <li>标准库级函数的设计必须穿透编译器、硬件漏洞与浏览器沙箱多层边界——这是系统级工匠的工作。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>检查项目是否在 GOOS=js 环境使用 uuid.NewV7()，若是则跟踪 Go 1.27 正式版修复合并状态。</li>
+    <li>在浏览器 WASM 添加单元测试：连续生成 1000 个 UUID，断言第三组不全为 7000。</li>
+    <li>高并发 WASM 主键场景在修复前临时切换 uuid.NewRandom() 或集中式 ID 服务。</li>
+    <li>阅读 GitHub Issue #80084 了解 CL 792820 讨论细节，评估升级窗口。</li>
+    <li>团队内部分享 Spectre 时钟阉割对任何依赖高精度时间的 WASM 代码的通用影响。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>「标准库函数在浏览器里行为异常」不一定是 Go 的 bug——可能是你的代码第一次触碰到 CPU 硬件漏洞防御与浏览器沙箱的交界线；写系统级代码必须假设运行环境会主动欺骗你。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

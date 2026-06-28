@@ -1,0 +1,169 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'runway-video-prompt-guide.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:12px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 12px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">提示词工程</span>
+  <span class="tag tag-green">Runway Gen-4.5</span>
+  <span class="tag tag-orange">力-反应语法</span>
+  <span class="tag tag-purple">视频生成</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：同样使用 Runway Gen-4.5，为什么有人出电影级画面有人得到废片——差距在提示词是否遵循「运动第一、正面表述」原则，并用八层统一框架覆盖单镜头到多镜头全场景。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:20px;text-align:center">八层框架关系图</h3>
+  <div class="diagram">
+    <div class="node">① 场景描述</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">② 镜头标签</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">③④ 景别+力-反应</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">⑤⑥ 运镜+光影</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">⑦⑧ 音频+收尾</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「JSON 格式提示词更结构化」—— Runway 官方明确表示生成模型忽略 JSON 结构，真正起作用的是描述内容本身；图片定义外观，文本定义运动。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】八层统一框架拆解</h3>
+  <p><strong>在讲什么问题：</strong>如何把五维自然语言、时间戳分段、力-反应语法合并为一个学一次终身复用的结构？</p>
+  <p><strong>核心机制：</strong>层 1 全局锚定 → 层 2 镜头/时间戳分段 → 层 3-7 每镜头写景别、动作、运镜、光影、音频 → 层 8 风格锚点+约束词+规格。</p>
+  <p><strong>关键理解：</strong>单镜头只写「镜头 1」，多镜头扩展到 2-4 个，结构完全一致；提示词顺序不影响优先级。</p>
+  <p><strong>怎么落地：</strong>探索阶段用探索模式无限试错 → 满意后用正式积分生成高质量版。</p>
+  <p><strong>边界说明：</strong>力-反应语法适合物理密集场景；安静对白和情绪特写用自然语言更合适。</p>
+  <div class="quote">原文：「图片定义外观，文本定义运动。提示词的核心职责是告诉模型画面中应该发生什么运动，而不是堆砌视觉形容词。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】力-反应语法操作法</h3>
+  <p><strong>方法名：</strong>力-反应因果链（Runway「动力学雕塑家」性格）</p>
+  <p><strong>核心思路：</strong>不描述抽象结果，描述力的施加和物理反应链。</p>
+  <p><strong>操作步骤：</strong>1. 写施加的力（刀刃切入、热油接触鱼皮）2. 写物理反应（纤维压缩、油花飞溅）3. 情绪外化为身体细节（指节发白、肩膀放松）。</p>
+  <p><strong>选型条件：</strong>车辆运动、爆炸、流体、运动竞技、天气力量场景优先使用。</p>
+  <div class="highlight"><strong>落地建议：</strong>把「一辆车开得很快」改写为「车辆高速行驶，轮胎溅起水花，车身在弯道中倾斜，惯性带动重心偏移」。</div>
+  <div class="pitfall"><strong>避坑：</strong>每镜头只写一个运镜动作；多个同时运动导致抖动混乱。运镜与主体动作分开描述。</div>
+  <div class="relation"><strong>与普通写法对比：</strong>「明亮的房间」→「窗户柔光配暖色台灯补光，走廊射入冷色轮廓光」。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】历史框架 vs 八层框架对照</h3>
+  <table>
+    <tr><th>对比维度</th><th>五维自然语言</th><th>时间戳分段</th><th>八层统一框架</th></tr>
+    <tr><td>适用场景</td><td>快速迭代单镜头</td><td>多动作精确节奏</td><td>全场景覆盖</td></tr>
+    <tr><td>镜头控制</td><td>只写镜头 1</td><td>[00:00-00:03] 格式</td><td>两种标签可互换</td></tr>
+    <tr><td>动作描述</td><td>自然语言</td><td>时间分配原则</td><td>第 4 层力-反应语法</td></tr>
+    <tr><td>学习成本</td><td>低但场景受限</td><td>中，需重学</td><td>学一次终身复用</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】场景选型</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>产品广告 / 材质反射</td><td>八层 + 英文输入</td><td>Runway 遵从度严格执行每个细节</td><td>模糊形容词 beautiful/nice</td><td>模型无法解析抽象词</td></tr>
+    <tr><td>图转视频 I2V</td><td>运动优先，不重复画面</td><td>图片已定义构图光照</td><td>重新描述图片元素</td><td>浪费提示词预算</td></tr>
+    <tr><td>跨镜头角色一致</td><td>固定描述词逐字重复</td><td>角色一致性引擎依赖</td><td>每镜头换描述</td><td>人物外形漂移</td></tr>
+    <tr><td>探索试错</td><td>探索模式（Explore Mode）</td><td>无限生成不消耗积分</td><td>直接用正式积分试错</td><td>成本浪费</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Gen-4.5 三大局限</h3>
+  <p><strong>坑：因果推理颠倒（门先开后按把手）</strong></p>
+  <p><strong>原因：</strong>模型因果推理缺陷，效果有时先于原因出现。</p>
+  <p><strong>解法：</strong>用时间戳分段明确动作先后顺序；力-反应链写清因果。</p>
+  <p><strong>严重程度：</strong>小心——叙事镜头需额外验证。</p>
+  <div class="pitfall"><strong>物体持久性：</strong>物体可能意外消失或凭空出现——约束词写「全程保持坚固刚性」「连续无缝的镜头」。</div>
+  <div class="pitfall"><strong>成功偏差：</strong>踢偏的球依然进门——竞技场景需明确写「偏出球门」等正面结果描述。</div>
+  <div class="pitfall"><strong>否定式提示：</strong>「不要模糊」无效——改为「焦点锐利，细节丰富，干净背景」正面表述。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】图转视频运动优先原则</h3>
+  <p><strong>原则：</strong>输入图片定义构图/主体/光照，提示词预算全部花在运动上。</p>
+  <p><strong>为什么重要：</strong>重复描述图片已有元素浪费 token，且与隐含运动暗示冲突时模型困惑。</p>
+  <p><strong>怎么落地：</strong>1. 用「主体」「人物」通称指代 2. 写主体动作+镜头运动+运动风格 3. 接续生成：最后一帧→「使用当前帧」→新运动提示词。</p>
+  <p><strong>适用边界：</strong>仅当引入新元素、剧烈变化、变形细节、多元素交互时才补视觉描述。</p>
+  <div class="highlight"><strong>落地建议：</strong>约束词保存为固定模板每次粘贴：「全程保持坚固刚性，焦点锐利细节丰富，连续无缝的镜头，平稳推进」。</div>
+  <div class="quote">原文：「写提示词就像给摄影师下达拍摄指令。你不会说『不要拍模糊的』，而是说『对焦要清晰、细节要丰富』。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「模型决定论」派 · 可灵/Veo 实践者</p>
+  <p class="rebuttal-text">Gen-4.5 的 Elo 第一只说明 Runway 上限高——同一套八层框架搬到可灵或 Veo 上要重写大半，力-反应语法对安静对白镜头是 overkill，探索模式「免费试错」烧掉的时间才是最大的隐藏成本。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Gen-4.5 差距在提示词：运动第一、正面表述、八层框架学一次复用全场景</li>
+    <li>力-反应语法是 Runway 核心优势层，适合物理密集场景</li>
+    <li>每镜头一个运镜、运镜与主体分开写、英文输入精度更高</li>
+    <li>探索模式是免费练习场，满意后再用正式积分出高质量版</li>
+    <li>三大局限（因果、持久性、成功偏差）需在约束词和时间戳中主动规避</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>用探索模式按八层框架写第一条单镜头提示词试跑</li>
+    <li>把常用约束词存为模板，每次生成粘贴到第 8 层</li>
+    <li>物理场景改用力-反应因果链，情绪场景改外化身体细节</li>
+    <li>中文模板写好後翻译为英文再输入 Runway</li>
+    <li>用元提示词让 Claude/GPT 按八层框架自动生成提示词</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「堆砌视觉形容词描述画面」到「像导演下拍摄指令——说清楚发生什么运动、用什么力、产生什么物理反应」。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "tonybai",
+    "name": "Tony Bai",
+    "url": "https://tonybai.com/",
+    "fetchHint": "curl 比 WebFetch 更稳定；RSS/首页按日期过滤"
+  },
+  {
+    "id": "xiangyu",
+    "name": "翔宇工作流",
+    "url": "https://xiangyugongzuoliu.com/",
+    "fetchHint": "检查 article:published_time meta 判断发布日期"
+  },
+  {
+    "id": "lijigang",
+    "name": "李继刚",
+    "url": "https://www.lijigang.com/",
+    "fetchHint": "首页文章列表按日期过滤"
+  },
+  {
+    "id": "shilicon",
+    "name": "老石谈芯",
+    "url": "https://shilicon.com/",
+    "fetchHint": "首页文章列表按日期过滤"
+  },
+  {
+    "id": "sio2",
+    "name": "SIo_2",
+    "url": "https://www.cnblogs.com/sio2zyh",
+    "fetchHint": "博客园首页按日期过滤"
+  },
+  {
+    "id": "gogoSandy",
+    "name": "风雨中的小七",
+    "url": "https://www.cnblogs.com/gogoSandy",
+    "fetchHint": "博客园首页按日期过滤"
+  },
+  {
+    "id": "chengfenggg",
+    "name": "乘风gg",
+    "url": "https://juejin.cn/user/4248168658899741/posts",
+    "fetchHint": "API: https://api.juejin.cn/content_api/v1/article/query_list user_id=4248168658899741"
+  },
+  {
+    "id": "dllmfun",
+    "name": "大模型真好玩",
+    "url": "https://juejin.cn/user/3140624091453053",
+    "fetchHint": "掘金 WAF 可能拦截 curl，超时则跳过"
+  }
+]
