@@ -4,7 +4,7 @@
  * ====================================
  * 用法：
  *   node scripts/generate.mjs --prepare     # 判重 + 写入 .daily/context.json
- *   node scripts/generate.mjs --finalize    # 扫描当日 SVG，更新 data/index.json 并同步 docs
+ *   node scripts/generate.mjs --finalize    # 扫描当日 SVG，更新 index 并生成语音
  *   node scripts/generate.mjs --status      # 查看今日状态
  *   node scripts/generate.mjs --sync        # 同步 data/index.json → docs/index.json
  *   node scripts/generate.mjs --list        # 列出博主源
@@ -13,6 +13,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { spawnSync } from 'child_process';
 
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DATA = path.join(ROOT, 'data');
@@ -47,6 +48,7 @@ function parseArgs() {
     list: false,
     dryRun: false,
     force: false,
+    skipAudio: false,
     date: todayStr(),
   };
   for (const a of args) {
@@ -57,6 +59,7 @@ function parseArgs() {
     else if (a === '--list') opts.list = true;
     else if (a === '--dry-run') opts.dryRun = true;
     else if (a === '--force') opts.force = true;
+    else if (a === '--skip-audio') opts.skipAudio = true;
     else if (a.startsWith('--date=')) opts.date = a.slice(7);
   }
   if (!opts.prepare && !opts.finalize && !opts.status && !opts.sync && !opts.list) {
@@ -176,7 +179,25 @@ function prepare(dateStr, dryRun = false, force = false) {
   return true;
 }
 
-function finalize(dateStr, force = false) {
+function generateAudioForDate(dateStr, skipAudio = false) {
+  if (skipAudio) {
+    console.log('跳过语音生成（--skip-audio）');
+    return true;
+  }
+  const script = path.join(ROOT, 'scripts/generate_svg_audio.py');
+  if (!fs.existsSync(script)) {
+    console.warn('未找到 generate_svg_audio.py，跳过语音');
+    return false;
+  }
+  console.log(`生成语音讲解：${dateStr}`);
+  const r = spawnSync('python3', [script, '--date', dateStr, '--missing'], {
+    cwd: ROOT,
+    stdio: 'inherit',
+  });
+  return r.status === 0;
+}
+
+function finalize(dateStr, force = false, skipAudio = false) {
   const svgs = listSvgsForDate(dateStr);
   if (svgs.length === 0) {
     console.error(`今日 (${dateStr}) 无 SVG 文件，无法 finalize`);
@@ -201,6 +222,7 @@ function finalize(dateStr, force = false) {
   saveJson(INDEX_FILE, filtered);
   console.log(`✓ 已更新 ${path.relative(ROOT, INDEX_FILE)}（${files.length} 篇）`);
   syncDocsIndex();
+  generateAudioForDate(dateStr, skipAudio);
   return true;
 }
 
@@ -249,7 +271,7 @@ function main() {
     return;
   }
   if (opts.finalize) {
-    process.exit(finalize(opts.date, opts.force) ? 0 : 1);
+    process.exit(finalize(opts.date, opts.force, opts.skipAudio) ? 0 : 1);
   }
   if (opts.prepare) {
     const ok = prepare(opts.date, opts.dryRun, opts.force);

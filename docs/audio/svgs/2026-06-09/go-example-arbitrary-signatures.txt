@@ -1,0 +1,111 @@
+欢迎收听每日技术学习语音讲解。本期主题，终结十年纠结：Go 新提案允许 Example 支持任意函数签名。标签包括Go/AI 技术、工程实践、深度解读。本次讲解预计时长 约 16 到 17 分钟，共 10 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：历史的疮疤：为了写好一个示例，我们被迫说了多少“废话”？
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：历史的疮疤：为了写好一个示例，我们被迫说，然后战役 1：允许 Example 返回 e，然后战役 2：允许入参带上 *testing，然后大一统方案 #79808：允许任意函数签
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「Boring Technology」倡导者
+
+Go 提案再精彩，你的服务可能只需要 CRUD——追每个新语法糖的时间，不如把监控、告警和回滚做扎实。
+
+接下来，第四部分，【概念拆解卡】历史的疮疤：为了写好一个示例，我们被迫说了多少“废话”？。
+
+在讲什么问题，历史的疮疤：为了写好一个示例，我们被迫说了多少“废话”？
+
+核心机制，在真实的 Go 工程中，几乎所有的文件读写、网络调用都会返回 error。
+
+关键理解，在真实的 Go 工程中，几乎所有的文件读写、网络调用都会返回 error。按照 Go 的地道写法，当我们调用一个可能失败的函数时，最自然的反应是直接将错误向上抛出： // 我们真正希望在文档里向用户展示的地道写法 func ExampleReadFile() error { data, err := os.ReadFile(&quot;config.json&quot;) if err != nil { return err // 优雅直接 } fmt.Println(string(data)) return nil } 但是，在目前的 Go 版本中，这行不通！ 因为 Example 函数不允许有任何返回值。 为了写出一个能通过 go test 验证的示例，你被迫在你的示例代码中写满各种“废话”： // 迫于规则，我们不得不写出的妥协版本 func ExampleReadFile() { data, err := os.ReadFile(&quot;config.json&quot;) if err != nil { log.Fatal(err) // 或者使用更难看的 panic(err) } fmt.Println(string(data)) // Output: { &quot;port&quot;: 8080 } } 这带来了一个极其糟糕的引导效应： 新手在阅读官方文档时，会误以为在业务代码中遇到错误就应该直接 log.Fatal 或 panic。 示例代码不仅没能展示出 Go 语言优雅的错误处理哲学，反而成了不良编码习惯的传染源。 此外，当你在编写测试框架（Test Framework）或者使用 Go 新版 引入的 synctest 虚拟时钟技术 时，你必须拿到底层的 *testing.T 对象。但由于 Example 函数不能有入参，你根本无法写出一个可以传递 t *testing.T 对象的示例代码。
+
+典型场景，当团队讨论与本文主题相关的技术选型或工程决策时。
+
+边界说明，需结合自己的规模、栈和合规要求裁剪，不可无脑复制。
+
+原文依据：在真实的 Go 工程中，几乎所有的文件读写、网络调用都会返回 error。按照 Go 的地道写法，当我们调用一个可能失败的函数时，最自然的反应是直接将错误向上抛出： // 我们真正希望在文档里向用户展示的地道写法 func ExampleReadFile() error { data, err := os.ReadFile(&quot;config.json&quot;) if err != nil { return err // 优雅直接 } fmt.Println(string(data)) return nil } 但是，在目前的 Go 版本中，这行不通！
+
+接下来，第五部分，【方法/工具卡】战役 1：允许 Example 返回 error（#21111 始于 2017 年）。
+
+核心思路：早在 2017 年，大牛 rogpeppe 就提出了这个想法。
+
+操作步骤，1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收
+
+选型条件，当团队面临与原文类似约束时优先采用。
+
+原文引用：早在 2017 年，大牛 rogpeppe 就提出了这个想法。但当时官方为了等待 Go 2 的整体错误处理方案（Error Handling Draft）而将其无限期搁置。
+
+落地建议：本周选 1 个与「战役 1：允许 Example 返回 error（#21111 始于 2017 年）」相关的任务做对照验证。
+
+避坑：不要跳过边界说明直接照搬工具链或配置。
+
+接下来，第六部分，【避坑清单卡】战役 2：允许入参带上 *testing.T（#64993 始于 2024 年）。
+
+坑名，随着多智能体测试和 synctest（需要虚拟时间同步）等现代测试技术的发展，开发者越来越需要展示涉及 testing.T / testing.B / testing.F 的完整用例。
+
+原因，随着多智能体测试和 synctest（需要虚拟时间同步）等现代测试技术的发展，开发者越来越需要展示涉及 testing.T / testing.B / testing.F 的完整用例。但因为不支持入参，大家不得不写出复杂的 Stub（伪造类）去强行拼凑。
+
+解法，对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。
+
+严重程度，小心——不验证边界时容易照搬结论。
+
+原文：随着多智能体测试和 synctest（需要虚拟时间同步）等现代测试技术的发展，开发者越来越需要展示涉及 testing.T / testing.B / testing.F 的完整用例。但因为不支持入参，大家不得不写出复杂的 Stub（伪造类）去强行拼凑。
+
+接下来，第七部分，【决策/选型表】大一统方案 #79808：允许任意函数签名的 Example！。
+
+原文主场景，按作者方案执行，面对这两个互相纠缠、细节极其复杂的提案，Go 核心团队的 neild 指出，之前的讨论之所以陷入死胡同，是因为大家把 “文档如何展示示例（Rendering）” 与 “测试框架如何运行示例（Execution）” 混为一谈了。，跳过验证直接照搬，忽略边界导致踩坑
+
+资源/预算受限，裁剪到最小可行子集，先验证核心价值假设，全量一次性上线，失败成本高、回滚难
+
+团队经验不足，小范围试点 + 对照实验，降低 Blast Radius，直接替换现有流程，组织惯性被低估
+
+接下来，第八部分，【心法/原则卡】规则大解放。
+
+原则，只要你的函数命名符合 Example 或 ExampleXxx（且首字母大写），go doc 和 pkgsite 就会一律无条件地将其作为示例代码在网页上展示出来！
+
+为什么重要，只要你的函数命名符合 Example 或 ExampleXxx（且首字母大写），go doc 和 pkgsite 就会一律无条件地将其作为示例代码在网页上展示出来！ 无论你的函数长成什么样： package example_test // 场景 A：优雅返回 error，不再需要 log.Fatal func Example_returning_an_error() error { f, err := os.Open(&quot;testfile&quot;) if err != nil { return err
+
+怎么落地，把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。
+
+适用边界，资源极度受限或一次性原型场景可适度放宽。
+
+原文支撑：只要你的函数命名符合 Example 或 ExampleXxx（且首字母大写），go doc 和 pkgsite 就会一律无条件地将其作为示例代码在网页上展示出来！无论你的函数长成什么样： package example_test // 场景 A：优雅返回 error，不再需要 log.Fatal func Example_returning_an_error() error { f, err := os.Open(&quot;testfile&quot;) if err != nil { return err } defer f.Close() return nil } // 场景 B：支持传入 testing.T，测试框架类的完美示范 func ExampleFunc_taking_a_t(t *testing.T) { if err := examplepackage.Func(t); err != nil { t.Fatal(err) } } // 场景 C：甚至可以带上输入输出参数 func Example_in_and_out(a, b int) string { return examplepackage.AddReturningString(a, b) }
+
+接下来，第九部分，总结与行动。
+
+结论
+
+在真实的 Go 工程中，几乎所有的文件读写、网络调用都会返回 error。
+
+早在 2017 年，大牛 rogpeppe 就提出了这个想法。
+
+随着多智能体测试和 synctest（需要虚拟时间同步）等现代测试技术的发展，开发者越来越需要展示涉及 testing.T / testing.B / testing.F 的完整用例。
+
+面对这两个互相纠缠、细节极其复杂的提案，Go 核心团队的 neild 指出，之前的讨论之所以陷入死胡同，是因为大家把 “文档如何展示示例（Rendering）” 与 “测试框架如何运行示例（Execution）” 混为一谈了。
+
+只要你的函数命名符合 Example 或 ExampleXxx（且首字母大写），go doc 和 pkgsite 就会一律无条件地将其作为示例代码在网页上展示出来！
+
+结合「历史的疮疤：为了写好一个示例，我们被迫说了多少“废话”？」在本周做 1 次小范围对照验证
+
+结合「战役 1：允许 Example 返回 error（#21111 始于 2017 年）」在本周做 1 次小范围对照验证
+
+结合「战役 2：允许入参带上 *testing.T（#64993 始于 2024 年）」在本周做 1 次小范围对照验证
+
+把本文一个关键认知转变写成 3 句话分享给同事
+
+总结：
+
+行动清单：
+
+关键认知转变：从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

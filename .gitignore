@@ -3,3 +3,4 @@
 *.swo
 .daily/
 node_modules/
+docs/audio/**/.tmp_*

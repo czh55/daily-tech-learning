@@ -1,0 +1,141 @@
+欢迎收听每日技术学习语音讲解。本期主题，Hermes 语音模式完全攻略：CLI + Telegram + Discord。标签包括Hermes Agent、语音交互、STT/TTS、零成本方案。本次讲解预计时长 约 15 到 16 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：如何在 Hermes Agent 上搭建 CLI 按键录音、Telegram 语音气泡、Discord 语音频道三种交互表面，并在 10 种 TTS 与 6 种 STT 提供商中选出适合自己场景的配置组合，同时用幻觉过滤和四档 config.yaml 规避 Whisper 静音幻听等常见坑。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：文字模式 Agent，工具/记忆/Skill，然后三交互表面，CLI/TG/Discord，然后STT 入口，faster-whisper 等，然后Agent 流水线，与打字相同，然后TTS 出口，Edge/ElevenLabs
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「语音模式是独立功能，装个麦克风就行」—— 语音只是入口和出口，必须先让文字模式 Hermes 跑通；STT/TTS 选型、平台权限、ffmpeg/Opus 依赖任一缺失都会导致「能转写不说话」或 Telegram 无圆形气泡。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：企业安全合规官 / 语音数据驻留派
+
+你把 faster-whisper 和 Edge TTS 包装成零成本最佳实践，却默认用户把语音经 Telegram 和 Discord 第三方服务器中转——本地 STT 只解决转写环节，传输与留存仍在境外 IM 云端，在 GDPR、等保和金融场景里这套「三表面免费搭建」根本过不了合规评审，所谓隐私优先离线档对多数用户只是自欺。
+
+接下来，第四部分，【概念拆解卡】Hermes 三交互表面。
+
+在讲什么问题，同一套 Agent 如何用三种不同 UX 接入语音——编码免提、移动语音气泡、团队语音频道。
+
+核心机制，CLI 用 Ctrl+B 触发本地录音循环（3 秒静音自动停、流式 TTS 逐句朗读）；Telegram 通过 gateway 收 Opus 气泡，/voice on 实现「你发语音它回语音」；Discord Bot 加入语音频道，1.5 秒静音触发 STT，TTS 回频道且文字频道同步转写。
+
+关键理解，三表面共享同一 Agent 流水线——语音触发的对话照样调工具、记记忆、跑 Skill。
+
+典型场景，CLI 适合 tmux 旁路调试；Telegram 适合给非技术家人用；Discord 适合多人头脑风暴（独立音频流 + 回声防止）。
+
+边界说明，Discord 仅 ALLOWED_USERS 可语音交互；频道 5 分钟无活动硬编码 300 秒自动离开；Telegram 语音数据仍存于其云端。
+
+「按一下 Ctrl+B 进入语音循环后，你只管说话，说完了 Agent 自动回答，回答完了自动等你下一句。」
+
+接下来，第五部分，【方法/工具卡】零成本方案 faster-whisper + Edge TTS。
+
+标签：个人开发 / 零 API 密钥 / 快速上手
+
+核心思路：本地 faster-whisper 做 STT，Edge TTS 做合成，全套 $0。
+
+操作步骤，
+
+1. pipx install "hermes-agent[voice,messaging]"
+
+2. macOS: brew install portaudio ffmpeg opus espeak-ng；Ubuntu: apt install portaudio19-dev ffmpeg libopus0 espeak-ng
+
+3. pipx inject hermes-agent faster-whisper Pillow pydub pyaudio PyNaCl
+
+4. hermes doctor 确认 tts ✓ discord ✓
+
+5. hermes ，得到 /voice on ，得到 Ctrl+B 录音
+
+选型条件，英文日常用 local base + Edge；中文识别换 medium + zh-CN-XiaoxiaoNeural。
+
+渐进路径：第一天文字模式 ，得到 第二天 CLI 语音 ，得到 第三天 Telegram/Discord /voice on ，得到 最后 Discord 语音频道，跳步难定位故障。
+
+避坑：首次 STT 会静默下载 base 模型约 150MB（无进度条），CLI 像挂起——提前 pipx inject 触发缓存；缺 ffmpeg 时 Telegram 只能发文件附件而非圆形气泡。
+
+接下来，第六部分，【决策/选型表】STT/TTS 场景选型。
+
+零配置日常英文，local base + Edge TTS，默认即此组合，$0，一上来 large-v3，3GB 模型低配机器卡顿
+
+中文识别，local medium/small + Edge zh-CN，base 对中文断句偶有不准，仅 tiny 模型，幻觉多、精度差
+
+隐私/完全离线，local large-v3 + Piper/NeuTTS，零网络请求，音频不出机器，Edge TTS，需调用微软在线服务
+
+Telegram 圆形气泡，OpenAI/ElevenLabs/Mistral TTS 或 Edge+ffmpeg，Opus 原生或 ffmpeg 转 Opus，无 ffmpeg 的 Edge，只能矩形文件播放器
+
+云端极速 STT，Groq whisper-large-v3-turbo，约 0.5 秒延迟，有免费额度，仅 local tiny 在噪声环境，Whisper 静音幻觉约 1%
+
+接下来，第七部分，【跨概念对比表】CLI vs Telegram vs Discord 语音频道。
+
+延迟，最低（本地处理），中等（网络往返），中等（网络+编解码）
+
+多人，单用户，单用户，多用户独立流
+
+免提循环，自动重启录音，需再次按住麦克风，持续监听频道
+
+额外依赖，sounddevice, numpy，python-telegram-bot, ffmpeg，discord.py[voice], Opus, PyNaCl
+
+文字联动，终端内显示，文字+语音并发，文字频道同步 [Voice] 转写
+
+接下来，第八部分，【避坑清单卡】Whisper 幻觉与噪声环境。
+
+坑名，静音或背景噪声被转写成「Thank you for watching」「请订阅」
+
+原因，Whisper 约 1% 音频含完全虚构短语（Careless Whisper 论文）；长静音积累幻觉
+
+原文说法：Hermes 内置 26 个多语言幻觉短语黑名单 + 正则 + 两阶段 VAD + 15 秒无语音超时
+
+解法，silence_threshold 提到 300–400；silence_duration 加长到 4.0；STT 换 small/medium 或 Groq 云端
+
+严重程度，小心（不会崩溃但 Agent 收到垃圾输入）
+
+坑名：Discord Bot 加入频道但听不到 ，得到 检查 ALLOWED_USERS、特权意图 Message Content、Opus 库路径，严重程度：致命（功能完全不可用）
+
+接下来，第九部分，【心法/原则卡】先文字后语音，先单面后频道。
+
+原则，语音是 Agent 流水线的 I/O 换皮，不是 shortcut——文字跑不通，语音只会把问题放大十倍。
+
+为什么重要，STT、TTS、网络、Discord 权限、ffmpeg 任一环节失败，跳步部署无法判断根因。
+
+原文支撑：「如果跳步直接搞语音频道，出问题时很难定位是 STT、TTS、网络还是权限的问题。」
+
+怎么落地，Day1 hermes chat 文字 ，得到 Day2 /voice on + Ctrl+B ，得到 Day3 gateway + Telegram /voice on ，得到 Day4 Discord /voice join。
+
+适用边界，若仅需 Telegram 给家人用，可跳过 Discord 语音频道；CLI 与 TUI 行为一致。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Hermes 语音覆盖 CLI（Ctrl+B 循环）、Telegram（voice_only 模式）、Discord 频道（多人+回声防止）三表面
+
+零成本栈：faster-whisper local base + Edge TTS，中文用 medium + zh-CN 语音
+
+10 TTS / 6 STT 按速度-质量-成本矩阵选型；STT 自动回退 local ，得到 groq ，得到 openai
+
+Whisper 幻觉靠 26 短语黑名单 + VAD 参数调优；Telegram 气泡需 Opus 或 ffmpeg
+
+四档 config.yaml：极速免费 / 高质量付费 / 完全离线 / 中文优化
+
+hermes doctor 确认文字模式与依赖全绿
+
+pipx install hermes-agent[voice,messaging] + brew/apt 装 portaudio ffmpeg opus
+
+CLI 试 /voice on + Ctrl+B，确认 STT/TTS 闭环
+
+hermes gateway 接 Telegram，/voice on 测 voice_only
+
+按场景选四档 config 之一写入 config.yaml，噪声环境调高 silence_threshold
+
+总结：
+
+行动清单：
+
+关键认知转变：语音不是新 Agent，而是同一 Agent 的免提 I/O——选型重点在 STT/TTS 与平台依赖，而非重新学一套对话逻辑。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

@@ -1,0 +1,101 @@
+欢迎收听每日技术学习语音讲解。本期主题，大模型训练全流程实战指南工具篇（十三）—— 大模型评测实战（数据集评测+自动化评测）。标签包括AI 架构、前端工程、Prompt 工程。本次讲解预计时长 约 33 到 34 分钟，共 9 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：有时候大家遇到的数据集（如ceval）包含多个子类别（下图展示了 Modelscope 上ceval数据集的预览，可以看到非常多类别），但只想评测其中某几个类别，该怎么做呢？
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：一、EvalScope：数据集评测实战工，然后二、BLEU 与 ROUGE：自动评价生，然后三、如何使用裁判大模型进行自动化评测，然后四、总结
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：只记住结论不验证边界——读完应能回答「什么场景适用、什么场景不该用」，而非背诵作者态度。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「AI 辅助而非替代」派
+
+把「大模型训练全流程实战指南工具篇（十三」当成行动指南的人，往往忽略了上下文窗口、幻觉率和责任归属这三个生产环境硬约束。
+
+接下来，第四部分，【概念拆解卡】一、EvalScope：数据集评测实战工具。
+
+在讲什么问题，一、EvalScope：数据集评测实战工具
+
+核心机制，前面讲了那么多评测方法和数据集，大家一定会问：“有没有一个工具能把这些东西都整合起来，让我一键完成评测？
+
+关键理解，前面讲了那么多评测方法和数据集，大家一定会问：“有没有一个工具能把这些东西都整合起来，让我一键完成评测？” 答案是肯定的——笔者这里推荐自己在工作中最常用的，由阿里魔搭社区（ModelScope）推出的EvalScope平台。 EvalScope不仅仅是一个评测工具，更是一个贯穿模型从训练到部署全链路的评估平台。它具备如下核心特性： 1. 全面覆盖：内置MMLU、CMMLU、C-Eval、GSM8K、HumanEval等业界主流评测基准，支持大语言模型、多模态模型、Embedding模型、Reranker模型、CLIP模型乃至AIGC模型等多种模型类型。 2. 简单易用：支持命令行和Python代码两种调用方式，一行命令即可启动标准数据集评测。（笔者一般使用Python代码调用的方式） 3. 功能丰富：除了模型精度评测，还支持推理性能压测（吞吐量、延迟等指标）、评测结果可视化等高级能力 下面笔者就为大家介绍EvalScope工具，以及它在不同场景中的详细使用~ 1.1 EvalScope核心架构 了解一个工具，先从架构入手是最清晰的方式。EvalScope的整体架构分为以下几个核心组件： 1.1.1 输入端 用户在输入端可以配置要评测的模型和要使用的评测数据集，模型可以通过API载入，也可以通过transformers加载本地模型。数据集可以用EvalScope自带的数据集，也可以自定义评测数据集。 1.1.2 组件端 EvalScope包含如下核心组件： Model Adapter（模型适配器）：负责将不同模型（本地模型、API服务）的输出统一转换为框架所需的标准格式，屏蔽底层模型差异。 Data Adapter（数据适配器）：负责转换和处理输入数据，适配不同的评测数据集和格式需求。 Evaluation Backend（评测后端）：这是EvalScope的核心引擎，支持多种评测模式： Native：EvalScope自身的默认评测框架，支持单模型评测、竞技场模式、Baseline对比模式等。 OpenCompass（另一种评测框架）：集成了OpenCompass作为评测后端，简化了任务提交流程。 VLMEvalKit(多模态模型的评测框架)：支持多模态模型评测，轻松发起图文理解等评测任务。 * ThirdParty：支持ToolBench、RAGEval等第三方评测任务。 这个分层架构的设计使得EvalScope既有强大的内置能力，又能灵活集成外部评测框架，满足各种复杂场景的需求。 1.1.3 输出端 EvalScope的输出包括可评测的报告，记录了准确率等评价指标。同时还包括了数据可视化功能，将评价指标通过图表形式展示出来。 1.2 EvalScope环境搭建 1. 首先安装EvalScope的环境，笔者这里同样使用Lab4AI 大模型实验室的环境进行演示，新建一个VS Code运行实例。 2. 实例已经为预置了conda环境，安装EvalScope非常简单，执行如下命令即可： 创建conda环境 conda create -n evalscope python=3.12 conda activate evalscope 安装全部功能（含压测、可视化等，推荐） pip install evalscope[all] 1. 安装完成后通过如下命令验证安装是否成功： evalscope --help 1. 开启大模型服务，为了快速测试演示，本期内容使用vllm部署本地下载的Qwen2.5-0.5B-Instruct模型，按照笔者 《大模型训练全流程实战指南基础篇（三）——大模型本地部署实战（Vllm与Ollama）》 文章的内容，使用如下命令开启大模型服务： vllm serve ./Qwen2_5_0_5/ --served-model-name Qwen2.5-0.5B --max-model-len 8048 --gpu-memory-utilization 0.9 --port 6666 1.3 EvalScope项目实战 为了更清晰地展示 EvalScope 的用法，笔者基于日常工作场景，将其分为三种典型情况： （1） 使用单一数据集评测大模型的单项能力 （2） 使用多个数据集综合评测大模型的各种通用能力； （3）使用自定义数据集评测模型在专业领域的效果。 下面就按照这三个场景逐一展开： 1.3.1 单一数据集单项能力的评测 如果想评测 Qwen2.5-0.5B-Instruct 模型的数学性能，可以采用gsm8k等数据集。这类数据集基本是计算题，有明确的答案，评测指标通常是准确率（答对题目数 ÷ 总测试数）。EvalScope 集成了大量公开数据集，只需编写如下脚本即可快速测试： from evalscope.run import run_task from evalscope.config import TaskConfig task_cfg = TaskConfig( model='Qwen2.5-0.5B', # 模型ID或本地路径 api_url='http://127.0.0.1:6666/v1', api_key='EMPTY', # 没有设置这里可以随便填一个 datasets=['gsm8k'], # 指定评测数据集是gsm8k limit=50 # 用来测试的评测集的数目，默认会全部评测，这里为了快速演示，随机在数据集中选取50条测试 ) run_task(task_cfg=task_cfg) 可以看到评测脚本非常直观，这就是 EvalScope 的魅力——通过配置化方式，仅需数行代码就能轻松获得评测结果。执行该文件后，EvalScope 会自动将gsm8k数据集下载到/用户目录/.cache/modelscope/hub/datasets中，评测完成后在命令行输出结果。本次测试的准确率为 50%。 同时，EvalScope 还会将预测结果和评测报告保存到执行脚本目录下的outputs文件夹中。其中predictions文件夹存放模型的输出结果，reports文件夹存放评测报告，report.html是可视化的 HTML 文件。 补充说明：如何评测数据集的子类别？ 有时候大家遇到的数据集（如ceval）包含多个子类别（下图展示了 Modelscope 上ceval数据集的预览，可以看到非常多类别），但只想评测其中某几个类别，该怎么做呢？ 其实也非常简单，EvalScope 提供了dataset_args参数，可以对数据集进行精细化配置。例如，如果只想评测ceval中的computer_network和operating_system两个子类别，可以这样写： from evalscope.config import TaskConfig from evalscope.run import run_task 配置评测任务 task_cfg = TaskConfig( model='Qwen2.5-0.5B', # 模型ID或本地路径 api_url='http://127.0.0.1:6666/v1', api_key='EMPTY', # 没有设置这里可以随便填一个 datasets=['ceval'], # 评测数据集列表 limit=10, # 样本数限制（调试用,这里从ceval中每个子类中随机抽取10条样本） eval_batch_size=4, # 批处理大小, 4条数据同时请求vllm模型服务 dataset_args={ 'ceval': { 'subset_list': ['computer_network', 'operating_system'] # 精细化调整评测集的参数，ceval是由多个子数据集组成的，只评测其中的computer_network和operating_system参数。 } }, generation_config={ 'max_tokens': 2048, 'temperature': 0.0, # 大模型服务的参数设置 'top_p': 1.0, 'do_sample': False, } ) 启动评测 run_task(task_cfg=task_cfg) 评测结果如下。可以看到 EvalScope 完整列出了数据集及其子数据集的准确率，Qwen2.5-0.5B 在计算机网络上的表现似乎不太理想： 1.3.2 多数据集集合 有时候并不只是评测模型的单项能力。一个典型场景是：训练了一个专业模型，但又不希望它在其他领域的性能下降太多（否则模型就像被“训傻了”，只会专业领域知识，出现明显的过拟合）。这时就需要使用多个数据集对模型进行综合评测。在 EvalScope 中，多数据集组合非常简单： from evalscope.config import TaskConfig from evalscope.run import run_task 配置评测任务 task_cfg = TaskConfig( model='Qwen2.5-0.5B', api_url='http://127.0.0.1:6666/v1', api_key='EMPTY', datasets=['ceval', 'gsm8k'], #多个数据集都列在评测集列表中 limit=10, eval_batch_size=4, # 针对每个数据集都可以设定明确的评测参数 dataset_args={ 'ceval': { 'subset_list': ['computer_network', 'operating_system'] }, 'gsm8k': { &quot;few_shot_num&quot;: 0 } }, generation_config={ # 大模型服务的参数设置 'max_tokens': 2048, 'temperature': 0.0, 'top_p': 1.0, 'do_sample': False, } ) 启动评测 run_task(task_cfg=task_cfg) 评测结果如下： 同时这里大家还可以看一下evalscope生成的可视化的报告，在输出目录outputs/20260526_234634下有一个report.html文件，将其在浏览器打开,可以看到该网页既通过饼图、柱状图合理的展现了评估形式，还详细记录了评估的列表和细节，非常方便对比不同数据集的结果: 1.3.3 自定义数据集评测 除了使用现成的选择题等带有标准答案的数据集，很多时候需要评估的是文本生成大模型。评测标准通常是回答与标准答案的相似度，或者是否包含了标准答案的核心思想。例如，当构建并微调一个中医药大模型时，就需要用中医药的问答对来评测模型，看模型的回答是否与医生诊断的标准答案一致、是否包含了核心思想。EvalScope 同样能很好地支持这种需求。 自定义选择题数据集（有明确答案） 首先来看有明确答案的选择题数据集，大家可以按照如下的格式编写一个jsonl文件，question是问题，A,B,C,D等是选项，answer是答案。 {&quot;id&quot;: &quot;1&quot;, &quot;question&quot;: &quot;通常来说，组成动物蛋白质的氨基酸有____&quot;, &quot;A&quot;: &quot;4种&quot;, &quot;B&quot;: &quot;22种&quot;, &quot;C&quot;: &quot;20种&quot;, &quot;D&quot;: &quot;19种&quot;, &quot;answer&quot;: &quot;C&quot;} {&quot;id&quot;: &quot;2&quot;, &quot;question&quot;: &quot;血液内存在的下列物质中，不属于代谢终产物的是____。&quot;, &quot;A&quot;: &quot;尿素&quot;, &quot;B&quot;: &quot;尿酸&quot;, &quot;C&quot;: &quot;丙酮酸&quot;, &quot;D&quot;: &quot;二氧化碳&quot;, &quot;answer&quot;: &quot;C&quot;} 将数据集命名为数据集名称_val.jsonl的格式。笔者将其放在mcq/example_val.jsonl文件中，然后创建脚本eval_custom_mcq.py： from evalscope import TaskConfig, run_task task_cfg = TaskConfig( model='Qwen2.5-0.5B', # 模型ID或本地路径 api_url='http://127.0.0.1:6666/v1', datasets=['general_mcq'], # 数据格式，选择题格式固定为 'general_mcq' dataset_args={ 'general_mcq': { &quot;local_path&quot;: &quot;./mcq&quot;, # 自定义数据集路径 &quot;subset_list&quot;: [ &quot;example&quot; # 自定义的评测数据集名称, 这里是example ] } }, ) run_task(task_cfg=task_cfg) 评测结果如下： 自定义问答数据集（无标准选项） 除了这种有准确答案的选择题之外，因为很多的大模型还是用于日常的问答任务，所以问答数据集的设定也非常有必要。同样的EvalScope 也支持对于问答数据集的自定义。大家按照如下格式组织成jsonl文件, 其中question是问题， response是预期回复. {&quot;query&quot;: &quot;世界上最高的山是哪座山？&quot;, &quot;response&quot;: &quot;是珠穆朗玛峰&quot;} {&quot;query&quot;: &quot;中国的首都是哪里？&quot;, &quot;response&quot;: &quot;中国的首都是北京&quot;} 然后大家同样将数据集重命名为数据集名称.jsonl的格式，笔者这里将它放在qa/example.jsonl文件中(注意这里文件名不需要加_val下标)，然后创建脚本eval_custom_qa.py，编写代码如下: from evalscope import TaskConfig, run_task task_cfg = TaskConfig( model='Qwen2.5-0.5B', # 模型ID或本地路径 api_url='http://127.0.0.1:6666/v1', datasets=['general_qa'], # 数据格式，选择题格式固定为 'general_qa' dataset_args={ 'general_qa': { &quot;local_path&quot;: &quot;./qa&quot;, # 自定义数据集路径 &quot;subset_list&quot;: [ &quot;example&quot; # 自定义的评测数据集名称, 这里是example ] } }, ) run_task(task_cfg=task_cfg) 评测结果如下： > 关于评测指标：看到这里大家可能会有疑问——准确率我很好理解，就是答对题目的比例，但问答对评测中 BLEU、ROUGE 这些指标代表什么？别急，下一节笔者会详细解释。 以上就是EvalScope日常工作生产中的常见用法与典型场景，当然EvalScope的功能还有很多，限于篇幅原因就不一一列举，大家可以看EvalScope官方文档 了解更多用法！
+
+典型场景，当团队讨论与本文主题相关的技术选型或工程决策时。
+
+边界说明，需结合自己的规模、栈和合规要求裁剪，不可无脑复制。
+
+原文依据：前面讲了那么多评测方法和数据集，大家一定会问：“有没有一个工具能把这些东西都整合起来，让我一键完成评测？” 答案是肯定的——笔者这里推荐自己在工作中最常用的，由阿里魔搭社区（ModelScope）推出的EvalScope平台。
+
+接下来，第五部分，【方法/工具卡】二、BLEU 与 ROUGE：自动评价生成文本的“考官”。
+
+核心思路：在上一节自定义问答数据集的评测结果中，大家看到了 BLEU 和 ROUGE 这两个指标。
+
+操作步骤，1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收
+
+选型条件，当团队面临与原文类似约束时优先采用。
+
+原文引用：在上一节自定义问答数据集的评测结果中，大家看到了 BLEU 和 ROUGE 这两个指标。它们代表什么含义？
+
+落地建议：本周选 1 个与「二、BLEU 与 ROUGE：自动评价生成文本的“考官”」相关的任务做对照验证。
+
+避坑：不要跳过边界说明直接照搬工具链或配置。
+
+接下来，第六部分，【避坑清单卡】三、如何使用裁判大模型进行自动化评测。
+
+坑名，评测大模型生成答案的质量，除了使用标准数据集，还有一种常用方式——用另一个大模型来当“裁判” 。
+
+原因，评测大模型生成答案的质量，除了使用标准数据集，还有一种常用方式——用另一个大模型来当“裁判” 。 3.1 自动化评分流程 让大模型充当裁判，去评判模型生成的答案是否与预期答案吻合，不能仅凭一句“请判断这两句话是否一致”。要建立科学的评分体系，至少需要以下四个步骤： 1. 定义维度和标准：确定评分维度（如相关性、准确性、完整性），每个维度设定 1~5 分的评分规则，并明确各分数对应的含义。 2. 构造评估提示词：将用户问题、预期答案、待评估的生成答案以及评分规则，打包成一个结构化的提示词。 3. 调用评估模型：例如调用 DeepSeek API，要求模型返回 JSON 格式的分数及评分理由。 4
+
+解法，对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。
+
+严重程度，小心——不验证边界时容易照搬结论。
+
+原文：评测大模型生成答案的质量，除了使用标准数据集，还有一种常用方式——用另一个大模型来当“裁判” 。3.1 自动化评分流程 让大模型充当裁判，去评判模型生成的答案是否与预期答案吻合，不能仅凭一句“请判断这两句话是否一致”。
+
+接下来，第七部分，【心法/原则卡】四、总结。
+
+原则，本期内容聚焦大模型评测的实战落地，介绍了 EvalScope 工具，演示了单一数据集评测、多数据集综合评测及自定义数据集评测三种典型场景。
+
+为什么重要，本期内容聚焦大模型评测的实战落地，介绍了 EvalScope 工具，演示了单一数据集评测、多数据集综合评测及自定义数据集评测三种典型场景。随后，深入讲解了 BLEU（侧重精确率）和 ROUGE（侧重召回率）两大评估指标。最后，分享了如何用另一个大模型作为“裁判”，通过专业化提示词实现自动化、可量化的生成质量评估。 通过本期内容，相信大家已经掌握了数据集评测与自动化评测的全套实战技能。下期笔者将进入实战篇，笔者将带大家从0到1完整跑通一个网络安全领域大模型的经典案例。大家敬请期待！大家读完感兴趣可
+
+怎么落地，把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。
+
+适用边界，资源极度受限或一次性原型场景可适度放宽。
+
+原文支撑：本期内容聚焦大模型评测的实战落地，介绍了 EvalScope 工具，演示了单一数据集评测、多数据集综合评测及自定义数据集评测三种典型场景。随后，深入讲解了 BLEU（侧重精确率）和 ROUGE（侧重召回率）两大评估指标。
+
+接下来，第八部分，总结与行动。
+
+结论
+
+前面讲了那么多评测方法和数据集，大家一定会问：“有没有一个工具能把这些东西都整合起来，让我一键完成评测？
+
+在上一节自定义问答数据集的评测结果中，大家看到了 BLEU 和 ROUGE 这两个指标。
+
+评测大模型生成答案的质量，除了使用标准数据集，还有一种常用方式——用另一个大模型来当“裁判” 。
+
+本期内容聚焦大模型评测的实战落地，介绍了 EvalScope 工具，演示了单一数据集评测、多数据集综合评测及自定义数据集评测三种典型场景。
+
+结合「一、EvalScope：数据集评测实战工具」在本周做 1 次小范围对照验证
+
+结合「二、BLEU 与 ROUGE：自动评价生成文本的“考官”」在本周做 1 次小范围对照验证
+
+结合「三、如何使用裁判大模型进行自动化评测」在本周做 1 次小范围对照验证
+
+把本文一个关键认知转变写成 3 句话分享给同事
+
+总结：
+
+行动清单：
+
+关键认知转变：从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

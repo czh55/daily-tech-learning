@@ -1,0 +1,129 @@
+欢迎收听每日技术学习语音讲解。本期主题，2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？。标签包括AI Agent、选型决策、安全对比、成本核算。本次讲解预计时长 约 11 到 12 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：在 Claude Code、OpenClaw、Hermes 等八种 Agent 哲学各异的当下，如何按消息网关、自我进化、编码天花板、安全记录和真实成本五个硬约束选出匹配场景的方案，而非盲目追 GitHub Stars。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：OpenClaw，网关编排，然后Hermes，自我进化执行，然后Claude Code，编码天花板，然后正交双修，编排+执行+编码
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「Stars 最高 = 最好」—— OpenClaw 353K Stars 但累计 138+ CVE、两个 CVSS 9.9；Hermes 189K 增速最快但行为会随学习回路变化。选型看场景匹配，不看关注度排名。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：OpenClaw 生态原教旨主义者 · 「集成广度即护城河」派
+
+Hermes 的学习回路再聪明，也无法 overnight 复制 OpenClaw 25+ 频道原生集成和 ClawHub 四万 Skill 的网络效应——在安全债务面前换 Agent，对已经 all-in OpenClaw 的团队等于推倒重来。
+
+接下来，第四部分，【概念拆解卡】三种 Agent 哲学拆解。
+
+在讲什么问题，8 大 Agent 表面都是「AI 助手」，底层设计目标完全不同。
+
+核心机制，Claude Code = 深度编码专注（SWE-bench 70-75%）；OpenClaw = 25+ 平台网关 + 确定性 Cron；Hermes = 完整学习回路 + 跨平台会话连续。
+
+关键理解，三者正交——30% 经验用户双修/三修，而非二选一。
+
+怎么落地，先回答「需要消息网关吗？」，得到 需要则 Hermes/OpenClaw ，得到 纯编码则 Claude Code/OpenCode/Codex。
+
+边界说明，Hermes 自我进化意味着行为会变化，金融等确定性场景慎用；Claude Code 无网关、无跨会话记忆。
+
+原文：「不是『谁更好』，是『何时选谁』。OpenClaw 做编排，Hermes 做执行，Claude Code 做编码——三者正交。」
+
+接下来，第五部分，【决策/选型表】首屏场景选型。
+
+跨平台消息自动化，Hermes，自我进化 + 安全记录更优，仅看 Stars 选 OpenClaw，138+ CVE、13.5 万公网暴露实例
+
+Agent 随使用变强，Hermes，唯一完整学习回路，OpenClaw 静态 Skill，Skill 永远不自动改进
+
+编码天花板，Claude Code，SWE-bench 绝对领先，指望 Hermes 后端模型，编码能力 40-72% 取决于模型
+
+沙箱安全最高，Codex CLI，默认禁网 + 三档自治，裸奔 OpenClaw 公网部署，WebSocket 注入 + RCE 风险
+
+预算极低（5-20 元/月），Hermes + GLM/DeepSeek，免费额度覆盖日常，Claude Code Max Plus，$200/月或 Opus 重度 $100+/天
+
+接下来，第六部分，【跨概念对比表】安全维度硬数据对比。
+
+历史 CVE，1 低危（gateway），138+（2× CVSS 9.9），闭源不公开，公网敏感场景 OpenClaw 是硬约束
+
+恶意 Skill，低（155 内置为主），高（341+ 已标记），N/A，ClawHub 生态需严格审计
+
+沙箱隔离，Docker/Singularity/Modal，Docker 手动配置，内置沙箱，Codex 默认禁网最激进
+
+自我进化，完整学习回路，静态 Skill，无，复利 vs 可预测性 trade-off
+
+接下来，第七部分，【方法/工具卡】双修架构落地步骤。
+
+方法名：OpenClaw 编排 + Hermes 执行 + Claude Code 编码
+
+核心思路：三层正交——编排层规划调度，执行层快速循环+学习，编码层处理复杂重构。
+
+操作步骤，1. OpenClaw 负责 Cron 确定性触发和多频道路由 2. Hermes 执行可重复任务并记录学习回路 3. 编码任务委派 Claude Code，结果经 MCP 回传。
+
+选型条件，20% 经验用户已采用；需要同时覆盖消息自动化、长期复利和编码天花板时。
+
+落地建议：Hermes 跑 hermes mcp serve，让 Claude Code 通过 MCP 调用推送 Discord 通知；日常任务路由 GLM/DeepSeek 省 90% 成本。
+
+避坑：同一机器双 Bot 连同一 Discord 且 require_mention:false 会导致双重响应——停一个网关或强制 @提及。
+
+接下来，第八部分，【避坑清单卡】生产踩坑。
+
+坑：自主 Agent Token 成本指数复利
+
+原因，每条消息发送完整对话历史，社区有 $131/天 Opus 极端案例。
+
+解法，日常路由 GLM/DeepSeek 免费额度；复杂编码才切 Claude/GPT-5；控制会话长度。
+
+严重程度，致命——预算失控可在数天内烧穿。
+
+另一个坑：Hermes Skill 自创建不设红线会建「野生 Skill」，与既有工作流产生平行路径；用 SOUL.md 限制自动创建范围。
+
+第三个坑：OpenClaw 记忆不可靠 + 更新破坏功能（305 赞帖）是迁移 Hermes 最大动力；可用 hermes claw migrate 单向迁移。
+
+接下来，第九部分，【心法/原则卡】选型心法：Stars 不等于质量。
+
+原则，综合看 Stars 增速、CVE 记录、社区活跃度、场景匹配——不是谁 Star 多选谁。
+
+为什么重要，OpenClaw 集成最广但安全债务最重；Hermes 复利化但行为不可预测。
+
+怎么落地，按决策树：要网关？，得到 要进化？，得到 Hermes；要 25+ 平台+Cron？，得到 OpenClaw；纯编码？，得到 Claude Code/OpenCode。
+
+适用边界，金融交易等确定性输出场景优先 OpenClaw Cron 或 Claude Code 可预测行为。
+
+原文：「Stars 反映关注度，不反映质量。建议综合看：Stars 趋势 + CVE 记录 + 社区活跃度 + 是否匹配你的场景。」
+
+接下来，第十部分，总结与行动。
+
+结论
+
+8 大 Agent 按哲学分三类：编码专注、网关编排、自我进化——场景决定选择
+
+Hermes 独有能力：学习回路、跨平台会话连续、MCP 反向服务、检查点回滚
+
+OpenClaw 优势是生态广度，劣势是 138+ CVE 和公网暴露风险
+
+成本关键变量是对话长度和模型路由，非软件本身价格
+
+20% 经验用户采用正交双修，而非单一 Agent 包办一切
+
+用决策树回答：需要消息网关？需要自我进化？纯编码？
+
+查 CVE 记录和 Shodan 暴露数据，公网部署前做安全评估
+
+配置模型路由：日常 GLM/DeepSeek，复杂任务 Claude/GPT-5
+
+双 Bot 同平台时设置 require_mention:true 或停用一个网关
+
+为 Hermes 设置 SOUL.md 红线，限制自动 Skill 创建范围
+
+总结：
+
+行动清单：
+
+关键认知转变：从「选一个最好的 Agent」到「按编排、执行、编码三层正交组合，让各工具做最擅长的事」。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

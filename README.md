@@ -12,14 +12,17 @@
 daily-tech-learning/
 ├── docs/                       # GitHub Pages 根目录
 │   ├── index.html              # 主页
+│   ├── viewer.html             # SVG + 语音播放器
 │   ├── index.json              # 索引（由 scripts 从 data/ 同步）
 │   ├── .nojekyll
+│   ├── audio/svgs/...          # 语音讲解 MP3
 │   └── svgs/YYYY-MM-DD/        # SVG + generate-*.mjs
 ├── data/                       # 数据源（脚本读写）
 │   ├── sources.json            # 博主源配置
 │   └── index.json              # 文章索引
 ├── scripts/
 │   ├── generate.mjs            # 主生成脚本（prepare/finalize/sync）
+│   ├── generate_svg_audio.py   # SVG → edge-tts 语音讲解
 │   ├── svg-auto-height.mjs     # SVG 高度自动测量
 │   ├── article-content-utils.mjs
 │   └── fix-bad-subtitles.mjs
@@ -60,8 +63,9 @@ node scripts/generate.mjs --list
 # Agent 生成 SVG 后，更新 index 并同步 docs
 node scripts/generate.mjs --finalize
 
-# 仅同步 data/index.json → docs/index.json
-node scripts/generate.mjs --sync
+# 补全全部历史 SVG 语音
+pip install -r requirements.txt
+python3 scripts/generate_svg_audio.py --all --missing
 ```
 
 ### Cursor Automation（推荐）

@@ -1,0 +1,111 @@
+欢迎收听每日技术学习语音讲解。本期主题，Hermes Agent Docker 部署实战：VPS 上 24/7 运行的完整方案。标签包括AI 编程、自动化、实战教程。本次讲解预计时长 约 18 到 19 分钟，共 10 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Modal 后端的成本数学 Modal 按秒计费，什么时候比 VPS 划算？
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：2026 年 8 大 AI Agent，然后Runway Gen-4.5 视频提示词，然后2026 AI 编程工具横评：Curso，然后Docker 与 Hermes 的两种关
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「GitHub Stars 最高 = 最好」—— 应综合看 CVE 记录、场景匹配和真实成本，而非关注度排名。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：Geohot 式 Agent 怀疑派
+
+自主 Agent 的 Token 成本与错误决策半径常被低估——Stars 和 demo 视频好看，生产环境里的死循环、权限事故和 $131/天账单才是真实账单。
+
+接下来，第四部分，【概念拆解卡】2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？。
+
+在讲什么问题，2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？
+
+核心机制，8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。
+
+关键理解，8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。 翔宇 2026年6月16日 AI 编程 / 提示词工程
+
+典型场景，当团队讨论与本文主题相关的技术选型或工程决策时。
+
+边界说明，需结合自己的规模、栈和合规要求裁剪，不可无脑复制。
+
+原文依据：8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。翔宇 2026年6月16日 AI 编程 / 提示词工程
+
+接下来，第五部分，【方法/工具卡】Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词。
+
+核心思路：从零掌握 Runway Gen-4.5 视频提示词写法。
+
+操作步骤，1. 阅读原文场景 2. 提取可执行动作 3. 小范围试点 4. 对照原文指标验收
+
+选型条件，当团队面临与原文类似约束时优先采用。
+
+原文引用：从零掌握 Runway Gen-4.5 视频提示词写法。一个八层统一框架融合五维自然语言、时间戳分段和力-反应语法，附 10 个精选模板和可直接使用的元提示词。
+
+落地建议：本周选 1 个与「Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词」相关的任务做对照验证。
+
+避坑：不要跳过边界说明直接照搬工具链或配置。
+
+接下来，第六部分，【避坑清单卡】2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比。
+
+坑名，全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。
+
+原因，全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。六大主力工具十维评分卡、精确定价表、隐藏成本案例、场景决策矩阵、省钱策略——一篇看完不用再翻别的。 翔宇 2026年6月16日 关注 Download more icon variants from https://tabler-icons.io/i/brand-youtube YouTube Bilibili B 站 Download more icon variants from https://tabler-icons.io/i/brand-github GitHub X 微信公众号 RSS A
+
+解法，对照原文边界说明，在团队中建立「什么场景不该用」的检查清单。
+
+严重程度，小心——不验证边界时容易照搬结论。
+
+原文：全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。六大主力工具十维评分卡、精确定价表、隐藏成本案例、场景决策矩阵、省钱策略——一篇看完不用再翻别的。
+
+接下来，第七部分，【决策/选型表】Docker 与 Hermes 的两种关系。
+
+原文主场景，按作者方案执行，开始之前需要分清一个容易混淆的概念：Hermes 与 Docker 有两种完全不同的交叉方式，官方文档开篇就做了区分，但很多人第一次看会搞混。，跳过验证直接照搬，忽略边界导致踩坑
+
+资源/预算受限，裁剪到最小可行子集，先验证核心价值假设，全量一次性上线，失败成本高、回滚难
+
+团队经验不足，小范围试点 + 对照实验，降低 Blast Radius，直接替换现有流程，组织惯性被低估
+
+接下来，第八部分，【心法/原则卡】最简可运行版本。
+
+原则，一个 docker-compose.yml 解决全部问题： services: hermes: image: nousresearch/hermes-agent:latest container_name: hermes restart: unless-stopped command: gateway run ports: - &quot;8642:8642&quot; # Gateway API - &quot;9119:9119&quot; # Dashboard（需 HERMES_DASHBOARD=1） volumes: - ~/.hermes:/opt/data environment: - HERMES_DASHBOARD=1 deploy: resources: limits: memory: 4G cpus: &quot;2.0&quot; 三条命令启动： mkdir -p ~/.hermes docker run -it --rm -v ~/.hermes:/opt/data nousresearch/hermes-agent setup docker compose up -d 第二条是交互式配置向导——输入 API Key、选择消息平台（Telegram/Discord/Slack/WhatsApp 等）、完成初始化。
+
+为什么重要，一个 docker-compose.yml 解决全部问题： services: hermes: image: nousresearch/hermes-agent:latest container_name: hermes restart: unless-stopped command: gateway run ports: - &quot;8642:8642&quot; # Gateway API - &quot;9119:9119&quot; # Dashboard（需 HERMES_DASHBOARD=1） volumes: -
+
+怎么落地，把原则写成团队 checklist，在 code review 或设计评审中强制过一遍。
+
+适用边界，资源极度受限或一次性原型场景可适度放宽。
+
+原文支撑：一个 docker-compose.yml 解决全部问题： services: hermes: image: nousresearch/hermes-agent:latest container_name: hermes restart: unless-stopped command: gateway run ports: - &quot;8642:8642&quot; # Gateway API - &quot;9119:9119&quot; # Dashboard（需 HERMES_DASHBOARD=1） volumes: - ~/.hermes:/opt/data environment: - HERMES_DASHBOARD=1 deploy: resources: limits: memory: 4G cpus: &quot;2.0&quot; 三条命令启动： mkdir -p ~/.hermes docker run -it --rm -v ~/.hermes:/opt/data nousresearch/hermes-agent setup docker compose up -d 第二条是交互式配置向导——输入 API Key、选择消息平台（Telegram/Discord/Slack/WhatsApp 等）、完成初始化。向导把密钥写入 ~/.hermes/.env ，其他配置写入 ~/.hermes/config.yaml 。
+
+接下来，第九部分，总结与行动。
+
+结论
+
+8 大 AI Agent 全维度对比：从 GitHub Stars 到安全记录，从月度成本到真实场景——Hermes 自我进化、OpenClaw 网关编排、Claude Code 编码天花板，附决策树和双修方案。
+
+从零掌握 Runway Gen-4.5 视频提示词写法。
+
+全网极少数同时在生产跑 Cursor、Claude Code、Codex 三大工具的实战横评。
+
+开始之前需要分清一个容易混淆的概念：Hermes 与 Docker 有两种完全不同的交叉方式，官方文档开篇就做了区分，但很多人第一次看会搞混。
+
+一个 docker-compose.yml 解决全部问题： services: hermes: image: nousresearch/hermes-agent:latest container_name: hermes restart: unless-stopped command: gateway run ports: - &quot;8642:8642&quot; # Gateway API - &quot;9119:9119&quot; # Dashboard（需 HERMES_DASHBOARD=1） volumes: - ~/.hermes:/opt/data environment: - HERMES_DASHBOARD=1 deploy: resources: limits: memory: 4G cpus: &quot;2.0&quot; 三条命令启动： mkdir -p ~/.hermes docker run -it --rm -v ~/.hermes:/opt/data nousresearch/hermes-agent setup docker compose up -d 第二条是交互式配置向导——输入 API Key、选择消息平台（Telegram/Discord/Slack/WhatsApp 等）、完成初始化。
+
+结合「2026 年 8 大 AI Agent 横评：从 OpenClaw 到 Hermes，谁最适合你？」在本周做 1 次小范围对照验证
+
+结合「Runway Gen-4.5 视频提示词完全指南：八层框架 + 10 个模板 + 元提示词」在本周做 1 次小范围对照验证
+
+结合「2026 AI 编程工具横评：Cursor vs Claude Code vs Codex vs Windsurf 深度对比」在本周做 1 次小范围对照验证
+
+把本文一个关键认知转变写成 3 句话分享给同事
+
+总结：
+
+行动清单：
+
+关键认知转变：从「记住结论」到「能判断何时该用、何时不该用」——边界感比信息量更重要。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

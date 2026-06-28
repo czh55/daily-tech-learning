@@ -50,13 +50,21 @@ import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
 6. `node docs/svgs/<今天日期>/generate-<slug>.mjs` 生成 `.svg`
 7. 按规范中的质量自检清单逐项验证
 
-### 4. 校验并更新索引
+### 4. 校验、更新索引并生成语音
 
 ```bash
 node scripts/generate.mjs --finalize
 ```
 
-确认 `data/index.json` 已更新且已同步到 `docs/index.json`。
+确认 `data/index.json` 已更新且已同步到 `docs/index.json`。`--finalize` 会自动为当日 SVG 生成 edge-tts 语音讲解（`docs/audio/svgs/.../*.mp3`）。
+
+也可单独生成：
+
+```bash
+pip install -r requirements.txt
+python3 scripts/generate_svg_audio.py --date=YYYY-MM-DD
+python3 scripts/generate_svg_audio.py --all --missing   # 补全历史
+```
 
 ### 5. 提交并推送到 main
 
@@ -91,6 +99,7 @@ git push origin main
 | `--finalize` 报无 SVG | 补全生成后重跑 finalize |
 | subtitle 含永久链接/URL | 按 `scripts/article-content-utils.mjs` 重写 |
 | `git push` 失败 | 检查网络，重试一次 |
+| 语音生成失败 | `pip install -r requirements.txt`；可用 `--skip-audio` 跳过 |
 
 ## 项目结构
 
@@ -98,14 +107,17 @@ git push origin main
 daily-tech-learning/
 ├── docs/                       # GitHub Pages 根目录
 │   ├── index.html
+│   ├── viewer.html             # SVG + 语音播放器
 │   ├── index.json              # 由 scripts 从 data/ 同步
 │   ├── .nojekyll
+│   ├── audio/svgs/...          # 语音讲解 MP3
 │   └── svgs/YYYY-MM-DD/        # SVG + generate-*.mjs
 ├── data/
 │   ├── sources.json            # 博主源配置
 │   └── index.json              # 索引数据源
 ├── scripts/
 │   ├── generate.mjs            # 主脚本（prepare/finalize/sync）
+│   ├── generate_svg_audio.py   # SVG → edge-tts 语音讲解
 │   ├── svg-auto-height.mjs     # SVG 高度测量
 │   └── article-content-utils.mjs
 ├── prompts/

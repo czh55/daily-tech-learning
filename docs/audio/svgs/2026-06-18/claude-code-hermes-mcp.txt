@@ -1,0 +1,113 @@
+欢迎收听每日技术学习语音讲解。本期主题，Claude Code + Hermes MCP 消息桥接实战：任务完成自动通知手机。标签包括Claude Code、Hermes MCP、Hooks、消息通知。本次讲解预计时长 约 13 到 14 分钟，共 10 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Claude Code 长跑任务时用户离开终端如何收到完成通知，以及 Hooks 原生推送、Channels 官方双向、Hermes MCP 反向桥接三种方案在通知方向、平台支持、Codex 兼容与部署复杂度上的选型差异与完整配置路径。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：长任务无人值守，然后三种通知方案，然后Hooks 极简，然后Channels 双向，然后Hermes 多平台
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「三种方案互斥只能选一个」—— 原文明确三者可共存：Hooks 做本地声音提示、Channels 做 Telegram 双向控制、Hermes MCP 做 Discord 品牌频道分发，触发机制不同不会产生重复通知。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：Anthropic 官方生态拥护者 / 「Research Preview 不值得折腾」派
+
+为了一个「任务完成了」的推送去部署 Hermes、配 SSH、维护 24/7 网关，复杂度远超收益——Claude Code on Web 和 Remote Control 已提供官方远程方案，Channels 虽为 Preview 但双向对话与权限审批是 Hermes 脚本堆不出来的正统体验，多引一层 Nous Research 开源组件只会增加故障面和密钥管理负担。
+
+接下来，第四部分，【概念拆解卡】三种 Claude Code 通知架构。
+
+在讲什么问题，AI 编程 Agent 异步执行长任务时，如何把「任务完成」信号推送到用户手机。
+
+核心机制，Hooks 用 Stop 事件触发本地 Shell 脚本单向推送；Channels 用 Bun 插件将外部消息推入 Claude 会话实现双向；Hermes MCP 让 Claude 通过 SSH stdio 调用远程 Hermes 的 messages_send 主动发消息。
+
+关键理解，通知方向决定架构——Hooks/ Hermes 是 Agent，得到用户，Channels 是用户⇆Agent；Hermes 是唯一 Codex 兼容且支持微信的方案。
+
+典型场景，SEO 审计 30 分钟、代码重构 20 分钟等用户需离开终端的长任务。
+
+边界说明，短任务（小于 2 分钟）无需配置通知；Channels 依赖会话存活，不是 24/7 后台服务。
+
+原文：「Claude Code 跑了 20 分钟你不在电脑前，怎么知道它完成了？」
+
+接下来，第五部分，【方法/工具卡】Hermes MCP 反向桥接七步配置。
+
+方法名：SSH stdio + hermes mcp serve
+
+核心思路：Claude Code 启动 ssh 子进程连接远程 Hermes，JSON-RPC over stdin/stdout 调用 messages_send 向 Discord/Telegram/微信推送。
+
+操作步骤，1. pipx install hermes-agent 并 hermes gateway start ，得到 2. 配置 SSH 免密登录 ，得到 3. ~/.claude.json 添加 mcpServers.hermes（command: ssh, args 含 hermes mcp serve），得到 4. settings.json 白名单 mcp__hermes ，得到 5. 可选配置 Codex config.toml ，得到 6. 验证 channels_list ，得到 7. 任务指令加「完成后通知我 Discord」。
+
+选型条件，需 Codex 通知、多品牌频道隔离、微信端收消息、或 24/7 常驻 Hermes 时选此方案。
+
+原文：「Hermes MCP 反向桥接是当前 Codex 唯一可用的按需通知方案。」
+
+落地建议：messages_send 的 target 格式为 platform:identifier（如 discord:#总部），首次用 channels_list 确认可用通道；Codex 设 startup_timeout_sec 为 15-20 秒应对 SSH 冷启动。
+
+避坑：stop_hook_active 为 true 时 Hook 脚本必须 exit 0，否则无限循环；连续阻塞 8 次 Claude Code 会强制覆盖 Hook。
+
+接下来，第六部分，【决策/选型表】三种通知方案场景对照。
+
+5 分钟搞定桌面提醒，Hooks + notify.sh，零依赖，Stop 事件自动触发，Hermes MCP，部署过重，杀鸡用牛刀
+
+手机远程控制 Claude Code，Channels，Telegram/Discord 双向对话，权限远程审批，Hooks，仅单向推送，无法从手机回复
+
+Codex 长任务通知，Hermes MCP，Codex 不支持 Hooks 和 Channels，Hooks/Channels，Claude Code 专属功能
+
+多品牌 Discord 频道隔离，Hermes MCP，物理频道隔离 + channel_prompts 品牌路由，Channels，同一聊天窗口，品牌隔离弱
+
+微信端收通知，Hermes MCP，Channels 不支持微信，Channels，仅 Telegram/Discord/iMessage
+
+接下来，第七部分，【跨概念对比表】Hooks vs Channels vs Hermes MCP。
+
+通知方向，Agent，得到用户单向，用户⇆Agent 双向，Agent，得到多平台，可扩展双向，要控制选 Channels，要推送选 Hermes
+
+Codex 兼容，不支持，不支持，完全支持，Codex 用户只能走 Hermes
+
+部署复杂度，极低（一个 Shell 脚本），低（Bun 插件），较高（独立 Hermes + SSH），按需求复杂度递进选型
+
+持久性，依赖会话存活，依赖会话存活，24/7 launchd 后台，开发机可关机，Hermes 常驻
+
+平台支持，任意（Shell 可达），Telegram/Discord/iMessage，Discord/TG/微信/Slack 等 8 平台，多平台分发 Hermes 最全
+
+接下来，第八部分，【避坑清单卡】通知方案常见故障。
+
+坑 1：Stop Hook 每轮都触发 — Stop 在每轮响应后触发，非仅任务完成。解法：判断 stop_reason 仅 end_turn 时推送，或改用 Hermes 按需调用。严重程度：小心。
+
+坑 2：MCP 连接超时 — SSH 未配免密或 Hermes 路径错误。解法：ssh user@host "hermes --version" 逐步验证。严重程度：致命。
+
+坑 3：首条消息延迟约 20 秒 — SSH 冷启动 + 模型端点自动探测。解法：.env 显式设端点 URL，SSH ControlMaster 复用连接。严重程度：可忽略。
+
+坑 4：messages_send 成功但手机无消息 — Hermes 网关未启动或 Bot Token 过期。解法：hermes gateway status + tail gateway.log。严重程度：致命。
+
+接下来，第九部分，总结与行动。
+
+结论
+
+三种方案按复杂度递进：Hooks 极简单向、Channels 官方双向、Hermes MCP 跨客户端多平台。
+
+Hermes MCP 是 Codex 唯一可用通知方案，且支持微信与多品牌频道隔离。
+
+三者可共存互补：Hooks 本地提示 + Channels 远程控制 + Hermes 品牌分发。
+
+长任务（大于 10 分钟）建议配置手机通知；Hermes 按需调用零日常开销。
+
+个人开发者：先在 ~/.claude/settings.json 配 Stop Hook + notify.sh，5 分钟验证桌面通知。
+
+需手机推送：Hook 脚本加 Telegram Bot API curl 调用，或部署 Hermes MCP。
+
+Codex 用户：在 ~/.codex/config.toml 配置 Hermes SSH stdio，startup_timeout_sec 设 15 秒。
+
+多品牌场景：Hermes 按频道配置 channel_prompts，任务指令指定目标 Discord 频道。
+
+总结：
+
+行动清单：
+
+关键认知转变：通知不是「选最好的」，而是「按场景组合」——单向推送、双向控制、跨平台分发是三个正交需求，对应三种正交方案。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
