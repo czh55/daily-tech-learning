@@ -1,0 +1,182 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'deepagents-code-overview.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:20px 28px;text-align:center;min-width:130px;font-weight:700;font-size:16px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:24px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>DeepAgents Code 源码导读：生产级终端编码智能体架构总览</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">LangChain</span>
+  <span class="tag tag-green">DeepAgents</span>
+  <span class="tag tag-orange">C/S 架构</span>
+  <span class="tag tag-purple">源码阅读</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：作为 DeepAgents SDK 的首个官方参考实现，DeepAgents Code（dcode）为何采用客户端与服务端分离架构、各模块如何分层协作，以及读生产级智能体源码时应关注哪些设计权衡而非逐行背诵 API。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">核心概念关系图</h3>
+  <div class="diagram">
+    <div class="node-orange">Textual 客户端<br><span style="font-size:13px;font-weight:400">展示与输入</span></div>
+    <span class="arrow-sym">⇄</span>
+    <div class="node">流式协议<br><span style="font-size:13px;font-weight:400">astream_events</span></div>
+    <span class="arrow-sym">⇄</span>
+    <div class="node-green">Agent Server<br><span style="font-size:13px;font-weight:400">执行与状态</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">DeepAgents SDK<br><span style="font-size:13px;font-weight:400">create_deep_agent</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">本地 Markdown<br><span style="font-size:13px;font-weight:400">AGENTS/SKILL</span></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「会用 create_deep_agent 就等于能写生产级智能体」—— API 是原材料，DeepAgents Code 展示的是 C/S 分离、流式事件、SQLite 异步持久化、人机审批与沙箱集成等工程约束下的成品菜，差距在架构而非单个函数调用。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】DeepAgents Code 定位</h3>
+  <p><strong>在讲什么问题：</strong>LangChain 官方如何把 DeepAgents SDK 落地为对标 Claude Code 的终端编码智能体。</p>
+  <p><strong>核心机制：</strong>dcode 是 prebuilt terminal coding agent，同时是 reference implementation——首个正式用户 + 最权威生产范例。功能含模型切换、文件编辑、Shell、子智能体、Web 搜索、跨会话记忆、远程沙箱、人机审批。</p>
+  <p><strong>关键理解：</strong>读源码目的是理解「为什么这样设计」背后的工程约束（启动速度、安全、可扩展），而非背诵实现细节。</p>
+  <p><strong>典型场景：</strong>学完前八篇 SDK 用法后，用 dcode 回答「生产环境还要补什么模块」。</p>
+  <p><strong>边界说明：</strong>本篇是宏观总览；Agent Server 启动流程、中间件链等细节在后续篇章展开。</p>
+  <div class="quote">「API 是原材料，生产级项目是成品菜——知道调料怎么用，没有工程实践依然炒不出硬菜。」</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】客户端-服务端分离架构</h3>
+  <p><strong>在讲什么问题：</strong>终端工具为何要把 UI 与智能体运行时拆成两个进程。</p>
+  <p><strong>核心机制：</strong>客户端（Textual TUI）负责展示输入；服务端（Agent Server）负责执行与状态；两者通过基于 LangGraph astream_events 的流式协议通信。Claude Code、Cursor 终端版同样采用此模式。</p>
+  <p><strong>关键理解：</strong>单进程会导致 Shell/代码执行数十秒时 UI 假死、UI 状态与 Agent 状态纠缠、未来远程多用户扩展受阻。</p>
+  <p><strong>典型场景：</strong>模型每生成一个 Token，事件推送到客户端，Textual reactive 属性自动刷新 UI。</p>
+  <p><strong>边界说明：</strong>简单 Demo 可单进程；一旦涉及长耗时工具调用与复杂状态，C/S 几乎是必选项。</p>
+  <div class="relation"><strong>相关概念：</strong>与 Hermes 的冻结快照类似，都是为「长会话 + 高成本推理」做工程优化，但 dcode 侧重进程隔离而非提示词缓存。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】服务端 vs 客户端模块归属</h3>
+  <table>
+    <tr><th>对比维度</th><th>服务端</th><th>客户端</th><th>共享</th></tr>
+    <tr><td>智能体核心</td><td>main.py, agent.py, server_graph.py</td><td>—</td><td>—</td></tr>
+    <tr><td>工具与 MCP</td><td>tools.py, mcp_tools.py, mcp_auth.py</td><td>command_registry.py</td><td>—</td></tr>
+    <tr><td>状态记忆</td><td>sessions.py, resume_state.py, memory_guard.py</td><td>—</td><td>—</td></tr>
+    <tr><td>UI 呈现</td><td>—</td><td>app.py, widgets/, textual_adapter.py</td><td>—</td></tr>
+    <tr><td>配置</td><td>部分运行时配置</td><td>config_commands.py</td><td>config.py, model_config.py</td></tr>
+    <tr><td>技能定义</td><td>skills/, built_in_skills/</td><td>—</td><td>SKILL.md 文件</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】生产级读源码四步法</h3>
+  <p><strong>标签：</strong>架构学习 / 设计思想提取</p>
+  <p><strong>核心思路：</strong>先全局后局部，按模块归属表定位文件，追问每个决策背后的约束。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. 读 ARCHITECTURE.md 建立 C/S 全景</p>
+  <p>2. 对照模块归属表确定 server/agent.py vs app.py 边界</p>
+  <p>3. 梳理技术栈：DeepAgents SDK + Textual/Rich + SQLite/aiosqlite + 流式协议</p>
+  <p>4. 理解本地文件策略：AGENTS.md / SKILL.md / AGENT.md 作为「文件即数据库」</p>
+  <p><strong>选型条件：</strong>关心 UI 看 app.py + widgets；关心工具链看 tools.py + mcp_*；关心会话连续性看 sessions.py。</p>
+  <div class="pitfall"><strong>避坑：</strong>不要从随机文件通读每一行；不要只看 create_deep_agent 调用而忽略 server_manager 与流式事件解析。</div>
+  <div class="highlight"><strong>落地：</strong>clone github.com/langchain-ai/deepagents-code，先跑通 TUI 再按归属表打开一个服务端模块。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】本地文件存储策略</h3>
+  <table>
+    <tr><th>数据类型</th><th>文件</th><th>位置</th><th>设计意图</th></tr>
+    <tr><td>长期记忆</td><td>AGENTS.md</td><td>~/.deepagents/ 与 .deepagents/</td><td>用户可直接编辑 Markdown 调行为</td></tr>
+    <tr><td>技能定义</td><td>SKILL.md</td><td>~/.deepagents/skills/</td><td>可复用能力包、零代码定制</td></tr>
+    <tr><td>子智能体</td><td>AGENT.md</td><td>.deepagents/agents/</td><td>项目级多 Agent 编排</td></tr>
+    <tr><td>系统提示</td><td>system_prompt.md</td><td>包内资源</td><td>默认基线、可覆盖</td></tr>
+    <tr><td>运行时配置</td><td>TOML</td><td>配置文件</td><td>比 YAML 明确、无缩进敏感</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】单进程终端智能体的三类失败</h3>
+  <p><strong>坑名：</strong>执行长 Shell 命令时 TUI 假死</p>
+  <p><strong>原因：</strong>UI 与 Agent 同进程，阻塞式工具调用占满主线程</p>
+  <p><strong>原文说法：</strong>「如果客户端和服务端在一个进程里，UI 会被阻塞，产生假死状态。」</p>
+  <p><strong>解法：</strong>C/S 分离 + 流式事件异步更新 UI</p>
+  <p><strong>严重程度：</strong>致命（生产不可用）</p>
+  <div class="pitfall"><strong>坑名：</strong>把 Demo 级 create_deep_agent 直接当产品<br><strong>原因：</strong>缺少会话管理、记忆守卫、SSRF 防护、状态迁移、人机审批<br><strong>严重程度：</strong>致命（安全与稳定性）</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】读参考实现，不学 API 背诵</h3>
+  <p><strong>原则：</strong>DeepAgents Code 的价值是「官方答案卷」——看 LangChain 团队如何在真实约束下组装 SDK。</p>
+  <p><strong>为什么重要：</strong>多模型动态切换、长期记忆与技能协作、终端 UI 防卡死等问题，Demo 遇不到、生产天天撞。</p>
+  <p><strong>原文支撑：</strong>README 明确定位为 reference implementation，非又一个教程 Demo。</p>
+  <p><strong>怎么落地：</strong>本篇建立宏观图；下篇深入 Agent Server 的启动、中间件链、工具注册与跨轮状态。</p>
+  <p><strong>适用边界：</strong>若只需一次性脚本 Agent，C/S 与 SQLite 可能过重；终端编码助手场景则几乎必选。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：轻量工具派 / 「YAGNI 至上」开发者</p>
+  <p class="rebuttal-text">你把 Claude Code 的 C/S 架构当成普适答案，但 dcode 为了终端富 UI 与长时 Shell 引入双进程、SQLite 与流式协议——对一个只需单次问答的 CLI 包装器而言，这套复杂度是过度设计，参考实现的重量会直接拖慢个人黑客的迭代速度。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>DeepAgents Code 是 SDK 首个生产级参考实现，对标 Claude Code 终端编码助手</li>
+    <li>C/S 分离解决 UI 假死、状态混乱与扩展性三大单进程痛点</li>
+    <li>技术栈：DeepAgents SDK + Textual/Rich + aiosqlite + LangGraph 流式事件</li>
+    <li>本地 Markdown 文件（AGENTS/SKILL/AGENT）降低定制门槛</li>
+    <li>读源码重设计权衡，按 ARCHITECTURE.md 与模块归属表导航</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>Clone deepagents-code 仓库，本地跑通 TUI 体验流式输出</li>
+    <li>打开 ARCHITECTURE.md 对照本文 C/S 关系图</li>
+    <li>按归属表选一个服务端模块（如 sessions.py）与一个客户端模块（app.py）对照阅读</li>
+    <li>查看 ~/.deepagents/ 下 AGENTS.md 与 skills 目录的文件即数据库设计</li>
+    <li>预告下篇：聚焦 Agent Server 启动流程与中间件链</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「我会调 API」到「我理解生产级智能体需要进程隔离、事件流与可编辑文件层」——这才是读 dcode 源码的回报。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

@@ -1,0 +1,155 @@
+欢迎收听每日技术学习语音讲解。本期主题，DeepAgents Code 源码导读：生产级终端编码智能体架构总览。标签包括LangChain、DeepAgents、C/S 架构、源码阅读。本次讲解预计时长 约 13 到 14 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：作为 DeepAgents SDK 的首个官方参考实现，DeepAgents Code（dcode）为何采用客户端与服务端分离架构、各模块如何分层协作，以及读生产级智能体源码时应关注哪些设计权衡而非逐行背诵 API。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Textual 客户端，展示与输入，然后流式协议，astream_events，然后Agent Server，执行与状态，然后DeepAgents SDK，create_deep_agent，然后本地 Markdown，AGENTS/SKILL
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「会用 create_deep_agent 就等于能写生产级智能体」—— API 是原材料，DeepAgents Code 展示的是 C/S 分离、流式事件、SQLite 异步持久化、人机审批与沙箱集成等工程约束下的成品菜，差距在架构而非单个函数调用。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：轻量工具派 / 「YAGNI 至上」开发者
+
+你把 Claude Code 的 C/S 架构当成普适答案，但 dcode 为了终端富 UI 与长时 Shell 引入双进程、SQLite 与流式协议——对一个只需单次问答的 CLI 包装器而言，这套复杂度是过度设计，参考实现的重量会直接拖慢个人黑客的迭代速度。
+
+接下来，第四部分，【概念拆解卡】DeepAgents Code 定位。
+
+在讲什么问题，LangChain 官方如何把 DeepAgents SDK 落地为对标 Claude Code 的终端编码智能体。
+
+核心机制，dcode 是 prebuilt terminal coding agent，同时是 reference implementation——首个正式用户 + 最权威生产范例。功能含模型切换、文件编辑、Shell、子智能体、Web 搜索、跨会话记忆、远程沙箱、人机审批。
+
+关键理解，读源码目的是理解「为什么这样设计」背后的工程约束（启动速度、安全、可扩展），而非背诵实现细节。
+
+典型场景，学完前八篇 SDK 用法后，用 dcode 回答「生产环境还要补什么模块」。
+
+边界说明，本篇是宏观总览；Agent Server 启动流程、中间件链等细节在后续篇章展开。
+
+「API 是原材料，生产级项目是成品菜——知道调料怎么用，没有工程实践依然炒不出硬菜。」
+
+接下来，第五部分，【概念拆解卡】客户端-服务端分离架构。
+
+在讲什么问题，终端工具为何要把 UI 与智能体运行时拆成两个进程。
+
+核心机制，客户端（Textual TUI）负责展示输入；服务端（Agent Server）负责执行与状态；两者通过基于 LangGraph astream_events 的流式协议通信。Claude Code、Cursor 终端版同样采用此模式。
+
+关键理解，单进程会导致 Shell/代码执行数十秒时 UI 假死、UI 状态与 Agent 状态纠缠、未来远程多用户扩展受阻。
+
+典型场景，模型每生成一个 Token，事件推送到客户端，Textual reactive 属性自动刷新 UI。
+
+边界说明，简单 Demo 可单进程；一旦涉及长耗时工具调用与复杂状态，C/S 几乎是必选项。
+
+相关概念：与 Hermes 的冻结快照类似，都是为「长会话 + 高成本推理」做工程优化，但 dcode 侧重进程隔离而非提示词缓存。
+
+接下来，第六部分，【跨概念对比表】服务端 vs 客户端模块归属。
+
+智能体核心，main.py, agent.py, server_graph.py，—，—
+
+工具与 MCP，tools.py, mcp_tools.py, mcp_auth.py，command_registry.py，—
+
+状态记忆，sessions.py, resume_state.py, memory_guard.py，—，—
+
+UI 呈现，—，app.py, widgets/, textual_adapter.py，—
+
+配置，部分运行时配置，config_commands.py，config.py, model_config.py
+
+技能定义，skills/, built_in_skills/，—，SKILL.md 文件
+
+接下来，第七部分，【方法/工具卡】生产级读源码四步法。
+
+标签：架构学习 / 设计思想提取
+
+核心思路：先全局后局部，按模块归属表定位文件，追问每个决策背后的约束。
+
+操作步骤，
+
+1. 读 ARCHITECTURE.md 建立 C/S 全景
+
+2. 对照模块归属表确定 server/agent.py vs app.py 边界
+
+3. 梳理技术栈：DeepAgents SDK + Textual/Rich + SQLite/aiosqlite + 流式协议
+
+4. 理解本地文件策略：AGENTS.md / SKILL.md / AGENT.md 作为「文件即数据库」
+
+选型条件，关心 UI 看 app.py + widgets；关心工具链看 tools.py + mcp_*；关心会话连续性看 sessions.py。
+
+落地：clone github.com/langchain-ai/deepagents-code，先跑通 TUI 再按归属表打开一个服务端模块。
+
+避坑：不要从随机文件通读每一行；不要只看 create_deep_agent 调用而忽略 server_manager 与流式事件解析。
+
+接下来，第八部分，【决策/选型表】本地文件存储策略。
+
+长期记忆，AGENTS.md，~/.deepagents/ 与 .deepagents/，用户可直接编辑 Markdown 调行为
+
+技能定义，SKILL.md，~/.deepagents/skills/，可复用能力包、零代码定制
+
+子智能体，AGENT.md，.deepagents/agents/，项目级多 Agent 编排
+
+系统提示，system_prompt.md，包内资源，默认基线、可覆盖
+
+运行时配置，TOML，配置文件，比 YAML 明确、无缩进敏感
+
+接下来，第九部分，【避坑清单卡】单进程终端智能体的三类失败。
+
+坑名，执行长 Shell 命令时 TUI 假死
+
+原因，UI 与 Agent 同进程，阻塞式工具调用占满主线程
+
+原文说法：「如果客户端和服务端在一个进程里，UI 会被阻塞，产生假死状态。」
+
+解法，C/S 分离 + 流式事件异步更新 UI
+
+严重程度，致命（生产不可用）
+
+坑名：把 Demo 级 create_deep_agent 直接当产品，原因：缺少会话管理、记忆守卫、SSRF 防护、状态迁移、人机审批，严重程度：致命（安全与稳定性）
+
+接下来，第十部分，【心法/原则卡】读参考实现，不学 API 背诵。
+
+原则，DeepAgents Code 的价值是「官方答案卷」——看 LangChain 团队如何在真实约束下组装 SDK。
+
+为什么重要，多模型动态切换、长期记忆与技能协作、终端 UI 防卡死等问题，Demo 遇不到、生产天天撞。
+
+原文支撑：README 明确定位为 reference implementation，非又一个教程 Demo。
+
+怎么落地，本篇建立宏观图；下篇深入 Agent Server 的启动、中间件链、工具注册与跨轮状态。
+
+适用边界，若只需一次性脚本 Agent，C/S 与 SQLite 可能过重；终端编码助手场景则几乎必选。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+DeepAgents Code 是 SDK 首个生产级参考实现，对标 Claude Code 终端编码助手
+
+C/S 分离解决 UI 假死、状态混乱与扩展性三大单进程痛点
+
+技术栈：DeepAgents SDK + Textual/Rich + aiosqlite + LangGraph 流式事件
+
+本地 Markdown 文件（AGENTS/SKILL/AGENT）降低定制门槛
+
+读源码重设计权衡，按 ARCHITECTURE.md 与模块归属表导航
+
+Clone deepagents-code 仓库，本地跑通 TUI 体验流式输出
+
+打开 ARCHITECTURE.md 对照本文 C/S 关系图
+
+按归属表选一个服务端模块（如 sessions.py）与一个客户端模块（app.py）对照阅读
+
+查看 ~/.deepagents/ 下 AGENTS.md 与 skills 目录的文件即数据库设计
+
+预告下篇：聚焦 Agent Server 启动流程与中间件链
+
+总结：
+
+行动清单：
+
+关键认知转变：从「我会调 API」到「我理解生产级智能体需要进程隔离、事件流与可编辑文件层」——这才是读 dcode 源码的回报。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-06-28",
+    "files": [
+      {
+        "path": "svgs/2026-06-28/deepagents-code-overview.svg",
+        "title": "LangChain DeepAgents 速通指南（九）—— 生产级智能体框架 DeepAgents Code 源码导读",
+        "source": "https://juejin.cn/post/7655611059511869492"
+      },
+      {
+        "path": "svgs/2026-06-28/hermes-soul-memory.svg",
+        "title": "Hermes SOUL.md 人设工程 + 三层记忆深度解析：让 Agent 精确遵循你的人格",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-soul-memory/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-26",
     "files": [
       {
