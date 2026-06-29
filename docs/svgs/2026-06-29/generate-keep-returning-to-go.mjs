@@ -1,0 +1,173 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'keep-returning-to-go.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:20px 28px;text-align:center;min-width:130px;font-weight:700;font-size:16px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:24px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>折腾过各种语言后，我为什么总是回到 Go 语言？</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Go 语言</span>
+  <span class="tag tag-green">工程哲学</span>
+  <span class="tag tag-orange">技术选型</span>
+  <span class="tag tag-purple">生产运维</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：资深工程师在尝试过 Rust、Scala、async/await 等炫酷技术栈后，为何最终仍把 Go 当作生产系统的避风港——四个系统级工程真相揭示了「无聊代码」背后的决策效率、排障能力与团队协作价值。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">核心概念关系图</h3>
+  <div class="diagram">
+    <div class="node-orange">技术栈焦虑<br><span style="font-size:13px;font-weight:400">决策疲劳</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">自带电池标准库<br><span style="font-size:13px;font-weight:400">消除选型</span></div>
+    <span class="arrow-sym">+</span>
+    <div class="node-green">pprof 一等公民<br><span style="font-size:13px;font-weight:400">快速排障</span></div>
+    <span class="arrow-sym">+</span>
+    <div class="node">无色函数<br><span style="font-size:13px;font-weight:400">go 关键字</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">枯燥代码<br><span style="font-size:13px;font-weight:400">团队一致性</span></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Go 简陋 = 落后」—— 作者认为 Go 的「自我阉割」是有意为之的工程取舍，目标不是语法炫技，而是把认知负载从语言特性转移到业务问题上。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Go「自带电池」标准库与决策疲劳</h3>
+  <p><strong>在讲什么问题：</strong>为什么其他生态里选个 HTTP 库要纠结三天，Go 却能直接 import 标准库？</p>
+  <p><strong>核心机制：</strong>Go 标准库覆盖 net/http、crypto、encoding/json、模板引擎等高频需求，官方实现即「最地道」答案，开发者无需在 GitHub 上对比十几个第三方包。</p>
+  <p><strong>关键理解：</strong>决策疲劳（Dependency Fatigue）消耗的是脑力预算——每多一次选型对比，就从业务问题上偷走一分注意力。</p>
+  <p><strong>典型场景：</strong>发 HTTP 请求、JSON 编解码、加密签名、简单日志——直接标准库，零间接依赖。</p>
+  <p><strong>边界说明：</strong>标准库不覆盖的领域（如 ORM、复杂消息队列客户端）仍需第三方；但「80% 日常需求」已被消灭选型。</p>
+  <div class="quote">「Go 的标准库，彻底消灭了你在其他生态中为了选择哪个第三方包来实现同一个简单功能而产生的无尽决策疲劳。」</div>
+  <div class="relation"><strong>相关概念：</strong>与 Rust crates / NPM 生态形成对比——后者选择多但决策成本高。</div>
+  <div class="highlight"><strong>落地：</strong>新项目 HTTP 服务直接用 net/http 或在其上封装的轻量框架；JSON 用 encoding/json；加密用 crypto/*——先查标准库再考虑第三方。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】pprof 生产排障实战路径</h3>
+  <p><strong>标签：</strong>线上事故 / 内存泄漏 / CPU 热点</p>
+  <p><strong>核心思路：</strong>Go 将诊断视为语言一等公民，一行 import 即可暴露运行时 Profile 端点，无需昂贵 APM 或复杂 JVM Agent。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. 在 main 或 HTTP 服务中 <code>import _ "net/http/pprof"</code> 注册诊断端点</p>
+  <p>2. 线上复现问题后，用 <code>go tool pprof http://host:port/debug/pprof/heap</code> 抓堆内存</p>
+  <p>3. CPU 热点用 <code>/debug/pprof/profile</code>，生成火焰图定位内鬼函数</p>
+  <p>4. 对比 Reddit 案例：Scala/JVM 同类内存泄漏排了两周，Go 几小时内可定位</p>
+  <p><strong>选型条件：</strong>需要快速 On-Call 响应、团队缺乏专职 SRE 时，内置 pprof 比搭建全套 APM 更务实。</p>
+  <div class="pitfall"><strong>避坑：</strong>生产环境暴露 pprof 端点需加鉴权或内网隔离，否则泄露运行时信息；JVM 排障依赖启动参数和 Agent，环境不一致时更难复现。</div>
+  <div class="highlight"><strong>落地：</strong>在 staging 环境预置 pprof 端点并演练一次 heap profile 到火焰图的完整流程，确保 On-Call 时肌肉记忆可用。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Go 无色函数 vs async/await 染色</h3>
+  <table>
+    <tr><th>对比维度</th><th>Go（无色函数）</th><th>JS/Python async/await</th><th>一句话结论</th></tr>
+    <tr><td>函数分类</td><td>所有函数语法一致，无红蓝之分</td><td>同步（蓝）与异步（红）两套规则</td><td>Go 避免调用链传染式重构</td></tr>
+    <tr><td>并发启动</td><td><code>go doSomething()</code> 一行</td><td>必须 async + await 贯穿调用链</td><td>Go 并发入口极简</td></tr>
+    <tr><td>底层调度</td><td>GMP 运行时自动处理 I/O 与切换</td><td>事件循环 / 协程由框架管理</td><td>开发者不感知调度细节</td></tr>
+    <tr><td>重构成本</td><td>底层变并发，上层函数签名不变</td><td>底层变 async，整条链必须跟着改</td><td>Go 适合长期演进的代码库</td></tr>
+    <tr><td>人类直觉</td><td>「开个 goroutine 就行」</td><td>「这段能不能 await？上层是不是 async？」</td><td>Go 降低并发心智负担</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】什么场景该回到 Go？</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>云原生微服务 / 高并发 API</td><td>Go</td><td>标准库够用、pprof 内置、部署单二进制</td><td>重型 JVM 栈</td><td>排障周期长、资源占用高</td></tr>
+    <tr><td>极致内存安全 / 系统底层</td><td>Rust</td><td>编译期保证、零成本抽象</td><td>强行用 Go</td><td>无法替代 unsafe 边界场景</td></tr>
+    <tr><td>快速原型 / 数据科学</td><td>Python</td><td>生态丰富、迭代快</td><td>直接上 Go</td><td>库选择和表达力不如 Python</td></tr>
+    <tr><td>大型团队协作 / 长期维护</td><td>Go</td><td>代码风格高度统一、Review 聚焦逻辑</td><td>Scala 元编程炫技</td><td>认知负载高、个人风格差异大</td></tr>
+    <tr><td>凌晨三点 On-Call</td><td>Go + pprof</td><td>几小时定位 vs 两周 JVM 排障</td><td>无诊断工具的语言</td><td>线上事故成本不可接受</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】「编程应当枯燥」的工程哲学</h3>
+  <p><strong>原则：</strong>优秀的工程代码应该写得无聊，而不是充满魔法。</p>
+  <p><strong>为什么重要：</strong>20 年经验的老兵直言：代码是解决问题的手段而非目的；惊喜和炫技在 Code Review 和交接时变成负债。</p>
+  <div class="quote">「写了 20 年代码，我现在觉得编程应当是无聊的。写 Go，让我觉得我写出来的、和别人写出来的代码，长得一模一样。」</div>
+  <p><strong>怎么落地：</strong>拒绝复杂宏、元编程和花俏语法糖；团队统一 gofmt + 简单控制流；Review 时质疑「这段聪明代码有没有更直白的写法」。</p>
+  <p><strong>适用边界：</strong>探索性研究、一次性脚本、竞赛代码可以炫技；承载公司营收的生产系统应追求可预测性。</p>
+  <div class="relation"><strong>相关概念：</strong>与 Kubernetes 等大型 Go 开源项目的可读性一脉相承——没有黑魔法宏，新人也能快速上手。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】技术栈焦虑中的选型陷阱</h3>
+  <p><strong>坑名：</strong>为「学新语言」而选型，而非为「解决问题」而选型</p>
+  <p><strong>原因：</strong>行业宣传放大 Rust/Elixir/Zig 的亮点，掩盖了团队排障能力和招聘池的现实约束。</p>
+  <p><strong>原文说法：</strong>「我们每天都在被各种新兴的、炫酷的编程语言所轰炸……经历了无数个折腾依赖、对抗编译器、排查黑盒内存泄露的深夜后，你会感到一种深深的工程疲惫。」</p>
+  <p><strong>解法：</strong>用「凌晨三点能不能排障」「新人一周能不能读懂」作为选型硬指标，而非语法优雅度。</p>
+  <p><strong>严重程度：</strong>小心——不会立刻致命，但会在第一次线上事故时集中爆发。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Rust 系统编程派 / 「类型安全才是工程底线」</p>
+  <p class="rebuttal-text">Go 用「无聊」换掉的不仅是决策疲劳，还有编译期内存安全——Heartbleed 级的逻辑漏洞和 data race 不会因为代码风格统一而消失，pprof 再快也只能定位你已经上线的事故。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Go 的「自带电池」标准库消灭 80% 日常选型，把脑力还给业务</li>
+    <li>内置 pprof 让生产排障从「两周」缩短到「几小时」，是一线工程师的真实刚需</li>
+    <li>无色函数设计终结 async/await 染色传染，并发入口只需一个 go 关键字</li>
+    <li>刻意「枯燥」的语法换来极低认知负载和极高团队协作效率</li>
+    <li>最好的语言不是写代码最炫的，而是深夜排障最安心的</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>审查当前项目：哪些第三方依赖可被标准库替代？列出可删除的选型</li>
+    <li>在 staging 预置 <code>net/http/pprof</code> 并演练一次 heap profile → 火焰图</li>
+    <li>团队 Code Review 增加一条：「有没有更无聊但更清晰的写法？」</li>
+    <li>下次技术选型会议，把「On-Call 排障时间」列为硬性评估维度</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「追求语法炫技和生态新鲜感」转向「追求决策效率、排障速度和代码可预测性」——Go 的价值不在写的时候爽，而在维护的时候安心。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
