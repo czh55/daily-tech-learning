@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-06-30",
+    "files": [
+      {
+        "path": "svgs/2026-06-30/hermes-agent-monetization-guide.svg",
+        "title": "Hermes Agent 变现指南：7 种可落地的 AI Agent 商业模式详解",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-monetization-guide/"
+      },
+      {
+        "path": "svgs/2026-06-30/rust-project-eating-75gb-disk-space-go-vs-rust-cache-anxiety.svg",
+        "title": "一个 Rust 项目吃掉 75GB 硬盘？聊聊 Go 与 Rust 的「缓存焦虑」与拯救指南",
+        "source": "https://tonybai.com/2026/06/30/rust-project-eating-75gb-disk-space-go-vs-rust-cache-anxiety/"
+      }
+    ]
+  },
+  {
     "date": "2026-06-29",
     "files": [
       {
