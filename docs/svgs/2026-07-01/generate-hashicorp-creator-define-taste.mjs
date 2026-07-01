@@ -1,0 +1,160 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'hashicorp-creator-define-taste.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:20px 28px;text-align:center;min-width:130px;font-weight:700;font-size:16px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:24px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>HashiCorp 创始人：AI 时代，我们为什么越来越需要有「品味」的程序员？</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">AI 编程</span>
+  <span class="tag tag-green">工程品味</span>
+  <span class="tag tag-orange">架构决策</span>
+  <span class="tag tag-purple">Mitchell Hashimoto</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 AI 让代码生产近乎免费时，软件工程师真正的护城河是什么，以及「品味」——在缺乏客观度量时做出高质量定性判断的能力——为何成为不可替代的核心竞争力。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">核心概念关系图</h3>
+  <div class="diagram">
+    <div class="node-orange">AI 生产力溢出<br><span style="font-size:13px;font-weight:400">代码商品化</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">制造稀缺消失<br><span style="font-size:13px;font-weight:400">判断稀缺崛起</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">工程品味<br><span style="font-size:13px;font-weight:400">定性判断</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">评审官角色<br><span style="font-size:13px;font-weight:400">裁剪 Slop</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">技术尊严<br><span style="font-size:13px;font-weight:400">拍板「就是它」</span></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「品味 = UI 配色和视觉效果」—— Mitchell Hashimoto 指出，品味在后端架构、API 设计、取舍决策中同样存在，是「增一分则太胖，减一分则太瘦」的工程直觉。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】软件工程师的「品味」</h3>
+  <p><strong>在讲什么问题：</strong>当「能把代码写出来」不再是壁垒，工程师靠什么区分平庸与卓越？</p>
+  <p><strong>核心机制：</strong>品味是在缺乏客观度量标准时，持续做出高质量定性判断的能力——创造出「直觉上觉得对」的东西，虽无法用量化方法证明，但体验者能真切感受到。</p>
+  <p><strong>关键理解：</strong>品味极难创造却极易抄袭；开源时代复制成本为零，让人误以为品味不值钱，但 AI 时代恰恰相反。</p>
+  <p><strong>典型场景：</strong>API 在扩展性与易用性间找平衡、架构决定不放什么进去、为极致体验在特定平台死磕原生技术。</p>
+  <p><strong>边界说明：</strong>品味不替代基础工程能力——没有架构功底，「直觉」只是主观臆断；品味是资深经验的结晶，非新手可速成。</p>
+  <div class="quote">原文：「品味，是在缺乏客观度量标准的情况下，能够持续做出高质量定性判断的能力。」</div>
+  <div class="relation">相关概念：与「审美」不同——品味是工程决策能力；与「经验」相关——但经验不等于品味，品味是经验中提炼出的判断标准。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】AI 时代品味为何前所未有地昂贵</h3>
+  <p><strong>原则：</strong>生产商品化的速度，远远快于品味商品化——做出质的判断，目前仍是人类专属特权。</p>
+  <p><strong>为什么重要：</strong>经济学规律：某生产要素无限丰富且廉价时，决定价值的因素必然转移。写代码从稀缺技能变成「像喝水一样廉价」。</p>
+  <p><strong>原文支撑：</strong>Mitchell 指出，Claude 一分钟生成 5 个微服务架构方案时，你不再是代码工人，而是评审官和决策者——没有品味就会在看似完美的 AI 输出中迷失。</p>
+  <p><strong>怎么落地：</strong>把角色从「生产者」切换为「策展人」——对 AI 输出做甄别、裁剪、重构，而非直接上线。</p>
+  <p><strong>适用边界：</strong>对样板代码（Boilerplate）可放手给 AI；数据流向、模块解耦、边界隔离等核心架构问题必须自己握方向盘。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】制造 vs 判断 / AI 输出 vs 有品味的设计</h3>
+  <table>
+    <tr><th>对比维度</th><th>传统时代（制造稀缺）</th><th>AI 时代（判断稀缺）</th><th>一句话结论</th></tr>
+    <tr><td>核心价值</td><td>能把代码写出来</td><td>能判断什么是好架构</td><td>壁垒从手速转向判断力</td></tr>
+    <tr><td>工程师角色</td><td>代码工人 / 生产者</td><td>评审官 / 决策者 / 策展人</td><td>Prompt 工程师 ≠ 工程师</td></tr>
+    <tr><td>AI 输出特征</td><td>—</td><td>统计平均数、同质化、无边界感</td><td>大模型本质是高级平均数生成器</td></tr>
+    <tr><td>无品味时的结果</td><td>平庸但可控</td><td>无限变种的工业垃圾（Slop）</td><td>AI 是放大器，放大平庸也放大垃圾</td></tr>
+    <tr><td>品味体现</td><td>锦上添花</td><td>生死攸关的技术债防火墙</td><td>快速推向生产的 AI 代码是未来十年最大隐患</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】AI Slop 与自动驾驶陷阱</h3>
+  <p><strong>坑名：</strong>AI 垃圾悖论（The AI Slop Paradox）——全员用 AI 写代码导致系统收敛向毫无灵魂的同质化。</p>
+  <p><strong>原因：</strong>大模型基于海量历史数据统计，输出的是「满足 Prompt 而拼凑」的平庸方案，缺乏边界感和取舍意识。</p>
+  <div class="quote">原文：「AI 只是一个放大器。如果你本身没有品味，AI 只会帮你放大平庸，生产出无限变种的工业垃圾。」</div>
+  <p><strong>解法：</strong>资深工程师必须介入甄别、裁剪、重构，绝不让未经品味的 AI 代码直达生产。</p>
+  <p><strong>严重程度：</strong>致命——将成为未来十年软件公司最恐怖的技术债来源。</p>
+  <div class="pitfall"><strong>自动驾驶陷阱：</strong>沦为只会写 Prompt 和按 Tab 的「代码验收员」，最终被庞大、无法理解的 AI 代码反噬（Burned-Out）。有品味的程序员不会让架构控制权让渡给机器。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】捍卫技术尊严的三条生存法则</h3>
+  <p><strong>核心思路：</strong>利用 AI 完成琐碎，在核心决策上夺回代码所有权。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. <strong>警惕自动驾驶陷阱</strong>——AI 写 Boilerplate，但数据流向、模块解耦、边界隔离自己拍板。</p>
+  <p>2. <strong>死磕 Why 而非 How</strong>——How 问 ChatGPT 即得，只会让你变成操作工；阅读 Linux Kernel、Redis、Nginx 等顶级开源源码，理解大师如何做 Trade-off。</p>
+  <p>3. <strong>跨界吸收</strong>——跳出科技界，了解信仰、历史、物理和艺术，把人文素养带回正在构建的系统。</p>
+  <p><strong>选型条件：</strong>样板代码、重复劳动 → 交给 AI；架构方向、产品取舍、API 美学 → 人类品味主导。</p>
+  <div class="pitfall">避坑：拒绝给系统塞无用微服务、拒绝过度设计的「太空漫游」级抽象——品味很多时候关乎你决定「不放什么进去」。</div>
+  <div class="highlight">落地案例：Mitchell 开发 Ghostty 时，为实现苹果全平台「每一帧都完美」的分割线动画，放弃跨平台 SwiftUI，死磕原生 NSViews 和 CoreAnimation——「知道何时妥协、何时死磕」就是高级品味。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「AI 效率至上」派 / 10x 产出倡导者</p>
+  <p class="rebuttal-text">品味是奢侈品——创业初期活下来靠速度，等用户和收入验证了方向，再回头重构也不迟；把「拍板直觉」当护城河，只是资深工程师面对被 AI 替代焦虑的自我安慰。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>品味 = 无客观度量时的高质量定性判断，贯穿 API 设计、架构取舍、减法艺术，绝非 UI 专属。</li>
+    <li>AI 让「制造」商品化，「判断」成为新稀缺资源——工程师从生产者变为评审官。</li>
+    <li>无品味的 AI 输出是 Slop：同质化、无边界、快速堆积成技术债。</li>
+    <li>AI 是放大器——有品味则放大卓越，无品味则量产工业垃圾。</li>
+    <li>捍卫尊严的路径：夺回架构控制权、死磕 Why、跨界吸收人文素养。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>下次用 AI 生成架构方案时，先列出 3 条「好架构」的个人标准，再逐方案对照裁剪。</li>
+    <li>选一个大模型生成的模块，尝试不用 AI 解释其数据流——若解释不清，说明控制权已让渡。</li>
+    <li>本周阅读一个顶级开源项目（如 Redis）的一个核心模块，记录作者的一处 Trade-off 决策。</li>
+    <li>审查当前项目：是否存在「为 Prompt 而拼凑」的微服务或过度抽象？列一份「不放进去」清单。</li>
+    <li>Boilerplate 交给 AI，但下一次 PR 中至少一处核心架构决策手写并写清 Why。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>从「我能写多少代码」转向「我能在千万种 AI 方案中凭直觉拍板——对，就是它了」；机器模拟数百万种组合，但只有血肉之躯的你才能做出那个最终判断。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
