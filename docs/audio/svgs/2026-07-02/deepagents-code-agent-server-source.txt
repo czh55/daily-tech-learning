@@ -1,0 +1,137 @@
+欢迎收听每日技术学习语音讲解。本期主题，DeepAgents Code Agent Server 核心源码解读。标签包括DeepAgents、LangChain、中间件、生产级 Agent。本次讲解预计时长 约 15 到 16 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：作为 DeepAgents SDK 的官方参考实现，DeepAgents Code 的 Agent Server 如何通过 create_cli_agent 整合模型动态切换、三类工具注册、子智能体委派与六大中间件，回答生产级 CLI 编码智能体必须直面的四个核心工程问题。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：agent.py，create_cli_agent，然后create_deep_agent，SDK 核心，然后中间件层，6+ Middleware，然后工具三来源，内置/MCP/注入，然后Backend 三模式，沙箱/Shell/FS
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「会用 create_deep_agent API 就等于能写生产级智能体」—— dcode 展示的是运行时模型切换、会话无损恢复、渐进式技能披露与 Backend 能力降级策略等工程约束下的成品，差距在架构而非单个函数调用。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「够用就行」派 / 轻量 Agent 框架拥护者
+
+六层中间件加三模式 Backend 是过度设计——多数团队只需 LangGraph 加几个 Tool，dcode 的复杂度会把简单编码助手拖成难维护的「中间件意大利面」。
+
+接下来，第四部分，【概念拆解卡】Agent Server 四大核心问题。
+
+在讲什么问题，生产级智能体服务端到底要解决哪些比「调个 model 参数」更棘手的事？
+
+核心机制，agent.py 通过 create_cli_agent 整合 create_deep_agent，借助中间件、工具、子智能体机制回答：① 模型接入与运行时切换 ② 工具定义注册与安全调用 ③ 会话记忆跨轮次持久化 ④ 多智能体编排扩展能力边界。
+
+关键理解，读源码应先想「生产级应具备什么功能」，再试用 dcode 带疑问探究实现——带问题读，每行代码有迹可循。
+
+典型场景，CLI 编码助手需不重启会话切换 GPT-4 到 Claude、需 /threads 恢复后模型与 Token 计数一致、需 AGENTS.md 跨会话记忆。
+
+边界说明，本文聚焦 Agent Server 核心层；状态管理/checkpoint 机制留待下篇专讲。
+
+接下来，第五部分，【方法/工具卡】运行时动态模型切换。
+
+核心思路：Context 传递切换指令 + ConfigurableModelMiddleware 在每次模型调用前拦截替换，实现不中断会话的丝滑切换。
+
+操作步骤，
+
+1. context_schema=CLIContextSchema 定义运行时上下文（model、model_params、effective_model）。
+
+2. agent.stream() / astream() 的 context 参数携带 model_override（如 provider:model）。
+
+3. ConfigurableModelMiddleware.wrap_model_call 读取 context ，得到 model_matches_spec 判断 ，得到 create_model() 动态实例化。
+
+4. 合并 temperature/max_tokens；跨提供商时自动清理不兼容配置（如 Anthropic cache_control）。
+
+5. 更新系统提示 ### Model Identity 段，让新模型知晓自己身份。
+
+选型条件，需会话内热切换时用 Middleware；固定模型可初始化时写死 model 参数。
+
+落地价值：用户从 GPT-4o 切到 Claude 3.5 无需重启终端，context 经 textual_adapter 传入 astream 完整链路。
+
+接下来，第六部分，【跨概念对比表】三类工具来源 vs 三种 Backend 模式。
+
+策略模式：沙箱 ＞ Shell+文件 ＞ 纯文件；统一 BackendProtocol 接口，中间件层不关心具体实现。
+
+典型能力，fetch_url、web_search、get_current_thread_id，用户自定义远程服务，execute、read_file、write_file、edit_file，手脚分工：基础+扩展+SDK 自动注入
+
+设计哲学，硬编码稳定 API，协议化插件扩展，FileSystem/Shell 中间件运行时注入，get_current_thread_id 让 Agent 按需获取自身上下文
+
+远程沙箱（最高），sandbox != None，Modal/Daytona 隔离执行，不可信代码、云端资源
+
+LocalShell（默认），enable_shell=True 无沙箱，文件读写 + Shell，inherit_env=False，本地开发默认
+
+纯 Filesystem（受限），enable_shell=False，仅 read/write/edit，无 execute，只编辑不运行，最安全
+
+接下来，第七部分，【概念拆解卡】六大代表性中间件。
+
+LocalContextMiddleware：before_model 执行 Bash 检测脚本收集 Git 状态、项目结构、包管理器类型，附加环境快照到系统提示——让 Agent 「懂项目」而非通用助手。
+
+ResumeStateMiddleware：after_model 提取 Token 用量和 model_spec 写入 ResumeState 私有状态，随 checkpoint 持久化——解决 /threads 恢复时模型信息丢失和 Token 重算开销。
+
+MemoryMiddleware：从 ~/.deepagents/ 和 .deepagents/ 读 AGENTS.md，剥离 HTML 注释，包装为 agent_memory 标签注入——文件即记忆，跨会话生效。
+
+SkillsMiddleware：渐进式披露——先注入技能摘要列表，用户 /skill_name 显式调用时才加载完整 SKILL.md 指令，避免系统提示被撑爆。
+
+ConfigurableModelMiddleware：运行时模型热切换（见方法卡）。
+
+FileSystemMiddleware 等：配合 Backend 提供 ls/read/write/edit/execute 能力。
+
+原文：「DeepAgents Code 并非对 DeepAgents API 的简单堆砌，而是一套精心设计的工程体系。」
+
+接下来，第八部分，【决策/选型表】子智能体本地 vs 远程委派。
+
+快速定义专用能力，agents_dir/{name}/AGENTS.md 本地子智能体，Markdown 即配置，随改随用，全塞主 Agent Prompt，上下文过长、职责不清
+
+复用远程团队 Agent，config.toml async_subagents，远程平台能力共享，与 custom_subagents 合并，重复部署相同逻辑，维护成本高、版本漂移
+
+复杂任务委派，主 Agent 通过 task 工具调用子 Agent，SDK 原生 SubAgent 机制避免单窗口膨胀，单 Agent 硬扛全流程，长上下文性能与质量双降
+
+接下来，第九部分，【避坑清单卡】读生产级 Agent 源码陷阱。
+
+坑名，逐文件逐行啃代码迷失细节——没有宏观问题锚点。
+
+原因，生产级代码量是 API 教程的数十倍，缺少「应具备什么功能」的前置思考。
+
+解法，先列四大核心问题 ，得到 实际试用 dcode ，得到 带体感疑问读 agent.py 各模块。
+
+严重程度，可忽略（学习方法问题）——但会导致「背 API 不懂架构」。
+
+会话恢复陷阱：LangGraph checkpoint 只存 messages 不存 model_spec——恢复大上下文模型会话时若默认用小窗口模型会导致截断；必须用 ResumeStateMiddleware 补全。
+
+技能撑爆上下文：一次性加载全部 SKILL.md 会撑爆系统提示——SkillsMiddleware 渐进式披露是必选项。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Agent Server 核心在 agent.py 的 create_cli_agent，整合 SDK 回答模型切换、工具、记忆、多 Agent 四大问题。
+
+运行时模型切换 = CLIContext + ConfigurableModelMiddleware.wrap_model_call，跨提供商自动清理不兼容配置。
+
+工具三来源（内置/MCP/中间件注入）+ 子智能体双轨（本地 AGENTS.md + 远程 async_subagents）。
+
+六大中间件覆盖环境感知、会话恢复、长期记忆、技能按需加载、模型热切换、文件系统交互。
+
+Backend 能力降级：沙箱 ＞ LocalShell ＞ 纯 Filesystem，策略模式无缝切换安全级别。
+
+克隆 DeepAgents Code，先跑通 CLI 再打开 agent.py，对照四大核心问题标注模块。
+
+实验 context 传 model_override，观察 ConfigurableModelMiddleware 如何更新 Model Identity。
+
+在 agents_dir 下新建子智能体 AGENTS.md，验证 custom_subagents 自动加载。
+
+用 /threads 恢复会话，检查 ResumeState 是否正确还原 _model_spec 和 _context_tokens。
+
+对比 enable_shell=True/False 两种 Backend 下 execute 工具的可用性差异。
+
+总结：
+
+行动清单：
+
+关键认知转变：从「会用 create_deep_agent」到「理解每条中间件背后的工程约束」——状态管理与记忆机制是智能体开发最核心也最棘手的环节，dcode 是带问题读源码的最佳标本。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

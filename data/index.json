@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-07-02",
+    "files": [
+      {
+        "path": "svgs/2026-07-02/deepagents-code-agent-server-source.svg",
+        "title": "LangChain DeepAgents 速通指南（十）—— DeepAgents Code 智能体服务核心源码解读",
+        "source": "https://juejin.cn/post/7657560105181102131"
+      },
+      {
+        "path": "svgs/2026-07-02/hermes-agent-one-person-company.svg",
+        "title": "一人公司的 AI 消息中枢：用 Hermes Agent 替代 Zapier + Intercom + SCRM",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-one-person-company/"
+      },
+      {
+        "path": "svgs/2026-07-02/loops-md-notes-on-agents-that-run-for-days.svg",
+        "title": "Andrej Karpathy 解析 Loop Engineering：构建「数日级」长程 Agent 的 9 条黄金法则",
+        "source": "https://tonybai.com/2026/07/02/loops-md-notes-on-agents-that-run-for-days/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-01",
     "files": [
       {
