@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-03",
+    "files": [
+      {
+        "path": "svgs/2026-07-03/20-loop-design-patterns-every-ai-engineer-should-know.svg",
+        "title": "每个 AI 工程师都应该知道的 20 个循环设计模式",
+        "source": "https://tonybai.com/2026/07/03/20-loop-design-patterns-every-ai-engineer-should-know/"
+      },
+      {
+        "path": "svgs/2026-07-03/multi-agent-five-principles.svg",
+        "title": "多 Agent 不是万能的！搞懂这 5 个原则，少走 1 年弯路！",
+        "source": "https://juejin.cn/post/7657829617065558068"
+      }
+    ]
+  },
+  {
     "date": "2026-07-02",
     "files": [
       {
