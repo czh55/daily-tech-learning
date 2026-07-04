@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5726" viewBox="0 0 1320 5726">
+  <foreignObject x="0" y="0" width="1320" height="5726">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:16px 20px;text-align:center;min-width:100px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>Hermes Agent 本地模型指南：Ollama + LM Studio 性能调优与模型选型</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Hermes Agent</span>
+  <span class="tag tag-green">本地推理</span>
+  <span class="tag tag-orange">64K 上下文</span>
+  <span class="tag tag-purple">工具调用</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：如何在无云端 API 的前提下，让 Hermes Agent 通过 Ollama/LM Studio/vLLM 跑通完整工具调用体验——核心铁律是 64K 上下文、选对支持 Tool Calling 的模型，并用 tool_search 与独立辅助 Provider 化解社区六大高频痛点。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">本地 Agent 接入链路</h3>
+  <div class="diagram">
+    <div class="node-orange">推理后端<br/><span style="font-size:12px;font-weight:400">Ollama / LM Studio / vLLM</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">OpenAI 兼容 API<br/><span style="font-size:12px;font-weight:400">/v1/chat/completions</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Hermes config.yaml<br/><span style="font-size:12px;font-weight:400">64K + tool_search</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">完整 Agent<br/><span style="font-size:12px;font-weight:400">工具调用 + 记忆</span></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「本地模型 MMLU 分数高就能当 Agent」—— Hermes 需要的是「该调用工具时不犹豫、读到结果能继续推进」；3B/7B 常忽略工具指令，gemma4:31b 才是本地工具调用可靠标杆。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】64K 上下文铁律</h3>
+  <p><strong>在讲什么问题：</strong>为什么 Ollama 默认 2048 token 会让 Hermes 直接拒绝启动？</p>
+  <p><strong>核心机制：</strong>Agent 管线需同时容纳系统提示（约 2K）、工具 Schema（2K–19K）、对话历史与输出；64K 是团队测试后可完成一次完整工具循环的安全下限。</p>
+  <p><strong>关键理解：</strong>Ollama /api/show 报的是模型最大支持上下文，不是实际 num_ctx——必须通过 Modelfile 持久化 64000。</p>
+  <p><strong>典型场景：</strong>任何本地 Ollama 接入 Hermes 的第一步。</p>
+  <p><strong>边界说明：</strong>盲目拉到 128K 会膨胀 KV 缓存占内存；64K 是下限不是越大越好。</p>
+  <div class="highlight">落地：Modelfile 设 FROM gemma4:31b、PARAMETER num_ctx 64000、num_gpu 99，ollama create gemma4-64k。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】三种推理后端怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>服务器/Docker 快速验证</td><td>Ollama</td><td>一行安装、CLI 拉模型</td><td>纯 GUI 运维团队强依赖</td><td>无可视化模型管理</td></tr>
+    <tr><td>桌面试模型、JIT 省内存</td><td>LM Studio</td><td>GUI 调 Context Length，0.3.6+ 支持工具调用</td><td>生产高并发</td><td>非为集群吞吐设计</td></tr>
+    <tr><td>多 Agent 并发、GPU 集群</td><td>vLLM</td><td>PagedAttention + hermes_tool_parser</td><td>无 NVIDIA GPU 的机器</td><td>依赖 CUDA</td></tr>
+    <tr><td>8GB 内存仅聊天</td><td>llama3.2:3b</td><td>最快但无工具</td><td>gemma4:31b</td><td>内存不够会 swap 到磁盘</td></tr>
+    <tr><td>完整本地 Agent</td><td>gemma4:31b（32GB+ 或 Apple Silicon 24GB）</td><td>社区基准工具调用最可靠</td><td>gemma2:9b</td><td>不支持 Tool Calling</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Ollama 接入四步</h3>
+  <p><strong>操作步骤：</strong>1. curl 安装 Ollama 并 curl localhost:11434/api/tags 验证 → 2. ollama pull gemma4:31b → 3. Modelfile 创建 gemma4-64k → 4. config.yaml 设 provider: custom、base_url: http://localhost:11434/v1、default: gemma4-64k。</p>
+  <p><strong>验证：</strong>hermes chat 后试「帮我创建 test.txt」确认 write_file 被调用而非输出代码文本。</p>
+  <div class="pitfall">Connection refused → systemctl start ollama 或 macOS 打开 Ollama 应用。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Ollama vs LM Studio vs vLLM</h3>
+  <table>
+    <tr><th>对比维度</th><th>Ollama</th><th>LM Studio</th><th>vLLM</th></tr>
+    <tr><td>默认端口</td><td>11434</td><td>1234</td><td>8000</td></tr>
+    <tr><td>上下文配置</td><td>Modelfile num_ctx</td><td>GUI 滑块 64000</td><td>--max-model-len 65536</td></tr>
+    <tr><td>内存策略</td><td>模型常驻可 keep_alive</td><td>JIT 按需加载卸载</td><td>PagedAttention 块共享</td></tr>
+    <tr><td>Hermes Provider</td><td>custom</td><td>lmstudio</td><td>custom</td></tr>
+    <tr><td>一句话结论</td><td>CLI 服务器首选</td><td>图形界面友好</td><td>企业生产吞吐</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】社区六大高频痛点</h3>
+  <p><strong>1. 响应超慢：</strong>ollama ps 查 GPU 层——0 层即纯 CPU；模型超内存会 swap。解法：换小模型或加 VRAM。</p>
+  <p><strong>2. 比裸聊天慢：</strong>72 工具 Schema 占约 19210 token。解法：tool_search auto + pinned 7 工具，token 降 89%。</p>
+  <p><strong>3. 不遵循工具调用：</strong>换 gemma4:31b 或配置 fallback_providers 到云端。</p>
+  <p><strong>4. 压缩风暴：</strong>vision/compression 勿用 auto 跟主模型——主模型 429 时压缩挂掉丢全上下文；独立配 Gemini + DeepSeek。</p>
+  <p><strong>5. CPU 超时：</strong>HERMES_STREAM_TIMEOUT=1800（本地自动放宽但超大上下文仍需手动）。</p>
+  <p><strong>6. 模型被卸载：</strong>Gateway 24h 在线设 OLLAMA_KEEP_ALIVE=24h。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】翔宇 GLM→DeepSeek→Gemini 三模型策略</h3>
+  <p><strong>原则：</strong>日常 GLM Coding Plan 零边际成本，额度尽用 DeepSeek 按量，视觉独立 Gemini 防限流级联。</p>
+  <p><strong>怎么落地：</strong>主力 glm-5.1@zai；vision@google gemini-2.5-flash；compression@deepseek deepseek-v4-pro；tool_search 常驻 7 工具。</p>
+  <p><strong>适用边界：</strong>复杂多步推理、100K+ 上下文仍建议云端 Fallback；纯本地适合隐私/合规/ Cron 后台。</p>
+  <div class="quote">原文：「90% 的日常任务走本地模型零成本，只有本地处理不了的才自动 Fallback。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：纯本地化隐私极客</p>
+  <p class="rebuttal-text">三模型混云把对话、视觉、压缩拆到三家 API，数据出境与密钥面比单机 Ollama 大得多——「本地指南」本质是降本混合云而非真离线。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Hermes 本地接入统一走 OpenAI 兼容 API，差异在推理后端运维方式。</li>
+    <li>64K 上下文 + 支持 Tool Calling 的模型是硬性门槛，Ollama 默认 2K 必改 Modelfile。</li>
+    <li>性能瓶颈常在 Agent 管线 token 膨胀，tool_search 是本地提速第一杠杆。</li>
+    <li>辅助模型独立 Provider 是防「压缩风暴」的关键架构决策。</li>
+    <li>最佳实践是本地主力 + fallback_providers 云端降级，而非非黑即白。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>按硬件表选模型，32GB+ 优先 gemma4:31b 并创建 64k 变体。</li>
+    <li>写入 ~/.hermes/config.yaml 并开启 tool_search auto。</li>
+    <li>vision/compression 显式指定独立 Provider，禁用 auto。</li>
+    <li>CPU-only 机器设置 HERMES_STREAM_TIMEOUT=1800。</li>
+    <li>配置 fallback_providers 覆盖复杂任务与工具调用失败场景。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>选本地模型不看考试分数，看 Agent 任务上「工具调用可靠性」——这是 MMLU 测不出来的分水岭。</p>
+</div>
+    </div>
+  </foreignObject>
+</svg>

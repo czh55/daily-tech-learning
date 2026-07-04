@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-04",
+    "files": [
+      {
+        "path": "svgs/2026-07-04/build-gin-simple-over-easy.svg",
+        "title": "别把「容易」当「简单」：Gin 框架作者撰文揭秘 88k Star 背后的架构哲学",
+        "source": "https://tonybai.com/2026/07/04/build-gin-simple-over-easy/"
+      },
+      {
+        "path": "svgs/2026-07-04/hermes-agent-local-models.svg",
+        "title": "Hermes Agent 本地模型指南：Ollama + LM Studio 性能调优与模型选型",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-local-models/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-03",
     "files": [
       {

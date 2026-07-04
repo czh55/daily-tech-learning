@@ -1,0 +1,123 @@
+欢迎收听每日技术学习语音讲解。本期主题，Hermes Agent 本地模型指南：Ollama + LM Studio 性能调优与模型选型。标签包括Hermes Agent、本地推理、64K 上下文、工具调用。本次讲解预计时长 约 12 到 13 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：如何在无云端 API 的前提下，让 Hermes Agent 通过 Ollama/LM Studio/vLLM 跑通完整工具调用体验——核心铁律是 64K 上下文、选对支持 Tool Calling 的模型，并用 tool_search 与独立辅助 Provider 化解社区六大高频痛点。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：推理后端，Ollama / LM Studio / vLLM，然后OpenAI 兼容 API，/v1/chat/completions，然后Hermes config.yaml，64K + tool_search，然后完整 Agent，工具调用 + 记忆
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「本地模型 MMLU 分数高就能当 Agent」—— Hermes 需要的是「该调用工具时不犹豫、读到结果能继续推进」；3B/7B 常忽略工具指令，gemma4:31b 才是本地工具调用可靠标杆。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：纯本地化隐私极客
+
+三模型混云把对话、视觉、压缩拆到三家 API，数据出境与密钥面比单机 Ollama 大得多——「本地指南」本质是降本混合云而非真离线。
+
+接下来，第四部分，【概念拆解卡】64K 上下文铁律。
+
+在讲什么问题，为什么 Ollama 默认 2048 token 会让 Hermes 直接拒绝启动？
+
+核心机制，Agent 管线需同时容纳系统提示（约 2K）、工具 Schema（2K–19K）、对话历史与输出；64K 是团队测试后可完成一次完整工具循环的安全下限。
+
+关键理解，Ollama /api/show 报的是模型最大支持上下文，不是实际 num_ctx——必须通过 Modelfile 持久化 64000。
+
+典型场景，任何本地 Ollama 接入 Hermes 的第一步。
+
+边界说明，盲目拉到 128K 会膨胀 KV 缓存占内存；64K 是下限不是越大越好。
+
+落地：Modelfile 设 FROM gemma4:31b、PARAMETER num_ctx 64000、num_gpu 99，ollama create gemma4-64k。
+
+接下来，第五部分，【决策/选型表】三种推理后端怎么选。
+
+服务器/Docker 快速验证，Ollama，一行安装、CLI 拉模型，纯 GUI 运维团队强依赖，无可视化模型管理
+
+桌面试模型、JIT 省内存，LM Studio，GUI 调 Context Length，0.3.6+ 支持工具调用，生产高并发，非为集群吞吐设计
+
+多 Agent 并发、GPU 集群，vLLM，PagedAttention + hermes_tool_parser，无 NVIDIA GPU 的机器，依赖 CUDA
+
+8GB 内存仅聊天，llama3.2:3b，最快但无工具，gemma4:31b，内存不够会 swap 到磁盘
+
+完整本地 Agent，gemma4:31b（32GB+ 或 Apple Silicon 24GB），社区基准工具调用最可靠，gemma2:9b，不支持 Tool Calling
+
+接下来，第六部分，【方法/工具卡】Ollama 接入四步。
+
+操作步骤，1. curl 安装 Ollama 并 curl localhost:11434/api/tags 验证 ，得到 2. ollama pull gemma4:31b ，得到 3. Modelfile 创建 gemma4-64k ，得到 4. config.yaml 设 provider: custom、base_url: http://localhost:11434/v1、default: gemma4-64k。
+
+验证：hermes chat 后试「帮我创建 test.txt」确认 write_file 被调用而非输出代码文本。
+
+Connection refused ，得到 systemctl start ollama 或 macOS 打开 Ollama 应用。
+
+接下来，第七部分，【跨概念对比表】Ollama vs LM Studio vs vLLM。
+
+默认端口，11434，1234，8000
+
+上下文配置，Modelfile num_ctx，GUI 滑块 64000，--max-model-len 65536
+
+内存策略，模型常驻可 keep_alive，JIT 按需加载卸载，PagedAttention 块共享
+
+Hermes Provider，custom，lmstudio，custom
+
+一句话结论，CLI 服务器首选，图形界面友好，企业生产吞吐
+
+接下来，第八部分，【避坑清单卡】社区六大高频痛点。
+
+1. 响应超慢：ollama ps 查 GPU 层——0 层即纯 CPU；模型超内存会 swap。解法：换小模型或加 VRAM。
+
+2. 比裸聊天慢：72 工具 Schema 占约 19210 token。解法：tool_search auto + pinned 7 工具，token 降 89%。
+
+3. 不遵循工具调用：换 gemma4:31b 或配置 fallback_providers 到云端。
+
+4. 压缩风暴：vision/compression 勿用 auto 跟主模型——主模型 429 时压缩挂掉丢全上下文；独立配 Gemini + DeepSeek。
+
+5. CPU 超时：HERMES_STREAM_TIMEOUT=1800（本地自动放宽但超大上下文仍需手动）。
+
+6. 模型被卸载：Gateway 24h 在线设 OLLAMA_KEEP_ALIVE=24h。
+
+接下来，第九部分，【心法/原则卡】翔宇 GLM，得到DeepSeek，得到Gemini 三模型策略。
+
+原则，日常 GLM Coding Plan 零边际成本，额度尽用 DeepSeek 按量，视觉独立 Gemini 防限流级联。
+
+怎么落地，主力 glm-5.1@zai；vision@google gemini-2.5-flash；compression@deepseek deepseek-v4-pro；tool_search 常驻 7 工具。
+
+适用边界，复杂多步推理、100K+ 上下文仍建议云端 Fallback；纯本地适合隐私/合规/ Cron 后台。
+
+原文：「90% 的日常任务走本地模型零成本，只有本地处理不了的才自动 Fallback。」
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Hermes 本地接入统一走 OpenAI 兼容 API，差异在推理后端运维方式。
+
+64K 上下文 + 支持 Tool Calling 的模型是硬性门槛，Ollama 默认 2K 必改 Modelfile。
+
+性能瓶颈常在 Agent 管线 token 膨胀，tool_search 是本地提速第一杠杆。
+
+辅助模型独立 Provider 是防「压缩风暴」的关键架构决策。
+
+最佳实践是本地主力 + fallback_providers 云端降级，而非非黑即白。
+
+按硬件表选模型，32GB+ 优先 gemma4:31b 并创建 64k 变体。
+
+写入 ~/.hermes/config.yaml 并开启 tool_search auto。
+
+vision/compression 显式指定独立 Provider，禁用 auto。
+
+CPU-only 机器设置 HERMES_STREAM_TIMEOUT=1800。
+
+配置 fallback_providers 覆盖复杂任务与工具调用失败场景。
+
+总结：
+
+行动清单：
+
+关键认知转变：选本地模型不看考试分数，看 Agent 任务上「工具调用可靠性」——这是 MMLU 测不出来的分水岭。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
