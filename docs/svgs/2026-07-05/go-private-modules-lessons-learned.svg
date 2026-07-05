@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5720" viewBox="0 0 1320 5720">
+  <foreignObject x="0" y="0" width="1320" height="5720">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#0f766e,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #14b8a6}
+.card h3{font-size:22px;font-weight:700;color:#0f766e;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:16px 20px;text-align:center;min-width:110px;font-weight:700;font-size:14px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#0f766e;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>五年，三篇文章，一个我一直没真正解决的问题</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">Go 私有模块</span>
+  <span class="tag tag-blue">白盒交付</span>
+  <span class="tag tag-orange">信任边界</span>
+  <span class="tag tag-purple">gvu CLI</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：公司内部跑了五年的私有 Go module 方案为何在白盒交付时全线失效——真正的痛点不在 GOPROXY 怎么配，而在 import path 这条「承诺」一旦跨出组织边界就必须整套重建。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0f766e;margin-bottom:12px;text-align:center">私有模块困境的三层边界</h3>
+  <div class="diagram">
+    <div class="node">网络边界<br/><span style="font-size:12px;font-weight:400">GOPROXY/VCS 不可达</span></div>
+    <span class="arrow-sym">+</span>
+    <div class="node-blue">信任边界<br/><span style="font-size:12px;font-weight:400">凭证不能外泄</span></div>
+    <span class="arrow-sym">+</span>
+    <div class="node-orange">组织边界<br/><span style="font-size:12px;font-weight:400">vanity path 失效</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node" style="border-color:#f59e0b;background:linear-gradient(135deg,#fff7ed,#ffedd5);color:#9a3412">import path 翻译层<br/><span style="font-size:12px;font-weight:400">必须重建</span></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「私有 module 拉取是内部基础设施问题，配好 GOPROXY 就一劳永逸」——五年稳定运行只证明边界内成立；代码一旦白盒交付，拉代码的人和存代码的服务器不再共享同一网络与信任域。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Vanity Import Path 与「翻译层」</h3>
+  <p><strong>在讲什么问题：</strong>小厂希望 import path 干净（mycompany.com/go/common），但代码实际在内网 Git 上，go get 如何找到真实仓库？</p>
+  <p><strong>核心机制：</strong>govanityurls 把 vanity path 翻译成真实 VCS 地址；内部 GOPROXY 统一代理公共与私有 module；开发者只改 GOPROXY，拉取过程透明。</p>
+  <p><strong>关键理解：</strong>import path 不是字符串装饰，而是「只在特定网络边界内才成立的承诺」——域名解析、go-get meta、代理路由缺一不可。</p>
+  <p><strong>典型场景：</strong>小厂没有 git.company.com 式内网 VCS 域名，却想用语义化私有路径复用公共代码。</p>
+  <p><strong>边界说明：</strong>方案默认拉代码者与 VCS 在同一信任域；跨组织交付时 vanity 服务部署在己方，对方网络里 path 即死链。</p>
+  <div class="quote">原文：「这个 Go module 的 import path 本身，是一个只在我们自己的网络边界里才成立的承诺。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】内部方案 vs 跨边界重建</h3>
+  <p><strong>核心思路：</strong>边界内用 govanityurls + Nginx + GOPROXY；边界被打破时在目标组织内重建简化版映射与拉取链路。</p>
+  <p><strong>操作步骤（跨边界交付）：</strong>1. 在客户环境申请域名或内网 DNS → 2. 配置 vanity 映射指向授权仓库 → 3. 设置 GOPROXY 或 GOPRIVATE → 4. 单独开通仓库权限（不交内部 VCS 凭证）→ 5. 验证 go mod tidy / go build。</p>
+  <p><strong>选型条件：</strong>白盒源码交付、客户自编译维护；SaaS 黑盒调用 API 则不走此路径。</p>
+  <div class="pitfall">避坑：不要把内部 VCS 凭证交给客户——等于开放全部私有代码；应在客户侧独立部署翻译层与最小权限仓库。</div>
+  <div class="highlight">落地：作者将五年重复操作封装为 gvu（gomodvanityurls）CLI，一行命令完成 vanity 映射与私有 module 分发配置。</div>
+  <div class="quote">原文：「整个过程和五年前第一次搭建时几乎一样繁琐，唯一的区别是，这次要在一个我们不熟悉、不受控的环境里，重新做一遍。」</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】私有 module 方案怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>大厂内网统一 VCS</td><td>import path 直指 git.company.com</td><td>go get 原生工作，无需翻译</td><td>vanity + 外网域名</td><td>多一层无意义映射</td></tr>
+    <tr><td>小厂边界内复用</td><td>govanityurls + 内部 GOPROXY</td><td>语义化 path + 透明拉取</td><td>仅 go mod replace</td><td>可应急但难规模化治理</td></tr>
+    <tr><td>白盒交付给客户</td><td>客户环境重建映射 + 最小权限仓</td><td>不泄露己方信任域</td><td>复用己方 GOPROXY</td><td>客户网络不可达</td></tr>
+    <tr><td>频繁新增私有仓</td><td>CLI（gvu）自动化 vanity 配置</td><td>避免手写 vanity.yml 运维抗拒</td><td>纯 Web 管理后台</td><td>与开发者心智模型脱节</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】边界内稳定 vs 跨边界交付</h3>
+  <table>
+    <tr><th>对比维度</th><th>组织内部（五年方案）</th><th>白盒跨组织交付</th><th>一句话结论</th></tr>
+    <tr><td>GOPROXY 可达性</td><td>全员指向内部代理</td><td>客户机/CI 访问不到</td><td>代理假设失效</td></tr>
+    <tr><td>凭证策略</td><td>内网 SSH/Token 统一管</td><td>不能给全量 VCS 权限</td><td>信任边界割裂</td></tr>
+    <tr><td>vanity 服务</td><td>部署在己方，全员可用</td><td>客户 DNS 解析不到己方</td><td>path 变死链</td></tr>
+    <tr><td>运维动作</td><td>改 vanity.yml、调 Nginx</td><td>在陌生环境重做全套</td><td>重复劳动暴露本质</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】私有 module 五年踩坑史</h3>
+  <p><strong>坑名：</strong>以为「内部跑通 = 问题已解决」，忽视跨边界场景。</p>
+  <p><strong>原因：</strong>五年优化都在同一边界内打磨体验，从未质疑「拉代码的人与存代码的服务器同域」这一隐含前提。</p>
+  <p><strong>解法：</strong>设计交付模式时提前问：代码会不会离开组织？会则预埋客户侧映射方案。</p>
+  <p><strong>严重程度：</strong>致命（客户 go mod tidy 直接 lookup 失败）。</p>
+  <div class="pitfall">坑名：每次新增私有仓手动改 vanity.yml——开发者天然抗拒运维琐事，配置腐化后更难跨边界复制。</div>
+  <div class="pitfall">坑名：Gerrit 迁 GitLab 时 SSH 算法不匹配——翻译层背后仓库换了，映射与密钥要同步，否则边界内也会炸。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】CLI 重新成为控制面</h3>
+  <p><strong>原则：</strong>散落在 vanity.yml、Nginx、GOPROXY 里的动作，本质上应该是一个命令的事。</p>
+  <p><strong>为什么重要：</strong>Web UI 图形化运维动作，但开发者高频操作终收敛为一行命令（gh repo create、wrangler deploy）；AI 时代 CLI 更是事实控制面。</p>
+  <p><strong>怎么落地：</strong>跨边界重建时用 gvu 等工具替代手工三板斧；内部新增私有仓也避免纯手动改配置。</p>
+  <p><strong>适用边界：</strong>面向开发者的基础设施；纯业务人员配置场景仍可能需要 UI。</p>
+  <div class="quote">原文：「命令行不再只是极客的偏好，它正在重新成为很多产品事实上的控制面，AI 时代尤甚。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「全用 go mod replace 直连内部仓」实用派</p>
+  <p class="rebuttal-text">replace 只能救本地编译，团队协作和 CI 各写各的 replace 路径，版本锁不住——你省下的 vanity 层，最后会变成 N 份不可合并的 go.mod 补丁。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>私有 module 五年稳定，证明的是边界内方案成熟，不是跨组织交付已解决。</li>
+    <li>白盒交付同时击穿网络、信任、组织三层边界，import path 翻译层必须就地重建。</li>
+    <li>Go 用 import path 做域名解析，把「私有代码分发」问题暴露得格外鲜明，但本质适用于所有跨信任边界的代码交付。</li>
+    <li>重复的手工配置应收敛为 CLI 控制面——gvu 是作者对五年同一问题不同场景的封装。</li>
+    <li>真正痛点永远出现在边界被打破的那一刻，而非 GOPROXY 配没配好。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>盘点现有私有 module：import path 承诺在哪些网络/组织边界内才成立？</li>
+    <li>若有白盒或跨客户交付，提前设计客户侧 vanity + 最小权限仓，而非临时救火。</li>
+    <li>新增私有依赖时避免纯手写 vanity.yml，用自动化工具保持可复制性。</li>
+    <li>交付前在「干净环境」跑一遍 go mod tidy &amp;&amp; go build，模拟客户第一天。</li>
+    <li>评估 gvu 等 CLI 是否能把 Nginx/GOPROXY/vanity 三板斧收成一行命令。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>私有 Go module 不是「公司内部基础设施题」，而是「代码如何优雅跨越信任边界」——边界内的稳定感，恰恰最容易让人误判问题已经终结。</p>
+</div>
+    </div>
+  </foreignObject>
+</svg>
