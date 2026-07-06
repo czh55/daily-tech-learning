@@ -1,0 +1,153 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'ai-coding-why-more-anxious.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:16px 20px;text-align:center;min-width:110px;font-weight:700;font-size:14px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:20px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>代码都已经让 AI 写了，为什么有些人却更慌了？</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">AI Coding</span>
+  <span class="tag tag-green">工程能力</span>
+  <span class="tag tag-orange">Demo 陷阱</span>
+  <span class="tag tag-purple">产品经理</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 Vibe Coding 能让人快速做出可跑的 Demo 时，为何多数人反而更焦虑——因为他们混淆了「代码能跑」与「工程可用」，真正值钱的从敲代码变成了判断、审核与架构决策。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">AI 时代编程能力重心上移</h3>
+  <div class="diagram">
+    <div class="node-orange">旧门槛<br><span style="font-size:12px;font-weight:400">会写代码/语法熟练</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">AI 执行层<br><span style="font-size:12px;font-weight:400">协作类 Agent ~80% 准确</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">新门槛<br><span style="font-size:12px;font-weight:400">判断·审核·决策·架构</span></div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「掌握 Prompt 就能独立做产品」或「必须苦学全部开发底层才能不被 AI 替代」——两种极端都错；AI 降低了代码产出门槛，但放大了工程判断力价值。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】代码能跑 vs 工程可用</h3>
+  <p><strong>在讲什么问题：</strong>为什么 AI Coding 全套流程都会的人，作品仍停在 Demo 无法商业化？</p>
+  <p><strong>核心机制：</strong>AI 擅长快速堆砌表层功能（CRUD、静态页），但复杂业务的多表关联、权限粒度、并发安全、日志埋点等生产要素需要人工工程思维把关。</p>
+  <p><strong>关键理解：</strong>协作类 Agent 综合准确率约 80%，剩余 20% 的架构漏洞、规范问题、性能隐患 AI 无法自主修复，必须人工甄别——看不出问题就会丧失项目掌控力。</p>
+  <p><strong>典型场景：</strong>产品经理用 Next.js+Vercel 做出原型，遇复杂 Agent 产品仍要求助程序员；工程师直接复用 AI 代码不审查导致线上隐患。</p>
+  <p><strong>边界说明：</strong>简单 Demo 验证、原型展示 AI 完全够用；企业级长期迭代、多人协作、安全合规场景必须有人类工程掌控者。</p>
+  <div class="quote">原文：「飞书为什么需要几千人的团队？工程化的东西才是深水区。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】两类 AI 编码模式</h3>
+  <table>
+    <tr><th>对比维度</th><th>协作类 Agent（Cursor/Copilot 等）</th><th>知识输出类</th><th>一句话结论</th></tr>
+    <tr><td>设计思路</td><td>人机协同，人把控纠错</td><td>标准知识库+规则，工具主导</td><td>市面工具全是协作类</td></tr>
+    <tr><td>准确率</td><td>约 80%，有隐性 Bug</td><td>高精度零误差</td><td>协作类需人工兜底 20%</td></tr>
+    <tr><td>灵活性</td><td>迭代快，场景适配广</td><td>边界窄，难应对复杂工程</td><td>复杂业务靠协作类+人审</td></tr>
+    <tr><td>适用场景</td><td>业务迭代、Demo、前端搭建</td><td>固化脚本、语法纠错、清洗</td><td>选型看任务复杂度</td></tr>
+    <tr><td>人的角色</td><td>评价者、测试者、架构决策者</td><td>维护规则库</td><td>执行交给 AI，决策留给人</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】产品经理的两条路径</h3>
+  <table>
+    <tr><th>场景</th><th>推荐路径</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>非技术背景、想独立落地产品</td><td>做评价者/测试者/业务决策者</td><td>维护测试集校验 AI 产出，跑通用户闭环，性价比高于盲目啃底层</td><td>彻底转型全栈开发</td><td>知识体系无穷无尽，易陷进去且破坏团队协作边界</td></tr>
+    <tr><td>已有 AI 原型能力、卡在 Demo</td><td>建标准化验收逻辑+行业测试集</td><td>用充足 Token 大力出奇迹，同步积累评价能力</td><td>继续堆更多 Vibe Coding 教程</td><td>不补齐工程评价能力无法跃迁</td></tr>
+    <tr><td>有开发经验的工程师</td><td>AI 写执行 + 人审架构与安全</td><td>简单 CRUD AI 够用，复杂业务必须能看出隐患</td><td>完全不审查直接 merge AI 代码</td><td>丧失项目掌控力</td></tr>
+    <tr><td>企业多维表格等生产模块</td><td>人工介入权限/留痕/并发设计</td><td>AI 自主开发缺数据操作留痕、权限分级、消息链路</td><td>纯 AI 零干预上线</td><td>不满足生产交付标准</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】AI Coding 焦虑族常见短板</h3>
+  <p><strong>坑名：</strong>做出功能 Demo 就自认掌握完整开发能力。</p>
+  <p><strong>原因：</strong>把「代码能跑」等同于「工程可用」，忽视权限、校验、日志、安全风控。</p>
+  <p><strong>解法：</strong>为每个 AI 产出建立验收清单：技术栈合理性、业务还原度、生产级非功能需求。</p>
+  <p><strong>严重程度：</strong>致命（无法商业化落地）。</p>
+  <div class="pitfall">坑名：无法甄别 AI 推荐技术栈——小项目堆重架构、大项目用轻框架，造成浪费或性能隐患。</div>
+  <div class="pitfall">坑名：用「更好看、更流畅」等模糊表述调 AI——缺少标准化验收与优化逻辑，迭代陷入玄学。</div>
+  <div class="pitfall">坑名：资深开发者刻意抵触 AI 工具——研发效率停滞，错失人机协同红利。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】让 AI 做执行，让自己做决策</h3>
+  <p><strong>原则：</strong>放弃代码内卷，做 AI 时代的工程掌控者——门槛从「会写」上移到「判断、审核、决策、架构」。</p>
+  <p><strong>为什么重要：</strong>AI 持续替代机械搬砖的执行型人员，同时放大具备问题拆解、技术取舍、工程交付能力者的价值。</p>
+  <p><strong>怎么落地：</strong>产品经理维护专属测试集（行业经验、用户反馈、边界 case）；工程师对 AI 产出做架构与安全审查；用测试集而非感觉验收。</p>
+  <p><strong>适用边界：</strong>探索性原型可高度依赖 AI；上线、合规、长期维护必须有人类工程责任人。</p>
+  <div class="highlight">真实案例：企业多维表格 AI 自主开发——页面能开能编，但缺留痕、权限分级、@消息链路、并发覆盖风险，完全不满足生产标准。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「全民开发者」倡导者 / Vibe Coding 布道者</p>
+  <p class="rebuttal-text">当 AI 能端到端生成并自我测试代码，「工程判断力」也会被模型内化——届时不会写代码的人反而比半吊子工程师更敢放手，焦虑的正是那些高不成低不就的中间层。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>AI Coding 让人慌，是因为 Demo 能力假象掩盖了工程深水区——能跑不等于可上线、可维护、可迭代。</li>
+    <li>编程学习逻辑被重构：执行型编码贬值，问题拆解、架构设计、工程交付升值。</li>
+    <li>协作类 Agent 约 80% 准确，20% 隐患必须人工甄别，看不出问题即失控。</li>
+    <li>产品经理最优路径往往是做评价者与决策者，而非盲目转型无穷无尽的开发底层。</li>
+    <li>真正值钱的不是敲代码速度，而是让 AI 做执行、让人做决策的掌控力。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>为自己或团队建立 AI 产出验收清单：技术栈、权限、安全、日志、并发、业务还原度。</li>
+    <li>积累专属测试集——行业 case、用户反馈、历史 bug，用于校验和优化 AI 生成内容。</li>
+    <li>对每次 AI 生成的复杂模块做「生产级追问」：留痕？权限粒度？失败回滚？</li>
+    <li>工程师强制 Code Review AI 产出，禁止不审查直接合并。</li>
+    <li>停止「要不要苦学代码」内耗，明确自己的角色是执行者还是决策者。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>AI 没有消解编程价值，而是把核心价值从「写」推向了「判」——越能驾驭 AI 产出质量的人，越不会在 AI 时代更慌。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

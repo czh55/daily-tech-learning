@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-07-06",
+    "files": [
+      {
+        "path": "svgs/2026-07-06/ai-coding-why-more-anxious.svg",
+        "title": "代码都已经让 AI 写了，为什么有些人却更慌了？",
+        "source": "https://juejin.cn/post/7658709899376132131"
+      },
+      {
+        "path": "svgs/2026-07-06/hermes-agent-home-assistant.svg",
+        "title": "Hermes Agent + Home Assistant：用 AI 语音管家控制全屋智能家居",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-home-assistant/"
+      },
+      {
+        "path": "svgs/2026-07-06/is-go-language-conservative-evolution-still-viable-next-5-years.svg",
+        "title": "Go 对语言演化的保守态度，在未来 5 年是否仍然正确呢？",
+        "source": "https://tonybai.com/2026/07/06/is-go-language-conservative-evolution-still-viable-next-5-years/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-05",
     "files": [
       {
