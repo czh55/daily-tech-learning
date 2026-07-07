@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-07-07",
+    "files": [
+      {
+        "path": "svgs/2026-07-07/how-to-create-loops-with-claude-code.svg",
+        "title": "如何使用 Claude Code 构建 AI 循环系统（Loops）",
+        "source": "https://tonybai.com/2026/07/07/how-to-create-loops-with-claude-code/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-06",
     "files": [
       {
