@@ -1,0 +1,157 @@
+欢迎收听每日技术学习语音讲解。本期主题，Hermes Agent 成本控制实战。标签包括Hermes Agent、Provider Routing、Credential Pools、Tool Search。本次讲解预计时长 约 16 到 17 分钟，共 13 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：如何把未做成本工程的 Hermes Agent 月费从 $200 压到 $5 以下——通过 Provider Routing 选最便宜子提供商、凭据池防限流中断、辅助模型独立配置防压缩风暴、Tool Search 砍掉 89% 工具 Schema 固定开销。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：凭据池，多 Key 轮换，然后主模型降级，fallback_providers，然后辅助任务降级，auxiliary.*，然后Provider Routing，然后Tool Search，然后压缩流水线，然后execute_code，然后Token 追踪
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「Hermes 贵」—— Hermes 本身 MIT 开源免费，$137/周 的账单来自未做成本工程：72 个工具 Schema 每轮吃 19,210 Token，辅助压缩默认跟主模型走一条线，主模型限流时压缩连带崩溃丢上下文。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「直接用 Claude Code / 官方 API 极简派」
+
+为省几十美元搭六层路由、凭据池和 Tool Search 配置，维护成本远超收益——多数开发者一周用量本就不该超过免费额度，成本工程是过度优化。
+
+接下来，第四部分，【概念拆解卡】Provider Routing vs Fallback Providers。
+
+在讲什么问题，OpenRouter 一张「车票」内部走哪条子提供商线路？和跨平台故障转移有何区别？
+
+核心机制，Provider Routing 控制 OpenRouter 内部子提供商（Anthropic、Google、Bedrock 等）如何路由请求；Fallback Providers 是主模型整体失败时切换到完全不同的提供商。
+
+关键理解，两个独立维度——同平台内路由优化 vs 跨平台故障转移，配置不要混为一谈。
+
+典型场景，日常编码 sort: "price"；终端交互 sort: "latency"。
+
+边界说明，仅 OpenRouter 生效；直连 Anthropic/DeepSeek 时无路由可言。Nous Portal 流量同样尊重 routing 且享 10% 折扣。
+
+原文：「你买了一张 OpenRouter 的车票，Provider Routing 决定走最便宜的、最快的、还是延迟最低的线路。」
+
+接下来，第五部分，【方法/工具卡】Provider Routing 六种排序策略。
+
+操作步骤，
+
+1. sort：price / throughput / latency 三选一
+
+2. only 白名单、ignore 黑名单、order 显式优先级
+
+3. require_parameters: true 确保子提供商支持全部请求参数
+
+4. data_collection: "deny" 关闭数据收集（隐私场景）
+
+成本优化一行配置：provider_routing: { sort: "price" } — 让 OpenRouter 自动选当前最便宜子提供商。
+
+避坑：Provider Routing 和 Fallback 是两套配置，别指望 Routing 能在主提供商整体挂掉时自动切平台。
+
+接下来，第六部分，【方法/工具卡】Credential Pools 四种轮换策略。
+
+核心思路：同一提供商注册多个 API Key，一个 Key 限流/配额耗尽时自动轮换，会话不中断、不切换提供商。
+
+操作步骤，
+
+1. hermes auth add openrouter --api-key sk-or-v1-second-key
+
+2. 配置轮换策略：fill_first（默认，单主力多备份）/ round_robin / least_used / random
+
+3. 429 瞬时，得到同 Key 重试一次再轮换；402 配额耗尽，得到立即轮换（24h 冷却）
+
+4. 全部 Key 耗尽，得到触发 fallback_model 跨提供商降级
+
+避坑 GitHub #33088：fallback 和主提供商同平台（都走 OpenRouter）时，fallback 的 429 会消耗主池 Key——fallback 尽量配不同平台。
+
+接下来，第七部分，【方法/工具卡】Tool Search + execute_code 两大 Token 杀手。
+
+Tool Search（v0.16.0+）：72 工具 Schema 每轮约 19,210 Token ，得到 延迟加载后约 2,200 Token，减少 89%。
+
+配置：mode: auto，threshold: 0.1（工具 Token 占上下文超 10% 才启用）；核心工具（terminal、read_file 等）永不延迟。
+
+execute_code：中间工具结果永不进上下文，只有 print() 输出返回 Agent——批量 read_file 在沙箱内处理，Agent 只看最终统计。
+
+判断标准：工具少，得到关 Tool Search；工具多，得到开 auto + threshold 0.1。可与 Hermes Tool Slimmer（配置时预筛选）叠加。
+
+避坑：工具目录 Token 不到上下文 10% 时，Tool Search 反而因搜索/描述额外轮次增加总消耗——关掉它。
+
+接下来，第八部分，【避坑清单卡】压缩风暴（Compression Storm）。
+
+坑名，主模型限流（如 GLM 429）时，辅助压缩默认走 auto 探测链第一站=主模型提供商，压缩同样被限流，Agent 丢失整个对话上下文。
+
+原因，auxiliary.compression 默认 auto 跟主模型走；用 Claude Opus 做压缩更是极度浪费。
+
+解法，auxiliary.vision 和 auxiliary.compression 显式配置独立提供商——视觉用 Gemini Flash，压缩用 Flash 级模型（社区实测 Token 花费直降 85%+）。
+
+严重程度，致命——不是丢一条消息，是丢全部上下文。
+
+反抖动保护：连续两次压缩各节省不到 10% Token 时 Hermes 自动停止压缩，避免「花了 2000 Token 生成摘要只省 8%」的负收益。
+
+接下来，第九部分，【决策/选型表】辅助任务与委派模型选型。
+
+上下文压缩，Flash 级模型（deepseek-v4-flash），总结文本不需 Pro 级推理，跟主模型 Opus，极度浪费 Token
+
+图片理解，auxiliary.vision 独立 Gemini Flash，免费额度大，不受主模型限流，auto 跟主模型，限流连带挂
+
+子代理委派，delegate_task + 便宜模型（gemini-flash），子任务通常比主任务简单，与主模型同价，易被忽略的降本点
+
+3+ 连续工具调用，execute_code 沙箱批处理，中间结果不进上下文，逐个 tool_call，每次完整结果吃 Token
+
+简单格式转换，reasoning_effort: minimal，不需要深度推理 Token，默认 high reasoning，completion token 暴涨
+
+接下来，第十部分，【跨概念对比表】delegate_task vs execute_code。
+
+推理，完整 LLM 推理循环，仅 Python 代码执行，要推理用 delegate
+
+上下文，全新隔离对话，无对话，只有脚本，execute 更省 Token
+
+工具访问，所有非阻止工具 + 推理，7 个工具通过 RPC，批量处理选 execute
+
+并行性，默认 3 个并发子代理，单脚本（内部可多线程），delegate 适合并行推理
+
+Token 成本，较高，较低（只返回 stdout），有处理逻辑且不需推理，得到execute
+
+接下来，第十一部分，【心法/原则卡】翔宇五台机器实战策略。
+
+原则，免费优先，按量兜底——主力 GLM Coding Plan Max（五台共享），额度耗尽切 DeepSeek 按量。
+
+怎么落地，compression/vision/skills_hub/mcp 全部显式配置独立提供商；Tool Search auto + threshold 0.1；compression threshold 0.50 ，得到 target 0.20。
+
+成本实绩：五台 Mac 月均 API 支出约 $3-5。行业数据：未优化与优化后部署成本可差 200 倍；CASTER 论文路由降本 72.4%。
+
+适用边界，GLM 国内直连设 GLM_BASE_URL 跳过 3 秒自动探测，否则首条消息慢约 20 秒。
+
+接下来，第十二部分，总结与行动。
+
+结论
+
+Hermes 账单高不是框架贵，是缺成本工程：工具 Schema、压缩跟主模型、无限流轮换
+
+三层韧性：凭据池 ，得到 主模型 fallback ，得到 辅助任务独立降级链
+
+Provider Routing（OpenRouter 内）+ Credential Pools 是路由降本的基础设施
+
+Tool Search 砍 89% 工具 Token；execute_code 让中间结果不进上下文
+
+压缩风暴：auxiliary.* 必须显式配置，Flash 做压缩，视觉独立 Gemini
+
+配置 provider_routing: { sort: "price" }（OpenRouter 用户）
+
+hermes auth add 添加备用 Key，设 round_robin / fill_first 策略
+
+auxiliary.compression 和 auxiliary.vision 显式指定 Flash 级独立提供商
+
+启用 Tool Search auto + threshold 0.1，工具少时关闭
+
+批量工具调用改用 execute_code，用 hermes auth list 和 TUI /agents 监控花费
+
+总结：
+
+行动清单：
+
+关键认知转变：Agent 成本优化的战场不在「换更便宜的模型」一个点，而在路由、凭据、工具加载、压缩、执行方式五条线的系统化工程—— 未优化与优化后可差 200 倍。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

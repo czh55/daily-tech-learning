@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-08",
+    "files": [
+      {
+        "path": "svgs/2026-07-08/go-private-modules-comprehensive-guide.svg",
+        "title": "Go 私有模块拉取全解：凭据配置 + Vanity URL，个人与组织全覆盖",
+        "source": "https://tonybai.com/2026/07/08/go-private-modules-comprehensive-guide/"
+      },
+      {
+        "path": "svgs/2026-07-08/hermes-agent-cost-control.svg",
+        "title": "Hermes Agent 成本控制实战：模型路由 + 凭据池轮换 + Token 追踪",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-cost-control/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-07",
     "files": [
       {

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6107" viewBox="0 0 1320 6107">
+  <foreignObject x="0" y="0" width="1320" height="6107">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#0f766e,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #14b8a6}
+.card h3{font-size:22px;font-weight:700;color:#0f766e;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#0f766e;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>Go 私有模块拉取全解：凭据配置 + Vanity URL</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">Go Modules</span>
+  <span class="tag tag-blue">GOPRIVATE</span>
+  <span class="tag tag-orange">Vanity URL</span>
+  <span class="tag tag-purple">gvu</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：团队或个人在拉取私有 Go 模块时，如何一次性理清凭据配置、四个环境变量职责边界，以及按场景选择「直连托管平台」还是「自定义 import path + vanity 解析层」的落地方案。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0f766e;margin-bottom:12px;text-align:center">私有模块拉取决策链</h3>
+  <div class="diagram">
+    <div class="node-blue">凭据层<br/><span style="font-size:11px;font-weight:400">.netrc / git insteadOf</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">GOPRIVATE<br/><span style="font-size:11px;font-weight:400">划定私有前缀</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">拉取路径<br/><span style="font-size:11px;font-weight:400">直连 vs Vanity</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">go-import<br/><span style="font-size:11px;font-weight:400">映射真实仓库</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">go get<br/><span style="font-size:11px;font-weight:400">git 直连拉取</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">GOPROXY/GOSUMDB 管公共；GOVCS 管私有允许用什么 VCS 拉</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「配好 GOPRIVATE 就能拉私有模块」—— 实际上 GOPRIVATE 只告诉 Go 跳过公共代理和校验库，凭据（token/SSH）和 import path 解析（vanity）仍是独立的两层问题，缺任何一层都会 401 或 404。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】四个环境变量的职责边界</h3>
+  <p><strong>在讲什么问题：</strong>为什么私有模块报错时总在 GOPRIVATE、GOPROXY、GOSUMDB、GOVCS 之间来回试？</p>
+  <p><strong>核心机制：</strong>GOPRIVATE 划定「哪些是私有的」→ 跳过 proxy 和 sumdb；GOPROXY 控制公共模块怎么拉和缓存；GOSUMDB 控制是否向 sum.golang.org 校验（私有模块必须关）；GOVCS 控制私有域名允许用 git/hg 等工具拉取。</p>
+  <p><strong>关键理解：</strong>四者不是互斥替代关系，而是「私有划定 + 公共拉取 + 公共校验 + VCS 白名单」的分工组合。</p>
+  <p><strong>典型场景：</strong><code>export GOPRIVATE=github.com/yourname/*,go.mycompany.com/*</code> 配合 <code>export GOVCS=go.mycompany.com:git</code>。</p>
+  <p><strong>边界说明：</strong>只配 GOPRIVATE 不管凭据 → 401；私有模块不关 GOSUMDB → 校验失败；自建域名不在 GOVCS 白名单 → 1.16+ 默认拒绝拉取。</p>
+  <div class="quote">原文：「GOPRIVATE 划定哪些是私有的，GOPROXY/GOSUMDB 决定公共部分怎么拉、怎么校验，GOVCS 决定私有部分允许用什么工具拉。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】凭据配置两种主流方式</h3>
+  <p><strong>核心思路：</strong>Go 通过 git 拉私有仓库，凭据最终要落到 git 能识别的认证机制上。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. <strong>~/.netrc</strong>：machine github.com + login + password(token)，git 和 go 都会读</p>
+  <p>2. <strong>git insteadOf（更推荐）</strong>：<code>git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"</code></p>
+  <p>3. SSH 重写：<code>git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"</code></p>
+  <p>4. CI 环境：token 放平台 Secret，禁止明文写进仓库脚本</p>
+  <div class="highlight"><strong>组织场景：</strong>用机器账号(bot)生成令牌、按仓库限权、统一放 CI Secret，避免人员变动导致流水线突然失效。</div>
+  <div class="pitfall">避坑：凭据散落 .netrc、git config、CI 环境变量各处，换机器就要重配一遍，还容易把明文 token 提交进仓库。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Vanity Import URL 三种落地方式</h3>
+  <p><strong>核心思路：</strong>Go 请求 <code>https://example.me/go/pkg?go-get=1</code>，期望 HTML 含 <code>go-import</code> meta 标签指向真实 git 仓库。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. <strong>静态 HTML + GitHub Pages/Cloudflare Pages</strong>：零成本，每新增 module 手动加页面</p>
+  <p>2. <strong>自建 govanityurls + Nginx</strong>：YAML 映射自动生成页面，需维护 TLS 和可用性</p>
+  <p>3. <strong>gvu 托管</strong>：<code>gvu add example.me/go/pkg https://github.com/user/repo.git</code>，免运维</p>
+  <div class="quote">原文 meta 示例：&lt;meta name="go-import" content="example.me/go/privatemodule git https://github.com/tonybai/privatemodule"&gt;</div>
+  <p><strong>边界说明：</strong>vanity 解析层和代码托管可以完全独立——不同域名、不同机器；自建 Git Server 时 go-import 指向内网 git 地址即可。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】个人 vs 组织场景怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>只想 go get 拉到，不在乎 import path</td><td>托管平台私有仓库 + GOPRIVATE + git insteadOf</td><td>零额外基础设施</td><td>上 vanity 层</td><td>过度工程</td></tr>
+    <tr><td>个人要自定义域名 import path</td><td>仓库少→静态页；不想运维→gvu</td><td>按维护意愿选成本</td><td>一上来自建高可用</td><td>个人场景过度</td></tr>
+    <tr><td>组织要 go.mycompany.com 语义</td><td>小规模→自建 govanityurls；要免运维→gvu</td><td>为未来仓库迁移留余地</td><td>每个 repo 手改 import</td><td>迁移成本指数增长</td></tr>
+    <tr><td>组织规模大、CI 高可用</td><td>托管 vanity（gvu）或自建+高可用</td><td>vanity 挂了全公司 CI 停</td><td>单点 VPS 无备份</td><td>可用性风险被低估</td></tr>
+    <tr><td>白盒交付给客户</td><td>专门方案（客户网络访问不到你内网）</td><td>原有方案在对方环境直接失效</td><td>照搬内部配置</td><td>需重新搭一套</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】五大常见痛点与解法</h3>
+  <p><strong>坑名：</strong>凭据散落、import path 绑死平台、vanity 运维成本高、组织新增映射琐事、跨组织交付失效。</p>
+  <p><strong>原因：</strong>把「能拉代码」和「好看的 import path」「高可用 vanity」「客户环境」混为一谈，没有分层设计。</p>
+  <p><strong>解法：</strong>① 统一 git insteadOf + CI Secret ② 需要品牌语义才上 vanity ③ 评估自建 vs 托管的运维成本 ④ 组织用 bot 账号和限权 token ⑤ 白盒交付单独设计方案。</p>
+  <p><strong>严重程度：</strong>组织场景 vanity 单点故障为致命级——Tony Bai 五年自建方案稳定但「每新增仓库改配置重载 Nginx」的隐性成本会随团队放大。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三种 Vanity 方案对比</h3>
+  <table>
+    <tr><th>对比维度</th><th>静态 HTML</th><th>自建 govanityurls</th><th>gvu 托管</th><th>一句话结论</th></tr>
+    <tr><td>运维成本</td><td>极低</td><td>高（TLS/可用性）</td><td>极低</td><td>仓库数决定选型</td></tr>
+    <tr><td>可控性</td><td>中</td><td>完全自主</td><td>依赖第三方</td><td>要自主选自建</td></tr>
+    <tr><td>扩展性</td><td>差（手动加页）</td><td>好（YAML 映射）</td><td>好（一条命令）</td><td>仓库多了别用手写</td></tr>
+    <tr><td>高可用</td><td>看托管平台</td><td>需自己保障</td><td>天然多副本</td><td>组织 CI 优先托管</td></tr>
+    <tr><td>新增模块</td><td>手动 HTML</td><td>改 YAML + 重载</td><td>gvu add 一条命令</td><td>频率越高越要自动化</td></tr>
+  </table>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「YAGNI 派」/ 反对 vanity 层的极简开发者</p>
+  <p class="rebuttal-text">绝大多数团队永远不需要 vanity——github.com/org/repo 够用一辈子，为「好看的 import path」多维护一层解析服务，是把五年后可能发生的迁移焦虑提前兑现成今天的运维税。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>私有模块拉取 = 凭据层 + 环境变量层 +（可选）vanity 解析层，三层独立排查</li>
+    <li>GOPRIVATE 划定私有前缀；私有模块须关 GOSUMDB；GOVCS 放行私有域名 VCS</li>
+    <li>凭据推荐 git insteadOf + CI Secret，组织用 bot 账号和限权 token</li>
+    <li>不在乎 import path → 直连托管平台；要自定义 → 静态页 / 自建 / gvu 三选一</li>
+    <li>组织高可用场景优先考虑免运维 vanity 或自建+冗余，vanity 故障=全公司 CI 停</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>检查本机 <code>GOPRIVATE</code>、<code>GOSUMDB</code>、<code>GOVCS</code> 是否覆盖你的私有前缀</li>
+    <li>配置 <code>git config url.insteadOf</code> 或 SSH 重写，CI 侧 token 进 Secret</li>
+    <li>若需自定义 import path，评估仓库数量后选静态页 / govanityurls / gvu</li>
+    <li>用 <code>go get -x</code> 跑一次，顺着报错判断是凭据、环境变量还是 vanity 问题</li>
+    <li>组织场景文档化 bot 账号、令牌轮换和新增 module 的标准流程</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>私有模块的痛点不是「Go 不支持」，而是把凭据、环境变量、import path 语义三件事混为一谈——先分层再选型，大部分报错都能顺着线索定位。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
