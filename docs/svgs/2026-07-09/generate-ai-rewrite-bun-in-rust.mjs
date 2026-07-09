@@ -1,0 +1,174 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'ai-rewrite-bun-in-rust.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#7c2d12,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fdba74;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#9a3412}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#7c2d12,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>AI 重写 Bun 为 Rust：101 万行、11 天、64 个 Claude</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Bun</span>
+  <span class="tag tag-red">Zig→Rust</span>
+  <span class="tag tag-blue">Claude Agent</span>
+  <span class="tag tag-purple">对抗性审查</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在被月下载 2200 万次、Claude Code 等工具依赖的生产级基础设施上，AI Agent 能否在 11 天内完成 53.5 万行 Zig 到 100 万行 Rust 的完整语言重写，以及需要怎样的工程方法论才能让它真正可行。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">Bun 重写工程链路</h3>
+  <div class="diagram">
+    <div class="node">Zig 53.5 万行<br><span style="font-size:11px;font-weight:400">内存安全债</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">PORTING.md<br><span style="font-size:11px;font-weight:400">模式映射</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">64×Claude<br><span style="font-size:11px;font-weight:400">实现+审查</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">370 万次断言<br><span style="font-size:11px;font-weight:400">零跳过</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Rust v1.4<br><span style="font-size:11px;font-weight:400">-20% 体积</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">11 天 · 6778 次提交 · 约 16.5 万美元 API 成本 · 等价 3 人年人力</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「给 Claude 一句『重写成 Rust』就能搞定」—— Jarred Sumner 明确说这是不负责任的做法；真正撑起质量的是实现者与对抗性审查者分离、机械翻译优先、以及把编译错误当可并行消化的任务队列。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】为什么从 Zig 迁到 Rust</h3>
+  <p><strong>在讲什么问题：</strong>Bun v1.3.14 修复清单几乎清一色是 use-after-free、悬空指针、内存泄漏——手动内存管理在 JS 引擎 GC 与原生代码混合场景下系统性失控。</p>
+  <p><strong>核心机制：</strong>Rust 借用检查器把清单里绝大多数 bug 变成编译错误；Drop 机制自动做 RAII 式资源清理，替代 Zig 里容易漏写或重复写的 defer。</p>
+  <p><strong>关键理解：</strong>选 Rust 不是因为讨厌 Zig，而是因为「事后 ASAN/Fuzz 发现」永远追不上「从源头杜绝」——C++ 有构造/析构但仍需人肉风格指南，执行力靠不住。</p>
+  <p><strong>典型场景：</strong>node:zlib use-after-free、node:http2 哈希表 rehash 悬空指针、crypto.scrypt 泄漏、TLS 会话缓存每次泄漏约 6.5KB。</p>
+  <p><strong>边界说明：</strong>Bun 约 20% 代码本就是 C++（JSC、uWebSockets、BoringSSL），Rust 版仍有约 4% unsafe（1.3 万处），因必须调用 C/C++ 库——不可能变成纯 safe Rust 项目。</p>
+  <div class="quote">原文：「这类问题可以一直靠一个个修撑下去，但对得起用户的方式应该是从根子上系统性地杜绝它们重复出现。」</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】增量重写 vs 一次性全量重写</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>53 万行、架构需保持</td><td>一次性全量机械翻译</td><td>Sumner 从 esbuild Go→Zig 经验：增量会留大量过渡代码，短中期极痛苦</td><td>按模块逐步替换</td><td>双语言并存期维护成本爆炸</td></tr>
+    <tr><td>先保功能对等</td><td>忠实 Zig 结构移植，地道 Rust 留到 v1.4 后</td><td>先吃到借用检查红利，再逐步降 unsafe</td><td>重写时顺便大重构</td><td>范围失控、测试难收敛</td></tr>
+    <tr><td>人力不可接受（3 人年+功能冻结）</td><td>AI Agent 并行 + 人类监工</td><td>团队备选其实是「什么都不做继续修 bug 清单」</td><td>手写类 Rust 智能指针</td><td>体验差且无编译器级保证</td></tr>
+    <tr><td>生产依赖（2200 万月下载）</td><td>零测试跳过底线 + 6 平台 CI 全绿才合并</td><td>370 万次 expect 断言，0 个跳过或删除</td><td>为赶进度 stub 掉编译不过函数</td><td>Claude 曾误理解任务，审查规则后才止住</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】实现者 + 对抗性审查者分离</h3>
+  <p><strong>核心思路：</strong>写代码的人（Claude）想让代码尽快合并，会对自己代码的问题视而不见——审查者必须看不到实现者推理过程，且被明确告知「默认这段代码是错的」。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. 配置 1 个实现者 + 至少 2 个对抗性审查者，审查者只拿 diff</p>
+  <p>2. 准备阶段：3 小时产出 PORTING.md（Zig→Rust 模式映射）+ LIFETIMES.tsv（结构体生命周期标注）</p>
+  <p>3. 试运行 3 个文件验证流程，再铺开 1448 个 .zig 文件</p>
+  <p>4. 4 个独立 worktree × 16 个 Claude，峰值约 64 并行；禁止跨文件 git 命令和慢命令（cargo）</p>
+  <p>5. cargo check 约 1.6 万错误按 crate 分组：每 crate 一个实现者+两审查者+整合者小循环</p>
+  <div class="highlight"><strong>审查规则：</strong>「如果你需要写一整段注释来证明这个权宜之计是合理的，那说明代码本身就是错的——去把代码修对。」</div>
+  <div class="pitfall"><strong>真实拦下的 bug：</strong>异步 uv_close 的 Box 提前释放（改用 Box::leak）；负数时间戳 trunc vs floor；unwrap_or 立即求值导致 CSS color-mix panic——都能编译通过，无审查必漏。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】机械翻译的 19 个已知回归</h3>
+  <p><strong>坑名：</strong>两门语言「长得一样、语义完全不同」的陷阱——纯人工审查也容易漏。</p>
+  <p><strong>原因：</strong>机械翻译不是无脑复制粘贴；Zig comptime、assert 副作用、边界检查默认值与 Rust 不一致。</p>
+  <p><strong>原文案例：</strong></p>
+  <p>• debug_assert! 在 release 擦除副作用 → HMR 热更新失效</p>
+  <p>• bytemuck::cast_slice 遇奇数长度直接 panic → Blob.text() 崩溃</p>
+  <p>• Rust release 默认边界检查 vs Zig ReleaseFast 关闭 → 缓冲区上限从 840 万骤降到 27 万</p>
+  <p>• comptime 格式化 vs Rust 运行时格式化 → 终端超链接被误当颜色标记吃掉</p>
+  <p><strong>解法：</strong>合并后 11 轮 Claude Code Security 审查 + 全解析器 7×24 Fuzzilli 模糊测试（超 1000 亿次，约 15 个自动 PR）。</p>
+  <p><strong>严重程度：</strong>致命级若未测到生产——Prisma Compute 和 Claude Code 已跑 Rust 版验证内存与启动问题修复。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】重写前后关键指标</h3>
+  <table>
+    <tr><th>对比维度</th><th>Zig v1.3.14</th><th>Rust v1.4.0</th><th>一句话结论</th></tr>
+    <tr><td>内存（Bun.build 2000 次）</td><td>泄漏至约 6.7GB</td><td>稳定约 609MB</td><td>Drop 自动清理见效</td></tr>
+    <tr><td>Linux 二进制体积</td><td>约 88MB</td><td>约 70MB（-20%）</td><td>少 comptime + LTO + ICU 精简</td></tr>
+    <tr><td>HTTP 吞吐（Bun.serve）</td><td>16.96 万 req/s</td><td>17.77 万 req/s（+4.8%）</td><td>Rust-C++ LTO 跨语言优化</td></tr>
+    <tr><td>Claude Code 冷启动（Linux）</td><td>517ms</td><td>464ms（-10%）</td><td>生产工具已切换</td></tr>
+    <tr><td>unsafe 占比</td><td>N/A（手动管理）</td><td>约 4%（78% 仅一行）</td><td>随地道化重构会继续降</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】AI 能否挑起基础设施重写</h3>
+  <p><strong>原则：</strong>答案不是「能」或「不能」，而是方法论决定上限——人类做大型重写需要的纪律，这次由 64 个 Claude 执行，人做架构决策与流程监工。</p>
+  <p><strong>为什么重要：</strong>16.5 万美元、11 天、0 测试删除——将成为「AI 能否重写关键基础设施」的参照系；反面是 3 人年 + 全年功能冻结。</p>
+  <p><strong>怎么落地：</strong>一次性重写决策、机械翻译优先、对抗性审查、编译错误任务队列化、零测试跳过。</p>
+  <p><strong>适用边界：</strong>需要 Anthropic 级模型 + Claude Code 动态工作流 + 对代码库有完整上下文的人类监工；不是「复制粘贴喂 AI」能复现的。</p>
+  <div class="quote">原文：「执行这些纪律的主力换成了 64 个同时运转的 Claude 实例，而人类工程师的角色，变成了架构决策者和流程监工。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Zig 社区 / 「修 bug 清单就够了」派</p>
+  <p class="rebuttal-text">16.5 万美元和 100 万行新代码只为把一类内存 bug 交给编译器——在 Zig 上补 ASAN、Fuzz 和智能指针方案，成本远低于推倒重来，且不会引入 debug_assert 语义差这类新回归。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Bun 迁 Rust 根因是 Zig 手动内存管理与 JSC 混合场景下 use-after-free/泄漏系统性爆发，Rust 把多数问题前移到编译期</li>
+    <li>工程上选一次性全量机械翻译，地道 Rust 重构放到 v1.4 之后，避免增量过渡代码泥潭</li>
+    <li>1 实现者 + 2 对抗性审查者是质量核心，三个「能编译能跑」的 bug 全靠审查拦住</li>
+    <li>64 Claude 并行 + 4 worktree，把 1.6 万编译错误和 972→0 测试失败当可并行任务队列消化</li>
+    <li>重写后内存收敛、体积 -20%、吞吐 +2.8%~4.8%，但机械翻译留下 19 个语义回归需持续 Fuzz 与安全审查</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>评估大型重写时先算「增量过渡成本」vs「一次性机械翻译 + 后续重构」</li>
+    <li>任何 AI 代码生成流程强制实现/审查角色分离，审查者默认代码有错</li>
+    <li>设定「零测试跳过」硬底线，CI 全平台全绿才允许合并</li>
+    <li>机械翻译后专门做「同语法不同语义」回归清单（assert 副作用、comptime、边界检查）</li>
+    <li>用 bun upgrade --canary 试用 Rust 版，关注 v1.4.0 正式版发布</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>AI Agent 重写关键基础设施的可行性，不取决于模型多强，而取决于你是否把人类大型重写的工程纪律（对抗性审查、任务队列化、测试底线）系统化地编码进 Agent 工作流。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

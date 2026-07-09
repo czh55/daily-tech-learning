@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-09",
+    "files": [
+      {
+        "path": "svgs/2026-07-09/ai-rewrite-bun-in-rust.svg",
+        "title": "AI 重写 Bun 为Rust全过程揭秘：101万行代码、11天、64个Claude并行开工",
+        "source": "https://tonybai.com/2026/07/09/ai-rewrite-bun-in-rust/"
+      },
+      {
+        "path": "svgs/2026-07-09/mcp-server-architecture-patterns-analysis.svg",
+        "title": "MCP Server 架构模式全解析：5 种模式、4 个反模式，与那条不能越过的「工具数量红线」",
+        "source": "https://tonybai.com/2026/07/09/mcp-server-architecture-patterns-analysis/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-08",
     "files": [
       {
