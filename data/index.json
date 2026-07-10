@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-10",
+    "files": [
+      {
+        "path": "svgs/2026-07-10/hermes-agent-kanban-multiagent.svg",
+        "title": "Hermes Kanban 多 Agent 编排：让多个 Agent 并行协作完成复杂任务",
+        "source": "https://xiangyugongzuoliu.com/hermes-agent-kanban-multiagent/"
+      },
+      {
+        "path": "svgs/2026-07-10/new-ai-stack-model-harness-loop-agent.svg",
+        "title": "全新 AI 技术栈：模型、Harness、Loop 与自我进化的智能体",
+        "source": "https://tonybai.com/2026/07/10/the-new-ai-stack-model-harness-loop-agent/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-09",
     "files": [
       {

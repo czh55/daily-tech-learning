@@ -1,0 +1,172 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'hermes-agent-kanban-multiagent.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:38px;font-weight:900;background:linear-gradient(135deg,#065f46,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #10b981}
+.card h3{font-size:22px;font-weight:700;color:#065f46;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#ecfdf5;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#065f46;border-left:4px solid #10b981}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:12px;padding:10px 14px;text-align:center;min-width:80px;font-weight:700;font-size:12px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#065f46,#10b981);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#065f46;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Hermes Kanban 多 Agent 编排实战</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">Hermes Agent</span>
+  <span class="tag tag-blue">Kanban</span>
+  <span class="tag tag-purple">delegate_task</span>
+  <span class="tag tag-orange">多 Agent</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：单 Agent 上下文被占满、进程崩溃丢状态、人工决策无法暂停时，如何用 Hermes Kanban 持久化任务板加 delegate_task 进程内委派，让多个专精 Agent 并行协作且跨重启可追溯。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#065f46;margin-bottom:12px;text-align:center">Kanban 六列看板流转</h3>
+  <div class="diagram">
+    <div class="node">Triage</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Todo</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">Ready</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">In Progress</div>
+    <span class="arrow-sym">→</span>
+    <div class="node" style="border-color:#ef4444;color:#991b1b;background:#fef2f2">Blocked</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green" style="background:#d1fae5">Done</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">SQLite ~/.hermes/kanban.db · 调度器 60s tick · 依赖引擎自动提升</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「多 Agent = 让一个 Agent 更聪明」—— Kanban 不是让单个 Agent 变强，而是让 researcher、implementer、reviewer 等专精 Profile 各做各的事，通过结构化交接传递上下文。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Kanban vs delegate_task</h3>
+  <p><strong>在讲什么问题：</strong>单 Agent 三大瓶颈——上下文占满丢细节、进程崩溃丢中间状态、人工决策无法优雅暂停恢复。</p>
+  <p><strong>核心机制：</strong>Kanban 是跨进程持久化任务板（SQLite），delegate_task 是同进程内轻量委派（ThreadPoolExecutor），两者互补非替代。</p>
+  <p><strong>关键理解：</strong>Kanban 像公司项目管理看板，delegate_task 像会议中即时分配「你去查 A，你去查 B，五分钟后汇报」。</p>
+  <p><strong>典型场景：</strong>Kanban 适合跨边界、需持久、需人工的工作；delegate_task 适合短期推理、快速并行研究。</p>
+  <p><strong>边界说明：</strong>delegate_task 父被中断则子代理全部取消；Kanban Worker 崩溃后调度器检测死 PID，任务回 Ready 自动重试。</p>
+  <div class="quote">原文：「Kanban Worker 内部可以使用 delegate_task 进一步并行。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】delegate_task vs Kanban 全维度</h3>
+  <table>
+    <tr><th>对比维度</th><th>delegate_task</th><th>Kanban</th><th>一句话结论</th></tr>
+    <tr><td>生命周期</td><td>同步，父轮次内完成</td><td>持久，跨重启存活</td><td>短期推理 vs 长期协作</td></tr>
+    <tr><td>人工参与</td><td>不可，子代理不能用 clarify</td><td>可 Blocked 等人决策</td><td>模糊决策必须 Kanban</td></tr>
+    <tr><td>发现性</td><td>父上下文内可见</td><td>Dashboard 全局可见</td><td>Kanban 不用翻日志</td></tr>
+    <tr><td>依赖管理</td><td>Orchestrator 手动协调</td><td>内建 --parent 依赖引擎</td><td>Pipeline 用 Kanban 更稳</td></tr>
+    <tr><td>失败恢复</td><td>父中断全部取消</td><td>断路器 + 崩溃检测 + 重试</td><td>生产任务必须 Kanban</td></tr>
+    <tr><td>嵌套深度</td><td>max_spawn_depth 限制（默认 1）</td><td>无限制 parent-child 链</td><td>深度嵌套用 Kanban 防失控</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Orchestrator 铁律与 Worker 工具集</h3>
+  <p><strong>Orchestrator 三条约束（kanban-orchestrator Skill 强制执行）：</strong></p>
+  <p>1. 反诱惑规则 — 绝不写代码、跑测试、编辑文件</p>
+  <p>2. Step-0 Profile 发现 — 先运行 hermes profiles list，分配给不存在的 Profile 会静默失败</p>
+  <p>3. 分解手册 — kanban_create + kanban_link + kanban_comment 标准化流程，拆 3-7 个离散任务后退场</p>
+  <p><strong>Worker 工具：</strong>kanban_show / complete / block / heartbeat / comment（任务范围内）</p>
+  <p><strong>Orchestrator 工具：</strong>kanban_list / create / link / unblock / comment（跨任务路由）</p>
+  <div class="highlight"><strong>结构化交接：</strong>kanban_complete 必须写 summary（给下游看的一句话结论）和 metadata（changed_files、decisions 等结构化数据），不要只写「done」。</div>
+  <div class="pitfall"><strong>delegate_task 铁律：</strong>子代理完全看不到父对话——goal 和 context 必须写全背景，模糊描述必然跑偏。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】九种协作模式选型</h3>
+  <table>
+    <tr><th>场景</th><th>推荐模式</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>同类任务批量并行</td><td>P1 Fan-out</td><td>N 个同级同角色并行研究 5 个角度</td><td>单 Agent 串行</td><td>上下文交叉污染</td></tr>
+    <tr><td>多角色依次处理</td><td>P2 Pipeline</td><td>scout → editor → writer，依赖引擎自动提升</td><td>delegate_task 嵌套</td><td>深度受限，父中断全丢</td></tr>
+    <tr><td>架构选型需人拍板</td><td>P5 Human-in-the-loop</td><td>Worker kanban_block → 用户评论 → unblock</td><td>delegate_task</td><td>子代理无法 clarify 等人</td></tr>
+    <tr><td>50 个同质运营任务</td><td>P8 Fleet Farming</td><td>同 Profile 不同 tenant 自然并行</td><td>单 Profile 串行</td><td>调度器同 Profile 内按优先级串行</td></tr>
+    <tr><td>一句话需求变规格</td><td>P9 Triage Specifier</td><td>粗想法 → triage → specify → todo</td><td>直接写 Todo</td><td>任务范围不清晰导致反复 Blocked</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】delegate_task 与 Kanban 常见坑</h3>
+  <p><strong>坑 1 — 上下文传递不足：</strong>子代理不知道父对话，goal 写「Fix the error」必跑偏。解法：goal 具体到文件名+错误类型，context 含完整 traceback 和根因。</p>
+  <p><strong>坑 2 — 嵌套失控：</strong>max_spawn_depth:3 × max_concurrent_children:3 理论 27 并发叶子。解法：depth 保持默认 1，需要嵌套用 Kanban。</p>
+  <p><strong>坑 3 — 多文件重构冲突：</strong>两个子代理改同一文件。解法：并行子代理处理不同代码区域，冲突留给父 Agent 合并。</p>
+  <p><strong>坑 4 — 无限重试抖动：</strong>连续失败导致看板无限抖动。解法：--max-retries 默认 2 次后变 gave_up，网关自动通知。</p>
+  <p><strong>坑 5 — Orchestrator 亲自写代码：</strong>分解与实现角色混淆。解法：SOUL.md 五条铁律 + kanban-orchestrator Skill 强制约束。</p>
+  <p><strong>严重程度：</strong>结构化交接缺失是致命级——下游 Worker 只能去评论区翻信息而非数据直接传递。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】成本优化：贵模型规划 + 便宜模型执行</h3>
+  <p><strong>原则：</strong>主 Agent 用 Claude Sonnet 做规划和综合，子代理/Worker 用 Gemini Flash 做研究或实现，三路并行研究成本降 80% 以上。</p>
+  <p><strong>配置：</strong>delegation.model = google/gemini-flash-2.0，max_concurrent_children = 3，max_spawn_depth = 1。</p>
+  <p><strong>Pattern 5 Gather Then Analyze：</strong>execute_code 做机械化采集（10+ 顺序工具调用），delegate_task 做推理密集分析（单次昂贵推理，干净上下文）。</p>
+  <p><strong>适用边界：</strong>安全审查和架构决策仍应用贵模型；简单搜索、翻译、格式化任务才降级。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：极简单 Agent 派 / 「Kanban 是过度工程」开发者</p>
+  <p class="rebuttal-text">SQLite 看板、六列流转、Orchestrator Skill 铁律——为三个并行研究搭这套基础设施，调试成本可能超过串行 delegate_task 五分钟的收益，小团队应先证明单 Agent 真到瓶颈再升级。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Hermes 提供 Kanban（跨进程持久）+ delegate_task（进程内并行）两种互补机制</li>
+    <li>六列看板 + 依赖引擎 + 结构化交接（summary/metadata）是多 Agent 协作核心</li>
+    <li>Orchestrator 只分解路由不做实现，Worker 各装专精 Skill 自适应</li>
+    <li>九种协作模式覆盖 Fan-out、Pipeline、Human-in-the-loop 等典型场景</li>
+    <li>贵模型规划 + 便宜模型执行是成本优化的关键杠杆</li>
+  </ol>
+  <p style="margin-top:16px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>hermes kanban init && hermes dashboard 打开 http://127.0.0.1:9119</li>
+    <li>创建 researcher/implementer/reviewer 三 Profile + Orchestrator Profile</li>
+    <li>用 --parent 建立三任务依赖链，观察依赖引擎自动提升</li>
+    <li>config.yaml 配置 delegation 段：max_concurrent_children=3, max_spawn_depth=1, 便宜模型</li>
+    <li>每个 kanban_complete 认真写 summary 和 metadata，不要只写 done</li>
+  </ol>
+  <p style="margin-top:16px"><strong>关键认知转变：</strong>多 Agent 协作的关键不是 Agent 数量，而是持久化任务板上的结构化交接质量——Kanban 最被低估的特性正在于此。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

@@ -1,0 +1,135 @@
+欢迎收听每日技术学习语音讲解。本期主题，Hermes Kanban 多 Agent 编排实战。标签包括Hermes Agent、Kanban、delegate_task、多 Agent。本次讲解预计时长 约 14 到 15 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：单 Agent 上下文被占满、进程崩溃丢状态、人工决策无法暂停时，如何用 Hermes Kanban 持久化任务板加 delegate_task 进程内委派，让多个专精 Agent 并行协作且跨重启可追溯。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Triage，然后Todo，然后Ready，然后In Progress，然后Blocked，然后Done
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「多 Agent = 让一个 Agent 更聪明」—— Kanban 不是让单个 Agent 变强，而是让 researcher、implementer、reviewer 等专精 Profile 各做各的事，通过结构化交接传递上下文。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：极简单 Agent 派 / 「Kanban 是过度工程」开发者
+
+SQLite 看板、六列流转、Orchestrator Skill 铁律——为三个并行研究搭这套基础设施，调试成本可能超过串行 delegate_task 五分钟的收益，小团队应先证明单 Agent 真到瓶颈再升级。
+
+接下来，第四部分，【概念拆解卡】Kanban vs delegate_task。
+
+在讲什么问题，单 Agent 三大瓶颈——上下文占满丢细节、进程崩溃丢中间状态、人工决策无法优雅暂停恢复。
+
+核心机制，Kanban 是跨进程持久化任务板（SQLite），delegate_task 是同进程内轻量委派（ThreadPoolExecutor），两者互补非替代。
+
+关键理解，Kanban 像公司项目管理看板，delegate_task 像会议中即时分配「你去查 A，你去查 B，五分钟后汇报」。
+
+典型场景，Kanban 适合跨边界、需持久、需人工的工作；delegate_task 适合短期推理、快速并行研究。
+
+边界说明，delegate_task 父被中断则子代理全部取消；Kanban Worker 崩溃后调度器检测死 PID，任务回 Ready 自动重试。
+
+原文：「Kanban Worker 内部可以使用 delegate_task 进一步并行。」
+
+接下来，第五部分，【跨概念对比表】delegate_task vs Kanban 全维度。
+
+生命周期，同步，父轮次内完成，持久，跨重启存活，短期推理 vs 长期协作
+
+人工参与，不可，子代理不能用 clarify，可 Blocked 等人决策，模糊决策必须 Kanban
+
+发现性，父上下文内可见，Dashboard 全局可见，Kanban 不用翻日志
+
+依赖管理，Orchestrator 手动协调，内建 --parent 依赖引擎，Pipeline 用 Kanban 更稳
+
+失败恢复，父中断全部取消，断路器 + 崩溃检测 + 重试，生产任务必须 Kanban
+
+嵌套深度，max_spawn_depth 限制（默认 1），无限制 parent-child 链，深度嵌套用 Kanban 防失控
+
+接下来，第六部分，【方法/工具卡】Orchestrator 铁律与 Worker 工具集。
+
+Orchestrator 三条约束（kanban-orchestrator Skill 强制执行）：
+
+1. 反诱惑规则 — 绝不写代码、跑测试、编辑文件
+
+2. Step-0 Profile 发现 — 先运行 hermes profiles list，分配给不存在的 Profile 会静默失败
+
+3. 分解手册 — kanban_create + kanban_link + kanban_comment 标准化流程，拆 3-7 个离散任务后退场
+
+Worker 工具：kanban_show / complete / block / heartbeat / comment（任务范围内）
+
+Orchestrator 工具：kanban_list / create / link / unblock / comment（跨任务路由）
+
+结构化交接：kanban_complete 必须写 summary（给下游看的一句话结论）和 metadata（changed_files、decisions 等结构化数据），不要只写「done」。
+
+delegate_task 铁律：子代理完全看不到父对话——goal 和 context 必须写全背景，模糊描述必然跑偏。
+
+接下来，第七部分，【决策/选型表】九种协作模式选型。
+
+同类任务批量并行，P1 Fan-out，N 个同级同角色并行研究 5 个角度，单 Agent 串行，上下文交叉污染
+
+多角色依次处理，P2 Pipeline，scout ，得到 editor ，得到 writer，依赖引擎自动提升，delegate_task 嵌套，深度受限，父中断全丢
+
+架构选型需人拍板，P5 Human-in-the-loop，Worker kanban_block ，得到 用户评论 ，得到 unblock，delegate_task，子代理无法 clarify 等人
+
+50 个同质运营任务，P8 Fleet Farming，同 Profile 不同 tenant 自然并行，单 Profile 串行，调度器同 Profile 内按优先级串行
+
+一句话需求变规格，P9 Triage Specifier，粗想法 ，得到 triage ，得到 specify ，得到 todo，直接写 Todo，任务范围不清晰导致反复 Blocked
+
+接下来，第八部分，【避坑清单卡】delegate_task 与 Kanban 常见坑。
+
+坑 1 — 上下文传递不足：子代理不知道父对话，goal 写「Fix the error」必跑偏。解法：goal 具体到文件名+错误类型，context 含完整 traceback 和根因。
+
+坑 2 — 嵌套失控：max_spawn_depth:3 × max_concurrent_children:3 理论 27 并发叶子。解法：depth 保持默认 1，需要嵌套用 Kanban。
+
+坑 3 — 多文件重构冲突：两个子代理改同一文件。解法：并行子代理处理不同代码区域，冲突留给父 Agent 合并。
+
+坑 4 — 无限重试抖动：连续失败导致看板无限抖动。解法：--max-retries 默认 2 次后变 gave_up，网关自动通知。
+
+坑 5 — Orchestrator 亲自写代码：分解与实现角色混淆。解法：SOUL.md 五条铁律 + kanban-orchestrator Skill 强制约束。
+
+严重程度，结构化交接缺失是致命级——下游 Worker 只能去评论区翻信息而非数据直接传递。
+
+接下来，第九部分，【心法/原则卡】成本优化：贵模型规划 + 便宜模型执行。
+
+原则，主 Agent 用 Claude Sonnet 做规划和综合，子代理/Worker 用 Gemini Flash 做研究或实现，三路并行研究成本降 80% 以上。
+
+配置：delegation.model = google/gemini-flash-2.0，max_concurrent_children = 3，max_spawn_depth = 1。
+
+Pattern 5 Gather Then Analyze：execute_code 做机械化采集（10+ 顺序工具调用），delegate_task 做推理密集分析（单次昂贵推理，干净上下文）。
+
+适用边界，安全审查和架构决策仍应用贵模型；简单搜索、翻译、格式化任务才降级。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Hermes 提供 Kanban（跨进程持久）+ delegate_task（进程内并行）两种互补机制
+
+六列看板 + 依赖引擎 + 结构化交接（summary/metadata）是多 Agent 协作核心
+
+Orchestrator 只分解路由不做实现，Worker 各装专精 Skill 自适应
+
+九种协作模式覆盖 Fan-out、Pipeline、Human-in-the-loop 等典型场景
+
+贵模型规划 + 便宜模型执行是成本优化的关键杠杆
+
+hermes kanban init && hermes dashboard 打开 http://127.0.0.1:9119
+
+创建 researcher/implementer/reviewer 三 Profile + Orchestrator Profile
+
+用 --parent 建立三任务依赖链，观察依赖引擎自动提升
+
+config.yaml 配置 delegation 段：max_concurrent_children=3, max_spawn_depth=1, 便宜模型
+
+每个 kanban_complete 认真写 summary 和 metadata，不要只写 done
+
+总结：
+
+行动清单：
+
+关键认知转变：多 Agent 协作的关键不是 Agent 数量，而是持久化任务板上的结构化交接质量——Kanban 最被低估的特性正在于此。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
