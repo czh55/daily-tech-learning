@@ -1,0 +1,154 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'own-the-outer-loop.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>掌控外环：循环工程的边界必须由人类死守</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Loop Engineering</span>
+  <span class="tag tag-green">Outer Loop</span>
+  <span class="tag tag-orange">Accountability</span>
+  <span class="tag tag-purple">Agentic Engineering</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 Agent 能以机器速度并跑成百上千个循环、几天内写出人类无法逐行审核的代码时，人类工程师应如何通过死守外环（决策、验证、批准、担责）而非退回内环手工执行，来守住对系统的受托责任与职业不可替代性。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">软件工厂：内环执行 vs 外环主权</h3>
+  <div class="diagram">
+    <div class="node-orange">Harness<br><span style="font-size:11px;font-weight:400">模型+工具+记忆+沙箱</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">内环 Inner Loop<br><span style="font-size:11px;font-weight:400">调查·执行·验证·重复</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">证据 Evidence<br><span style="font-size:11px;font-weight:400">测试·日志·审计</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-red">外环 Outer Loop<br><span style="font-size:11px;font-weight:400">裁决·问责·品味</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">Addy Osmani 范式：AI 跑能力环，人类死守信任环</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「人类在环 = 人类要审核每一行 AI 代码」——正确做法是死守四个外环（约束、抽样、审计、所有权），把质量保证焊在内环，人类升维到 Ship/Block/Redirect 的最终裁决，而非蹲守执行细节。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】内环与外环</h3>
+  <p><strong>在讲什么问题：</strong>循环工程让 Agent 能规模化生产代码，但创造变廉价后，谁对「这改动安全吗、搞砸了谁负责」做最终回答？</p>
+  <p><strong>核心机制：</strong>内环是 Agent 自治的调查-执行-验证循环（能力 Capability）；证据跨越边界递交外环，由人类行使自主权 Agency——决定、验证、批准、承担后果。</p>
+  <p><strong>关键理解：</strong>质量在字面意义上就是「反向压力（Back pressure）」——类型检查、测试、Git Hooks、沙箱、审计日志等传统工程信号必须持续从 Agent 发出，人类不必剔除出环，只需从内环繁琐执行升维到外环。</p>
+  <p><strong>典型场景：</strong>软件工厂并跑数百 Agent 夜间产码；长周期 Agent 数小时自主决策；42% 生产提交已含 AI 协助代码（Sonar 2026 调查）。</p>
+  <p><strong>边界说明：</strong>外环主权适用于需可解释、可追责的生产系统；纯原型探索可放宽，但一旦进入下游依赖系统，未经人类 Verdict 的工作成果绝不允许放行。</p>
+  <div class="quote">原文：模型可以写出具体的每一行代码，但最终的「裁决」只能由我来做。未经我的决策，我团队的工作成果绝不允许进入下游依赖系统。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】质量、裁决与可追责性</h3>
+  <table>
+    <tr><th>对比维度</th><th>质量 Quality</th><th>裁决 Verdict</th><th>可追责性 Answerability</th><th>一句话结论</th></tr>
+    <tr><td>核心动作</td><td>部署验证手段产出证据</td><td>人类做 Ship/Block/Redirect 等生产决策</td><td>随时能解释系统为何如此行为</td><td>证据支撑裁决，裁决承载问责</td></tr>
+    <tr><td>执行主体</td><td>内环自动化 + 工程信号</td><td>外环人类工程师</td><td>署名发布者（总制片人）</td><td>Agent 产能力，人类产信任</td></tr>
+    <tr><td>失败代价</td><td>证据不足导致误放行</td><td>错误 Ship 引发生产事故</td><td>无法追溯决策链，合规与复盘崩溃</td><td>长周期 Agent 下 Answerability 最稀缺</td></tr>
+    <tr><td>与 Loop 关系</td><td>焊在内环每次循环</td><td>证据越界后的唯一闸门</td><td>贯穿 Provenance/Intent/Ownership</td><td>瓶颈从「能写出来吗」变为「有资格存在吗」</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】三大隐性认知成本</h3>
+  <p><strong>认知妥协（Cognitive surrender）：</strong>沃顿研究：AI 给错答案时 73% 的人毫无察觉全盘接受，自信心反而更高。Agent 输出是你的最终答案，名誉与事故复盘仍在你名下。</p>
+  <p><strong>认知债务（Cognitive debt）：</strong>Anthropic 实验：过度依赖 AI 写代码的工程师，代码理解力得分比亲手写的人低 17%（50 vs 67）。Agent 规划越长，你与代码的理解鸿沟滚雪球式扩大。</p>
+  <p><strong>协调管理税（Orchestration tax）：</strong>并跑千个 Agent 易如反掌，人脑带宽无法并行。Legacy 棕地系统的真实逻辑写在历史伤疤里，AI 读不懂文档外的暗默知识。</p>
+  <div class="highlight"><strong>落地修补：</strong>① 把人类注意力当最高级资源规划架构 ② Git Worktrees/Scope 解耦规划与生成 ③ 内环无法闭环的步骤设 Time-box 超时挂起 ④ 代码改动用严苛 Opt-in 准入授权。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】外环四循环如何配置</h3>
+  <table>
+    <tr><th>场景</th><th>推荐外环</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>定义 Agent 能碰什么</td><td>约束环 Constraints</td><td>设定输入、架构、不变式与指令边界</td><td>给 Agent 无限制自主权</td><td>违背 Back pressure，无法随时叫停</td></tr>
+    <tr><td>AI 产出速度超过肉眼审核</td><td>抽样环 Sampling</td><td>按比例抽取人工复审，成本可控</td><td>100% 逐行人工审内环产出</td><td>人类注意力是稀缺资源，必败</td></tr>
+    <tr><td>合规与事故复盘</td><td>审计环 Audit</td><td>留存客观证据，日志可追溯有效</td><td>依赖模型口头保证合格</td><td>独立校验机制才能决定何时过关</td></tr>
+    <tr><td>生产边界责任划分</td><td>所有权环 Ownership</td><td>明确谁对哪块业务最终负责</td><td>「人人是开发者」无署名发布</td><td>无 Accountability 则无业务规则</td></tr>
+    <tr><td>棕地 Legacy 引入 Agent</td><td>人类提炼隐性知识为显式约束</td><td>伤疤不在文档里，需 durable engineering</td><td>指望 Agent 读文档即懂系统</td><td>失去人类照料，工厂瞬间崩溃</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Alpha、Decay 与 Taste</h3>
+  <p><strong>原则：</strong>创造空前廉价，稀缺的是审查、验证、理解与维护；职业高度由 Alpha（超额决策红利）、Decay（技能平庸化）、Taste（指标存在前的审美裁决）三角塑造。</p>
+  <p><strong>为什么重要：</strong>Paul Graham：当技术让任何人都能制造任何东西时，「决定制造什么」成了一切。Mitchell Hashimoto：品味是在无客观量化指标时做高质量定性判断。</p>
+  <p><strong>怎么落地：</strong>让品味可操作化——给直觉起名、写清原则，在项目评审中显式讲解；从执行任务升维到教导任务、系统化任务、决定何时做、承担最终结果。</p>
+  <p><strong>适用边界：</strong>自主权阶梯最高处是鉴别 Discernment（判断 Bug 不值得修而优雅略过），而非无穷修 Bug；签名（声誉担保）支撑一生职业生涯，技能只兑现当前杠杆。</p>
+  <div class="quote">原文：我们可以让 Agent 依照政策做选择、路由、合并，但它永远无法替你承担系统跑崩后的后果。唯有人类可以做出真正的选择，也唯有人类承接选择的代价。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：全自动软件工厂派 / 「审查是瓶颈就该消灭审查」</p>
+  <p class="rebuttal-text">GitLab 2026 报告已把代码审查标为最大瓶颈，但消灭外环只会把治理滞后到风险接受之后——没有 Verdict 与 Answerability，企业从一开始就不敢把 Agent 投入生产，规模化工厂反而无法启动。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>内环跑能力（调查-执行-验证），外环守信任（决策-验证-批准-担责），证据越界是人类唯一闸门。</li>
+    <li>质量 = 反向压力：传统工程信号必须从 Agent 持续发出，人类升维到四外环而非蹲守内环。</li>
+    <li>认知妥协、认知债务、协调税是 AI 提效的三张隐性账单，Legacy 场景下管理税尤其致命。</li>
+    <li>职业价值从「能写出来吗」转向「有资格存在吗、出了问题能否负责」；Taste 与 Accountability 不可规模化替代。</li>
+    <li>每个代码库应有 Accountability Contract：共识 Checklist、客观证据、最终责任人、拦截时系统健康状态。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>为当前 Agent 工作流画出内环/外环边界，明确证据越界后谁做 Ship/Block/Redirect 裁决。</li>
+    <li>配置四外环：写下约束不变式、抽样复审比例、审计日志清单、生产所有权矩阵。</li>
+    <li>对内环改动启用 Opt-in 准入与时间盒，避免 Agent 在棕地区域无限自治。</li>
+    <li>起草一份 Accountability Contract 模板，合入前固化证据与署名责任人。</li>
+    <li>把个人品味写成可评审的原则文档，在团队案例拆解中显式讲解。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>Loop Engineering 解决「Agent 如何跑得更快更稳」；外环主权解决「人类如何在 AI 吞噬软件开发时守住尊严与不可替代性」——工程师从代码匠人蜕变为对系统承担受托责任的裁决者。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

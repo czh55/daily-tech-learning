@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-15",
+    "files": [
+      {
+        "path": "svgs/2026-07-15/deepagents-code-memory-state.svg",
+        "title": "LangChain DeepAgents 速通指南（十一）—— DeepAgents Code 记忆与状态管理",
+        "source": "https://juejin.cn/post/7662409899527634944"
+      },
+      {
+        "path": "svgs/2026-07-15/own-the-outer-loop.svg",
+        "title": "掌控外环：为什么「循环工程」的边界必须由人类死守？",
+        "source": "https://tonybai.com/2026/07/15/own-the-outer-loop/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-14",
     "files": [
       {

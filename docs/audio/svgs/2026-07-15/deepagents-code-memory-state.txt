@@ -1,0 +1,117 @@
+欢迎收听每日技术学习语音讲解。本期主题，DeepAgents Code 记忆与状态管理。标签包括DeepAgents、LangGraph、Checkpoint、AGENTS.md。本次讲解预计时长 约 14 到 15 分钟，共 10 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：生产级编码智能体如何在单次会话内通过检查点、缓存与异步 IO 实现无损状态恢复，又如何在跨会话层面用分层 AGENTS.md、记忆注入模板与防护中间件沉淀长期知识，同时应对上下文窗口上限与记忆文件被污染的安全风险。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：LangGraph Checkpoint，SQLite + aiosqlite，然后sessions.py 缓存层，多级缓存降写入，然后ResumeStateMiddleware，model_spec + tokens，然后AGENTS.md 分层，用户级 + 项目级，然后MemoryMiddleware，注入 + 防护
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「LangGraph 有 Checkpoint 就等于生产级会话恢复」——原生检查点只存 messages，不记 model_spec 与 context_tokens；高频实时写库还会成为性能瓶颈，DeepAgents Code 用中间件补元信息、用缓存层减 IO。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：向量数据库长期记忆派 / 「AGENTS.md 太原始上不了生产」
+
+分层 Markdown 加注入模板与 ManagedMemoryGuard 恰恰把可审计、可 diff、可防注入放在首位——生产级先要可靠恢复与明确边界，而非把记忆黑盒化进 embedding 检索。
+
+接下来，第四部分，【概念拆解卡】状态管理架构。
+
+在讲什么问题，智能体不是一次性消费品，必须把对话与运行环境持久化并随时恢复，且不能因 Token 暴涨或模型切换导致恢复后行为失真。
+
+核心机制，以 LangGraph checkpoints 表为基石，每次执行结束异步落盘 SQLite；sessions.py 提供 list_threads/get_thread/delete_thread，并对消息数、初始提示、最近线程列表设多级缓存（键为 checkpoint_id）。
+
+关键理解，ResumeStateMiddleware 在每个检查点额外持久化 _context_tokens 与 _model_spec，恢复时能精确还原模型环境与上下文占用，避免「消息在但模型错了」的隐性故障。
+
+典型场景，用户用 deepseek 聊 20 轮后关终端，次日 /threads 恢复同一 thread_id，UI 渲染 42 条历史并自动切回 deepseek、状态栏显示 85K/200K tokens。
+
+边界说明，检查点损坏、模型 Provider 不可用、远程沙箱已清理三类边界有明确降级：报错提示、回退默认模型并警告、提示重建沙箱。
+
+原文：LangGraph 原生的检查点机制存在两个明显不足：信息维度单一；实时写入开销大。DeepAgents Code 用中间件补全元信息，用分层缓存加异步持久解决。
+
+接下来，第五部分，【方法/工具卡】会话恢复五步法与上下文压缩。
+
+操作步骤，① list_threads 查 checkpoints 表得 ThreadInfo ② 用户选择线程 ③ 注入 thread_id ④ LangGraph 读最新快照（含 _model_spec/_context_tokens）⑤ 重建 UI 并切换模型。
+
+手动压缩 /offload：offload.py 检查 Token 阈值，调用 Summarization 中间件，OffloadResult 返回 messages_offloaded、tokens_before/after、pct_decrease。
+
+保留策略三选一：messages（最后 N 条）、tokens（最后 N token）、fraction（上下文窗口比例），与 Summarization 中间件一脉相承。
+
+自动压缩：Summarization 中间件在接近窗口阈值时自动摘要早期对话，与 /offload 手动路径互补。
+
+落地：长会话场景先确认 ResumeStateMiddleware 已启用；接近窗口上限时优先 /offload 并查看 pct_decrease；多模型切换务必依赖检查点中的 _model_spec 而非用户手动记模型名。
+
+接下来，第六部分，【跨概念对比表】短期状态 vs 长期记忆。
+
+存储载体，SQLite checkpoints 表，分层 Markdown 文件，会话连续 vs 跨会话进化
+
+核心组件，sessions.py + ResumeStateMiddleware，MemoryMiddleware + ManagedMemoryGuardMiddleware，工程层分工明确
+
+恢复内容，消息列表 + 模型 + Token 计数，用户偏好与项目约定，状态恢复不等于经验沉淀
+
+写入方式，每次执行结束自动检查点，edit_file、Onboarding、/remember 技能，长期记忆需行为规约防污染
+
+安全风险，库损坏、沙箱失效，恶意 AGENTS.md 提示注入，记忆模板声明「参考数据非系统指令」
+
+接下来，第七部分，【避坑清单卡】记忆注入与保护区。
+
+提示注入：MEMORY_SYSTEM_PROMPT 用 agent_memory 标签包裹内容，memory_guidelines 明确记忆是磁盘参考数据，与用户当前要求冲突时以用户为准。
+
+无关信息污染：模板规定何时更新（用户说「记住我的邮箱」）与何时不更新（临时闲聊），避免 AGENTS.md 膨胀。
+
+系统保留区被改：Onboarding 写入的名称区块用 HTML 注释标记；ManagedMemoryGuardMiddleware 拦截 write_file/edit_file，仅回滚保护区块并反馈错误，其余修改保留。
+
+注入顺序陷阱：memory_sources 用户级在前、项目级在后，拼接时项目级更靠后，模型优先采纳项目约定而非全局偏好。
+
+严重程度：小心。若关闭 enable_memory 或未装 ManagedMemoryGuard，智能体可能覆盖 Onboarding 保留区或把恶意第三方写入的 AGENTS.md 当作不可违抗指令。
+
+接下来，第八部分，【决策/选型表】压缩与记忆策略选型。
+
+对话 Token 逼近上限，自动 Summarization + 必要时 /offload，双路径覆盖被动与主动压缩，硬截断早期消息，造成事实丢失或生成中断
+
+消息长度较均匀，保留策略 messages（最后 N 条），配置简单，行为可预期，固定条数应对长短消息混杂，Token 占用波动大
+
+需精确控上下文，保留策略 tokens，直接对准窗口预算，仅按条数保留，单条超长消息可撑爆窗口
+
+多模型窗口差异大，保留策略 fraction，按比例自适应不同模型，写死绝对 Token 上限，换模型后策略失效
+
+跨项目通用偏好，用户级 ~/.deepagents/.../AGENTS.md，全局共享编码风格等，全部写入项目级，项目切换时偏好无法携带
+
+项目特有约定，项目级 .deepagents/AGENTS.md，pnpm 路径、迁移脚本位置等，写入用户级，污染其他项目环境
+
+接下来，第九部分，总结与行动。
+
+结论
+
+短期状态靠 LangGraph Checkpoint + sessions.py 异步 IO 与多级缓存，ResumeStateMiddleware 补全 model_spec 与 context_tokens。
+
+会话恢复五环节链路完整，边界场景（库损坏、模型不可用、沙箱失效）均有防御性设计。
+
+上下文压缩分自动 Summarization 与手动 /offload，保留策略支持 messages、tokens、fraction 三模式。
+
+长期记忆用分层 AGENTS.md + MemoryMiddleware 注入模板，项目级优先于用户级；ManagedMemoryGuard 锁定 Onboarding 保留区。
+
+整套设计是 LangChain 团队对生产级智能体可靠性、安全性与可扩展性的务实回应。
+
+检查 DeepAgents Code 是否启用 ResumeStateMiddleware 与 enable_memory，确认恢复后模型与 Token 栏一致。
+
+为长会话配置合适的 offload 保留策略（tokens 或 fraction 优先于纯 messages）。
+
+初始化用户级与项目级 AGENTS.md，把 pnpm/迁移路径等项目约定写入项目层。
+
+试用 /remember 技能沉淀架构决策，确认 ManagedMemoryGuard 未误拦合法编辑。
+
+在沙箱依赖场景恢复前验证远程环境仍存活，避免静默失败。
+
+总结：
+
+行动清单：
+
+关键认知转变：智能体设计的核心一环是记忆与状态——没有持续记忆就无法进化；短期检查点解决「这次聊到哪」，长期 AGENTS.md 解决「下次能否更懂这个项目」，二者工程实现完全不同不可混用。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
