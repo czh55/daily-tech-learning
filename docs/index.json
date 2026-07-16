@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-07-16",
+    "files": [
+      {
+        "path": "svgs/2026-07-16/go-1-28-roadmap-compiler-and-runtime-features-preview.svg",
+        "title": "Go 1.28 路线图首度曝光：Cgo 告别C工具链？泛型容器将入标准库？",
+        "source": "https://tonybai.com/2026/07/16/go-1-28-roadmap-compiler-and-runtime-features-preview/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-15",
     "files": [
       {
