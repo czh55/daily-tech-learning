@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-07-17",
+    "files": [
+      {
+        "path": "svgs/2026-07-17/go-maps-same-proposal-accepted.svg",
+        "title": "为了一个函数名，Go官方吵了两个月：maps.Same提案近日正式通过",
+        "source": "https://tonybai.com/2026/07/17/go-maps-same-proposal-accepted/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-16",
     "files": [
       {
