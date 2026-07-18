@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5762" viewBox="0 0 1320 5762">
+  <foreignObject x="0" y="0" width="1320" height="5762">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>告别标签页焦虑：我让 AI 帮我做了个浏览器插件 TabQueue</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">浏览器扩展</span>
+  <span class="tag tag-green">GTD 工作流</span>
+  <span class="tag tag-orange">隐私优先</span>
+  <span class="tag tag-purple">AI 辅助开发</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当标签页堆积到拖垮内存与 CPU 时，如何用「收纳→队列→消化→归档」四步 GTD 式流程，把不敢关的标签变成可逐条处理的阅读队列，同时做到零账号、零上传、全本地存储。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">TabQueue 核心流程</h3>
+  <div class="diagram">
+    <div class="node">收纳 Stash<br/><span style="font-size:11px;font-weight:400">一键收走标签</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">展示 Queue<br/><span style="font-size:11px;font-weight:400">按日期+域名分组</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">消化 Consume<br/><span style="font-size:11px;font-weight:400">侧边栏逐条处理</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">归档 Archive<br/><span style="font-size:11px;font-weight:400">已消费自动归档</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">类比 GTD 收件盘：白天随手丢入，晚上从最上面逐份处理，处理完归入档案柜</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">TabQueue 不是书签管理器或稍后读服务——它管理的是「当前打开的标签页」而非「文章收藏」，擅长 GitHub issue、技术文档、论坛帖子等 Pocket 类工具不擅长的场景。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】TabQueue 是什么</h3>
+  <p><strong>在讲什么问题：</strong>重度信息消费者每天开几十个「回头再看」标签，导致内存飙到 10GB+、CPU 空转、切换卡顿，甚至崩溃后标签全丢。</p>
+  <p><strong>核心机制：</strong>Chrome/Edge 扩展，把当前窗口所有标签一键收纳进本地队列，按日期和域名两级树形展示，在 Side Panel 中像刷收件箱一样逐条打开、标记已消费或删除。</p>
+  <p><strong>关键理解：</strong>借鉴 GTD 收件盘——收纳时零整理成本，消化时才按结构浏览，读完自动归档，收件盘永远清爽。</p>
+  <p><strong>典型场景：</strong>早上 HN/GitHub/Twitter 各开一堆标签，下班前一键收纳，周末打开侧边栏按 Reddit、GitHub 分组消化。</p>
+  <p><strong>边界说明：</strong>仅支持 Chromium 内核（Chrome/Edge/Brave ≥114）；未上架 Web Store，需手动加载解压扩展；Firefox/Safari 因 API 差异尚未支持。</p>
+  <div class="quote">「TabQueue 把你不敢关的标签页，变成一个有序的阅读队列。」——作者一句话概括</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】3 分钟上手 TabQueue</h3>
+  <p><strong>核心思路：</strong>开发者模式加载解压扩展 → 快捷键收纳 → Side Panel 消化队列。</p>
+  <p><strong>操作步骤：</strong>① 访问 tonybai.com/tabqueue 下载 ZIP 并解压；② 打开 chrome://extensions 或 edge://extensions，开启开发者模式，加载解压文件夹；③ Pin 工具栏图标；④ 打开待读标签，按 Ctrl+Shift+S（Mac: Cmd+Shift+S）或点击「收纳当前窗口」；⑤ 点击「打开队列」在右侧 Side Panel 逐条处理。</p>
+  <p><strong>选型条件：</strong>标签页囤积、需要按域名分组、要求数据不出本机时选 TabQueue；需要跨设备云同步或纯文章收藏时选 Pocket/Raindrop。</p>
+  <div class="pitfall"><strong>避坑：</strong>收纳前会预览并自动跳过重复标签和浏览器内部页面；手滑标记已消费或删除后 5 秒内可通过底部 Toast 撤销。</div>
+  <div class="quote">「那一刻你会感觉到一种久违的清爽——标签没了，浏览器安静了，风扇也停了。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】TabQueue vs 常见方案</h3>
+  <table>
+    <tr><th>对比维度</th><th>TabQueue</th><th>OneTab</th><th>Pocket</th><th>浏览器收藏夹</th></tr>
+    <tr><td>管理对象</td><td>打开中的标签页</td><td>当前窗口标签</td><td>文章 URL</td><td>任意 URL</td></tr>
+    <tr><td>分组方式</td><td>日期 + 域名树形</td><td>扁平列表</td><td>标签/收藏</td><td>文件夹（需手动）</td></tr>
+    <tr><td>隐私</td><td>100% 本地，零网络</td><td>本地为主</td><td>需注册账号</td><td>本地</td></tr>
+    <tr><td>消化体验</td><td>Side Panel 收件箱式</td><td>占新标签页</td><td>独立 App</td><td>基本不会再打开</td></tr>
+    <tr><td>一句话结论</td><td>标签队列 + GTD</td><td>一键收纳但难消化</td><td>文章稍后读</td><td>标签页坟墓</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】什么场景用什么工具</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>80+ 标签拖垮笔记本</td><td>TabQueue 一键收纳</td><td>释放渲染进程，立刻降内存</td><td>继续堆标签</td><td>每标签独立进程，10GB+ 内存常见</td></tr>
+    <tr><td>GitHub issue / 文档待读</td><td>TabQueue</td><td>管理标签页而非文章</td><td>Pocket</td><td>Pocket 偏重文章，不擅长 issue</td></tr>
+    <tr><td>跨设备稍后读</td><td>Pocket / Raindrop</td><td>云同步</td><td>TabQueue</td><td>刻意不做上传，隐私优先</td></tr>
+    <tr><td>建个人知识库</td><td>Raindrop / Obsidian 集成</td><td>结构化收藏</td><td>TabQueue 单独使用</td><td>TabQueue 定位是消化队列非知识库</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】使用 TabQueue 的注意点</h3>
+  <p><strong>坑名：</strong>未 Pin 扩展图标导致收纳不便</p>
+  <p><strong>原因：</strong>扩展默认藏在拼图菜单里，高频操作需要多一次点击。</p>
+  <p><strong>解法：</strong>安装后在扩展管理页点击 Pin 固定到工具栏。</p>
+  <p><strong>严重程度：</strong>可忽略——可用 Ctrl+Shift+S 快捷键绕过。</p>
+  <div class="pitfall"><strong>坑名：</strong>期待 Chrome Web Store 一键安装——目前需手动加载 ZIP，因审核周期长且个人项目投入产出比低。</div>
+  <div class="pitfall"><strong>坑名：</strong>同一 URL 多渠道分享产生重复——TabQueue 已内置 utm/fbclid/gclid 等 20+ 追踪参数归一化，一般无需担心。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】隐私优先的设计底线</h3>
+  <p><strong>原则：</strong>阅读列表是你自己的事——数据绝不离开本机。</p>
+  <p><strong>为什么重要：</strong>队列里可能有内网文档、未公开 issue、敏感调研链接，上传云端等于主动泄露。</p>
+  <p><strong>怎么落地：</strong>全部存在 chrome.storage.local；扩展零网络请求、无 GA、无遥测、无账号；可随时 JSON 导出备份。</p>
+  <p><strong>适用边界：</strong>需要多设备同步时必须自行导出/导入 JSON，或配合 Trello/Todoist/Obsidian 集成转发单条。</p>
+  <div class="quote">「我不知道你存了什么——这是隐私优先的底线。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「标签多说明信息量大，关不掉是生产力象征，收纳反而打断工作流」</p>
+  <p class="rebuttal-text">80 个后台标签各自跑 WebSocket 和定时器，16GB 内存触发 swap 时你损失的是整机响应速度——收纳不是丢掉信息，而是把认知负荷从标题栏搬到可按域名消化的队列里。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>TabQueue 用 GTD 式「收纳→队列→消化→归档」解决标签页囤积导致的内存、CPU 与焦虑问题。</li>
+    <li>按日期和域名两级分组 + URL 智能去重（20+ 追踪参数归一化），消化体验像刷收件箱。</li>
+    <li>100% 本地存储、零网络、无账号，可选 Trello/Todoist/Obsidian 集成。</li>
+    <li>作者本人是 JS/TS 小白，扩展由 AI 辅助开发；Chromium ≥114，手动安装 ZIP。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>访问 tonybai.com/tabqueue 下载并开发者模式加载扩展。</li>
+    <li>Pin 图标，试一次 Ctrl+Shift+S 收纳当前窗口。</li>
+    <li>打开 Side Panel 队列，按域名分组消化积压标签。</li>
+    <li>若用 Trello/Todoist，在设置面板配置 API 后一键转卡片。</li>
+    <li>定期点 📤 导出 JSON 备份队列数据。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>「不敢关的标签」不是资产而是负债——真正需要的是可恢复的队列，而不是标题栏上的数字徽章；本地优先的轻量工具往往比云同步书签更适合技术从业者的阅读节奏。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

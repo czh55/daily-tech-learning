@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-18",
+    "files": [
+      {
+        "path": "svgs/2026-07-18/introducing-tabqueue.svg",
+        "title": "告别标签页焦虑：我让 AI 帮我做了个浏览器插件 TabQueue",
+        "source": "https://tonybai.com/2026/07/18/introducing-tabqueue/"
+      },
+      {
+        "path": "svgs/2026-07-18/rust-to-zig-roc-compiler-rewrite.svg",
+        "title": "Bun刚把Zig重写成Rust，这个团队却用487天反向重写",
+        "source": "https://tonybai.com/2026/07/18/rust-to-zig-roc-compiler-rewrite/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-17",
     "files": [
       {

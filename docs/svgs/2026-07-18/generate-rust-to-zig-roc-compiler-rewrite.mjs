@@ -1,0 +1,163 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'rust-to-zig-roc-compiler-rewrite.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:90px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 12px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Bun刚把Zig重写成Rust，这个团队却用487天反向重写</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Roc 编译器</span>
+  <span class="tag tag-orange">Rust → Zig</span>
+  <span class="tag tag-green">编译器工程</span>
+  <span class="tag tag-purple">语言选型</span>
+  <span class="tag tag-red">vs Bun 反向迁移</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当编译器架构债务逼出 487 天从零重写时，Roc 团队为何从 Rust 迁到 Zig、丢掉借用检查器后内存损坏 bug 为何反而更少，以及「没有更好的语言，只有更贴合工程约束的语言」该如何用实测数据论证。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">两场反向迁移的对照</h3>
+  <div class="diagram">
+    <div class="node-orange">Bun<br><span style="font-size:11px;font-weight:400">Zig→Rust · 11天 · AI搬运</span></div>
+    <span class="arrow-sym">↔</span>
+    <div class="node-green">Roc 编译器<br><span style="font-size:11px;font-weight:400">Rust→Zig · 487天 · 架构重写</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">同一套论据可推出相反结论——关键在各自要解决的工程约束，而非语言信仰</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">Rust 版 21 个内存损坏 bug 多于 Zig 版 10 个，并不代表 Rust 更不安全——这 21 个全部出在「编译器生成的机器码」而非编译器自身逻辑，恰恰证明借用检查器保护了编译器本体。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】重写的真正导火索</h3>
+  <p><strong>在讲什么问题：</strong>多态去函数化（polymorphic defunctionalization）长期出诡异 bug，OCaml 原型证明问题在编译器多阶段架构，修它等于重写大半个编译器。</p>
+  <p><strong>核心机制：</strong>闭包捕获变量时零堆分配——做对可解锁内联级性能，做错则 bug 反复；团队选择 scratch-rewrite 而非忒修斯之船式修补。</p>
+  <p><strong>关键理解：</strong>起点不是「嫌弃 Rust」，而是架构债务到期；语言迁移是顺带决策。</p>
+  <p><strong>典型场景：</strong>多个贡献者不约而同要重写核心模块时，不如一次性彻底重构。</p>
+  <p><strong>边界说明：</strong>Bun 的 AI 直接搬运在 Roc 行不通——他们要的是新架构而非忠实移植。</p>
+  <div class="quote">「要修好它，几乎等于要重写大半个编译器。」——Richard Feldman</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】为何选 Zig 而非继续 Rust</h3>
+  <table>
+    <tr><th>考量维度</th><th>选 Zig 的理由</th><th>Rust 的短板（对本项目）</th></tr>
+    <tr><td>构建速度</td><td>预期明显更快</td><td>cargo 增量编译随代码量恶化</td></tr>
+    <tr><td>内存控制</td><td>分配器到处传递，契合 arena + SoA</td><td>生态默认全局单分配器 + Drop 隐式释放</td></tr>
+    <tr><td>生态相关性</td><td>独立 LLVM bitcode 序列化器等现成代码</td><td>编译器冷门需求库更少</td></tr>
+    <tr><td>unsafe 占比</td><td>1200 处/30 万行，Zig 对不安全代码兜底更多</td><td>unsafe 无法被当成「少数例外」隔离审查</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】内存损坏 bug 统计解读</h3>
+  <table>
+    <tr><th>对比维度</th><th>Rust 版</th><th>Zig 版</th><th>一句话结论</th></tr>
+    <tr><td>内存损坏 bug</td><td>21</td><td>10</td><td>绝对数不能直接比安全性</td></tr>
+    <tr><td>损坏位置</td><td>全在生成机器码</td><td>2 个 UAF 在错误信息渲染</td><td>借用检查器护住了编译器本体</td></tr>
+    <tr><td>非内存 bug</td><td>2575</td><td>421</td><td>架构重写顺带减少逻辑 bug</td></tr>
+    <tr><td>若用 Rust 借用检查</td><td>—</td><td>2 个 UAF 可编译期拦截</td><td>对 18 个月整体影响微乎其微</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】编译速度与增量构建实测</h3>
+  <p><strong>核心思路：</strong>Zig <code>-fincremental</code> 目标是把改动反馈压到毫秒级，但需等稳定版修复 0.16.0 的增量失效 bug。</p>
+  <p><strong>关键数据：</strong>Rust 1.97 增量 3.4 秒 vs Zig 0.17 预发布版增量 0.035 秒（约 100 倍）；Rust 1.85→1.97 同期优化也把 10 秒砍到 3.4 秒。</p>
+  <p><strong>操作启示：</strong>评估迁移收益时同时看「语言切换」与「工具链自身进化」两条曲线，避免静态快照误判。</p>
+  <div class="highlight"><strong>零解析缓存：</strong>数据结构用 32 位索引 + SoA 布局，磁盘数据可原样 mmap 进内存，第二次 <code>roc check</code> 近乎 memcpy 速度——代价是索引查错数组类似 UAF，借用检查器管不着。</div>
+  <div class="pitfall"><strong>避坑：</strong>0.16.0 稳定版 <code>-fincremental</code> 失效，需 0.17 预发布或等下一稳定版。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】语言迁移中的误判</h3>
+  <p><strong>坑名：</strong>把「Rust 版内存 bug 更多」当成 Rust 失败</p>
+  <p><strong>原因：</strong>编译器 bug 分「编译器自身」与「生成代码」两类，混淆统计会得出错误结论。</p>
+  <p><strong>解法：</strong>用 issue 标注区分 bug 归属，再谈语言工具链价值。</p>
+  <p><strong>严重程度：</strong>致命——错误归因会导致错误的技术战略。</p>
+  <div class="pitfall"><strong>坑名：</strong>用 Bun 的结论套 Roc——Bun 痛在 JS GC 与手动内存混用，Roc 根本不碰追踪式 GC。</div>
+  <div class="pitfall"><strong>坑名：</strong>期待 Drop  universally 好用——对 arena 分模块管理，Drop 反而是 Rust 生态里的痛点。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】生态适配而非语言优劣</h3>
+  <p><strong>原则：</strong>Rust 生态为 Bun 那种写法优化，Zig 生态为 Roc 这种写法优化——没有谁更先进。</p>
+  <p><strong>为什么重要：</strong>Drop vs defer、全局分配器 vs 传递分配器，同一特性在不同项目里命运相反。</p>
+  <p><strong>怎么落地：</strong>重写前先写清架构约束清单（arena 数量、unsafe 比例、LLVM 耦合方式），再选语言而非反过来。</p>
+  <p><strong>适用边界：</strong>Feldman 仍怀念 Rust 的测试自动内存管理、多态、私有字段、向后兼容——Zig 不是全面替代。</p>
+  <div class="quote">「没有更好的语言，只有更适合具体工程约束的语言。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「编译器就该用 Rust，487 天人工重写 Zig 是逆潮流」</p>
+  <p class="rebuttal-text">当 30 万行里 1200 处 unsafe 已成常态、arena 分阶段内存与 SoA 缓存是核心架构时，借用检查器护不住索引越界这类真正高频风险——继续 Rust 只是抱着「更安全」的心理安慰，增量编译仍慢一个数量级。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Roc 重写起因是多态去函数化架构债务，487 天 scratch-rewrite，非 AI 搬运式移植。</li>
+    <li>选 Zig 基于构建速度、分配器粒度、LLVM 生态复用、高 unsafe 占比四因素。</li>
+    <li>内存损坏统计需区分编译器本体 vs 生成代码；Zig 版 UAF 仅 2 个且在错误渲染，借用检查器本可拦截。</li>
+    <li>Zig 增量 35ms vs Rust 3.4s；零解析磁盘缓存是意外架构红利。</li>
+    <li>Bun（Zig→Rust）与 Roc（Rust→Zig）用同一论据得出相反结论，均合理。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>看到「X 语言重写成 Y」新闻时，先问：他们要解决的到底是什么架构问题？</li>
+    <li>评估编译器类项目时，统计 unsafe 占比与 bug 归属，别只看 headline 数字。</li>
+    <li>对比增量构建时，同时跟踪目标语言与源语言工具链的 release 进化。</li>
+    <li>若考虑索引式磁盘缓存，提前设计索引-数组配对的安全策略，别指望借用检查器兜底。</li>
+    <li>阅读 Richard Feldman 原文 rust-to-zig 获取完整数据表与怀念/喜爱清单。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>语言重写应是工程约束倒逼的选择，不是信仰之战；真正该加内存安全保障的往往是编译产物而非编译器进程本身——借用检查器的管辖范围比你想象的窄。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
