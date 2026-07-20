@@ -1,0 +1,182 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'the-java-story-30-years-documentary.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:12px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>从掌上设备的失败到 AI 时代的基石：Java 官方纪录片 30 年生死赌局</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Java 历史</span>
+  <span class="tag tag-green">官方纪录片</span>
+  <span class="tag tag-orange">开源社区</span>
+  <span class="tag tag-red">语言演进</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：一门从失败的掌上设备项目（Oak/Star 7）出发的语言，如何在浏览器意外、企业级误打误撞、与微软诉讼、十年停滞与 Oracle 收购等一连串险境中，仍成为支撑全球金融与 Android 生态的基石——以及今天虚拟线程与 Valhalla 如何为 AI 时代铺路。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">Java 三十年关键转折脉络</h3>
+  <div class="diagram">
+    <div class="node-red">Oak 掌上设备失败<br><span style="font-size:10px;font-weight:400">1992 招标流产</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">HotJava 浏览器<br><span style="font-size:10px;font-weight:400">1995 网景合作</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Servlet 意外立足<br><span style="font-size:10px;font-weight:400">服务端主战场</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-red">J2EE 灾难<br><span style="font-size:10px;font-weight:400">Spring 自救</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">OpenJDK + Java 8<br><span style="font-size:10px;font-weight:400">Lambda 翻盘</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">6 月发布节奏<br><span style="font-size:10px;font-weight:400">Loom / Valhalla</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">核心洞察：Java 护城河不是语法，而是 340+ 用户组与千万开发者社区；30 年靠一连串「对的时间、对的人」侥幸转折</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">Java 并非一开始就为互联网或企业服务器设计——最初目标是嵌入式设备与机顶盒。把 Java 成功简单归因于「语法像 C++」会忽略真正激进的设计：垃圾回收、动态类加载、反射等全藏在运行时里，用「披着 C 外套」的伪装策略降低工业界接受门槛。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】从 Oak 到 HotJava：一次失败的救赎</h3>
+  <p><strong>在讲什么问题：</strong>1990 年 Sun 四人小组（含 James Gosling）为掌上设备 Star 7 造 Oak 语言，1992 年时代华纳招标失败，团队三分之一直接离职，Gosling 本人也被裁。</p>
+  <p><strong>核心机制：</strong>Bill Joy 拦下项目后，团队意识到十年技术可投向刚兴起的互联网；Mosaic 浏览器启发他们用 Oak 重写浏览器，诞生 HotJava——网页上首次出现自转动立方体与 Duke 吉祥物。</p>
+  <p><strong>关键理解：</strong>1995 年 3 月 23 日与网景（占浏览器市场 75%）合作发布，登上报纸头版，流量打垮公司内网，工程师违规架 T3 专线扛流量——Gosling 称 1995 年为「完美的成功型灾难」。</p>
+  <p><strong>边界说明：</strong>若无网景合作，自研 HotJava 浏览器几乎不可能获得足够用户基础；历史转折高度依赖外部生态窗口。</p>
+  <div class="quote">「这不是一张图，这是一段正在你电脑上运行的程序」—— 1995 年对用户的震撼。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】披着 C 外套的运行时革命</h3>
+  <p><strong>在讲什么问题：</strong>Java 表面语法保守像 C/C++，真正激进特性全在运行时：GC、动态编译、反射、动态类加载。</p>
+  <p><strong>关键理解：</strong>设计者承认这是刻意「伪装」——把学术圈「危险技术」塞进工业界能接受的外壳；若用 Lisp/Haskell 语法，企业开发者不会碰。</p>
+  <p><strong>典型场景：</strong>工程师无痛从 C++ 切换，实际拿到全新运行时哲学——被形容为「绝地武士读心术」。</p>
+  <p><strong>定位：</strong>写给「蓝领程序员」的语言——不是学术炫技，而是「只想把活干完」的工具。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】J2EE 规范 vs Spring/Hibernate 社区自救</h3>
+  <table>
+    <tr><th>对比维度</th><th>J2EE 官方规范</th><th>Spring + Hibernate</th><th>一句话结论</th></tr>
+    <tr><td>复杂度</td><td>厚如字典，Java+XML 混杂</td><td>轻量 IoC + 实用 ORM</td><td>规范过度工程化催生叛逆</td></tr>
+    <tr><td>起源</td><td>Sun 联合 IBM/Oracle 标准化</td><td>Rod Johnson 写书途中「叛教」</td><td>社区比官方更懂落地</td></tr>
+    <tr><td>项目结局</td><td>大量失败，前景岌岌可危</td><td>成为事实标准</td><td>若无 Spring，J2EE 可能毁掉 Java 生态</td></tr>
+    <tr><td>适用边界</td><td>需要完整 EE 容器的大企业</td><td>绝大多数 Web 与企业应用</td><td>今天仍共存但重心已转移</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】与微软的「干翻 Sun」诉讼战</h3>
+  <p><strong>坑名：</strong>授权 Java 给微软后，Windows 版故意缺失标准 API、添加私有 API，诱导「只跑 Windows 的 Java」。</p>
+  <p><strong>原因：</strong>盖茨邮件承认因 Java/Beans 势头「彻夜难眠」，担心运行时让人轻易做出与 Windows 竞争的操作系统。</p>
+  <p><strong>原文证据：</strong>内部「冒烟枪」邮件直白写「干翻 Sun」；官司数年，微软最终赔付近 20 亿美元。</p>
+  <p><strong>解法/意义：</strong>阻止微软夺走 Java 技术路线，保住「一次编写、到处运行」承诺。<strong>严重程度：</strong>致命——差点改写行业格局。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】开源救了 Java 一命</h3>
+  <p><strong>原则：</strong>Java 真正的力量是社区（340+ 用户组、约 1000–1400 万开发者），而非语法本身。</p>
+  <p><strong>为什么重要：</strong>多位亲历者直言：若 Sun 未把 JDK 本身开源（OpenJDK），Java 很可能随 Sun 一起消失；内部对完全开源也曾激烈反对，担心平台分裂。</p>
+  <p><strong>怎么落地：</strong>Tomcat 从内部参考实现争取到 Apache 基金会，是「开放但不自由」向真正开源过渡的关键一步。</p>
+  <p><strong>适用边界：</strong>开源不等于无治理——团队花十年维持「到处运行」不被打破。</p>
+  <div class="quote">「如果没有开源社区，Java 今天根本不会存在。」</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】停滞十年与 Oracle 意外救赎</h3>
+  <p><strong>在讲什么问题：</strong>2000 年互联网泡沫破裂，Sun 市值蒸发 93%；2004–2014 年 Java 几乎停滞，主版本间隔五年，被批评「已死」，C#/.NET 快速迭代让 Java 开发者眼馋。</p>
+  <p><strong>关键转折：</strong>2008 年 IBM 临阵退出收购 Sun，Oracle 出手；外界普遍担忧 Oracle 会砍掉或维护模式搁置 Java。</p>
+  <p><strong>意外结果：</strong>Brian Goetz、Mark Reinhold 等核心团队在 Oracle 下反而获得更清晰商业决策与稳定资源；Java 8 被称为「最后一次机会」——Lambda 以「很 Java」的方式落地，成为采用速度最快版本之一。</p>
+  <p><strong>发布节奏变革：</strong>Java 9 起改为六个月固定周期，特性与发布解耦——未完成的功能下一班车上，被公认是让 Java 重新敏捷的关键。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】面向 AI 时代的 Loom / Valhalla / Panama</h3>
+  <p><strong>虚拟线程（Loom）：</strong>高并发不必写复杂响应式代码，切换开关即可用朴素单线程写法达到同等伸缩性——被称为「多年来最好的语言特性之一」。</p>
+  <p><strong>Valhalla：</strong>修复基本类型与引用类型的历史割裂，提升内存布局效率，矩阵乘法大幅提速——直接利好 AI 推理场景。</p>
+  <p><strong>Panama：</strong>像巴拿马运河一样「打通两个世界」，让 Java 与本地代码互操作更简单、更快、更便宜。</p>
+  <p><strong>选型条件：</strong>企业级存量 + 底层性能改进，使 Java 有能力在 AI 基础设施赛道占据一席之地；新 greenfield 项目仍需按团队栈评估。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】语言/platform 历史教训对今天的启示</h3>
+  <table>
+    <tr><th>场景</th><th>推荐认知</th><th>核心理由</th><th>常见误区</th><th>为什么不行</th></tr>
+    <tr><td>评估一门老语言是否「已死」</td><td>看社区与发布节奏而非语法时髦度</td><td>Java 8 + 6 月节奏逆转了停滞叙事</td><td>只看 Lambda 缺席就判死刑</td><td>忽视生态惯性与企业存量</td></tr>
+    <tr><td>企业标准化技术选型</td><td>警惕过度规范（J2EE 教训）</td><td>复杂规范催生 Spring 级替代</td><td>迷信官方大而全标准</td><td>落地失败率极高</td></tr>
+    <tr><td>AI 基础设施语言选择</td><td>重视运行时演进（虚拟线程、值类型）</td><td>矩阵运算与并发是 AI 负载核心</td><td>仅比较语法糖</td><td>忽略内存布局与互操作</td></tr>
+    <tr><td>开源战略决策</td><td>完全开源可能救一命</td><td>OpenJDK 是 Sun 遗产延续关键</td><td>恐惧平台分裂而永不开放</td><td>公司消失则平台一并消失</td></tr>
+  </table>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：云原生 / Rust-Go 新锐派 / 「Java 已沦为维护遗产」论者</p>
+  <p class="rebuttal-text">纪录片是官方叙事——30 年的企业包袱、JVM 冷启动与内存开销在 Serverless 与边缘计算里仍是硬伤，社区再大也换不来新一代开发者首选 Java 写 AI 基础设施。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Java 源于失败的嵌入式项目，靠浏览器革命意外转向互联网，服务端则是第二次意外。</li>
+    <li>「披着 C 外套」把 GC 与动态加载等激进特性藏进运行时，是降低采纳门槛的关键设计策略。</li>
+    <li>J2EE 几近毁掉生态，Spring/Hibernate 社区叛逆才是服务端翻盘主角。</li>
+    <li>与微软诉讼、OpenJDK 开源、Oracle 收购后的 Java 8，是三次「差点死掉又活过来」的节点。</li>
+    <li>虚拟线程、Valhalla、Panama 正为高并发与 AI 推理铺路；护城河是千万开发者社区而非语法。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>观看 YouTube 官方纪录片《The Java Story》完整版，对照本文时间线做笔记。</li>
+    <li>若维护 Java 服务，评估虚拟线程（Project Loom）是否可简化现有响应式栈。</li>
+    <li>关注 Valhalla 预览特性对数值计算与 AI 推理路径的潜在收益。</li>
+    <li>在技术选型讨论中引入「社区规模 + 发布节奏」维度，避免仅凭语法时髦度判死刑。</li>
+    <li>思考自家平台/框架是否重蹈 J2EE 过度规范覆辙，给社区自救留出空间。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>一门编程语言的成功很少是技术最优解的直线胜利，而是无数次侥幸转折的叠加——Java 安静到让人意识不到它的存在，却仍在信用卡、电话与电商后台无处不在；评价语言生命力，社区与演进节奏比语法颜值更可靠。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

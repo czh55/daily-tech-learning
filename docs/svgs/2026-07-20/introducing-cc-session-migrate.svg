@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5603" viewBox="0 0 1320 5603">
+  <foreignObject x="0" y="0" width="1320" height="5603">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>我开源了 cc-session-migrate：让 Claude Code 会话在多台机器之间自由迁移</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Claude Code</span>
+  <span class="tag tag-green">会话迁移</span>
+  <span class="tag tag-orange">Hub-and-Spoke</span>
+  <span class="tag tag-purple">Go CLI</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Claude Code 会话数据锁死在单机 ~/.claude/ 目录时，如何在笔记本、台式机与远程服务器之间安全、可续接地迁移上下文，而不靠粗暴 scp 覆盖整目录。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">csm 多机会话迁移架构</h3>
+  <div class="diagram">
+    <div class="node">Agent 笔记本<br/><span style="font-size:11px;font-weight:400">出站 WS，无监听端口</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Server 公网中继<br/><span style="font-size:11px;font-weight:400">HTTP+WS :9827</span></div>
+    <span class="arrow-sym">←</span>
+    <div class="node-green">Agent 台式机<br/><span style="font-size:11px;font-weight:400">出站 WS，无监听端口</span></div>
+    <span class="arrow-sym">↕</span>
+    <div class="node">S3/R2 备份<br/><span style="font-size:11px;font-weight:400">增量定时备份</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">核心洞察：放弃 Mesh 直连，用 Hub-and-Spoke 出站连接穿透 NAT，会话操作经 Server 转发</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">会话迁移不是「把整个 ~/.claude/ 目录 scp 过去」——那样会覆盖目标机其他会话，且无法处理跨平台路径差异。csm 做的是按 session ID 精准拉取、路径重映射、history.jsonl 格式对齐后的可续接迁移。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Claude Code 会话为何被困在单机</h3>
+  <p><strong>在讲什么问题：</strong>上午在 MacBook 上开长对话理清架构，下午切 Linux 服务器执行 claude --resume，却提示 No sessions found。</p>
+  <p><strong>核心机制：</strong>Claude Code 将会话 JSONL、项目编码目录、history.jsonl 全部存在本地 ~/.claude/ 下，换机器即断上下文。</p>
+  <p><strong>关键理解：</strong>多机开发（笔记本 + 台式机 + 远程服务器）是重度用户的日常，但官方未提供跨节点会话同步能力。</p>
+  <p><strong>典型场景：</strong>架构讨论在本地完成，实现与部署在远程 Linux 继续；或公司内网笔记本与家里台式机交替开发同一项目。</p>
+  <p><strong>边界说明：</strong>若只在一台机器上开发，或愿意每次手动复制整个目录并接受覆盖风险，则不需要 csm。</p>
+  <div class="quote">「手动 scp 整个 ~/.claude/ 目录？可以，但很粗暴，而且容易覆盖其他机器上的会话。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】csm 三大能力与 5 分钟上手</h3>
+  <p><strong>核心思路：</strong>Go 编写的 CLI（csm / cc-session-migrate），提供跨机器迁移、集群管理、S3 自动备份三句话能力。</p>
+  <p><strong>操作步骤：</strong>① Linux 服务器启动 Server 模式（systemctl enable cc-session-migrate）；② 各节点以 Agent 模式 csm agent --server-addr IP:9827 --auth-token TOKEN --name 节点名 加入；③ csm session list --node 远程节点 查看会话；④ csm session pull SESSION_ID --from 节点 --project ~/本地路径 拉取；⑤ claude --resume 完整 UUID 续接。</p>
+  <p><strong>选型条件：</strong>多台机器使用 Claude Code 且需无缝续接时选 csm；单机开发或偶尔手动复制可跳过。</p>
+  <div class="pitfall"><strong>避坑：</strong>claude --resume 必须使用完整 UUID，不支持 8 字符前缀——csm pull 支持前缀，但 resume 不支持，README 已重点标注。</div>
+  <div class="highlight"><strong>落地：</strong>macOS/Windows 可用 go install github.com/bigwhite/cc-session-migrate@latest，并 alias csm='cc-session-migrate' 写入 shell 配置。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Hub-and-Spoke 为何胜过 Mesh</h3>
+  <p><strong>在讲什么问题：</strong>最初 Mesh 架构让每个节点监听端口、其他节点直连，落地即遇 NAT 穿透：内网笔记本无公网 IP、家用路由器需端口映射、每加节点配一遍防火墙。</p>
+  <p><strong>核心机制：</strong>借鉴 Consul/Nomad Agent 模式——公网 Server 作中继，所有 Agent 只建立出站 WebSocket，无需监听端口。</p>
+  <p><strong>关键理解：</strong>只要能访问 Server IP（公司内网、家里 Wi-Fi、咖啡馆热点均可），就能加入集群；list/pull/push 经 Server 转发。</p>
+  <p><strong>边界说明：</strong>必须有至少一台可公网访问的 Server 节点；纯离线局域网且无中继时 Mesh 才可能更简单。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】开发中四个代表性技术坑</h3>
+  <p><strong>坑 1 — 项目目录有损编码：</strong>路径中 / 和 . 替换为 - 后 github.com 变 github-com，解码无法区分原始 - 与编码 -。<strong>解法：</strong>从 JSONL 首行 cwd 字段读真实路径，不靠解码。</p>
+  <p><strong>坑 2 — 跨机器路径不一致：</strong>Mac 上 /Users/.../my-project，Linux 上 /home/.../my-project。<strong>解法：</strong>pull 时用 --project 指定目标路径，自动 RenameProjectDir + RemapPaths + 更新 history。</p>
+  <p><strong>坑 3 — history.jsonl 格式：</strong>字段是 {sessionId, project, display, timestamp} 而非 {sessionId, cwd}，格式错会导致 resume 找不到会话。</p>
+  <p><strong>坑 4 — resume 前缀误用：</strong>pull 支持 8 字符前缀，resume 必须完整 UUID。<strong>严重程度：</strong>致命——最易混淆的操作点。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】会话同步方案对比</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>多机日常交替开发</td><td>csm 集群 + session pull</td><td>精准迁移单会话、路径重映射、可 resume</td><td>scp 整目录</td><td>覆盖其他会话、路径不兼容</td></tr>
+    <tr><td>防会话丢失</td><td>csm backup 到 R2/MinIO</td><td>守护进程定时增量备份，默认保留 30 天</td><td>仅本地磁盘</td><td>机器故障即全丢</td></tr>
+    <tr><td>公司内网多 Agent</td><td>Hub-and-Spoke 出站 WS</td><td>无需端口映射、NAT 友好</td><td>Mesh 点对点</td><td>内网节点无法互连</td></tr>
+    <tr><td>仅偶尔换机一次</td><td>手动复制 + 注意路径</td><td>零运维成本</td><td>搭完整集群</td><td>过度工程</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】S3 自动备份与交叉编译</h3>
+  <p><strong>操作步骤：</strong>csm backup config 配置 R2/MinIO 端点与密钥 → csm backup create 手动备份 → csm backup list 查看历史 → csm backup restore --node 节点 --session ID 恢复。</p>
+  <p><strong>技术栈：</strong>cobra+viper 配置、gorilla WebSocket、aws-sdk-go-v2（兼容 R2/MinIO）、robfig/cron 定时、log/slog 结构化日志；零 CGO，GOOS/GOARCH 交叉编译友好。</p>
+  <div class="quote">GitHub：github.com/bigwhite/cc-session-migrate</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：安全合规团队 / 「会话数据不应离机」派</p>
+  <p class="rebuttal-text">把含代码与架构讨论的 Claude 会话经公网 Server 中继并备份到 S3，等于把知识产权和密钥线索扩散到更多攻击面——多机便利换不来数据泄露的代价。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Claude Code 会话锁在 ~/.claude/ 是多机开发的真实痛点，粗暴 scp 无法精准续接。</li>
+    <li>csm 用 Hub-and-Spoke 出站 WebSocket 解决 NAT，比 Mesh 更适合笔记本+服务器混合环境。</li>
+    <li>路径编码、history 格式、resume UUID 是迁移成功的三个技术关键点。</li>
+    <li>S3 增量备份为会话数据提供灾备，守护进程可自动调度。</li>
+    <li>零 CGO + 标准 Go 生态栈，交叉编译与部署门槛低。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>在一台公网 Linux 上部署 csm Server，记录 auth-token。</li>
+    <li>各开发机以 Agent 加入集群，验证 csm cluster list 显示 online。</li>
+    <li>用 csm session pull 测试跨机迁移，确认 claude --resume 完整 UUID 可续接。</li>
+    <li>配置 R2/MinIO 自动备份，避免会话因机器故障丢失。</li>
+    <li>给项目 Star 或提 Issue/PR 参与开源迭代。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>AI 编程助手时代，「会话上下文」已成为与代码同等重要的开发资产——值得像管理 Git 仓库一样，用专用工具做多机同步与备份，而非每次从零向 AI 复述背景。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

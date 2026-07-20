@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-20",
+    "files": [
+      {
+        "path": "svgs/2026-07-20/introducing-cc-session-migrate.svg",
+        "title": "我开源了 cc-session-migrate ：让 Claude Code 会话在多台机器之间自由迁移",
+        "source": "https://tonybai.com/2026/07/20/introducing-cc-session-migrate/"
+      },
+      {
+        "path": "svgs/2026-07-20/the-java-story-30-years-documentary.svg",
+        "title": "从掌上设备的失败到AI时代的基石：Java官方纪录片，揭开一门语言30年的生死赌局",
+        "source": "https://tonybai.com/2026/07/20/the-java-story-30-years-documentary/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-19",
     "files": [
       {

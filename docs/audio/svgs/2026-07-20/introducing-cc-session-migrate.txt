@@ -1,0 +1,119 @@
+欢迎收听每日技术学习语音讲解。本期主题，我开源了 cc-session-migrate：让 Claude Code 会话在多台机器之间自由迁移。标签包括Claude Code、会话迁移、Hub-and-Spoke、Go CLI。本次讲解预计时长 约 13 到 14 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Claude Code 会话数据锁死在单机 ~/.claude/ 目录时，如何在笔记本、台式机与远程服务器之间安全、可续接地迁移上下文，而不靠粗暴 scp 覆盖整目录。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Agent 笔记本，出站 WS，无监听端口，然后Server 公网中继，HTTP+WS :9827，然后Agent 台式机，出站 WS，无监听端口，然后S3/R2 备份，增量定时备份
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+会话迁移不是「把整个 ~/.claude/ 目录 scp 过去」——那样会覆盖目标机其他会话，且无法处理跨平台路径差异。csm 做的是按 session ID 精准拉取、路径重映射、history.jsonl 格式对齐后的可续接迁移。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：安全合规团队 / 「会话数据不应离机」派
+
+把含代码与架构讨论的 Claude 会话经公网 Server 中继并备份到 S3，等于把知识产权和密钥线索扩散到更多攻击面——多机便利换不来数据泄露的代价。
+
+接下来，第四部分，【概念拆解卡】Claude Code 会话为何被困在单机。
+
+在讲什么问题，上午在 MacBook 上开长对话理清架构，下午切 Linux 服务器执行 claude --resume，却提示 No sessions found。
+
+核心机制，Claude Code 将会话 JSONL、项目编码目录、history.jsonl 全部存在本地 ~/.claude/ 下，换机器即断上下文。
+
+关键理解，多机开发（笔记本 + 台式机 + 远程服务器）是重度用户的日常，但官方未提供跨节点会话同步能力。
+
+典型场景，架构讨论在本地完成，实现与部署在远程 Linux 继续；或公司内网笔记本与家里台式机交替开发同一项目。
+
+边界说明，若只在一台机器上开发，或愿意每次手动复制整个目录并接受覆盖风险，则不需要 csm。
+
+「手动 scp 整个 ~/.claude/ 目录？可以，但很粗暴，而且容易覆盖其他机器上的会话。」
+
+接下来，第五部分，【方法/工具卡】csm 三大能力与 5 分钟上手。
+
+核心思路：Go 编写的 CLI（csm / cc-session-migrate），提供跨机器迁移、集群管理、S3 自动备份三句话能力。
+
+操作步骤，① Linux 服务器启动 Server 模式（systemctl enable cc-session-migrate）；② 各节点以 Agent 模式 csm agent --server-addr IP:9827 --auth-token TOKEN --name 节点名 加入；③ csm session list --node 远程节点 查看会话；④ csm session pull SESSION_ID --from 节点 --project ~/本地路径 拉取；⑤ claude --resume 完整 UUID 续接。
+
+选型条件，多台机器使用 Claude Code 且需无缝续接时选 csm；单机开发或偶尔手动复制可跳过。
+
+落地：macOS/Windows 可用 go install github.com/bigwhite/cc-session-migrate@latest，并 alias csm='cc-session-migrate' 写入 shell 配置。
+
+避坑：claude --resume 必须使用完整 UUID，不支持 8 字符前缀——csm pull 支持前缀，但 resume 不支持，README 已重点标注。
+
+接下来，第六部分，【概念拆解卡】Hub-and-Spoke 为何胜过 Mesh。
+
+在讲什么问题，最初 Mesh 架构让每个节点监听端口、其他节点直连，落地即遇 NAT 穿透：内网笔记本无公网 IP、家用路由器需端口映射、每加节点配一遍防火墙。
+
+核心机制，借鉴 Consul/Nomad Agent 模式——公网 Server 作中继，所有 Agent 只建立出站 WebSocket，无需监听端口。
+
+关键理解，只要能访问 Server IP（公司内网、家里 Wi-Fi、咖啡馆热点均可），就能加入集群；list/pull/push 经 Server 转发。
+
+边界说明，必须有至少一台可公网访问的 Server 节点；纯离线局域网且无中继时 Mesh 才可能更简单。
+
+接下来，第七部分，【避坑清单卡】开发中四个代表性技术坑。
+
+坑 1 — 项目目录有损编码：路径中 / 和 . 替换为 - 后 github.com 变 github-com，解码无法区分原始 - 与编码 -。解法：从 JSONL 首行 cwd 字段读真实路径，不靠解码。
+
+坑 2 — 跨机器路径不一致：Mac 上 /Users/.../my-project，Linux 上 /home/.../my-project。解法：pull 时用 --project 指定目标路径，自动 RenameProjectDir + RemapPaths + 更新 history。
+
+坑 3 — history.jsonl 格式：字段是 {sessionId, project, display, timestamp} 而非 {sessionId, cwd}，格式错会导致 resume 找不到会话。
+
+坑 4 — resume 前缀误用：pull 支持 8 字符前缀，resume 必须完整 UUID。严重程度：致命——最易混淆的操作点。
+
+接下来，第八部分，【决策/选型表】会话同步方案对比。
+
+多机日常交替开发，csm 集群 + session pull，精准迁移单会话、路径重映射、可 resume，scp 整目录，覆盖其他会话、路径不兼容
+
+防会话丢失，csm backup 到 R2/MinIO，守护进程定时增量备份，默认保留 30 天，仅本地磁盘，机器故障即全丢
+
+公司内网多 Agent，Hub-and-Spoke 出站 WS，无需端口映射、NAT 友好，Mesh 点对点，内网节点无法互连
+
+仅偶尔换机一次，手动复制 + 注意路径，零运维成本，搭完整集群，过度工程
+
+接下来，第九部分，【方法/工具卡】S3 自动备份与交叉编译。
+
+操作步骤，csm backup config 配置 R2/MinIO 端点与密钥 ，得到 csm backup create 手动备份 ，得到 csm backup list 查看历史 ，得到 csm backup restore --node 节点 --session ID 恢复。
+
+技术栈：cobra+viper 配置、gorilla WebSocket、aws-sdk-go-v2（兼容 R2/MinIO）、robfig/cron 定时、log/slog 结构化日志；零 CGO，GOOS/GOARCH 交叉编译友好。
+
+GitHub：github.com/bigwhite/cc-session-migrate
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Claude Code 会话锁在 ~/.claude/ 是多机开发的真实痛点，粗暴 scp 无法精准续接。
+
+csm 用 Hub-and-Spoke 出站 WebSocket 解决 NAT，比 Mesh 更适合笔记本+服务器混合环境。
+
+路径编码、history 格式、resume UUID 是迁移成功的三个技术关键点。
+
+S3 增量备份为会话数据提供灾备，守护进程可自动调度。
+
+零 CGO + 标准 Go 生态栈，交叉编译与部署门槛低。
+
+在一台公网 Linux 上部署 csm Server，记录 auth-token。
+
+各开发机以 Agent 加入集群，验证 csm cluster list 显示 online。
+
+用 csm session pull 测试跨机迁移，确认 claude --resume 完整 UUID 可续接。
+
+配置 R2/MinIO 自动备份，避免会话因机器故障丢失。
+
+给项目 Star 或提 Issue/PR 参与开源迭代。
+
+总结
+
+行动清单
+
+关键认知转变
+
+AI 编程助手时代，「会话上下文」已成为与代码同等重要的开发资产——值得像管理 Git 仓库一样，用专用工具做多机同步与备份，而非每次从零向 AI 复述背景。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
