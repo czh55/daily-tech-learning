@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-22",
+    "files": [
+      {
+        "path": "svgs/2026-07-22/go-passkey-record-crypto-passkey-api.svg",
+        "title": "Go 密码学维护者放大招：把 Passkey 存成一行字符串，还顺手为 Go 1.28 写好了 API",
+        "source": "https://tonybai.com/2026/07/22/go-passkey-record-crypto-passkey-api/"
+      },
+      {
+        "path": "svgs/2026-07-22/jack-dorsey-block-buzz-ai-agent-workspace-opensource.svg",
+        "title": "Twitter之父再出手：Block开源Buzz，要让人类和AI Agent「同工同权」",
+        "source": "https://tonybai.com/2026/07/22/jack-dorsey-block-buzz-ai-agent-workspace-opensource/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-21",
     "files": [
       {

@@ -1,0 +1,123 @@
+欢迎收听每日技术学习语音讲解。本期主题，Go 密码学维护者放大招：把 Passkey 存成一行字符串，还顺手为 Go 1.28 写好了 API。标签包括Passkey、WebAuthn、Go 1.28、crypto/passkey。本次讲解预计时长 约 14 到 15 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Passkey 防钓鱼价值巨大但服务端存储 schema 互不兼容时，如何借鉴密码哈希 PHC 字符串思路把 WebAuthn 凭证压缩成一行不透明 passkey record，并配合 crypto/passkey 无状态 API 与「Credential ID 不建索引」原则，实现可迁移、极简且安全的 Go 落地路径。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：WebAuthn 复杂度，各家 schema 不一，然后passkey record，PHC 语法一行串，然后crypto/passkey，注册/登录 API，然后不建 ID 索引，免疫碰撞攻击
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「必须对 Credential ID 做跨账号唯一性检查」——Filippo 指出碰撞攻击的前提是存在 Credential ID 索引；登录请求携带 userID、按用户查找 passkey record 时，其他账号是否有相同 ID 根本不重要。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：WebAuthn 规范保守派 / 「必须严格执行 Credential ID 跨账号唯一检查」
+
+规范写 SHOULD 检查是因为默认假设你用 Credential ID 做索引查找——若登录流本就携带 userID 并按用户查 record，碰撞攻击前提消失，强行建全局唯一索引反而为攻击者开门。
+
+接下来，第四部分，【概念拆解卡】passkey record 一行字符串。
+
+在讲什么问题，WebAuthn credential record 字段繁多，Google、Adam Langley 等给出的建表建议各不相同，换库换语言就要迁移数据。
+
+核心机制，c2sp.org/passkey-record 借用 PHC 字符串语法（$webauthn$v=1$transports=...$），payload 复用 WebAuthn 已有的 authenticator data CBOR 编码，仅额外附加 transports 参数。
+
+关键理解，应用层只需维护「用户账号 ↔ 多个 passkey record 不透明串」的关联，验证时把串交给库——与密码认证「一账号多哈希」同构。
+
+典型场景，Go 服务端用 RelyingParty.NewRegistration/Register 完成注册，存一行 record；登录时 NewLogin ，得到 缓存 request ，得到 Login 校验断言。
+
+边界说明，浏览器交互复杂度无法消除；backed_up 状态因每次登录可能变化须单独存储更新；普通网站过度设计备份信号收益有限（多数仍保留邮箱重置）。
+
+原文：不要让攻击者决定你的 PRIMARY KEY，你就不会遇到 PRIMARY KEY 碰撞攻击。
+
+接下来，第五部分，【方法/工具卡】crypto/passkey 注册与登录流程。
+
+核心思路：无状态 Go 包，返回的 JSON 可直接传给浏览器 parseCreationOptionsFromJSON / parseRequestOptionsFromJSON，接收 PublicKeyCredential.toJSON() 无需手动转换。
+
+注册步骤：① RelyingParty.NewRegistration（传入用户信息与已有 record）② JSON 传浏览器 navigator.credentials.create() ③ RelyingParty.Register 校验 ④ 将返回的 passkey record 存入数据库。
+
+登录步骤：① RelyingParty.NewLogin ② 以 RequestID 为 key 缓存 request（短 TTL）③ JSON 传 navigator.credentials.get() ④ Inspect 取 requestID 与 userID ⑤ 取用户 record 后 RelyingParty.Login。
+
+应用层三件事：为每用户关联不透明永久 userID；存储 passkey record；缓存 NewLogin 产生的 request 挑战值。
+
+落地建议：元数据（昵称、创建/最后使用时间）自行存表，库不特殊处理；backed_up 单独字段并在每次登录后更新。
+
+避坑：不要把 Credential ID 设为主键或建全局索引——这为 ID 碰撞攻击创造了前提；按 userID 查该用户名下 record 列表即可。
+
+接下来，第六部分，【避坑清单卡】Passkey 服务端常见误区。
+
+Schema 碎片化（小心）：各框架自定义表结构导致换库即迁移；统一 passkey record 格式可跨语言保留凭证库。
+
+Credential ID 全局唯一（致命若误用）：攻击者可在自己账号注册相同 ID 制造碰撞，前提是系统用 ID 索引查找；不建索引则攻击不存在。
+
+backed_up 写入 record（小心）：record 不可变但 backed_up 每次登录可能变，必须独立存储更新。
+
+过度依赖框架（可忽略小站）：把整个认证+DB 甩给框架不现实；无状态 API + 不透明串让应用层保持掌控。
+
+接下来，第七部分，【决策/选型表】Passkey 存储方案对比。
+
+Go 新项目 Passkey，passkey record + crypto/passkey 草案，一行串、互操作、API 已设计完整，自建多字段 WebAuthn 表，与社区标准脱节、迁移成本高
+
+可发现凭证登录，RelyingParty.NewLogin 流程，认证器自带 userID，体验最佳，仅用户名+二次验证，失去 Passkey 一键登录优势
+
+二次验证/重确认，NewLoginForUser，API 明确支持非 discoverable 场景，强行用 discoverable 流程，交互模式不匹配
+
+多库/多语言迁移，PHC 格式不透明串，换 Passkey 库或后端语言可保留 DB，框架私有 blob 格式，供应商锁定
+
+接下来，第八部分，【跨概念对比表】密码哈希 vs Passkey record。
+
+存储形态，PHC 一行不透明串，同样 PHC 语法一行串，应用层处理模式完全同构
+
+防钓鱼，不能（可被钓鱼站骗取），协议层绑定源站，钓鱼失效，Passkey 是信息安全最重要进展之一
+
+一账号多条，通常一条（可多条历史），天然支持多设备多 record，关联表设计类似
+
+可变状态，一般不变，backed_up 须单独维护，唯一需要额外字段的例外
+
+接下来，第九部分，【心法/原则卡】像密码哈希一样思考 Passkey。
+
+原则，Passkey 服务端复杂度中，有一部分可通过标准化可互操作存储格式抹平——让库处理验证，让应用只维护关联关系。
+
+为什么重要，网络钓鱼无法靠教育解决，Passkey 从协议层让钓鱼失效；但实现体验若比密码哈希复杂十倍， adoption 会被拖慢。
+
+怎么落地，① 关注 c2sp.org/passkey-record 与 Go crypto/passkey 提案反馈 ② 注册/登录走 RelyingParty 双流程 ③ userID 查找 record，不建 Credential ID 全局索引 ④ backed_up 独立字段按登录更新。
+
+适用边界，API 尚未实现，需等社区反馈后可能进入 Go 1.28；生产前须跟踪提案状态。
+
+原文：Passkey 是目前唯一一个从协议层面就能杜绝钓鱼的方案——不是让人更小心，而是让这类攻击从根上失效。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Passkey 防钓鱼价值巨大，但服务端 schema 碎片化是落地摩擦源。
+
+passkey record 用 PHC 语法+authenticator data CBOR，一行串实现互操作与可迁移。
+
+crypto/passkey 草案给出完整注册/登录无状态 API，JSON 与浏览器原生接口无缝对接。
+
+Credential ID 不建索引即可免疫碰撞攻击——不要让攻击者决定 PRIMARY KEY。
+
+backed_up 是唯一须单独维护的可变状态；其余元数据应用层自管。
+
+阅读 c2sp.org/passkey-record 规范草案，评估现有 WebAuthn 表结构迁移成本。
+
+跟踪 crypto/passkey Go 提案，在 Go 1.28 提案窗口提交集成反馈。
+
+重构存储：用户表关联多行 passkey record 不透明串，而非拆散 WebAuthn 字段。
+
+移除 Credential ID 全局唯一索引，改为 userID ，得到 record 列表查找。
+
+为 backed_up 增加独立字段，在每次 Login 成功后更新。
+
+总结：
+
+行动清单：
+
+关键认知转变：从「WebAuthn 是一堆复杂字段要精心设计表」升级为「Passkey 就是下一时代的密码哈希——一行不透明串，库负责验证，应用负责关联」。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
