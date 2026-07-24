@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-07-24",
+    "files": [
+      {
+        "path": "svgs/2026-07-24/tokio-topcoat-rust-fullstack-framework.svg",
+        "title": "重磅！Tokio官方发布全栈框架Topcoat：不用WASM，AI时代Rust也能「糊」网页了",
+        "source": "https://tonybai.com/2026/07/24/tokio-topcoat-rust-fullstack-framework/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-23",
     "files": [
       {
