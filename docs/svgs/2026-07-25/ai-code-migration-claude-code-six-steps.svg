@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6245" viewBox="0 0 1320 6245">
+  <foreignObject x="0" y="0" width="1320" height="6245">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 16px;text-align:center;min-width:90px;font-weight:700;font-size:12px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>百万行代码两周搞定：Anthropic AI 代码迁移六步法</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Claude Code</span>
+  <span class="tag tag-green">代码迁移</span>
+  <span class="tag tag-orange">六步迁移法</span>
+  <span class="tag tag-purple">Loop Engineering</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当语言迁移从「数年百万美元工程」压缩到「几周甚至一个周末」时，团队应如何设计裁判系统、规则手册与验证循环，让 AI 修的是产出代码的流程而非逐文件打补丁。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">六步迁移法：从规则到行为对齐</h3>
+  <div class="diagram">
+    <div class="node">① 规则手册<br/><span style="font-size:11px;font-weight:400">依赖地图·差距清单</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">② 压力测试<br/><span style="font-size:11px;font-weight:400">迷你迁移试航</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">③ 全量翻译<br/><span style="font-size:11px;font-weight:400">实现·审查·修复</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">④ 编译<br/><span style="font-size:11px;font-weight:400">并行修错</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">⑤ 冒烟<br/><span style="font-size:11px;font-weight:400">崩溃分类</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">⑥ 行为对齐<br/><span style="font-size:11px;font-weight:400">测试·构建守护进程</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">前置条件：裁判系统（可移植测试 + 对抗式验证）→ 核心循环：审查对抗化、验证机械化</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「让 Claude 逐文件翻译就能完成迁移」——Anthropic 案例表明，真正决定成败的是规则手册、依赖地图、对抗式审查与编译器/测试套件构成的机械化验证循环，而非单次 prompt 的翻译质量。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】AI 代码迁移的本质</h3>
+  <p><strong>在讲什么问题：</strong>大规模语言迁移为何突然从「三年之痒」变成「几周可完成」？关键变量是什么？</p>
+  <p><strong>核心机制：</strong>工程师编写迁移规则与验证循环，智能体在循环内翻译→编译→测试→修复，直到新代码行为与原代码对齐；失败项自动进入任务队列，队列从磁盘状态重建，天然可断点续跑。</p>
+  <p><strong>关键理解：</strong>你不是在修代码，而是在修产出代码的那个循环（loop）——旧代码本身就是需求文档，测试套件是天然裁判，编译/测试失败自动生成下一批任务。</p>
+  <p><strong>典型场景：</strong>Bun 百万行 Zig→Rust（不到两周）、Mike Krieger Python→16.5 万行 TypeScript（一个周末）、Anthropic 一个月内迁移 10 个代码包。</p>
+  <p><strong>边界说明：</strong>适合有客观验证标准（测试/编译/行为 diff）的迁移；无裁判时需先让 Claude 造一致性核查工具；Bun 迁移后仍有约 4% unsafe 代码，合并后曾发现 19 个回归——100% 行为一致是目标而非默认。</p>
+  <div class="quote">原文：当验证标准是客观的，模型可以连续几天对着一个「标准答案」死磕，而不需要人来仲裁质量。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】六步迁移法实操流程</h3>
+  <p><strong>方法名：</strong>Anthropic 六步迁移法 <span class="tag tag-green" style="font-size:11px">Claude Code</span></p>
+  <p><strong>核心思路：</strong>规则先行、压力试航、全量并行翻译、编译/冒烟/行为三层机械化验证，人力集中在前期规则与审查设计。</p>
+  <p><strong>操作步骤：</strong>① 建规则手册（先于差距清单）+ 依赖地图 + 差距清单，用怀疑论审查者审计 ② 3 文件迷你迁移压力测试规则（产出全部丢弃）③ 批处理全量翻译，实现用小模型、审查用大模型，不确定处标 // TODO(port) ④ 编排脚本全量编译，并行修复+对抗审查 ⑤ 冒烟测试崩溃分类修复 ⑥ 测试套件行为对齐，构建守护进程串行化昂贵重建。</p>
+  <p><strong>选型条件：</strong>保留结构迁移（Jarred）适合逐文件对比压力测试；重新设计迁移（Mike）用对抗式审查攻击设计文档 + 可丢弃端到端试跑。</p>
+  <div class="pitfall"><strong>避坑：</strong>压力测试产出必须全部扔掉——目的是打磨规则而非取得进展；不要盯着单个失败，注意力放在「规律」和规则手册扩充上；审查者意见不一致时交第三智能体裁决，反复出现的同类错误应改规则重生成而非逐文件打补丁。</div>
+  <div class="highlight"><strong>落地建议：</strong>任务队列机械化——「完成」= 输出文件已存在于磁盘；无现成测试套件时让 Claude 设计 7 场景一致性核查 + 端到端测试（Mike 连续四夜自主跑分）；开源工具包 github.com/anthropics/code-migration-kit-with-claude-code 可作起点。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Jarred 结构保留 vs Mike 重新设计</h3>
+  <table>
+    <tr><th>对比维度</th><th>Jarred（Bun Zig→Rust）</th><th>Mike（Python→TypeScript）</th><th>一句话结论</th></tr>
+    <tr><td>规则手册形态</td><td>类型/习惯用法对照表 + 差距清单</td><td>设计文档级规则手册</td><td>保留结构用对照表，重设计用设计文档</td></tr>
+    <tr><td>压力测试</td><td>3 文件双智能体翻译 + 第三智能体 diff</td><td>对抗式审查设计文档 + 可丢弃端到端试跑</td><td>能否逐文件对比决定压力测试形态</td></tr>
+    <tr><td>编译器位置</td><td>编译留到第 4 步（cargo 分钟级）</td><td>每轮循环都跑 tsc（秒级）</td><td>编译成本决定融入循环还是独立阶段</td></tr>
+    <tr><td>验证裁判</td><td>现有 TypeScript 大型测试套件</td><td>自造 7 场景一致性核查 + 四夜 E2E</td><td>无裁判不是绊脚石，让 Claude 造一个</td></tr>
+    <tr><td>迭代策略</td><td>每阶段审查+关卡，结构保留</td><td>端到端跑三遍，前两次推倒重来</td><td>重设计迁移更依赖全局试跑迭代</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时启动语言迁移</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐的方案</th><th>为什么不行</th></tr>
+    <tr><td>changelog 反复内存 bug / 长期性能瓶颈</td><td>评估 AI 辅助迁移</td><td>迁移理由不再需「生死攸关」，最坏结果是删分支重来</td><td>继续忍受技术债</td><td>成本账本已变，搁置项目可能已划算</td></tr>
+    <tr><td>构建矩阵每次发布等 30 分钟</td><td>优先迁移构建链（Mike 案例）</td><td>编译 8 分钟→2 秒，启动快 6 倍，可下线部署流水线</td><td>仅优化 CI 缓存</td><td>语言/工具链根因未解决</td></tr>
+    <tr><td>无测试套件的老旧代码库</td><td>先造裁判再迁移</td><td>无退出条件=无成功标准；Claude 可写一致性核查</td><td>直接全量翻译</td><td>90% 行为一致比不迁移更糟</td></tr>
+    <tr><td>预算敏感的小团队</td><td>小模型实现+大模型审查</td><td>Bun 迁移约 16.5 万美元 token；需有意识设计循环</td><td>全程 Opus/Fable</td><td>token 消耗集中在循环次数</td></tr>
+    <tr><td>生态萎缩的原语言</td><td>尽快启动规则手册阶段</td><td>招聘池与库生态权重上升（AI 抹平语言学习门槛）</td><td>无限期维护双栈</td><td>职业风险与并行维护成本累积</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】迁移流程常见陷阱</h3>
+  <p><strong>照本宣科（致命）：</strong>每次迁移都不一样，指南是起点，动手前须与 Claude 规划自己的方案。</p>
+  <p><strong>差距清单先于规则手册（致命）：</strong>差距清单本质是规则覆盖不到的部分，顺序颠倒会导致审计混乱。</p>
+  <p><strong>手动给代码打补丁对抗规则（小心）：</strong>审查者反复抓到同类错误时，应在规则手册加一条并重生成受影响文件，而非逐文件修补。</p>
+  <p><strong>多智能体各自触发构建（小心）：</strong>构建守护进程是唯一允许重建二进制的进程，避免重复昂贵操作。</p>
+  <p><strong>智能体过于谨慎不敢改（可忽略）：</strong>用直白强硬提示词告知编译器会在下一步兜底纠错。</p>
+  <div class="quote">原文：让审查对抗化，让验证机械化——脚本（编译器、diff、测试套件）当裁判，不要把人当质量仲裁。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】修流程不修代码</h3>
+  <p><strong>原则：</strong>人力前置到规则手册与压力测试，后期看着任务队列自己跑完。</p>
+  <p><strong>为什么重要：</strong>逐文件人工审 PR 无法支撑百万行规模；机械化队列 + 对抗审查才能把偏差变成可追踪任务。</p>
+  <p><strong>怎么落地：</strong>① 分类现有测试并改写为可移植外部断言 ② 验证裁判能抓坏代码 ③ 8 类失败模式子智能体审查规则手册 ④ 顾问模式组合不同档位模型优化 token。</p>
+  <p><strong>适用边界：</strong>需要数万到数十万美元 token 成本（Bun 约 16.5 万刀）；生产合并前须 CI 100% 通过，合并后仍可能发现回归需修复。</p>
+  <div class="highlight"><strong>成果参考：</strong>Bun 迁移后内存 6745MB→609MB（降 91%）、二进制体积减 19%、性能提升 2%–5%。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：保守工程派 / 「迁移烂尾史」亲历者</p>
+  <p class="rebuttal-text">16.5 万美元 token 加 19 个合并后回归，换来的只是 2%–5% 性能提升——对多数团队，冻结路线图赌行为 100% 对齐，仍比渐进重构风险高一个数量级。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>AI 代码迁移的关键不是逐文件翻译，而是设计规则手册 + 机械化验证循环，让编译器/测试套件当裁判。</li>
+    <li>六步法：规则与差距清单 → 压力试航 → 全量翻译 → 编译 → 冒烟 → 行为对齐，前置须造可移植裁判系统。</li>
+    <li>审查对抗化（多智能体互审+裁决）、验证机械化（磁盘队列可断点续跑）是 Anthropic 十条迁移的共通模式。</li>
+    <li>成本从数百万美元数年降至数万–数十万美元数周，迁移理由不再需「生死攸关」。</li>
+    <li>无现成测试套件时，一致性核查 + 自造 E2E 测试可补齐裁判缺口。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>列出团队忍了很久的迁移候选库，用 Claude 评估六步流程与依赖地图复杂度。</li>
+    <li>克隆 code-migration-kit-with-claude-code，从 3 文件压力测试打磨规则手册开始。</li>
+    <li>分类现有测试，改写为可同时跑在原代码与目标代码上的外部断言。</li>
+    <li>设计任务队列：完成判定 = 磁盘输出存在，实现用小模型、审查用大模型。</li>
+    <li>重算搁置迁移项目的 ROI——含 token 成本、回归修复预算与内存/构建/性能收益。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「AI 能不能帮我改代码」转为「我能不能设计一个让 AI 自我验证的迁移循环」——语言迁移的瓶颈从人力翻译转向工程化的规则与裁判建设。</p>
+</div>
+    </div>
+  </foreignObject>
+</svg>
