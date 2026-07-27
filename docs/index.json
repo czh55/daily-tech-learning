@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-07-27",
+    "files": [
+      {
+        "path": "svgs/2026-07-27/why-software-factories-fail-harness-engineering-not-enough.svg",
+        "title": "AI 写了 75% 的代码，工程师却越来越慌：「黑灯软件工厂」的问题不在 harness，而在模型本身",
+        "source": "https://tonybai.com/2026/07/27/why-software-factories-fail-harness-engineering-not-enough/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-25",
     "files": [
       {
