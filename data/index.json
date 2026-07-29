@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-07-29",
+    "files": [
+      {
+        "path": "svgs/2026-07-29/go-1-28-generic-collections-proposal.svg",
+        "title": "Go 1.28 大动作：泛型集合终于要进标准库了，Set、树形Map、堆一次性标准化",
+        "source": "https://tonybai.com/2026/07/29/go-1-28-generic-collections-proposal/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-28",
     "files": [
       {
