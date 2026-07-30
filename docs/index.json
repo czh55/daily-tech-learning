@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-30",
+    "files": [
+      {
+        "path": "svgs/2026-07-30/decrypt-prompt-71-dspark-decoding-speedup.svg",
+        "title": "解密Prompt系列71. 从DSpark聊聊大模型 Decoding 提速的技术演化",
+        "source": "https://www.cnblogs.com/gogoSandy/p/21940384"
+      },
+      {
+        "path": "svgs/2026-07-30/mcp-2026-07-28-stateless-core-claude.svg",
+        "title": "刚刚，MCP协议迎来「史上最大更新」：State彻底消失，Claude率先适配支持",
+        "source": "https://tonybai.com/2026/07/30/mcp-2026-07-28-stateless-core-claude/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-29",
     "files": [
       {

@@ -1,0 +1,168 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'decrypt-prompt-71-dspark-decoding-speedup.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#faf5ff,#f3e8ff);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #a855f7}
+.card h3{font-size:22px;font-weight:700;color:#7c3aed;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #c4b5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#7c3aed}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#7c3aed;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>解密Prompt系列71. 从DSpark聊聊大模型 Decoding 提速的技术演化</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">投机解码</span>
+  <span class="tag tag-blue">MTP / EAGLE</span>
+  <span class="tag tag-green">DFlash</span>
+  <span class="tag tag-orange">DSpark</span>
+  <span class="tag tag-red">无损加速</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：LLM 自回归解码为何 Memory-bound、如何用「草稿+验证」在数学上无损提速，以及从 Speculative Decoding 到 Medusa/MTP/EAGLE，再到 DFlash 块扩散与 DSpark 马尔可夫偏置的演化脉络与选型依据。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#7c3aed;margin-bottom:12px;text-align:center">Decoding 提速技术演化路线</h3>
+  <div class="diagram">
+    <div class="node-red">Speculative<br><span style="font-size:11px;font-weight:400">小模型草稿+大模型验证</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Medusa / MTP / EAGLE<br><span style="font-size:11px;font-weight:400">自模型多头草稿</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">DFlash<br><span style="font-size:11px;font-weight:400">块内双向注意力</span></div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">DSpark<br><span style="font-size:11px;font-weight:400">马尔可夫偏置+置信度调度</span></div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">核心不变式：拒绝采样保证输出分布与纯大模型逐步生成一致（Lossless）</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「并行猜多个 token 一定更快」——正确理解是：吞吐取决于 E[接受 token 数] 与草稿/验证延迟之比；块越大接受率越低时，验证算力会被大量丢弃草稿浪费，需动态剪枝与调度。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】投机解码的草稿-验证闭环</h3>
+  <p><strong>在讲什么问题：</strong>自回归生成第 N 个 token 需重算前 N-1 个，GPU ALU 利用率低（Memory-bound），像卡车每次只运一粒花生米。</p>
+  <p><strong>核心机制：</strong>草稿模型快速串行产出 γ 个 token；目标模型一次前向并行验证；拒绝采样按 p(x)/q(x) 决定接受，保证分布与纯大模型一致。</p>
+  <p><strong>关键理解：</strong>平均延迟 T_avg = (γ·T_draft + T_verify) / E[Accepted]——既要草稿快，又要接受率高，二者常矛盾。</p>
+  <p><strong>典型场景：</strong>在线推理高 QPS、长文本生成、vLLM 等已集成投机解码的 serving 栈。</p>
+  <p><strong>边界说明：</strong>异构小模型在复杂任务上接受率断崖；跨模型「心灵不相通」是经典 Speculative 的主要瓶颈。</p>
+  <div class="quote">拒绝采样从概率论证明：投机解码输出分布与纯粹用大模型一步步生成完全一致。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】自模型多头路线的三代分化</h3>
+  <table>
+    <tr><th>对比维度</th><th>Medusa</th><th>DeepSeek MTP</th><th>EAGLE</th></tr>
+    <tr><td>因果链</td><td>并行猜 t+2,t+3… 打破因果</td><td>串行级联，前 token embedding 喂下一头</td><td>串行，共享 LM Head/Embedding</td></tr>
+    <tr><td>训练阶段</td><td>冻结主干后训浅层 MLP 头</td><td>预训练原生联合（0.3 loss 权重）</td><td>冻结主干后训，结构更轻（FC）</td></tr>
+    <tr><td>接受率</td><td>靠后位置指数衰减</td><td>第二 token 接受率 85%+，约 1.8x TPS</td><td>拯救无 MTP 预训练的开源模型</td></tr>
+    <tr><td>额外参数</td><td>独立 Medusa Heads</td><td>复用 Embedding+LM Head，轻量 MTP Layer</td><td>轻草稿头，用草稿 hidden 非主干 hidden</td></tr>
+    <tr><td>一句话结论</td><td>暴力外推易翻车</td><td>预训练融入的上限更高</td><td>后训练场景实用王者</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】DFlash 块扩散与 DSpark 三杀招</h3>
+  <p><strong>DFlash 核心思路：</strong>块内放弃因果掩码，用双向注意力一次齐射多个 token；每层嵌入主干顶层 Hidden，Block Size 8 时仍约 70% 接受率，较 EAGLE-3/MTP 快 2 倍以上。</p>
+  <p><strong>DSpark 杀招一：</strong>马尔可夫偏置 P_k = Softmax(U_k + B_k(x_{k-1}))——并行 logits U_k 加前一离散 token 的转移查表 B_k，零延迟纠正并行无序。</p>
+  <p><strong>DSpark 杀招二：</strong>置信度头预测 c_k，前缀联合接受概率 a_{r,j} = ∏c_{r,i}，配合顺序温度缩放 STS 校准过度自信。</p>
+  <p><strong>DSpark 杀招三：</strong>硬件感知调度器按 SPS 曲线试探验证长度——批越大不一定吞吐更高，动态剪枝到边际收益为负即停。</p>
+  <div class="pitfall"><strong>避坑：</strong>盲目增大 block size——接受率低时验证阶段大量丢弃，高并发下浪费显卡；DSpark 调度器正是为最大化吞吐而非盲目验全长草稿。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】推理加速方案怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>有同源小模型（如 1B+27B）</td><td>经典 Speculative Decoding</td><td>实现成熟，vLLM 可 2~3x</td><td>异构小模型硬凑</td><td>复杂任务接受率暴跌</td></tr>
+    <tr><td>自研/控制预训练</td><td>DeepSeek 式 MTP 原生预训练</td><td>因果严谨+主干学会「存未来信息」</td><td>仅后训 Medusa 式并行头</td><td>因果链断裂，远端 token 难采纳</td></tr>
+    <tr><td>开源模型无 MTP</td><td>EAGLE 后训练草稿头</td><td>冻结主干微调，工程落地快</td><td>指望 Medusa 多头外推</td><td>接受率随位置指数衰减</td></tr>
+    <tr><td>追求极致并行草稿速度</td><td>DFlash / DSpark</td><td>块并行+马尔可夫+调度器</td><td>仅加大 MTP 头数串行堆叠</td><td>头间串行限制草稿生成上限</td></tr>
+    <tr><td>多用户高并发 serving</td><td>DSpark 置信度调度</td><td>按 GPU 吞吐曲线动态验长</td><td>固定验满整块草稿</td><td>低接受后缀浪费算力</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】无损加速里的隐性代价</h3>
+  <p><strong>坑名：</strong>只看单次延迟不看 E[接受 token]</p>
+  <p><strong>原因：</strong>草稿快但接受率低时，验证批更大反而拖慢总吞吐。</p>
+  <p><strong>解法：</strong>监控接受率曲线；采用 DSpark 式动态验长或减小 γ。</p>
+  <p><strong>严重程度：</strong>小心——体感「开了加速却更慢」。</p>
+  <div class="pitfall"><strong>坑名：</strong>MTP 训练用 GT token、推理用预测 token——DeepSeek 传 Token Embedding 而非 hidden，是为对齐训练/推理输入分布；照搬架构忽略此点会掉接受率。</div>
+  <div class="pitfall"><strong>坑名：</strong>马尔可夫矩阵 B_k 全词表 V×V 存储爆炸——需低秩压缩，工程实现要单独评估内存。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】预训练与推理调优边界正在消失</h3>
+  <p><strong>原则：</strong>多步预测能力应作为模型基础设施在预训练阶段原生融入，而非一律后挂补丁。</p>
+  <p><strong>为什么重要：</strong>DeepSeek MTP 与 DSpark 成功表明：主干 hidden 里「预留未来信息」比纯后训外推头更稳。</p>
+  <p><strong>怎么落地：</strong>自研模型评估 MTP 联合 loss；Serving 侧优先集成 EAGLE/DSpark 类栈并测接受率×吞吐；跟踪 Block Diffusion 与 Semi-AR 论文实现。</p>
+  <p><strong>适用边界：</strong>短上下文、极低延迟场景投机收益有限；极复杂推理链仍受接受率天花板约束。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：推理系统工程师 / 「先把 KV Cache 和量化做到极致」派</p>
+  <p class="rebuttal-text">投机解码堆更多草稿头与调度器，会增加显存占用与工程复杂度——对多数 7B 以下边缘部署，INT4/FP8 与 KV 优化往往比再叠一套草稿验证链更划算、更稳。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>LLM 解码瓶颈在 Memory-bound 串行矩阵乘；投机解码用拒绝采样实现数学无损加速。</li>
+    <li>经典 Speculative 依赖草稿-目标「心灵相通」；Medusa 并行外推因果弱，MTP 预训练级联是上限，EAGLE 填补后训练空白。</li>
+    <li>DFlash 用块内双向注意力提升并行草稿一致性；DSpark 用马尔可夫偏置、置信度剪枝与 SPS 调度器最大化吞吐。</li>
+    <li>加速公式核心：草稿快×接受率高÷验证成本；块越大未必更快。</li>
+    <li>趋势：多 token 预测从推理补丁变为预训练基础设施。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>在 serving 栈中 benchmark 接受率与 TPS，勿只看理论加速比。</li>
+    <li>有预训练话语权则评估 MTP 式联合训练；仅用开源权重则试 EAGLE/DSpark 集成。</li>
+    <li>高并发场景启用动态验长/置信度剪枝，避免固定大块验证浪费算力。</li>
+    <li>对比 DFlash 块大小与接受率曲线，为业务选 block size 甜点。</li>
+    <li>跟踪 DSpark 与 DeepSeek MTP 后续实现，预训练与推理协同设计将成为标配。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>Decoding 提速不是单一技巧，而是从「外挂小模型」到「模型自带多步预测基因」，再到「并行块+马尔可夫+硬件调度」的系统演化；无损是底线，接受率×吞吐才是实战胜负手。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
