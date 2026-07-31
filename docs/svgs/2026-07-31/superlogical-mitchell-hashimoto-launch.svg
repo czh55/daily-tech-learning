@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5360" viewBox="0 0 1320 5360">
+  <foreignObject x="0" y="0" width="1320" height="5360">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#0f766e,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #14b8a6}
+.card h3{font-size:22px;font-weight:700;color:#0f766e;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#0f766e;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>隐退三年后杀回来：HashiCorp创始人官宣二次创业，这次要做「万物的多路复用器」</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">Superlogical</span>
+  <span class="tag tag-blue">Mitchell Hashimoto</span>
+  <span class="tag tag-orange">终端多路复用</span>
+  <span class="tag tag-purple">人机协同</span>
+  <span class="tag tag-red">种子轮1000万美元</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Mitchell Hashimoto 离开 HashiCorp 三年后为何选择从「终端多路复用器」切入二次创业，以及 Superlogical 试图用「围绕工作本身的持久会话」弥合本地、远程、沙箱、生产与 AI Agent 之间割裂的工作层。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0f766e;margin-bottom:12px;text-align:center">Superlogical 三步路线图</h3>
+  <div class="diagram">
+    <div class="node">① 现代化<br/>终端多路复用器</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">② 可组合<br/>composable 架构</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">③ 生产级<br/>安全运行</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">终局：万物<br/>工作多路复用层</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">基于 libghostty（MIT）· Ghostty 非营利使命不变 · Glenn Solomon 12年后再次押注</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「终端多路复用器是个小众赛道」——Mitchell 的赌注是终端连接开发者、AI Agent、工具链与基础设施，是承载后续「工作多路复用层」的地基，而非终局产品本身。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】工作多路复用层与持久会话</h3>
+  <p><strong>在讲什么问题：</strong>构建软件已横跨本地、远程主机、沙箱、CI 与生产；工作模式从人机交互扩展到自动化任务与 Agent 并行，但现有工具把交互式、自动化、生产管控切成孤立系统。</p>
+  <p><strong>核心机制：</strong>缺失层应是围绕「工作本身」的持久 session——跨应用与环境、默认携带上下文、暴露结构化数据与操作接口、保留完整历史，既可被软件驱动又对人可见可控。</p>
+  <p><strong>关键理解：</strong>AI 放大了割裂的代价，但割裂根源于几十年来的系统管理、CI 与远程协作边界，并非 AI 独有制造。</p>
+  <p><strong>典型场景：</strong>开发者关终端换设备续接现场；多人实时共享同一会话；Agent 与人类在同一工作层并行操作。</p>
+  <p><strong>边界说明：</strong>第一步聚焦终端多路复用器体验（滚动、选中、翻页、Web/原生客户端），更大版图尚未公开细节。</p>
+  <div class="quote">「缺失的那一层，应该是一个围绕工作本身构建的持久会话。」——Superlogical 官网表述</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】终端多路复用器 MVP 路径</h3>
+  <p><strong>方法名：</strong>现代化 Terminal Multiplexer（第一步产品）</p>
+  <p><strong>核心思路：</strong>把多个终端窗口组织进长存会话，关应用换设备可原样重连；内置实时共享会话能力。</p>
+  <p><strong>操作步骤：</strong>① 基于 libghostty 构建；② 支持 Web + macOS/iOS 原生客户端；③ 解决 tmux/Zellij 遗留的滚动选中翻页体验；④ 持续贡献通用终端能力回上游开源。</p>
+  <p><strong>选型条件：</strong>需要跨设备持久工作现场、协作共享终端、为后续 composable 层打地基时优先关注 Superlogical 进展。</p>
+  <div class="pitfall"><strong>避坑：</strong>误以为 Superlogical 会改变 Ghostty 治理——Ghostty 已捐赠联邦认证非营利组织，使命与路线图独立，Superlogical 仅作为 libghostty 使用者遵循 MIT 协议。</div>
+  <div class="quote">团队坦承单看「终端多路复用器」易被误解为窄赛道，但终端是连接一切的最小公共地基。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】现有割裂 vs Superlogical 愿景</h3>
+  <table>
+    <tr><th>对比维度</th><th>现状（tmux/CI/生产各自为政）</th><th>Superlogical 目标</th><th>一句话结论</th></tr>
+    <tr><td>交互式工作</td><td>默认背后有人，会话随工具消亡</td><td>持久 session 跨设备续接</td><td>工作现场不再绑定单台机器</td></tr>
+    <tr><td>自动化任务</td><td>消失在日志与后台任务</td><td>结构化接口 + 历史可追溯</td><td>自动化与人机操作同一上下文</td></tr>
+    <tr><td>生产环境</td><td>独立权限与管控体系</td><td>第三步「安全在生产运行」</td><td>终局需打通管控，非一步到位</td></tr>
+    <tr><td>协作</td><td>共享会话多为后期补丁</td><td>第一天内置实时共享</td><td>协作是产品基因而非插件</td></tr>
+    <tr><td>技术底座</td><td>各工具自有实现</td><td>libghostty 可复用组件</td><td>开源地基 + 商业产品分层清晰</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时关注 Superlogical vs 继续用 tmux/Zellij</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>纯本地 Linux 服务器运维</td><td>继续 tmux/Zellij</td><td>成熟稳定、零迁移成本</td><td>立刻切换未发布产品</td><td>Superlogical 产品尚未 GA</td></tr>
+    <tr><td>跨 Mac/iOS/Web 持久会话</td><td>跟踪 Superlogical 发布</td><td>原生+Web 客户端是明确差异化</td><td>自建多平台同步</td><td>体验与维护成本极高</td></tr>
+    <tr><td>人机+Agent 统一工作层</td><td>关注其 composable 路线图</td><td>终局瞄准 Agent 并行作业</td><td>仅用终端模拟器凑合</td><td>缺乏结构化接口与历史层</td></tr>
+    <tr><td>投资/生态判断</td><td>参考 HashiCorp 路径</td><td>Glenn Solomon 二次押注 + Stripe/Shopify 天使</td><td>忽视开发者体验赛道</td><td>Mitchell 履历证明 DX 可做大生意</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】连续创业者的「为爱发电」逻辑</h3>
+  <p><strong>原则：</strong>真正被开发者尊敬的作品往往源于「市面上现有方案不够满意」——而非先有商业计划。</p>
+  <p><strong>为什么重要：</strong>Ghostty 从个人项目到百万日活再捐赠非营利，证明 Mitchell 的动机与 HashiCorp 时代一致：消除开发者与真正想做的事之间的摩擦。</p>
+  <p><strong>怎么落地：</strong>观察 Superlogical 是否持续 building in public、libghostty 上游贡献质量、团队（Jack Pearkes/Alasdair Monk/Hector Simpson）交付节奏。</p>
+  <p><strong>适用边界：</strong>对仅需稳定终端的用户，现有工具足够；对押注「人机协同底层协议」者，才需深度跟踪。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：基础设施保守派 / 「终端已死」论者</p>
+  <p class="rebuttal-text">云 IDE 与全托管 Agent 正在吞掉本地终端场景——再做一个更炫的多路复用器，可能只是给即将被平台托管的工作流打补丁，而非重新定义协议。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Mitchell Hashimoto 二次创业 Superlogical，种子轮 1000 万美元，Notable Capital 与 Amplify Partners 领投。</li>
+    <li>切入点：现代化终端多路复用器；终局：覆盖本地/远程/沙箱/生产/Agent 的工作多路复用层。</li>
+    <li>技术基于 libghostty（MIT），Ghostty 非营利使命与治理不受影响。</li>
+    <li>创始团队含 HashiCorp 一号工程师与多位资深 DX 设计负责人；投资人含 Stripe/Shopify 联创等。</li>
+    <li>Glenn Solomon 12 年后再次首支票押注同一位创始人，看重其开发者尊敬度与做大生意的双重特质。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>订阅 Superlogical / Mitchell 博客与 building in public 更新，跟踪第一步产品发布节奏。</li>
+    <li>评估团队是否需跨设备持久终端会话，对比 tmux/Zellij 与 forthcoming 原生/Web 客户端。</li>
+    <li>若使用 Ghostty/libghostty，关注上游通用贡献是否持续，避免与商业产品路线混淆。</li>
+    <li>对 Agent 编排架构师：预留「结构化工作 session」抽象，而非把 Agent 状态散落在各工具日志里。</li>
+    <li>投资与生态观察者：将此次创业视为「开发者体验」赛道再次被资本验证的信号。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>终端不是衰退中的怀旧工具，而是 AI 时代人机协同的枢纽；多路复用器的价值在于把被割裂的工作形态重新缝合成可持久、可协作、可自动化的统一层。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

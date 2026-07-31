@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-07-31",
+    "files": [
+      {
+        "path": "svgs/2026-07-31/superlogical-mitchell-hashimoto-launch.svg",
+        "title": "隐退三年后杀回来：HashiCorp创始人官宣二次创业，这次要做「万物的多路复用器」",
+        "source": "https://tonybai.com/2026/07/31/superlogical-mitchell-hashimoto-launch/"
+      },
+      {
+        "path": "svgs/2026-07-31/thoughtworks-future-of-software-engineering-2026-verification-bottleneck.svg",
+        "title": "Thoughtworks最新报告：代码生成不再是瓶颈，「没人能验证」才是！",
+        "source": "https://tonybai.com/2026/07/31/thoughtworks-future-of-software-engineering-2026-verification-bottleneck/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-30",
     "files": [
       {
