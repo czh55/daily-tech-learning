@@ -1,0 +1,163 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'yc-open-source-qm-multiplayer-agent-harness.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #a855f7}
+.card h3{font-size:22px;font-weight:700;color:#7c3aed;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #c4b5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#6b21a8}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#7c3aed;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>YC亲自下场开源内部Harness：QM，一个「多人在线」的公司级Agent操作系统</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">Y Combinator</span>
+  <span class="tag tag-blue">Multiplayer Agent</span>
+  <span class="tag tag-green">MIT 开源</span>
+  <span class="tag tag-orange">AI 原生公司</span>
+  <span class="tag tag-red">Harness Engineering</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：YC 为何把内部代号 QM 的 Agent 系统开源，以及它如何用「每人专属 Agent + 频道组队协作」的组织模型，突破个人助理型 Agent 在公司级场景的天花板。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#7c3aed;margin-bottom:12px;text-align:center">QM 架构：无头核心 × 可插拔引擎 × 持久沙箱</h3>
+  <div class="diagram">
+    <div class="node">Slack / Web<br>插件层</div>
+    <span class="arrow-sym">↔</span>
+    <div class="node-blue">Headless Core<br>API·身份·策略</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Postgres<br>会话·记忆·队列</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Agent 引擎<br>Pi·OpenCode·Codex·Claude Code</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">每人/每 Room<br>持久沙箱</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">部署定制收拢进 deploy/ 目录 · 支持 Fly / AWS · 私有 fork 同步上游</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「QM 是又一个更强的个人 AI 助理」——它的设计前提是「一个助理服务全公司」会迅速失控；QM 给每个人和每个项目发专属 Agent，再在 Slack 频道里组队，竞争焦点从单 Agent 能力转向组织协同。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Multiplayer Agent 与个人助理型 Agent</h3>
+  <p><strong>在讲什么问题：</strong>过去一年主流 Agent 产品都是「一个 Agent 服务一个人」，硬改成公司级会极其复杂。</p>
+  <p><strong>核心机制：</strong>每个员工、每个协作空间（room）拥有独立记忆、文件、密钥视图、权限、定时任务、可发布 Web 应用和持久沙箱；同一身份在 Slack 与 Web 端共享配置。</p>
+  <p><strong>关键理解：</strong>不是发一个「超级 AI 员工」，而是发一整支 AI 团队——各自独立干活，跨部门项目时可像真实同事一样组队。</p>
+  <p><strong>典型场景：</strong>会计、法务、活动、工程全线运转；QM 自身开发也由 QM 参与；精简团队产出堪比军队。</p>
+  <p><strong>边界说明：</strong>早期实验项目，官方承认有 bug；不适合只想快速个人提效、不需要组织级身份与权限体系的场景。</p>
+  <div class="quote">原文：「你当然可以把一个助理型 Agent 魔改成服务全公司，但很快就会变得极其复杂。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】QM 部署与定制路径</h3>
+  <p><strong>核心思路：</strong>不克隆源码，新建部署仓库，依赖 @yc-software/qm 包，公司定制全部收拢进 deploy/layers/。</p>
+  <p><strong>操作步骤：</strong>① 新建部署仓库 → ② <code>npm exec --yes --package=@yc-software/qm@ -- qm init . --org --target npm install</code> → ③ 按自动生成的部署技能完成基础设施、Web 登录、密钥、Slack、上线与存活验证 → ④ 选 Fly 或 AWS 目标环境。</p>
+  <p><strong>选型条件：</strong>需要私有 fork 时用纯 Git 克隆（非 GitHub Fork 按钮），定制放 deploy/layers/，用内置 skill 同步上游。</p>
+  <div class="pitfall"><strong>避坑：</strong>公开仓库的 GitHub Fork 分支无法设为私有；深度定制应走 private fork 流程，保持核心与上游字节一致。</div>
+  <p><strong>对比相邻方法：</strong>与 Block Buzz 理念异曲同工，但 QM 强调多引擎可替换与 MIT 完全开源。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】QM 安全三档姿势</h3>
+  <table>
+    <tr><th>场景</th><th>推荐档位</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>高敏感操作、合规要求高</td><td>严格（Strict）</td><td>每次工具调用需人工审批</td><td>危险档</td><td>无内容筛查与暂停，误操作风险高</td></tr>
+    <tr><td>日常初创团队默认</td><td>自动（Auto）</td><td>分类器筛查外部数据与工具结果，可接自有审核 Agent</td><td>严格档</td><td>审批过多会拖慢产出</td></tr>
+    <tr><td>内部沙箱快速实验</td><td>危险（Dangerous）</td><td>无筛查、工具间不暂停，迭代最快</td><td>生产密钥环境</td><td>高危命令策略仍生效，但上下文无筛查</td></tr>
+  </table>
+  <div class="highlight"><strong>落地建议：</strong>无论选哪档，递归删除、破坏性 SQL 等命令的审批规则与硬性拒绝清单始终生效；细粒度作用域只能收紧、不能放松组织级设定。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】QM vs 个人助理型 Agent vs 单一引擎 Harness</h3>
+  <table>
+    <tr><th>对比维度</th><th>QM</th><th>个人助理型</th><th>单引擎 Harness</th><th>一句话结论</th></tr>
+    <tr><td>组织模型</td><td>每人/每项目专属 + 频道组队</td><td>一人一助理</td><td>通常绑定单用户会话</td><td>QM 解决的是组织协同，不是个人提效</td></tr>
+    <tr><td>引擎绑定</td><td>Pi/OpenCode/Codex/Claude Code 可换</td><td>多数锁定供应商</td><td>常绑定单一模型/CLI</td><td>QM 把供应商选择权留给团队</td></tr>
+    <tr><td>状态持久化</td><td>沙箱、记忆、工具环境跨会话保留</td><td>部分有，多为对话级</td><td>视实现而定</td><td>QM 的 Agent 像有专属电脑，不是临时工</td></tr>
+    <tr><td>成熟度</td><td>早期实验，YC 自曝有 bug</td><td>产品化程度高</td><td>各异</td><td>QM 适合愿意共建的开源早期采用者</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】YC 三代 Agent 进化教训</h3>
+  <p><strong>坑名：</strong>用单一超级 Agent 硬扛全公司需求</p>
+  <p><strong>原因：</strong>第一代 Ruby 小脚本上手快但能力有限；第二代 50+ Hermes 私人助理管理舰队本身成负担。</p>
+  <p><strong>原文说法：</strong>YC 想要 Hermes 的灵活性，又保留第一代的简单——QM 是叠加产物。</p>
+  <p><strong>解法：</strong>按人/项目隔离 + 统一身份权限体系 + 可插拔引擎，而非堆更多个人助理实例。</p>
+  <p><strong>严重程度：</strong>小心——组织级 Agent 舰队管理成本会指数增长。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】AI 原生公司的四个信号</h3>
+  <p><strong>原则：</strong>Agent 身份、权限、记忆、沙箱应像 HR 系统一样可管理。</p>
+  <p><strong>为什么重要：</strong>竞争焦点正从「单个 Agent 多强」转向「一群人 + 一群 Agent 如何在同一频道高效协作」。</p>
+  <p><strong>怎么落地：</strong>评估现有协作工具链（Slack/Web/代码仓库）能否承载统一 Agent 身份；试点一个跨部门 room 长期跟进项目。</p>
+  <p><strong>适用边界：</strong>小团队若尚无权限与审计基础设施，应先补安全姿势再扩 Agent 舰队。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「够用就行」的 SaaS 采购派 / 个人 Copilot 拥护者</p>
+  <p class="rebuttal-text">给每人再养一个带密钥和沙箱的 Agent 舰队，运维与安全审计成本会吃掉 YC 吹嘘的产出红利——多数公司连 IAM 都没理顺，谈不上「多人在线」。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>QM 是 YC 内部用了大半年的 Multiplayer Agent 操作系统，MIT 开源，定位组织级而非个人助理。</li>
+    <li>架构为无头核心 + 四种可换引擎 + 每人持久沙箱，定制收拢进 deploy/ 目录。</li>
+    <li>安全分严格/自动/危险三档，高危命令策略任何档位都不可关闭。</li>
+    <li>YC 三代进化说明：组织级 Agent 要隔离身份与权限，而非堆更多私人助理。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>浏览 github.com/yc-software/qm 与 qm.ycombinator.com 了解 README 与 SECURITY.md。</li>
+    <li>用 qm init 在测试环境走一遍 Fly 或 AWS 部署流程。</li>
+    <li>对照现有 Slack/代码仓库工作流，设计一个「专属 Agent + 共享频道」试点 room。</li>
+    <li>选定组织安全档位，确认高危命令拒绝清单符合团队合规要求。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>下一代公司协作的竞争点，可能不是「谁的模型更强」，而是「能否让一群 Agent 像真实团队一样在统一身份体系下组队」。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

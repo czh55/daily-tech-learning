@@ -1,0 +1,166 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'how-to-write-an-effective-design-doc.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>前谷歌工程师万字拆解：AI替你写代码的时代，你更需要写好一份设计文档</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Michael Lynch</span>
+  <span class="tag tag-green">Design Doc</span>
+  <span class="tag tag-orange">AI 辅助编程</span>
+  <span class="tag tag-purple">软件架构</span>
+  <span class="tag tag-red">不可逆决策</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：AI 能帮你写实现代码，但哪些项目决策代价高昂、近乎不可逆，必须通过设计文档在动手前摆上台面、让团队提前对齐。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">设计文档五大类内容关系</h3>
+  <div class="diagram">
+    <div class="node">① 项目定位<br>标题·元信息·Objective</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">② 需求边界<br>目标·非目标·场景</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">③ 技术方案<br>架构图·SLO·接口·依赖</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">④ 风险合规<br>安全·隐私·法务·监控</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">⑤ 协作留痕<br>遗留问题·备选方案</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">核心任务：把「难的决策」摊开，而非把实现写完 · 文档应能脱离作者独立阅读</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「AI 能生成代码，设计文档可以省了」——设计文档不是实现说明，而是思考过程；AI 暂时替不了你想清楚哪些决策真正难、真正贵、真正容易出错。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】设计文档 vs 需求文档 vs 实现文档</h3>
+  <p><strong>在讲什么问题：</strong>设计文档存在的意义是在动手前把方案里最难的部分摊开，让团队发现问题、达成共识。</p>
+  <p><strong>核心机制：</strong>只记录「做错代价大」的决策；可随时改的细节（如分页加载 20 条还是 1000 条）不值得占评审时间。</p>
+  <p><strong>关键理解：</strong>如果把每个细节都写进设计文档，等于在设计阶段就把实现写完，完全背离本意。</p>
+  <p><strong>典型场景：</strong>语言选型（C++ 写 20 万行后发现 Ruby on Rails 更合适）这类近乎不可逆的决策。</p>
+  <p><strong>边界说明：</strong>给页面加「加载更多」按钮这类几小时可回滚的改动，不必专门开设计文档。</p>
+  <div class="quote">原文：「设计文档不是需求文档，也不是实现文档，它的核心任务是把难的决策摆到台面上。」</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】什么时候该写设计文档</h3>
+  <table>
+    <tr><th>信号</th><th>命中则建议写</th><th>核心理由</th><th>不必写的情况</th><th>为什么</th></tr>
+    <tr><td>多人协作实现</td><td>是</td><td>需要提前对齐分工与接口</td><td>单人几小时小改动</td><td>沟通成本低于写文档成本</td></tr>
+    <tr><td>全职开发超 3 个月</td><td>是</td><td>长周期决策易累积技术债</td><td>周末 side project</td><td>回滚成本低</td></tr>
+    <tr><td>生产环境长期运行</td><td>是</td><td>架构选型影响数年维护</td><td>一次性脚本</td><td>无长期运维负担</td></tr>
+    <tr><td>跨团队协作</td><td>是</td><td>文档是脱离作者沟通的载体</td><td>团队内部口头即可</td><td>评审者不会先听你口头解释</td></tr>
+    <tr><td>需求模糊</td><td>是</td><td>写文档过程本身澄清需求</td><td>需求已极度明确</td><td>仍建议写清非目标防范围蔓延</td></tr>
+    <tr><td>存在灾难性风险</td><td>是</td><td>安全/法务问题设计阶段可规避</td><td>无敏感数据无合规要求</td><td>仍应记录信任边界判断理由</td></tr>
+  </table>
+  <div class="highlight"><strong>落地建议：</strong>命中一条信号大概率值得写；命中两条以上基本确定值得投入。投入粒度无统一标准——有时最合适的投入就是干脆不写。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】设计文档写作五步法</h3>
+  <p><strong>核心思路：</strong>按五大类组织内容，每类只写与「高代价决策」相关的部分，文档第一页就要让无背景读者看懂。</p>
+  <p><strong>操作步骤：</strong>① 写清 Objective 一句话（通俗到任何相关方看懂）→ ② 划清 Goals / Non-goals / Scenarios 故事线 → ③ 画架构图并附可编辑源文件（Excalidraw、Mermaid 等）→ ④ 定义 SLO 与监控告警 → ⑤ 开 Open issues 与 Alternatives considered 附录。</p>
+  <p><strong>选型条件：</strong>里程碑尽量每阶段产出对相关方有实际价值的东西（如先展示假数据 UI 验证需求理解）。</p>
+  <div class="pitfall"><strong>避坑：</strong>Goals 不要用实现细节描述（反例：引入 Kubernetes）；要用对用户/团队/公司的影响（正例：减少发布导致的服务中断）。白板拍照存档的架构图无法迭代修改。</div>
+  <p><strong>对比相邻方法：</strong>与 PRD 不同——PRD 说做什么；设计文档说为什么这样设计、难在哪、错了代价多大。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】设计文档常见误区</h3>
+  <p><strong>坑名：</strong>把设计文档写成实现说明书或需求堆砌</p>
+  <p><strong>原因：</strong>作者脑中有完整心理图景，误以为评审者同样理解背景。</p>
+  <p><strong>原文说法：</strong>想象给完全没有背景的同事解释项目——那些口头会说的话都应出现在文档第一页。</p>
+  <p><strong>解法：</strong>背景部分回答三个问题：为什么做、解决什么问题、之前有没有人试过；术语表尽量用通用词而非内部黑话。</p>
+  <p><strong>严重程度：</strong>致命——文档无法脱离作者独立阅读时，评审形同虚设。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Objective vs Goals vs Non-goals</h3>
+  <table>
+    <tr><th>对比维度</th><th>Objective</th><th>Goals</th><th>Non-goals</th><th>一句话结论</th></tr>
+    <tr><td>粒度</td><td>一句话项目定义</td><td>细化的高层目标</td><td>明确排除的范围</td><td>Objective 定方向，Goals 定成功标准，Non-goals 防误解</td></tr>
+    <tr><td>描述方式</td><td>通俗、放第一页</td><td>用影响描述，非实现细节</td><td>读者可能误以为在范围内的内容</td><td>三者逻辑应互相呼应</td></tr>
+    <tr><td>示例</td><td>在 Web 服务器与 DB 间加缓存提升性能</td><td>减少因发布导致的服务中断</td><td>本期不做移动端适配</td><td>Non-goals 是范围管理的保险丝</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】一条决策法则贯穿全文</h3>
+  <p><strong>原则：</strong>这个决策一旦做错了，代价有多大？——代价大就写进设计文档，代价小就留给实现阶段。</p>
+  <p><strong>为什么重要：</strong>AI 加速实现后，瓶颈从「写代码」转向「判断是否写对了」；设计文档是保留工程师判断力的载体。</p>
+  <p><strong>怎么落地：</strong>评审时只争论不可逆决策；可几小时回滚的细节直接开工，用用户反馈验证。</p>
+  <p><strong>适用边界：</strong>写文档是为了推动评审达成共识，不是拖入无休止争论——完成文档后应主动收集反馈并推进项目。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「敏捷极致派」/ 「AI 一把梭」倡导者</p>
+  <p class="rebuttal-text">在模型一周一迭代的节奏里，花两周写五十页设计文档，等评审结束需求早已变了——快试错比提前对齐昂贵决策更划算。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>AI 辅助编程普及不等于可以放弃设计判断力；设计文档承载的是「难决策」而非实现细节。</li>
+    <li>六个信号（协作、周期、长期运行、跨团队、需求模糊、灾难风险）帮助判断要不要写；一条法则帮助判断写什么。</li>
+    <li>完整文档分五大类：定位、需求边界、技术方案、风险合规、协作留痕，不必每份都写全。</li>
+    <li>好文档能脱离作者独立阅读，最终目的是推动评审而非无休止争论。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>下一个项目启动前，用六个信号自检是否值得写设计文档。</li>
+    <li>新建文档时先写 Objective 一句话和 Non-goals，防止范围蔓延。</li>
+    <li>用 Excalidraw 或 Mermaid 画可编辑架构图，附源文件链接。</li>
+    <li>为关键服务定义 SLO 与告警策略，避免「流畅」这类模糊要求。</li>
+    <li>评审 AI 生成的设计文档时，用「做错代价多大」筛掉废话、补上缺失的安全与信任边界分析。</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>AI 时代工程师的核心竞争力，从「亲手写代码」转向「识别哪些决策值得在动手前花评审时间想清楚」。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

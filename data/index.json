@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-08-01",
+    "files": [
+      {
+        "path": "svgs/2026-08-01/how-to-write-an-effective-design-doc.svg",
+        "title": "前谷歌工程师万字拆解：AI替你写代码的时代，你更需要写好一份设计文档",
+        "source": "https://tonybai.com/2026/08/01/how-to-write-an-effective-design-doc/"
+      },
+      {
+        "path": "svgs/2026-08-01/yc-open-source-qm-multiplayer-agent-harness.svg",
+        "title": "YC亲自下场开源内部Harness：QM，一个「多人在线」的公司级Agent操作系统",
+        "source": "https://tonybai.com/2026/08/01/yc-open-source-qm-multiplayer-agent-harness/"
+      }
+    ]
+  },
+  {
     "date": "2026-07-31",
     "files": [
       {
