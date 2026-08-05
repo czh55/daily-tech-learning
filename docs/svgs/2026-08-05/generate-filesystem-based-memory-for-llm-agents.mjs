@@ -1,0 +1,168 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'filesystem-based-memory-for-llm-agents.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>AI智能体的记忆，终于有人认真研究「文件系统」这条路了——新论文给出五个反直觉答案</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Agent 记忆</span>
+  <span class="tag tag-green">文件系统 Store</span>
+  <span class="tag tag-orange">三角色框架</span>
+  <span class="tag tag-purple">记忆形态对比</span>
+  <span class="tag tag-red">反直觉结论</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：工业界默认的「Markdown 文件树」式 Agent 长期记忆，在持续增长、重复与矛盾信息并存时，整理是否真的可靠、整理能否换来更准的答案，以及模型与工具集各自扮演什么角色。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">文件系统记忆的三角色与收益链</h3>
+  <div class="diagram">
+    <div class="node">管理 Agent<br>写入 · 合并 · 维护</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">记忆 Store<br>路径树 + 描述 + 正文</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">搜索 Agent<br>带引用作答</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">执行 Agent<br>技能轨迹蒸馏</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">整理稳定兑现「检索更便宜」，但「答得更准」无通吃形态；Store 形状主要由管理模型性格决定</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：记忆越整理、Agent 自主重组越多，答案就越准。论文显示整理的核心收益是降低检索成本；正确率排名会随基准翻转，「分文件夹归档」常比完全自主整理更稳。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】文件系统记忆与三角色 Store</h3>
+  <p><strong>在讲什么问题：</strong>Claude memory tool、Claude Code 记忆文件夹、Skills 体系都在用同一套路——Agent 自己读写 Markdown 目录树，但几乎无人系统验证其可靠性。</p>
+  <p><strong>核心机制：</strong>记忆库是有根路径树，每文件含路径、一句话描述、正文；文件夹名与 Markdown 标题构成 taxonomy。管理 Agent 维护、搜索 Agent 带引用作答、执行 Agent 在技能场景产出轨迹供蒸馏。</p>
+  <p><strong>关键理解：</strong>同一框架同时覆盖声明式记忆（事实/偏好）与程序性记忆（技能），无需为「记什么」和「怎么做」各建一套系统。</p>
+  <p><strong>典型场景：</strong>编码 Agent 在仓库内用 ls/grep/view 翻找历史决策；长对话问答需引用文件路径与行号。</p>
+  <p><strong>边界说明：</strong>工具集（函数式文件 API vs Shell+正则）会重塑 Store 形态，效果不亚于换模型；不适合指望「换向量库就能替代」的纯语义检索场景。</p>
+  <div class="quote">原文：「一个 Agent，真的能在记忆持续增长、出现重复、矛盾、过时信息的情况下，把这个文件仓库管理得井井有条吗？」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】六种记忆形态与整理光谱</h3>
+  <table>
+    <tr><th>对比维度</th><th>逐字转储 / 分文件夹</th><th>重组存档 / Agent 自主整理</th><th>一句话结论</th></tr>
+    <tr><td>整理成本</td><td>零或极低（只搬文件）</td><td>高（内容结构都变）</td><td>便宜方案常是工程甜点</td></tr>
+    <tr><td>检索花费</td><td>材料量大时偏高</td><td>可腰斩以上</td><td>整理买到的是「查得快」</td></tr>
+    <tr><td>答案正确率</td><td>多基准上稳定中游</td><td>排名翻转，32k 档甚至最差之一</td><td>整理≠提分，无通吃赢家</td></tr>
+    <tr><td>信息保真</td><td>原样保留</td><td>压缩版易悄悄丢细节</td><td>REAL TALK 场景压缩版正确率近乎腰斩</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】什么场景选哪种记忆策略</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>材料量小、对话不长</td><td>逐字转储或分文件夹归档</td><td>整理检索优势缩水，简单分主题文件夹最稳</td><td>让 Agent 自由重组</td><td>成本高且 PersonaMem 32k 上表现差于 RAG</td></tr>
+    <tr><td>材料量大、检索成本敏感</td><td>重组存档或 Agent-curated</td><td>每次读取内容量小，总检索花费可减半</td><td>闭卷或纯 chunk RAG</td><td>无法利用层级 taxonomy 收窄范围</td></tr>
+    <tr><td>真实聊天、不能丢细节</td><td>重组「保留版」+ 硬性保留每条事实</td><td>压缩版在 REALTALK 几乎腰斩正确率</td><td>无约束的自由压缩重组</td><td>模型默认有压缩丢细节坏习惯</td></tr>
+    <tr><td>强执行 Agent + 技能记忆</td><td>原始 episode log 一字不改</td><td>学霸型执行者吃完整上下文更好</td><td>过度蒸馏摘要</td><td>与弱执行 Agent 最优策略相反，差距可达 10 点</td></tr>
+    <tr><td>弱执行 Agent + 技能记忆</td><td>精炼技能 + 按任务动态指导</td><td>学渣需要蒸馏后的可执行提示</td><td>甩完整历史日志</td><td>超出其消化与遵循能力</td></tr>
+  </table>
+  <div class="highlight"><strong>落地建议：</strong>先按会话主题建文件夹搬 Markdown，不改动正文；仅在检索账单成为瓶颈时再投入重组或自主整理，并 A/B 测正确率而非只看 token。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】taxonomy 五条契约与工具集调优</h3>
+  <p><strong>核心思路：</strong>合格记忆文件须满足五条分类契约：同级可区分、同级相关、父级覆盖子级、距离反映相关性、结构服务于检索。</p>
+  <p><strong>操作步骤：</strong>① 为管理 Agent 写入五条契约到 system prompt → ② 选工具 harness（读/建/改/删/改名 vs Shell+grep）→ ③ 要求搜索答案带路径与行号引用 → ④ 对重组任务加「必须保留每一条事实」硬规则 → ⑤ 单独评测管理模型与搜索模型。</p>
+  <p><strong>选型条件：</strong>长对话偏分片交叉引用工具集；技能记忆换工具集反而让库更整合并提升任务结果。</p>
+  <div class="pitfall"><strong>避坑：</strong>别假设数据越多 Store 越分裂——同模型下 32k→128k 材料反而文件夹变薄，层级钻进单文件标题；换管理模型同一份对话可长成浅森林、两文件标题栈或最深交叉引用树。</div>
+  <p><strong>对比相邻方法：</strong>专用向量库/知识图谱可语义检索，但失去人类可直接打开编辑的可解释性；文件系统记忆胜在零成本扩展与透明 taxonomy。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】整理、压缩与模型分工</h3>
+  <p><strong>坑名：</strong>迷信「越强管理模型 → 答案越准」</p>
+  <p><strong>原因：</strong>管理 Agent 买到的是整理风格；搜索 Agent 能力才直接兑现答案质量，除非「写」本身出错（如未记录偏好变更日期）。</p>
+  <p><strong>原文说法：</strong>「整理的核心收益是省钱，不是提分」；Agent 自主整理在部分基准上不如分块检索。</p>
+  <p><strong>解法：</strong>预算向搜索模型倾斜；管理侧重点防状态更新写错；规模变大时只有最强管理模型能守住 taxonomy 契约。</p>
+  <p><strong>严重程度：</strong>致命——若把整理当提分手段会选错架构投入。</p>
+  <div class="pitfall"><strong>另一坑：</strong>逐字经验日志随规模膨胀，检索必须扫全历史；蒸馏有阈值效应，跨门槛后 Store 内容比执行模型身份更关键。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】文件系统记忆的设计空间</h3>
+  <p><strong>原则：</strong>文件系统记忆不是被默认相信却从未检验的假设，而是可系统调优的设计空间——整理、工具、模型、消费者能力各是一根杠杆。</p>
+  <p><strong>为什么重要：</strong>评测多看答案对错、看不见组织形态；实验跨度仍是一段对话量级，距数月人类式演化有差距。</p>
+  <p><strong>怎么落地：</strong>默认从 foldered sessions 起步；重组必加保留事实约束；把工具集与选模型并列调优；按执行 Agent 强弱选择 log vs 蒸馏。</p>
+  <p><strong>适用边界：</strong>论文未否定文件系统路线，但证明「越整理越好」不成立；超长周期记忆演化仍是开放问题。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：向量记忆/RAG 架构师 · 「专用表征才配得上 Agent」派</p>
+  <p class="rebuttal-text">文件树靠路径导航和 BM25 式翻找，语义相近却目录远离的内容照样漏检——工业界图省事用文件系统，是在用可解释性掩盖检索天花板，论文只证明了「便宜」，没证明它真能替代嵌入与图谱。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>UIUC 等首次系统检验「文件系统记忆」：三角色 + 六形态 + 五 RQ，工业默认方案终于有了可量化成绩单。</li>
+    <li>整理稳定降低检索成本（大数据量可腰斩），但正确率无通吃形态；分文件夹归档常跑赢 Agent 自主整理。</li>
+    <li>Store 形状由管理模型「性格」主导，非数据规模；工具集更换对形态的影响不亚于换模型。</li>
+    <li>记忆随时间积累不会用废，但 taxonomy 健康度随规模失守，仅最强管理模型能长期守住契约。</li>
+    <li>技能记忆最优呈现取决于执行 Agent 强弱：强者要完整 log，弱者要蒸馏与动态指导。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>新 Agent 记忆从「会话 Markdown + 主题文件夹」起步，避免一上来全自主重组。</li>
+    <li>若重组/压缩记忆，在 prompt 写明「必须保留每一条事实」并对比压缩版与保留版。</li>
+    <li>检索贵时优先投整理与 taxonomy，提分时优先升级搜索 Agent 而非管理 Agent。</li>
+    <li>把文件 API vs Shell 工具集列为与选模型并列的实验维度。</li>
+    <li>按执行 Agent 能力选择喂完整 episode 还是精炼技能文件。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>「整理记忆」主要买的是检索经济性，不是答案准确性；记忆库长什么样，更多反映整理者的模型性格与工具习惯，而非材料自然生长规律。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

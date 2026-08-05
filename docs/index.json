@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-05",
+    "files": [
+      {
+        "path": "svgs/2026-08-05/filesystem-based-memory-for-llm-agents.svg",
+        "title": "AI智能体的记忆，终于有人认真研究「文件系统」这条路了——新论文给出五个反直觉答案",
+        "source": "https://tonybai.com/2026/08/05/filesystem-based-memory-for-llm-agents/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-03",
     "files": [
       {
