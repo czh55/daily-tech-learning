@@ -1,0 +1,159 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'rust-lang-llm-policy-interpretation-2026.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#b45309,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #f59e0b}
+.card h3{font-size:22px;font-weight:700;color:#b45309;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#92400e}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#b45309,#f59e0b);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#b45309;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Rust 官方发文：AI 可以审代码，但不能写代码</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">rust-lang/rust</span>
+  <span class="tag tag-orange">LLM 政策</span>
+  <span class="tag tag-green">开源治理</span>
+  <span class="tag tag-purple">披露义务</span>
+  <span class="tag tag-red">评审文化</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 AI 让「漂亮 PR」不再等于「作者真懂代码」、评审资源被进一步挤压时，Rust 核心仓库如何用成文政策划定「可辅助思考、不可代为创作」的边界，并对不同角色给出可执行规则。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#b45309;margin-bottom:12px;text-align:center">政策逻辑链：问题 → 红线 → 执行</h3>
+  <div class="diagram">
+    <div class="node-red">三类恶化问题<br>信号失效 · 评审过载 · 机械搬运</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">允许辅助<br>问 · 析 · 检 · 评</div>
+    <span class="arrow-sym">≠</span>
+    <div class="node-red">禁止创造<br>生成合入代码</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">披露 + 更高门槛<br>测试 · 非关键路径</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">仅覆盖 rust-lang/rust 五团队仓库，非 Rust 项目整体立场；用公开文本替代私密潜规则</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：Rust「封杀 AI」或「全面拥抱 AI」。政策既不禁令也不友好——主语是单个核心仓库；允许 LLM 辅助评审与分析，但对生成代码设比人类更高的准入标准。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】rust-lang/rust LLM 政策边界</h3>
+  <p><strong>在讲什么问题：</strong>1281 个开放 PR 背景下，LLM 让写代码变容易但评审判断「方向对不对、值不值得做」的能力无法被代码替代，精致产出不再证明理解与长期投入。</p>
+  <p><strong>核心机制：</strong>编译器、libs、types、rustdoc、bootstrap 五团队联合采纳 forge 政策——公开 LLM 文本必须披露；生成代码须预先沟通、非关键路径、完善测试；健全性改动强烈劝阻 LLM。</p>
+  <p><strong>关键理解：</strong>评审默认前提是「跟想把事情做好的真人对话」；机械把评审意见喂给 LLM 再贴回，破坏信任且浪费所有人时间。</p>
+  <p><strong>典型场景：</strong>用 LLM 翻译邮件、找糟糕报错、分析 RFC 遗漏——属尊重社区运作的正面用法。</p>
+  <p><strong>边界说明：</strong>不适用于 rust-lang 其他仓库；不属于四类受影响人群者无需改变工作方式。</p>
+  <div class="quote">原文：「可以用 LLM 来提问、分析、提炼、精炼、检查、建议、评审，但不能用来创造。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Go / Zig / Linux Kernel / Rust 立场</h3>
+  <table>
+    <tr><th>对比维度</th><th>Rust rust-lang/rust</th><th>Go</th><th>Zig</th><th>Linux Kernel</th></tr>
+    <tr><td>生成代码</td><td>严格限制 + 更高标准</td><td>不接受 AI 为共同作者</td><td>行为准则禁止一切 LLM 内容</td><td>工具中立，看怎么用</td></tr>
+    <tr><td>披露</td><td>公开 LLM 文本硬性披露</td><td>强调人负全责</td><td>禁令式</td><td>文档指引辅助使用</td></tr>
+    <tr><td>治理风格</td><td>政策留修改接口、无独裁者</td><td>邮件列表争论版权责任</td><td>一刀切禁止</td><td>相对宽松</td></tr>
+    <tr><td>共同关切</td><td colspan="4">工具可加速产出，理解与责任必须落在具体的人身上</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】不同角色如何应对</h3>
+  <table>
+    <tr><th>场景</th><th>推荐做法</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>Issue 报告者用 LLM</td><td>披露并标出 LLM 生成段落</td><td>禁止未标注公开 LLM 评论</td><td>未标注粘贴 LLM 输出</td><td>评审员无义务阅读未披露内容</td></tr>
+    <tr><td>提交 LLM 生成代码</td><td>预先沟通 + 完善测试 + 披露</td><td>门槛高于人类提交，无测试豁免</td><td>关键路径/健全性改动用 LLM</td><td>即使专家也被强烈劝阻</td></tr>
+    <tr><td>评审员</td><td>不合规可直接关闭并引导至 LLM 频道</td><td>是否 LLM 生成由作者声明，非风格指控</td><td>凭「读起来像 AI」当面指控</td><td>风格不能作为证据</td></tr>
+    <tr><td>私下自用</td><td>不公开发布则无需披露</td><td>政策针对公开协作场景</td><td>把私下生成当公开提交不说明</td><td>隐瞒 AI 参与违反规则</td></tr>
+  </table>
+  <div class="highlight"><strong>落地建议：</strong>合入前对照 forge 政策「允许」章节与 rustc-dev-guide LLM 指引；PR 模板将询问是否 LLM 生成，减少争议。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】社区信号与评审陷阱</h3>
+  <p><strong>坑名：</strong>把「打磨精致的 PR」当加入信号</p>
+  <p><strong>原因：</strong>LLM 让精美 PR 不再代表心血、理解或长期留存意愿；Agent 场景甚至可能无持续跟进的人。</p>
+  <p><strong>原文说法：</strong>团队通常不愿轻易关闭 PR，因代表别人心血——这一假设已被 LLM 动摇。</p>
+  <p><strong>解法：</strong>评审重心放在方向、演变规划与作者是否理解代码，而非 diff 本身。</p>
+  <p><strong>严重程度：</strong>致命——误判信号会浪费双向巨量时间。</p>
+  <div class="pitfall"><strong>另一坑：</strong>因对方使用 LLM 而骚扰——无论是否违规，Rust 行为准则在任何互动中都必须遵守。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】政策而非禁令的治理哲学</h3>
+  <p><strong>原则：</strong>无共识时先画清界线、用真实数据检验——跟踪 AI 贡献是否有价值、贡献者是否学习与留下。</p>
+  <p><strong>为什么重要：</strong>项目无「仁慈独裁者」；内部对 AI 价值与危害分歧巨大，但共享「专家深度 + 包容欢迎」双重价值。</p>
+  <p><strong>怎么落地：</strong>接受政策比各自猜测更好；「大家都有点不满意」倒逼持续改进治理；考虑成立 LLM 政策子团队降低改规成本。</p>
+  <p><strong>适用边界：</strong>部分条款难「抓现行」是刻意设计——画界线而非抓每一次违规；回应时才考虑动机。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：AI 原生贡献者 · 「工具中立、效率优先」派</p>
+  <p class="rebuttal-text">把 LLM 生成代码拒之门外，评审员仍要审 1281 个 PR——政策保护的是旧时代「精致即理解」的仪式感，却可能把愿意用 AI 加速修复的新贡献者挡在门外，评审瓶颈并不会因此消失。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>政策主语是 rust-lang/rust 核心仓库，非 Rust 整体官方立场；影响评审者、LLM 代码提交者、LLM 辅助 issue 者与公开引用 LLM 输出者。</li>
+    <li>动因是三类恶化：精致产出≠理解、写容易评更难、机械复制粘贴浪费时间与信任。</li>
+    <li>核心红线：可辅助问析检评，不可创造；公开 LLM 文本必须披露，生成代码门槛高于人类。</li>
+    <li>用公开成文规则替代私密频道与潜规则，让新人可查阅、评审可引用。</li>
+    <li>横向看 Go/Zig/Kernel 风格各异，共同关切是责任必须落在具体的人。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>贡献 rust-lang/rust 前阅读 forge.rust-lang.org/policies/llm-usage.html。</li>
+    <li>任何公开评论/PR/issue 中的 LLM 内容一律标注来源与生成段落。</li>
+    <li>拟合入 LLM 代码前先沟通路径与测试计划，避开健全性关键改动。</li>
+    <li>评审时关注作者理解与方向，勿仅凭代码风格指控 AI。</li>
+    <li>不合规 PR 可关闭并引导至官方 LLM 辅助交流频道。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>开源协作里「代码漂亮」从信任信号降级为可疑信号；治理重点从审 diff 转向审人与方向，披露与更高标准是为保住「真人对话」前提。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

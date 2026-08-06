@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-08-06",
+    "files": [
+      {
+        "path": "svgs/2026-08-06/ai-programming-ability-layers.svg",
+        "title": "AI 时代，你的编程能力在第几层？我敢说，大多数人卡在第一层",
+        "source": "https://juejin.cn/post/7670475896516952115"
+      },
+      {
+        "path": "svgs/2026-08-06/rust-lang-llm-policy-interpretation-2026.svg",
+        "title": "Rust官方发文：AI 可以审代码，但不能写代码",
+        "source": "https://tonybai.com/2026/08/06/rust-lang-llm-policy-interpretation-2026/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-05",
     "files": [
       {
