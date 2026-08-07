@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-07",
+    "files": [
+      {
+        "path": "svgs/2026-08-07/go-crypto-passkey-proposal-explained.svg",
+        "title": "Go 密码学前掌门人亲自提案：crypto/passkey 要把「免密登录」这件事一次性做对",
+        "source": "https://tonybai.com/2026/08/07/go-crypto-passkey-proposal-explained/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-06",
     "files": [
       {

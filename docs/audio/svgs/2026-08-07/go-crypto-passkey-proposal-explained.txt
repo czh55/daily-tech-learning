@@ -1,0 +1,147 @@
+欢迎收听每日技术学习语音讲解。本期主题，Go 密码学前掌门人亲自提案：crypto/passkey 要把「免密登录」这件事一次性做对。标签包括Go 标准库、WebAuthn / Passkey、crypto/passkey、passkey-record。本次讲解预计时长 约 17 到 18 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：两年前用 Go 接 Passkey 还得自己搭会话、适配各家存储接口，Filippo Valsorda 提出的 crypto/passkey 能否用「无状态、无回调、无接口」把中小型网站的免密登录门槛压到「存一个字符串」？
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：2024 生态，第三方库 · 会话状态 · 存储接口各异，然后crypto/passkey，无状态 RelyingParty，ParseResponse 显式流，然后passkey-record，单行不透明字符串，仅按 user_id 索引
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：Passkey 是新协议、或 crypto/passkey 会取代所有 WebAuthn 库。Passkey 本质是 WebAuthn 可发现凭据的消费级命名；官方包定位是中小型站点服务端 API，大企业仍可能需要 attestation、多租户等完整能力。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：企业安全合规官 · 「协议完整性优先」派
+
+砍掉 attestation 与签名计数器、还鼓励不按 credential_id 建唯一索引——对消费站省事，对企业就是主动放弃设备真伪与克隆检测，一条标准库 API 撑不起「一次性做对」的承诺。
+
+接下来，第四部分，【概念拆解卡】Passkey 与 WebAuthn 凭据模型。
+
+在讲什么问题，密码可被记住、输入、撞库、钓鱼；短信/TOTP/魔法链接只是打补丁，认证核心仍是可被窃取的字符串。
+
+核心机制，设备生成公私钥对，私钥永不离开设备；登录时网站发 challenge，设备签名且把 origin 签入断言，网站用公钥验签——钓鱼站拿不到能在真实站点复用的签名。
+
+关键理解，每个站点独立密钥对，天然防重用；浏览器/系统（iCloud 钥匙串、Google 密码管理器、Windows Hello）负责同步与跨设备 hybrid 传输。
+
+典型场景，消费级 Web/App 注册与登录「一次生物识别、零密码输入」。
+
+边界说明，不解决账号恢复策略、企业设备 attestation 合规、Legacy 浏览器全覆盖——提案进一步为 95% 场景砍掉 attestation 与签名计数器校验。
+
+原文：「Passkey 不是一个新协议，而是 WebAuthn 可发现凭据的消费级马甲名。」
+
+接下来，第五部分，【方法/工具卡】crypto/passkey 注册与登录流。
+
+核心思路：RelyingParty 是纯配置对象，库内零 I/O、零回调、零存储接口——应用自己管 challenge 与数据库。
+
+操作步骤，
+
+1. 注册：NewRegistration(user, existingRecords) ，得到 前端 navigator.credentials.create() ，得到 Register(responseJSON) 得 record 字符串入库。
+
+2. 登录：前端 navigator.credentials.get() ，得到 ParseResponse(responseJSON) 得 Response（含 UnauthenticatedUserID），得到 按 ID 查 records ，得到 Login(response, records) 验签。
+
+选型条件，Go 中小型站点、愿接受单 Origin 配置、不需要 attestation 的企业证明链。
+
+避坑，登录前 UnauthenticatedUserID 不可信，只能用来查 Passkey 列表，绝不能直接当已登录用户——方法名刻意保留 Unauthenticated 前缀。
+
+落地建议：建表 passkeys(user_id, record) 仅对 user_id 建索引；User ID 用 crypto/rand.Text() 生成不透明随机串，终身不变且勿与邮箱/用户名混用。
+
+接下来，第六部分，【概念拆解卡】passkey-record 不透明存储格式。
+
+在讲什么问题，传统 WebAuthn 库逼开发者理解认证器数据结构并实现存储接口，迁移与跨语言互操作困难。
+
+核心机制，类似 PHC 密码哈希的前缀化单行字符串，形如 $webauthn$v=1$transports=...$<base64>，规范已提交 c2sp.org，应用整串存取、无需解析内部字段。
+
+关键理解，登录总是「先按 user_id 拉出全部 record 再逐条比对」，故无需 credential_id 唯一索引，也规避跨账号主键碰撞攻击——这是反直觉但扎实的简化。
+
+和其他概念关系：比 go-webauthn 等库的 SessionData/WebAuthnUser 接口更薄；比「自己拼 JSON 存凭据」更标准化、可跨实现迁移。
+
+原文依据：「应用侧只需要把这个字符串当成一个整体存进数据库，不需要关心里面到底装了什么。」
+
+接下来，第七部分，【跨概念对比表】密码 vs Passkey vs 第三方 Go 库 vs crypto/passkey。
+
+凭据形态，可记忆字符串，设备内私钥 + 服务端公钥，协议层结构体 + 自定义存储，单行 passkey-record 字符串
+
+钓鱼抗性，弱，origin 绑定签名，取决于集成质量，强制单 Origin 配置
+
+状态管理，会话/哈希，challenge 一次性，库常要求 Session 缓存，无状态，应用自管 challenge
+
+接入复杂度，低，协议理解成本高，中（接口适配），低（无回调无接口）
+
+一句话结论，Passkey 换安全模型；官方包换的是「谁负责会话与存储胶水层」
+
+接下来，第八部分，【决策/选型表】什么场景怎么接 Passkey。
+
+中小型 Go Web 新站，关注 crypto/passkey，按提案建表，目标用户就是这类站点，API 极简，等提案定稿前完全不设计表结构，存储模型大概率稳定，提前按 user_id+record 设计成本低
+
+多子域/多信任级别来源，每个 Origin 单独建 RelyingParty 实例，避免低信任子域 XSS 截获断言在高信任域重放，配置「允许 origin 列表」一把梭，提案点名云主机租户子域冒充控制台登录的典型风险
+
+企业需设备证明链，完整 WebAuthn 库 + attestation，提案明确不支持 attestation，强行用 crypto/passkey 做合规审计，消费级 Passkey 生态几乎不用 attestation
+
+已有 go-webauthn 生产系统，维持现状，评估 record 格式迁移，提案未正式发布，迁移有成本，未评估就全量重写，Issue 仍可能改 API，尤其多来源设计仍在收集反馈
+
+接下来，第九部分，【避坑清单卡】Origin、回调与协议取舍。
+
+坑名，把 UnauthenticatedUserID 直接当登录成功
+
+原因，WebAuthn 响应在验签前携带的用户标识不可信，误用等于鉴权前信任客户端数据。
+
+原文说法：「在验证通过之前是不可信的——它只能被用来查一下这个用户都有哪些 Passkey 记录。」
+
+解法，必须先 ParseResponse，查库取 records，再 Login 验签通过后才建立会话。
+
+严重程度，致命。
+
+坑 2 — 回调查库：GO-2024-3321 教训表明把未验证数据传给库回调会导致错误判断；提案因此放弃回调，改 ParseResponse + 应用侧查库。
+
+坑 3 — 多 Origin 列表：同一 RP ID 下不同信任级别来源共用凭据，低信任 XSS 可重放断言到高信任门户——必须为每个 Origin 独立 RelyingParty。
+
+坑 4 — 强校验签名计数器：主流 Passkey 提供商不维护 counter，强行校验会误杀合法登录；提案选择不校验，接受克隆检测能力弱化。
+
+接下来，第十部分，【心法/原则卡】为 95% 场景做减法。
+
+原则，三个「不」——无状态、无回调、无接口；库不做 I/O，就不到处塞 context.Context。
+
+为什么重要，2024 年做 Passkey Demo 容易，做「对」需要深度理解 WebAuthn；官方要把复杂度从「懂协议」降到「按套路存字符串」。
+
+怎么落地，注册用 NewRegistration/Register；登录用 ParseResponse/Login；披露单 Origin；User ID 用 rand.Text()；放弃 attestation 与 counter 换真实世界可用性。
+
+适用边界，提案仍处评审，Amazon/Google 级平台、需 attestation 的企业场景不在首发目标内。
+
+原文：「为真实世界里 95% 的场景做减法，而不是追求协议层面的大而全。」
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+Filippo Valsorda 提案在 Go 标准库新增 crypto/passkey，定位中小型站点无状态服务端 API，尚处 golang/go#80663 评审。
+
+核心创新是 passkey-record 单行不透明格式 + 仅 user_id 索引存储，配合显式 ParseResponse 流规避回调信任漏洞（GO-2024-3321）。
+
+注册/登录 API 清晰：NewRegistration，得到Register、ParseResponse，得到查库，得到Login；UnauthenticatedUserID 验签前不可信。
+
+刻意取舍：单 Origin、无 attestation、无 counter 校验，为 95% 消费级 Web 降维。
+
+相对 2024 第三方库，省掉会话与存储接口胶水，但多信任级别来源需多 RelyingParty 实例而非 origin 白名单。
+
+跟踪 Issue #80663 与 godoc-play 交互文档，关注多来源设计反馈。
+
+新表按 passkeys(user_id, record) + user_id 索引预设计，User ID 用 crypto/rand.Text()。
+
+每个可信 Origin 独立配置 RelyingParty，勿用单一 origin 列表混用信任级别。
+
+登录实现严格 ParseResponse ，得到 查 records ，得到 Login，禁止提前信任 UnauthenticatedUserID。
+
+系统学习可查阅 passkeys.dev、webauthn.guide 与 c2sp.org/passkey-record 规范草案。
+
+总结：
+
+行动清单：
+
+关键认知转变：Passkey 接入难点不在「会不会调 WebAuthn」，而在会话、存储与信任边界怎么切——官方包用放弃回调与强制显式流，把安全责任从库内黑盒拉回应用可见的每一步。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
