@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-08",
+    "files": [
+      {
+        "path": "svgs/2026-08-08/go-proposal-process-overhaul-2026.svg",
+        "title": "Go 核心团队公开新提案流程设计：加权投票、多轨评审，能拯救积压的近千个提案吗？",
+        "source": "https://tonybai.com/2026/08/08/go-proposal-process-overhaul-2026/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-07",
     "files": [
       {
