@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-08-09",
+    "files": [
+      {
+        "path": "svgs/2026-08-09/doubao-seed-evolving-4399-games.svg",
+        "title": "再造童年：用豆包大模型，一个小时搭了仿4399摸鱼小游戏集合",
+        "source": "https://juejin.cn/post/7671674608161865754"
+      },
+      {
+        "path": "svgs/2026-08-09/google-agent-skills-behind-the-scenes.svg",
+        "title": "1.5万星背后：Google首次揭秘Agent Skills是怎么「造」出来的",
+        "source": "https://tonybai.com/2026/08/09/google-agent-skills-behind-the-scenes/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-08",
     "files": [
       {

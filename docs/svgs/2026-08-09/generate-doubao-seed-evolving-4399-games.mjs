@@ -1,0 +1,161 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'doubao-seed-evolving-4399-games.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fdba74;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>再造童年：用豆包大模型，一个小时搭了仿4399摸鱼小游戏集合</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Doubao-Seed-Evolving</span>
+  <span class="tag tag-blue">Vibe Coding</span>
+  <span class="tag tag-green">Trae</span>
+  <span class="tag tag-purple">HTML5 游戏</span>
+  <span class="tag tag-red">人机协作</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：离线/断网场景下如何用 Doubao-Seed-Evolving + Trae 从零做出能玩、可扩展的小游戏合集——作者实测 2D Flappy Bird 双人对战一次跑通、3D Three.js 赛车需多轮修坐标系与资源加载、最终用配置驱动搭出 4399 风格游戏大厅；模型擅长确定性逻辑，但在空间几何、外网资源可用性与「脏问题」上仍需人在回路。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">一小时摸鱼游戏生产线</h3>
+  <div class="diagram">
+    <div class="node">DeepSeek 润色<br>结构化 Prompt</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Trae + Seed-Evolving<br>生成代码</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">2D 一次过<br>3D 多轮收敛</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">4399 大厅<br>配置扩展</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">动机与审美在人；模型缩短「有想法」到「能双击 HTML 开玩」的路径</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：把大白话需求直接丢给写代码模型最省事。作者经验：先用文本模型（如 DeepSeek）整理成分段结构化 Prompt，往往省下多轮返工——这一步多两分钟，后面少改三四轮。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Doubao-Seed-Evolving 在 Vibe Coding 里的定位</h3>
+  <p><strong>在讲什么问题：</strong>断网项目环境下如何快速验证新模型「写能玩的小游戏」的真实能力。</p>
+  <p><strong>核心机制：</strong>火山方舟接入 Trae，用 Agent 对话框选 Seed-Evolving，配合结构化 Prompt 生成 HTML/CSS/JS 或 Three.js 项目。</p>
+  <p><strong>关键理解：</strong>作者画像更像「反应快、基础扎实、偶发翻车的新人工程师」——常规需求一次过，复杂空间与网络资源需多轮对话收敛。</p>
+  <p><strong>典型场景：</strong>离线演示、工位摸鱼、快速原型验证模型代码能力。</p>
+  <p><strong>边界说明：</strong>不会主动完成「搜资源→验证可用→失败回退」全链路；3D 坐标系、CDN 可达性等脏活仍要人盯。</p>
+  <div class="quote">「代码逻辑是确定性的，但和真实世界打交道是不确定的。」——作者对资源加载问题的总结</div>
+  <div class="relation"><strong>相关概念：</strong>与「纯 Prompt 写代码」相比，Trae Agent 提供 IDE 集成；与人工从零写相比，优势在迭代速度而非替代动机与验收标准。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】环境准备与 Prompt 工作流</h3>
+  <p><strong>核心思路：</strong>API Key + Trae 自定义模型配置到位后，用「文本模型整理需求 → 代码模型实现」双阶段提效。</p>
+  <p><strong>操作步骤：</strong>① 火山方舟注册并开通 Doubao-Seed-Evolving API → ② Trae 模型管理新增自定义模型填 Key → ③ 用 DeepSeek 等把口语需求拆成「核心机制/模式/交互/技术结构」→ ④ 喂给 Trae Agent 生成并本地双击 HTML 验证。</p>
+  <p><strong>选型条件：</strong>适合浏览器可运行的轻量游戏与前端原型；不适合强依赖外网素材且无回退策略的生产项目。</p>
+  <div class="highlight"><strong>落地：</strong>Flappy Bird Prompt 明确单人+双人、键盘映射、模块拆分（bird.js/pipe.js/game.js/main.js）。</div>
+  <div class="pitfall"><strong>避坑：</strong>跳过 Prompt 结构化直接丢大白话——碰撞检测、双输入逻辑类需求返工概率显著上升。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】2D Flappy Bird vs 3D 城市赛车</h3>
+  <table>
+    <tr><th>维度</th><th>2D Flappy Bird 双人</th><th>3D Three.js 赛车</th><th>一句话结论</th></tr>
+    <tr><td>首次可玩</td><td>一次生成即可跑</td><td>需 3–4 轮修 bug</td><td>平面逻辑是模型舒适区</td></tr>
+    <tr><td>难点类型</td><td>状态管理、碰撞、双输入</td><td>坐标系、全景图 API、网络</td><td>3D 考空间想象而非语法</td></tr>
+    <tr><td>典型 bug</td><td>物理参数不一致</td><td>车往摄像机倒车、飞出天空球</td><td>需用现象描述帮模型定位</td></tr>
+    <tr><td>修复策略</td><td>少</td><td>玩家固定原点+世界滚动+模运算循环</td><td>人指方向，模型能收敛</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】资源与网络「脏问题」</h3>
+  <p><strong>坑 1：Wikimedia 图床国内超时</strong>——API 漏参数导致图片被过滤。<strong>解法：</strong>换可达 CDN 或本地素材兜底。<strong>严重程度：</strong>致命（游戏无背景）。</p>
+  <p><strong>坑 2：模型用 CSS 画鸟代替下载像素素材</strong>——逻辑对但观感差。<strong>解法：</strong>明确素材 URL 或本地路径并验证加载。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 3：3D 坐标三向不一致</strong>——车、摄像机、路面滚动方向冲突。<strong>解法：</strong>固定玩家于原点，让世界向后滚动。<strong>严重程度：</strong>致命（玩法颠倒）。</p>
+  <div class="pitfall"><strong>别踩：</strong>假设模型会判断「这个图床在国内能不能访问」——它只负责把逻辑写对，真实网络环境要人验证。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】4399 风格大厅：配置驱动扩展</h3>
+  <p><strong>核心思路：</strong>橙色导航+轮播+分类+排行榜+iframe 嵌游戏，新游戏只需往 game.js 加配置即上架。</p>
+  <p><strong>操作步骤：</strong>① 描述 4399 式布局与交互（搜索、全屏、重玩、返回大厅）→ ② 生成平台页 → ③ 每个新游戏生成后追加配置项（封面、分类、路径）。</p>
+  <p><strong>选型条件：</strong>适合本地/离线多 HTML 小游戏聚合；不适合需要账号、支付、多人服的后端游戏。</p>
+  <div class="relation"><strong>扩展性：</strong>像往游戏机塞新卡带——收藏会随配置增长，避免每次开命令行找路径。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】技术造不出童年，但能缩短再造路径</h3>
+  <p><strong>原则：</strong>动机、审美与「什么叫好玩」在人；模型负责压缩实现周期。</p>
+  <p><strong>为什么重要：</strong>Flappy Bird 因怀念较劲、赛车因「去远方」幻想、4399 因童年仪式感——这些模型无法替代。</p>
+  <p><strong>怎么落地：</strong>接受「常规一次过、复杂多轮聊」；卡住时用现象级描述反馈；资源与环境自己验。</p>
+  <p><strong>适用边界：</strong>演示与摸鱼级原型；生产级需补资源管线、性能与安全审查。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：严肃游戏引擎/原生开发从业者</p>
+  <p class="rebuttal-text">一小时搓出的 HTML 小游戏再像 4399，也只是工位娱乐——没有资源管线、物理调优和性能预算，真要做能上线的产品，你们多轮修的 3D 坐标和网络坑证明模型仍离不开老手兜底，省的是打字时间不是工程风险。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论与行动</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Doubao-Seed-Evolving 在 Trae 中写 2D 浏览器游戏表现惊艳，复杂 3D 需人机多轮收敛。</li>
+    <li>结构化 Prompt（先 DeepSeek 润色）是减少返工的高 ROI 步骤。</li>
+    <li>模型弱项在资源获取、网络可达性与 3D 空间关系——需人验证与指方向。</li>
+    <li>4399 式配置化大厅让「多游戏集合」具备可持续扩展性。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>火山方舟开通 Seed-Evolving 并在 Trae 配置 API Key，用最小 Flappy Bird 需求做冒烟测试。</li>
+    <li>建立「口语需求 → 文本模型结构化 → 代码模型实现」固定流水线。</li>
+    <li>3D/外链资源类需求预设本地素材回退，不依赖单一国外图床。</li>
+    <li>多游戏项目 early 做统一大厅与 game.js 配置规范，避免文件夹散落。</li>
+    <li>完整源码可参考作者 GitHub（TangBaron 仓库）对照模块拆分与 Prompt 模板。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>AI 不会取代「想玩什么、为何好玩」的判断，但能把从想法到可玩原型的夜晚熬干，变成工位上一下午的摸鱼快乐——前提是接受人在回路，而不是一键交付。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
