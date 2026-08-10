@@ -1,0 +1,179 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'cloudflare-ai-engineering-stack-deep-dive.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>3600人、95%覆盖率、24万次拦截：Cloudflare怎么用AI把「提效不降质」变成现实</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">AI 工程栈</span>
+  <span class="tag tag-green">Codex 标准库</span>
+  <span class="tag tag-orange">多智能体评审</span>
+  <span class="tag tag-purple">AGENTS.md</span>
+  <span class="tag tag-red">零信任网关</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：大团队引入 AI 编程后，标准如何机器可读、审查如何不流于形式、数千仓库如何统一步调——Cloudflare 用 11 个月搭出平台层（AI Gateway + 代理 Worker）、知识层（Backstage + AGENTS.md + Code Mode）与治理层（Codex RFC + 七 Agent 评审），把 24 万次违规标记与 1.6 万次强制拦截变成可复制的工程闭环，而非营销数字。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">Cloudflare AI 工程栈三层闭环</h3>
+  <div class="diagram">
+    <div class="node">平台层<br>Gateway+Worker<br>零信任 SSO</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">知识层<br>Backstage<br>AGENTS.md<br>Code Mode</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">治理层<br>Codex RFC<br>SHOULD/MUST</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">执行层<br>Spec/代码/事故<br>三类评审 Agent</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-red">CI 编排<br>协调者+7专科<br>风险分级路由</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">关键接线：同一套 Codex 规则贯穿设计评审、MR 评审与事故复盘；AGENTS.md 在每次 MR 中被校验更新</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「上了 Copilot 就等于 AI 工程化」。Cloudflare 的数据表明 95% 研发渗透率背后，真正拉开差距的是机器可读的工程宪法 + CI 原生编排，而不是给每个人发一个聊天框。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】三层 AI 工程栈各自解决什么</h3>
+  <p><strong>在讲什么问题：</strong>AI 工具人人有，但标准散落 Wiki、审查靠人肉、Agent 不懂仓库上下文，产出天花板很低。</p>
+  <p><strong>核心机制：</strong>平台层统一鉴权与成本；知识层用 Backstage 服务目录 + 约 3900 份 AGENTS.md 给 Agent「系统认知」；治理层用 Codex 把 SHOULD/MUST 抽成结构化 JSON，供评审 Agent 按需加载。</p>
+  <p><strong>关键理解：</strong>难复制的是「接线方式」——当 Agent 能同时读 Backstage、AGENTS.md 和 Codex，第一版产出才接近可合并水平；六个月前做不到。</p>
+  <p><strong>典型场景：</strong>3600+ 员工、5169 仓库、月均 20 亿次 Gateway 请求的大规模日常研发。</p>
+  <p><strong>边界说明：</strong>体系建立在自研 Workers/AI Gateway 同网推理之上；小团队可缩小规模，但「先知识再能力、先结构化标准再自动化」的顺序不宜颠倒。</p>
+  <div class="quote">「这周我们发布的所有能力，就是我们内部 AI 工程栈本身在跑的东西。」——完全用对外产品吃自己狗粮</div>
+  <div class="relation"><strong>相关概念：</strong>与「买一个现成 AI Code Review SaaS」不同——Cloudflare 在开源 OpenCode 上自建插件化 CI 编排，只为接入 Codex、GitLab、遥测等内部约束。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】代理 Worker：零 API Key 的统一控制平面</h3>
+  <p><strong>核心思路：</strong>客户端不直连 AI Gateway，而是经 Access SSO → 代理 Worker → Gateway，密钥只在 Worker 端按请求注入。</p>
+  <p><strong>操作步骤：</strong>① 工程师执行 <code>opencode auth login https://opencode.internal.domain</code> → ② 拉取 <code>.well-known/opencode</code> 发现配置 → ③ Access SSO 拿 JWT → ④ 合并组织默认与本地个性化配置生效。</p>
+  <p><strong>选型条件：</strong>多模型供应商、多团队、需 per-user 成本归因与动态模型目录时，代理模式优于客户端直连。</p>
+  <div class="pitfall"><strong>避坑：</strong>让工程师本地存 API Key——密钥扩散后无法集中轮换、审计与权限精细化管理。</div>
+  <div class="highlight"><strong>落地：</strong>后续加成本归因、模型目录更新、权限策略，只改 Worker 一层，不动各客户端配置。</div>
+  <div class="relation"><strong>对比直连：</strong>代理多一跳延迟，但换来「控制平面」——Cloudflare 工程师原话：直连架构给不了这层控制力。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Code Mode：182 个 MCP 工具压成 2 个</h3>
+  <p><strong>在讲什么问题：</strong>MCP Portal 聚合 13 个生产 MCP、182+ 工具后，仅 GitLab MCP 的 Schema 就占约 1.5 万 token（20 万上下文里 7.5% 预算在提问前耗尽）。</p>
+  <p><strong>核心机制：</strong>Portal 层不再把每个上游工具定义塞给客户端，而是收敛为 <code>portal_codemode_search</code> 与 <code>portal_codemode_execute</code>，模型通过写代码发现与调用具体工具。</p>
+  <p><strong>所以呢：</strong>无论 Portal 后挂多少 MCP，客户端永远只见两个工具，上下文占用不与工具数量线性增长。</p>
+  <p><strong>边界说明：</strong>适合工具爆炸的内部门户；若只有两三个稳定 MCP，直接暴露工具可能更简单。</p>
+  <div class="highlight"><strong>配套：</strong>Backstage 沉淀 2055 服务、544 系统、1302 数据库等元数据，Agent 不再「盲人摸象」只看眼前代码。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】MR 风险分级：别用梦之队审错字修复</h3>
+  <table>
+    <tr><th>风险等级</th><th>改动规模</th><th>参与 Agent</th><th>平均成本</th><th>策略</th></tr>
+    <tr><td>Trivial</td><td>≤10 行、≤20 文件</td><td>2（协调者+通用）</td><td>约 $0.20</td><td>最小评审面</td></tr>
+    <tr><td>Lite</td><td>≤100 行、≤20 文件</td><td>4（+质量+文档等）</td><td>中等</td><td>常规功能改动</td></tr>
+    <tr><td>Full</td><td>超范围或触及 auth/crypto 等</td><td>7+ 专科</td><td>约 $1.68</td><td>安全路径一律 Full，不论行数</td></tr>
+  </table>
+  <p><strong>所以呢：</strong>按 diff 规模与敏感路径自动路由，既控制信噪比（平均每次评审仅 1.2 条发现），又把 Full 级成本压在可规模化范围（中位 $0.98、P99 $4.45）。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】模型分工：贵的只干最难的裁决</h3>
+  <table>
+    <tr><th>模型档位</th><th>典型模型</th><th>承担任务</th><th>为什么</th></tr>
+    <tr><td>顶级</td><td>Opus 4.7、GPT-5.4</td><td>协调者：去重、定严重度、最终裁决</td><td>推理要求最高的一环</td></tr>
+    <tr><td>标准</td><td>Sonnet 4.6、GPT-5.3 Codex</td><td>代码质量、安全、性能</td><td>重活但边界清晰的专科评审</td></tr>
+    <tr><td>轻量</td><td>Kimi K2.5（Workers AI）</td><td>文档、发布影响、AGENTS.md</td><td>文本类任务；同网推理成本降 77%</td></tr>
+  </table>
+  <p><strong>一句话结论：</strong>不是模型越贵越好，而是分工越细、路由越准，规模化成本才能撑住——安全 Agent 年账单从预估 $240 万降到 Workers AI 档可承受水平。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Codex 与评审系统的关键陷阱</h3>
+  <p><strong>坑 1：标准直接喂整库 Wiki</strong>——上下文爆炸且效果打折。<strong>解法：</strong>先 RFC 化 SHOULD/MUST，再抽 JSON 语句带 slug，按需加载全文。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑 2：approved 即强制阻断</strong>——团队来不及消化新规则。<strong>解法：</strong>approved 仅提示，enforced 才拦 MUST 级合并。<strong>严重程度：</strong>小心（推行阻力）。</p>
+  <p><strong>坑 3：Prompt 只写「该关注什么」</strong>——产出大量「正确的废话」。<strong>解法：</strong>安全 Agent 明确负面清单：不标极端前提理论风险、不标未改动代码既有问题。<strong>严重程度：</strong>致命（信噪比）。</p>
+  <p><strong>坑 4：MR 描述 Prompt 注入</strong>——伪造 XML 边界注入指令。<strong>解法：</strong>过滤 <code>&lt;/mr_body&gt;</code> 等边界标签。<strong>严重程度：</strong>致命（安全）。</p>
+  <div class="pitfall"><strong>别踩：</strong>把 git diff 粗暴塞进单 Prompt——Cloudflare 试过，幻觉语法错误与泛泛建议泛滥，与专科 Agent + 协调者架构对比鲜明。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】标准机器可读，审查机器一致执行</h3>
+  <p><strong>原则：</strong>提效与不降质不对立；降质往往因为标准没落地、审查流于形式，而非因为用了 AI。</p>
+  <p><strong>为什么重要：</strong>四个月 24 万次违规标记、1.6 万次强制拦截、600 份技术方案评审——规模下人肉核对每一条 RFC 不可行。</p>
+  <p><strong>怎么落地：</strong>① AGENTS.md 自动化流水线 + MR 内校验更新闭环；② 定制 Linter（oxlint 等）毫秒级机械规则；③ break glass 逃生舱（0.6% MR）保留人工紧急热修通道；④ 增量复审而非每次重头再审。</p>
+  <p><strong>适用边界：</strong>工程细节（JSONL 输出、30 秒心跳日志、熔断降级）是为「CI 里跑几分钟的大模型任务」服务；个人小项目可简化插件与路由，但「负面清单 Prompt」仍值得保留。</p>
+  <div class="quote">「告诉大模型不该做什么，才是 Prompt 工程真正的价值所在。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「轻量 Copilot + 人肉 Code Review」的务实派</p>
+  <p class="rebuttal-text">你们为 3600 人堆了 Backstage、3900 份 AGENTS.md、60+ RFC 和七 Agent 编排——前期「笨功夫」和运维复杂度，多数国内团队根本扛不住；真紧急时还得靠 break glass 放行，说明 AI 护栏在热修场景下仍是成本中心而非净增益。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论与行动</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Cloudflare 用自家 Workers/AI Gateway 搭平台，95% 研发渗透率背后是统一入口与同网开源模型降本，而非单纯采购账号。</li>
+    <li>知识层（Backstage + AGENTS.md + Code Mode）解决「Agent 知道什么」，是产出质量的前提。</li>
+    <li>Codex 把工程标准变成机器宪法，approved/enforced 两阶段避免一刀切引发抵触。</li>
+    <li>CI 原生多 Agent 评审：协调者 + 风险分级 + 模型分工 + 熔断/break glass/增量复审，中位 3 分 41 秒、$0.98。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>为关键仓库起草 AGENTS.md：测试命令、目录约定、禁改区域、上下游依赖——可参考 Backstage 元数据自动初稿。</li>
+    <li>把团队规范整理成带 MUST/SHOULD 的结构化条目，再考虑喂给评审 Agent，而非直接丢 Wiki。</li>
+    <li>设计 MR 评审时划分 Trivial/Lite/Full 路由，敏感路径强制 Full，避免全量七 Agent 审小改动。</li>
+    <li>在专科 Agent Prompt 里写清「不该标记什么」，控制发现数量与信噪比。</li>
+    <li>阅读 Cloudflare 三篇官方工程博客（AI 工程栈、代码评审编排、标准强制执行）对照自身插件化与逃生舱设计。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>AI 时代软件工程的难点从「会不会用工具」变成「标准与审查能否机器一致执行」——接线方式比单点技术更难复制，也更决定提效是否降质。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
