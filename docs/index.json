@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-12",
+    "files": [
+      {
+        "path": "svgs/2026-08-12/rust-foundation-explained-governance-and-funding.svg",
+        "title": "从 Mozilla 孤儿到独立王国：起底 Rust 基金会如何「养大」一门产业级语言",
+        "source": "https://tonybai.com/2026/08/12/rust-foundation-explained-governance-and-funding/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-10",
     "files": [
       {

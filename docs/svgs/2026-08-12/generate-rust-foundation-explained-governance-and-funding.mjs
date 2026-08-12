@@ -1,0 +1,177 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'rust-foundation-explained-governance-and-funding.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#fef3c7);padding:48px 60px;color:#1e293b}
+h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#9a3412,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-brown{background:#fef3c7;color:#92400e}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#9a3412;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fff7ed;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9a3412;border-left:4px solid #f97316}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fdba74;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#9a3412,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#fff7ed;padding:12px 16px;text-align:left;font-weight:700;color:#9a3412;border-bottom:2px solid #fdba74}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>从 Mozilla 孤儿到独立王国：起底 Rust 基金会如何「养大」一门产业级语言</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Rust 基金会</span>
+  <span class="tag tag-brown">权钱分离</span>
+  <span class="tag tag-blue">厂商中立</span>
+  <span class="tag tag-green">Project Goals</span>
+  <span class="tag tag-purple">Rust vs Go</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：生产环境重度依赖 Rust 的企业，如何理解「谁在管语言、谁在管地基、钱从哪来花到哪去」——基金会不碰 RFC 与稳定化决策，却兜底 CI、crates.io、法务商标与商业连接；维护者基金、生态基金与 Project Goals 把「伸手要赞助」变成「报价交付」，RCN 与 Trusted Trainer 则分别解决企业协作入口与培训信任空白。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#9a3412;margin-bottom:12px;text-align:center">Rust 治理「权钱分离」结构</h3>
+  <div class="diagram">
+    <div class="node">基金会<br>CI/crates.io<br>法务商标<br>资金筹措</div>
+    <span class="arrow-sym">⇄</span>
+    <div class="node-green">项目自治<br>RFC/稳定化<br>编译器/库团队<br>6 周发版</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">企业会员<br>RCN 协作<br>定向捐赠<br>培训认证</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">生态产出<br>Ferrocene/FLS<br>Interop 倡议<br>安全关键场景</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">关键红线：白金会员可上董事会，但买不到语言设计话语权——David Wood 等项目代表席位保障技术自治</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Rust 基金会管语言方向」。实际上基金会管的是让语言能持续演进的地基；RFC 通过与否、特性是否 stabilize，始终由 compiler/lang/library 等自治团队决定。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】权钱分离：基金会管地基，项目管语言</h3>
+  <p><strong>在讲什么问题：</strong>crates.io 挂了找谁修？编译器 CI 账单谁付？商标纠纷谁打官司？——这些「不性感」问题决定企业能否长期放心依赖 Rust。</p>
+  <p><strong>核心机制：</strong>基金会侧负责基础设施（CI、crates.io 托管、发布分发）、资金筹措与分配、法律商标、商业连接（会员网络、培训认证）；项目侧保留语言演进（RFC、稳定化）、编译器实现与各技术团队内部治理的完全自治。</p>
+  <p><strong>关键理解：</strong>David Wood 原话——项目完全自治，基金会做的是让这套自治机制能顺畅运转；维护者「理所当然地享受」PR 测试、商标法务等支撑。</p>
+  <p><strong>典型场景：</strong>企业重度使用 Rust 却从不关注基金会，等于给技术选型埋雷——今天能跑的 CI，明天不应因单一赞助商撤资而停摆。</p>
+  <p><strong>边界说明：</strong>基金会不介入编译器认证；Ferrocene/FLS 等合规路径由厂商基于开源 Rust 派生发行版自行声明，与 ISO 标准化是两条独立路径。</p>
+  <div class="quote">「企业出钱买不到对语言设计的话语权——买到的是连接与支持，语言怎么演进最终还是工程师和维护者说了算。」</div>
+  <div class="relation"><strong>相关概念：</strong>与 Python Steering Council 集中审议 PEP、C++ ISO 国家代表投票不同，Rust 无单一最高决策委员会，而是多团队分域自治后拼出完整语言。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】三条资金通道：从「要饭」到「报价」</h3>
+  <p><strong>核心思路：</strong>维护者基金、生态基金、Project Goals 把被动求赞助变为主动交付报价，让企业按图索骥投钱。</p>
+  <p><strong>操作步骤：</strong>① 基础设施优先——全职 infra 工程师 + crates.io 全职维护者 + Alpha-Omega 资助的安全工程师；② Maintainers Fund 接受捐赠，与项目协作分配；③ Maintainer-in-Residence 1—2 年深耕核心方向，证明刚需后可转正式雇员、名额滚动；④ 生态基金按合同定向资助 async/embedded 等方向；⑤ Project Goals 由项目方提出目标并标注资金价值，按月同步进展。</p>
+  <p><strong>选型条件：</strong>只想泛捐走 Maintainers Fund；想精准投向某技术方向走生态基金；想资助已立项、有交付清单的工作走 Project Goals（如 Rust/C++ Interop 函数重载倡议）。</p>
+  <div class="highlight"><strong>落地：</strong>把支持 Rust 基金会写进公司常规经营成本（水电费、律师费同级），而非经济下行时第一个砍的「慈善项」。</div>
+  <div class="pitfall"><strong>避坑：</strong>把开源当「免费啤酒」——Lori Lorusso 的「免费小狗」隐喻：领养不花钱，但吃喝拉撒与终身健康要持续负责。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】RCN 与 Trusted Trainer：企业与生态的新接口</h3>
+  <p><strong>在讲什么问题：</strong>会员企业想交流参考架构，却不愿挤在偏工程师文化的 Zulip；企业不缺课程，缺「该信哪位培训师」的信任背书。</p>
+  <p><strong>核心机制：</strong>RCN 通过 GitHub 开 issue 即可加入（无需付费会员）；Steering Committee 结构透明（白金/黄金/白银/准会员各席 + 基金会与项目代表），不强治理具体倡议，只做资源对接与「水涨船高」引流。Trusted Trainer 审核教学材料与表达能力，发官方信任标签（首批 3—4 家机构已认证）。</p>
+  <p><strong>所以呢：</strong>RCN 与 Embedded WG 等技术组不打架——工作组保留治理权与 crate 所有权，RCN 把不知道工作组存在的企业带进来。</p>
+  <p><strong>边界说明：</strong>RCN 维持每月一次例会，避免填满企业日历；基金会不预设立场限制 AI 生成代码，职责是确保 Rust 十年二十年后仍好用好学。</p>
+  <div class="relation"><strong>对比再造课程：</strong>市面已有 Google 开源 Rust 课程等高质量内容，基金会补的是信任链而非内容链。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】企业参与 Rust 生态的入口选择</h3>
+  <table>
+    <tr><th>场景</th><th>推荐路径</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>保障基础设施稳定性</td><td>基金会会员 + 常规预算</td><td>CI/crates.io/法务需持续全职投入</td><td>仅口头支持开源</td><td>下行周期最先被砍，地基同时动摇</td></tr>
+    <tr><td>资助特定技术方向</td><td>生态基金定向捐赠</td><td>合同形式精准投向 async/embedded 等</td><td>无目标泛捐后不管</td><td>无法形成可追踪交付</td></tr>
+    <tr><td>跟进已立项生态工作</td><td>Project Goals 按报价资助</td><td>项目方主动标价、按月同步（如 Interop）</td><td>私下找维护者转账</td><td>缺透明协作与滚动造血机制</td></tr>
+    <tr><td>企业间架构交流</td><td>RCN GitHub issue 加入</td><td>低门槛、企业协作习惯友好</td><td>只在 Zulip 潜水</td><td>难对接非工程师决策链</td></tr>
+    <tr><td>内部 Rust 培训采购</td><td>Trusted Trainer 认证机构</td><td>解决「该信谁」而非「缺课程」</td><td>只看价格选未认证讲师</td><td>学习曲线陡峭时试错成本高</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Rust 基金会治理 vs Go 单一厂商治理</h3>
+  <table>
+    <tr><th>维度</th><th>Rust</th><th>Go</th><th>一句话结论</th></tr>
+    <tr><td>治理主体</td><td>独立非营利基金会 + 项目自治，权钱分离</td><td>无独立基金会，Go 团队事实全为 Google 员工</td><td>Rust 多方制衡，Go 决策链短但绑定单一战略</td></tr>
+    <tr><td>技术决策权</td><td>RFC/各团队自治，捐款不换设计话语权</td><td>提案流程公开，终审集中在内部团队</td><td>外部企业对 Go 演进几乎无制衡能力</td></tr>
+    <tr><td>资金来源</td><td>多元会员 + Alpha-Omega + 定向生态基金</td><td>主要依赖 Google 持续投入</td><td>单一赞助方退出对 Rust 伤筋动骨概率更低</td></tr>
+    <tr><td>商标/基础设施</td><td>归属基金会，厂商中立</td><td>商标、proxy.golang.org 等由 Google 把控</td><td>Go 社区 2023 年已有独立基金会提议</td></tr>
+    <tr><td>长期抗风险</td><td>协调成本高，但与渐进共识哲学同构</td><td>短期效率高，战略权重下降则节奏被动</td><td>十年周期看，分权飞轮可能更持久</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】误解基金会角色与合规路径</h3>
+  <p><strong>坑 1：以为基金会管 RFC 方向</strong>——技术决策权在项目。<strong>解法：</strong>区分「地基运维」与「语言演进」两条线。<strong>严重程度：</strong>小心（采购决策偏差）。</p>
+  <p><strong>坑 2：混淆标准化与治理</strong>——Rust 非 ISO 标准语言，但可有 Ferrocene/FLS 满足车规可追溯。<strong>解法：</strong>认证是厂商派生编译器自行声明，非项目官方认证。<strong>严重程度：</strong>致命（合规选型）。</p>
+  <p><strong>坑 3：RCN 会取代技术工作组</strong>——工作组保留独立治理权。<strong>解法：</strong>把 RCN 当引流入口而非夺权机构。<strong>严重程度：</strong>可忽略。</p>
+  <p><strong>坑 4：把赞助当慈善预算</strong>——经济下行最先被砍。<strong>解法：</strong>写入常规经营成本。<strong>严重程度：</strong>致命（基础设施可持续性）。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】开源是免费小狗，不是免费啤酒</h3>
+  <p><strong>原则：</strong>厂商中立 + 权钱分离，让多元组织愿意投钱共建，而非把钱送给单一母公司「帮养孩子」。</p>
+  <p><strong>为什么重要：</strong>若 Rust 一直挂 Mozilla 名下，其他公司几乎不可能心甘情愿资助；基金会提供的是无 NDA 顾虑的「公共场地」。</p>
+  <p><strong>怎么落地：</strong>① 生产用 Rust 的团队应了解基金会/RCN/Maintainers Fund/Project Goals；② 评估 Ferrocene 路径时区分语言治理与合规认证；③ 培训采购优先 Trusted Trainer 认证。</p>
+  <p><strong>适用边界：</strong>短期需要极短决策链时，Go 式单一厂商模式效率更高；长期基础设施语言更需抗单一战略波动——两种模式无绝对优劣，取决于时间尺度与风险容忍度。</p>
+  <div class="quote">「支持 Rust 基金会不应该被当作慈善，而应该是企业的常规经营成本。」——Rebecca Rumbul</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Google 内部 Go 团队 / 「短决策链优先」派</p>
+  <p class="rebuttal-text">董事会、多会员平衡、RFC 多团队协调——Rust 这套分权每年多烧大量会议与对齐成本；Go 依托单一实体资源稳定、提案流程虽集中却仍能快速演进，所谓「抗风险」在 Google 持续投入的现实下反而是过度设计。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论与行动</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Rust 基金会扛基础设施、资金、法务与商业连接的「脏活累活」，语言技术决策权完整保留在项目自治团队。</li>
+    <li>脱离 Mozilla 的核心动机是厂商中立，让企业能平等投钱共建而非资助单一母公司。</li>
+    <li>Maintainers Fund、生态基金、Project Goals 三条通道把开源资助从「要饭」升级为「报价交付」。</li>
+    <li>RCN 降低企业协作门槛，Trusted Trainer 补培训信任链；Ferrocene 走合规认证路径，与 ISO 标准化无关。</li>
+    <li>对比 Go：Rust 协调成本高但抗单一厂商战略波动；Go 短期效率高，长期绑定 Google 战略意愿。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>若生产环境跑 Rust，盘点对 crates.io、CI、商标法务的隐性依赖，评估是否应成为基金会会员或定期捐赠。</li>
+    <li>有定向技术诉求时，优先查阅 Project Goals 与生态基金通道，而非私下找维护者。</li>
+    <li>企业间架构交流可申请加入 RCN（GitHub issue），采购培训时认准 Trusted Trainer 认证。</li>
+    <li>安全关键场景选型时，区分 Ferrocene/FLS 合规路径与「Rust 是否 ISO 标准语言」。</li>
+    <li>收听 Rust in Production S06E08 播客原文，对照自身语言治理与资助模式做复盘。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>依赖 Rust 不等于拥有免费基础设施——基金会、RCN 与三条资金通道正是决定「今天能跑通的代码，明天是否还能跑通」的那道地基。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
