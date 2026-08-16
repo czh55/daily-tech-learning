@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-16",
+    "files": [
+      {
+        "path": "svgs/2026-08-16/taxi-drivers-alzheimers-rust-mental-map.svg",
+        "title": "出租车司机极少得阿尔兹海默症，那手写 Rust 代码的程序员呢？我大胆推了一个脑洞",
+        "source": "https://tonybai.com/2026/08/16/taxi-drivers-alzheimers-rust-programmers-mental-map/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-15",
     "files": [
       {
