@@ -1,0 +1,167 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'rust-polonius-alpha-borrow-checker-nightly.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#9a3412,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#9a3412;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fff7ed;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9a3412;border-left:4px solid #ea580c}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fdba74;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#9a3412,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#fff7ed;padding:12px 16px;text-align:left;font-weight:700;color:#9a3412;border-bottom:2px solid #fdba74}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#9a3412}`;
+
+const body = `
+<h1>Rust 下一代借用检查器 Polonius Alpha 登陆 Nightly</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Rust</span>
+  <span class="tag tag-blue">借用检查器</span>
+  <span class="tag tag-green">Polonius</span>
+  <span class="tag tag-purple">编译器</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：为什么 Stable Rust 上 NLL 借用检查器会误杀逻辑上完全安全的分支借用代码，Polonius Alpha 的「流敏感」分析如何解锁 match/if-else 路径上的可变借用，以及开发者现在如何在 Nightly 上试用或一键关闭。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#9a3412;margin-bottom:12px;text-align:center">Rust 借用检查器十年演进</h3>
+  <div class="diagram">
+    <div class="node-red">AST borrowck<br>2015–2019<br>规则保守</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">NLL<br>2019–今 Stable<br>流不敏感</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">Legacy Polonius<br>2018 别名方案<br>表达力强·性能差</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Polonius Alpha<br>2026 Nightly<br>流敏感·可稳定化子集</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">核心跃迁：从「借用理论上可能活多久」到「每条执行路径上实际有没有在用」</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Polonius Alpha = 终极借用检查器，所有 NLL 拒绝的代码都能编译」。官方明确它是 2023 新方案中已验证无已知遗留问题的<strong>子集</strong>，与 legacy Polonius 能力集合并不完全重合——有些 legacy 能过的代码 Alpha 仍过不了，反之亦然。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】流敏感 vs 流不敏感：NLL 误杀的根本原因</h3>
+  <p><strong>在讲什么问题：</strong>为什么 <code>get_mut_or_default</code> 这类「有则取值、无则插入再取值」的模式在 NLL 下编译失败，却逻辑上完全安全。</p>
+  <p><strong>核心机制：</strong>NLL 是流不敏感（flow-insensitive）的——只看借用「理论上可能活多久」，不会跟踪每条分支路径上借用是否实际仍在使用。Polonius Alpha 做流敏感（flow-sensitive）的 outlives 分析，能区分 <code>Some</code> 分支用 <code>value</code> 与 <code>None</code> 分支重新 <code>insert</code> 的真实生命周期差异。</p>
+  <p><strong>关键理解：</strong>编译器不是「变笨了」，而是 NLL 为了安全选择了保守近似——Polonius Alpha 用更多分析精度换更少误杀。</p>
+  <p><strong>典型场景：</strong>match/if-else 中按路径取用可变引用、reborrow 后不同分支返回不同借用。</p>
+  <p><strong>边界说明：</strong>流敏感不等于万能——涉及链表循环重新借用的复杂模式，legacy Polonius 能过但 Alpha 仍过不了。</p>
+  <div class="quote">「NLL 只会看一个借用『理论上可能活多久』，而 Polonius Alpha 会真正跟踪这个借用在每一条具体执行路径上『实际有没有在用』。」</div>
+  <div class="relation"><strong>相关概念：</strong>Non-Lexical Lifetimes（NLL）解决了「词法作用域过宽」问题，Polonius 进一步解决「控制流路径未区分」问题。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三代借用检查器能力矩阵</h3>
+  <table>
+    <tr><th>对比维度</th><th>NLL (Stable)</th><th>Legacy Polonius</th><th>Polonius Alpha</th><th>一句话结论</th></tr>
+    <tr><td>分析范式</td><td>流不敏感</td><td>基于别名的形式化</td><td>基于 NLL 最小改动的流敏感</td><td>Alpha 走「增量增强」而非推倒重来</td></tr>
+    <tr><td>分支借用</td><td>保守误杀多</td><td>较强</td><td>显著改善</td><td>Alpha 核心价值所在</td></tr>
+    <tr><td>复杂循环重借</td><td>拒绝</td><td>部分通过</td><td>仍拒绝</td><td>Alpha 不是 legacy 超集</td></tr>
+    <tr><td>编译性能</td><td>基线</td><td>显著慢，不可用</td><td>万级 crate 实测几乎无影响</td><td>2023 方案解决了 legacy 性能硬伤</td></tr>
+    <tr><td>可用性</td><td>Stable 默认</td><td>研究原型</td><td>Nightly 开启，年底目标 Stable</td><td>Stable 用户目前不受影响</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Nightly 试用与一键关闭 Polonius Alpha</h3>
+  <p><strong>核心思路：</strong>Polonius Alpha 目前只在 Nightly 默认开启；Stable 用户无感，Nightly 用户可按需关闭回退 NLL。</p>
+  <p><strong>操作步骤：</strong>① 安装/切换 <code>rustup default nightly</code>；② 编译项目观察此前 NLL 误杀的分支借用是否通过；③ 若遇问题，任选一种方式关闭：<code>rustc -Zpolonius=off</code>、<code>RUSTFLAGS=-Zpolonius=off</code>、或在 <code>.cargo/config.toml</code> 的 <code>rustflags</code> 中配置。</p>
+  <p><strong>选型条件：</strong>项目有大量 match 分支可变借用、或 <code>get_mut_or_default</code> 类模式 → 值得在 Nightly 验证；纯 Stable 生产环境 → 等年底稳定化。</p>
+  <div class="highlight"><strong>落地：</strong>关闭后请到 GitHub issue #160456 或 Zulip 反馈原因——官方明确表示这些反馈直接影响稳定化前的打磨方向。</div>
+  <div class="pitfall"><strong>避坑：</strong>不要假设 Alpha 能编译所有 legacy Polonius 通过的代码；链表循环重借用等模式仍可能失败，需保留 NLL 兼容写法作为 fallback。</div>
+  <div class="quote">「如果你确实因为某些原因不得不关闭 Polonius Alpha，非常欢迎到 GitHub issue 或 Zulip 讨论区反馈原因。」</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】面对 Polonius Alpha 的工程决策</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>Stable 生产项目</td><td>继续 NLL，关注年底 Stable 化</td><td>Alpha 尚未 Stable，行为可能变化</td><td>强行切 Nightly 上生产</td><td>编译器行为未冻结，CI 不可控</td></tr>
+    <tr><td>分支借用被 NLL 误杀</td><td>Nightly + 验证 Polonius Alpha</td><td>直接验证目标场景是否解锁</td><td>盲目加 clone 绕路</td><td>掩盖真实设计，增加运行时开销</td></tr>
+    <tr><td>编译时间敏感 CI</td><td>关注万级 crate 基准后再决定</td><td>官方实测绝大多数库无显著回归</td><td>未测就全面切换</td><td>极端借用密集场景最差 2–3 倍回归</td></tr>
+    <tr><td>Alpha 编译失败</td><td>回退 <code>-Zpolonius=off</code> 并提 issue</td><td>帮助官方完善稳定化子集</td><td>静默降级到 unsafe</td><td>牺牲安全边界换编译通过</td></tr>
+    <tr><td>期待「终极借用检查器」</td><td>接受 Alpha 是子集，关注后续 roadmap</td><td>官方表态稳定化后近期无新功能计划</td><td>等待 Alpha 覆盖 legacy 全部能力</td><td>两套方案能力集合并不完全重合</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Polonius Alpha 使用与认知陷阱</h3>
+  <p><strong>坑 1：把 Alpha 当 legacy Polonius 替代品</strong>——链表 <code>conditional()</code> 等模式 legacy 能过、Alpha 不能。<strong>原因：</strong>Alpha 是安全可稳定化的子集而非完全体。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑 2：忽视性能极端场景</strong>——借用数量极多的 crate 可能出现 2–3 倍编译耗时回归。<strong>解法：</strong>对自己的 crate 做 NLL vs Alpha 对比编译。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 3：Stable 用户 panic</strong>——此次变更仅 Nightly，Stable 完全不受影响。<strong>解法：</strong>无需改动现有工作流。<strong>严重程度：</strong>可忽略。</p>
+  <p><strong>坑 4：关闭 Alpha 却不反馈</strong>——官方需要知道关闭原因才能完善稳定化。<strong>解法：</strong>到 GitHub/Zulip 说明场景。<strong>严重程度：</strong>小心。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】编译器升级的第一性原理</h3>
+  <p><strong>原则：</strong>借用检查器的演进是在「安全保证不变」前提下，逐步减少保守近似带来的开发者摩擦——每次升级解锁的是「逻辑安全但被误杀」的代码，而非降低安全标准。</p>
+  <p><strong>为什么重要：</strong>理解流敏感/流不敏感的区别，比死记「哪个版本能编译」更能帮助你在 NLL 报错时判断是「真不安全」还是「检查器不够聪明」。</p>
+  <p><strong>怎么落地：</strong>遇到 NLL 分支借用报错时，先画控制流图标注每条路径上借用的实际存活范围，再决定是重构、clone 还是等 Polonius Stable。</p>
+  <p><strong>适用边界：</strong>Polonius 稳定化后官方近期无继续扩展计划——不要押注「所有借用痛点都会被 Polonius 解决」。</p>
+  <div class="quote">「一门系统级语言的核心机制，是如何在长达十年的时间里，被一步步打磨到今天这个程度的。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：保守派 Rust 维护者 / 「NLL 够用了」派</p>
+  <p class="rebuttal-text">流敏感分析即便性能可控，也会扩大编译器行为差异面——团队为少写几个 clone 承担 Nightly 到 Stable 的行为漂移风险，在生产代码库上未必划算。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论与行动</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Polonius Alpha 的核心价值是流敏感 outlives 分析，解锁 match/if-else 分支上的可变借用误杀场景。</li>
+    <li>它是 2023 新方案的安全子集，不是 legacy Polonius 的完全替代——能力集合双向不完全包含。</li>
+    <li>万级 crate 性能实测绝大多数无显著回归，极端借用密集场景最差 2–3 倍。</li>
+    <li>目前仅 Nightly 开启，目标 2026 年底 Stable；可通过 <code>-Zpolonius=off</code> 一键回退 NLL。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>盘点项目中因 NLL 分支借用误杀而 clone/拆函数的代码，标记为 Polonius 验证候选。</li>
+    <li>在 Nightly 上编译这些候选，记录 Alpha 通过/仍失败的具体模式。</li>
+    <li>若关闭 Alpha，到 GitHub issue #160456 提交场景与原因。</li>
+    <li>关注官方性能回归修复与内部文档补齐进度，再决定生产迁移时机。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>借用检查器报错不一定是你的代码不安全——可能是检查器的流不敏感近似过于保守；Polonius Alpha 代表编译器开始「看懂」控制流分支。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

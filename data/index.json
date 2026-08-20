@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-20",
+    "files": [
+      {
+        "path": "svgs/2026-08-20/rust-polonius-alpha-borrow-checker-nightly.svg",
+        "title": "Rust 下一代借用检查器 Polonius Alpha 登陆 Nightly：十年磨一剑，编译器终于「看懂」代码分支",
+        "source": "https://tonybai.com/2026/08/20/rust-polonius-alpha-borrow-checker-nightly/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-19",
     "files": [
       {
