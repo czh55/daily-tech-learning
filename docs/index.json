@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-21",
+    "files": [
+      {
+        "path": "svgs/2026-08-21/victoriametrics-vlagent-log-collectors-benchmark.svg",
+        "title": "14.3 万条/秒！VictoriaMetrics 亲自「开考」，把 8 大主流日志采集器按在地上摩擦",
+        "source": "https://tonybai.com/2026/08/21/victoriametrics-vlagent-log-collectors-benchmark-2026/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-20",
     "files": [
       {
