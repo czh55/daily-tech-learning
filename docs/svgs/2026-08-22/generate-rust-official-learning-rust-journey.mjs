@@ -1,0 +1,177 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'rust-official-learning-rust-journey.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#9a3412,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#9a3412;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fff7ed;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9a3412;border-left:4px solid #ea580c}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fdba74;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#9a3412,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#fff7ed;padding:12px 16px;text-align:left;font-weight:700;color:#9a3412;border-bottom:2px solid #fdba74}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Rust 官方 4200 份问卷 + 70 场访谈：学 Rust 到底卡在哪</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Rust 学习</span>
+  <span class="tag tag-blue">Vision Doc</span>
+  <span class="tag tag-green">借用检查器</span>
+  <span class="tag tag-purple">LLM 辅助学习</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Rust 官方大规模调研揭示，新手真正卡住的不是语法而是旧语言思维惯性；编译器报错本身就是最有效的老师；而 LLM 正在悄悄改写「谁能成为 Rust 工程师」的人才池边界。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#9a3412;margin-bottom:12px;text-align:center">Rust 学习障碍全景</h3>
+  <div class="diagram">
+    <div class="node-red">旧语言思维惯性<br>C++/Java/Go 翻译</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">借用检查器<br>生命周期</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">编译器报错<br>自学入口</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">社区氛围<br>留存 or 静默流失</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">调研样本本质是「留下来的人」——真正放弃 Rust 的沉默大多数几乎无法被访谈触达</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Rust 难学是因为语法怪、借用检查器太严」。官方调研反证：语法本身不是主因，<strong>卸载 C++/Java 的面向对象习惯和零 clone 洁癖</strong>才是新手最常见的自我设限；完全没有编程背景的人反而可能更快上手。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】卸载旧习惯——比语法更陡的学习曲线</h3>
+  <p><strong>在讲什么问题：</strong>为什么有十年 Java/C++ 经验的工程师学 Rust 反而比零基础新人更挣扎。</p>
+  <p><strong>核心机制：</strong>大多数人不是第一门语言学 Rust，而是把 Rust「翻译」成熟悉的 C++/Java/Go 写法，持续数月甚至数年才过渡到 Rust 惯用法。</p>
+  <p><strong>关键理解：</strong>没有「磨出旧习惯沟槽」的人反而可能更快适应——资深工程师得先忘掉在别的语言里行得通但不是 Rust 方式的做法。</p>
+  <p><strong>典型场景：</strong>被公司分配去维护 Rust 项目、从 C++ 迁移到 Rust 的团队。</p>
+  <p><strong>边界说明：</strong>此结论针对有系统编程背景的转语言者；嵌入式等特殊场景还有生态约束等额外障碍。</p>
+  <div class="quote">「我们团队有个人以前几乎没怎么写过程序，直接上手负责 Rust 项目内部实现，她适应得很好。反倒是资深工程师更容易挣扎。」</div>
+  <div class="relation"><strong>相关概念：</strong>与「语法难度」是不同维度——前者是认知卸载，后者是规则记忆。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三条借用检查器学习路径</h3>
+  <table>
+    <tr><th>对比维度</th><th>编译器即老师</th><th>实战熬出来</th><th>放下 clone 洁癖</th></tr>
+    <tr><td>核心动作</td><td>读报错、按提示改生命周期</td><td>大量项目 + Advent of Code</td><td>学习阶段大胆 clone，先跑再优化</td></tr>
+    <tr><td>见效速度</td><td>较快，适合有编译器经验者</td><td>慢但扎实，需量变到质变</td><td>立刻解除自我设限</td></tr>
+    <tr><td>适用人群</td><td>能耐心读英文诊断的开发者</td><td>有时间做 side project 的人</td><td>被「高性能」名声吓住的新手</td></tr>
+    <tr><td>一句话结论</td><td>报错信息承担了大量教学功能</td><td>「咔哒」开窍后不再和 Rust 较劲</td><td>几乎所有资深开发者的一致建议</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】学习阶段的典型自我陷阱</h3>
+  <p><strong>坑 1：零 clone 洁癖</strong>——新手设定「绝不 clone/copy」，小心翼翼串生命周期把自己困住，而资深开发者会直接 clone 且开销很小。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑 2：用 C++/Java 思维翻译 Rust</strong>——到处摸索加减 <code>&</code> 和 <code>*</code>，试图搞明白 mut 和不 mut。<strong>解法：</strong>专门阅读「从 X 语言转 Rust」的迁移材料。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 3：官方教材「过时」观感</strong>——GitHub 上堆积未解决 issue 和未合并 PR，评估中的团队会放大负面解读。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 4：嵌入式生态约束</strong>——习惯 C 的开发者无法接受不能直接操作外设指针。<strong>严重程度：</strong>致命（部分人直接放弃）。</p>
+  <div class="pitfall"><strong>原文说法：</strong>「我绝对不要 clone 或 copy 任何东西」——这是 Rust「高性能、高可靠」名声反过来给新手加的心理包袱。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】学习辅助工具怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>系统学基础</td><td>官方书 + Rustlings 反复过</td><td>受访者第一站，需多遍消化</td><td>指望一遍读完</td><td>「记不清翻了多少遍」</td></tr>
+    <tr><td>嵌入式课程作业</td><td>GitHub 提 issue 问 maintainer</td><td>学生获原作者亲自解答，社区好感</td><td>靠 LLM 生成驱动代码</td><td>C 班可抄 LLM，Rust 班目前做不到</td></tr>
+    <tr><td>快速上手陌生 crate</td><td>LLM 辅助定位方向</td><td>缩短在陌生领域的摸索时间</td><td>复制粘贴不验证</td><td>魔鬼藏在细节里</td></tr>
+    <tr><td>零基础批量培养</td><td>LLM + Rust 编译器组合</td><td>已有咨询公司案例：高中毕业生→Rust 工程师</td><td>认为语言难度不可逾越</td><td>强类型 + 编译器反馈可替代部分教学经验</td></tr>
+    <tr><td>企业团队统一基线</td><td>培训课程 + 内部答疑群</td><td>避免「各自去看那本书」起点不一</td><td>直接扔高风险 ticket</td><td>应从低风险任务练手</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】企业批量培养 Rust 团队标准流程</h3>
+  <p><strong>核心思路：</strong>调研中企业规模化引入 Rust 的路径高度一致，不需要每家公司重新摸索。</p>
+  <p><strong>操作步骤：</strong>① 培训课程或官方教材 + Rustlings 拉到统一基线；② 从低风险、低优先级 ticket 练手；③ 建立内部答疑渠道（Slack 频道等）营造互助氛围；④ 招不懂 Rust 的人慢慢带，比花两年找 C++ 大神更现实。</p>
+  <p><strong>落地建议：</strong>明确告诉有 Java/C++ 背景的工程师「哪些老习惯在 Rust 里行不通、该换成什么」——目前教材缺少这层迁移指导。</p>
+  <div class="highlight"><strong>招聘策略转变：</strong>「花了两年没找到同等水平 C++ 替代者，最后招完全不懂 Rust 的人慢慢带起来，借用检查器正在教他们用正确方式处理系统问题。」</div>
+  <div class="pitfall"><strong>避坑：</strong>对卡壳新人说「这是你水平问题」——被 maintainer 耐心回应的学生印象深刻，被推开的人则静默消失。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】静默流失——调研看不见的沉默大多数</h3>
+  <p><strong>在讲什么问题：</strong>为什么官方调研样本偏向「留下来的人」，讨厌 Rust 的人普遍不愿发声。</p>
+  <p><strong>核心机制：</strong>问卷中 49% 打 4-5 分，仅 18.5% 打 1-2 分，且后者极少愿意接受访谈；不喜欢 Rust 的人不会读官方博客、不想和 Rust 粉丝聊。</p>
+  <p><strong>关键理解：</strong>社区氛围直接决定留存——程序写得很复杂被归因于「水平问题」、卡壳时得不到共情，大量人默默放弃却从不在社区抱怨。</p>
+  <p><strong>典型场景：</strong>嵌入式生态约束劝退 C 背景开发者；1.0 前折戟、1.0 后重试才学会的老用户。</p>
+  <p><strong>边界说明：</strong>访谈「放弃了 Rust 的人」是官方明确建议的后续研究方向，当前证据不完整。</p>
+  <div class="quote">「可能有大量人默默地放弃了写 Rust，因为写到一定复杂度之后，得到的反馈却是你显然需要提升自己的水平。」</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】编译器诊断是最被低估的学习入口</h3>
+  <p><strong>原则：</strong>把编译器报错当作老师，而不是敌人——多位受访者靠报错自学了生命周期。</p>
+  <p><strong>为什么重要：</strong>反面案例是回避报错、试图用旧语言思维绕过规则，反而延长挣扎期。</p>
+  <p><strong>怎么落地：</strong>写新诊断提示时同时考虑专家和困惑新手两种视角；官方应把「学习阶段大胆 clone」写进文档。</p>
+  <p><strong>适用边界：</strong>编译器教学对嵌入式驱动等 LLM 尚难生成的领域效果有限；C 班学生目前可靠 LLM 交作业，Rust 班尚不能。</p>
+  <div class="quote">「缺什么，编译器基本都会告诉我：它会说你需要给这个引用声明生命周期，然后我就知道该怎么改了。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Rust 布道者 / 「语言设计即正义」派</p>
+  <p class="rebuttal-text">把困难归因于「旧习惯」是在为陡峭的学习曲线找借口——若真要靠卸载十年 Java 思维才能上手，企业引入成本远高于继续用成熟生态，调研样本又全是留存者，系统性证据恰恰说明 Rust 对多数团队并不值得。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论与行动</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Rust 官方 4200+ 问卷 + 70+ 深度访谈，首次把「Rust 难学」从论坛吵架拉到系统性证据层面。</li>
+    <li>新手最大坎是卸载旧语言思维惯性，而非语法；零 clone 洁癖是常见自我陷阱。</li>
+    <li>编译器报错是高效学习入口；LLM 可能扩大「谁能成为 Rust 工程师」的人才池，但尚是单案例线索。</li>
+    <li>静默流失严重：讨厌 Rust 的人不愿发声，社区「水平问题」态度正在劝退卡壳新人。</li>
+    <li>企业培养路径成熟：培训 + Rustlings + 低风险任务 + 内部答疑群。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>给转语言工程师准备「从 Java/C++ 到 Rust」迁移清单，明确哪些老习惯必须换掉。</li>
+    <li>学习阶段大胆 clone，先让程序跑起来再优化性能。</li>
+    <li>团队引入时统一培训课程基线，不要「各自去看那本书」。</li>
+    <li>对卡壳新人给予共情式帮助，而非归因于水平不足。</li>
+    <li>关注官方教材 issue/PR 可见性，评估材料时同步检查维护状态。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>Rust 的学习曲线难点不在语法清单，而在认知卸载与社区留存——团队容忍度可能比任何教材更决定新人能不能留下来。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

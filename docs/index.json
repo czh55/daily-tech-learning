@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-22",
+    "files": [
+      {
+        "path": "svgs/2026-08-22/rust-official-learning-rust-journey.svg",
+        "title": "Rust官方砸半年时间访谈70+人：学Rust到底卡在哪，AI又帮上了多少忙？",
+        "source": "https://tonybai.com/2026/08/22/rust-official-learning-rust-journey/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-21",
     "files": [
       {
