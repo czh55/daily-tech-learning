@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="6929" viewBox="0 0 1320 6929">
+  <foreignObject x="0" y="0" width="1320" height="6929">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>Codex as a Platform：把 Agent Harness 装进你的产品</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">OpenAI Codex</span>
+  <span class="tag tag-green">Agent Harness</span>
+  <span class="tag tag-orange">开源平台化</span>
+  <span class="tag tag-purple">app-server</span>
+  <span class="tag tag-red">编程 Agent</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在三大厂商编程 Agent 均走闭源产品化路线的当下，OpenAI 如何通过开源 Codex Agent Harness，让团队实现「把智能体引擎嵌入自有产品」而非「把用户搬进通用聊天框」的平台化集成路径。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">Codex 平台化三层架构</h3>
+  <div class="diagram">
+    <div class="node">应用层<br/>界面·业务上下文·审批</div>
+    <span class="arrow-sym">↔</span>
+    <div class="node-green">Codex app-server<br/>Agent 循环·沙箱执行</div>
+    <span class="arrow-sym">↔</span>
+    <div class="node-orange">应用自有 MCP<br/>数据与动作</div>
+    <span class="arrow-sym">↓</span>
+    <div class="node-red">闭源模型 API<br/>（独立授权）</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">App / CLI / IDE 插件只是三种 Harness 呈现方式，底层执行框架已开源（Apache-2.0）</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Codex 开源 = 完全开源」。OpenAI 明确划界——开源的是 Harness 与集成层（可审查、可改造），模型访问与托管服务仍是闭源护城河；这是「把可复用工程部分开放、把模型留在手里」的务实策略，而非理想主义的全栈开源。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Agent Harness——智能体的运行框架</h3>
+  <p><strong>在讲什么问题：</strong>Codex App、CLI、IDE 插件背后真正可复用的是什么。</p>
+  <p><strong>核心机制：</strong>Harness 是智能体的执行框架：收集上下文、多轮维持状态、调用工具读写文件与执行命令、在配置边界内运行并在必要时请求人工批准、把一次任务产出衔接到下一次任务。</p>
+  <p><strong>关键理解：</strong>过去这层是藏在产品背后的私有能力；OpenAI 把它公开后，开发者可直接检查、理解行为，并按自己产品需要改造这层「胶水」——Harness 设计本身就能决定 Agent 表现上限，而非仅是模型能力的被动壳。</p>
+  <p><strong>典型场景：</strong>工程工作流、运维看板、安全事件调查台、客服控制台等「为具体岗位定制的内部系统」需要嵌入 Agent 能力时。</p>
+  <p><strong>边界说明：</strong>Harness 不负责业务 UI 与领域逻辑；应用层必须保留界面、记录与审批控制权。模型推理能力仍依赖闭源 API，Harness 无法替代模型本身。</p>
+  <div class="quote">「你不需要再造一个聊天框，直接把这台引擎装进你自己的产品就行。」——OpenAI 平台化核心论点</div>
+  <div class="relation"><strong>相关概念：</strong>与 Claude Code、Antigravity 等闭源「产品进 Agent」路线对立；与 MCP 工具层配合构成「应用提供上下文与工具，Harness 负责 Agent 循环」的分工。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】三条官方集成路径</h3>
+  <p><strong>核心思路：</strong>按场景复杂度从低到高选择集成方式，而非一刀切。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>① <strong>codex exec</strong>（非交互）：运行有边界的 Agent 工作流，返回结构化结果，适合脚本、CI、一次性后台任务；</p>
+  <p>② <strong>Codex SDK</strong>：程序化启动、恢复、流式获取任务，适合把 Agent 嵌进已有系统代码；</p>
+  <p>③ <strong>Codex app-server</strong>：本地进程连接、长会话、流式事件、中断任务、暴露工具、处理审批，适合 Agent 本身就是产品核心体验的场景。</p>
+  <p><strong>选型条件：</strong>想快速试效果 → exec；往现有系统接能力 → SDK；做「Agent 常驻界面」的产品 → app-server。</p>
+  <p><strong>落地建议：</strong>参考 Relay 示例应用：用户从看板选中运单、点击业务动作（如「比较恢复方案」），应用喂上下文，Agent 通过 MCP 拉数据，实质性影响需人工审批，执行后刷新业务视图。</p>
+  <div class="pitfall"><strong>避坑：</strong>产品级场景直接用 exec 批处理——无法维持长会话、流式进度与审批交互，用户体验会断裂。</div>
+  <div class="quote">「SDK 简化常见的程序化工作流；app-server 则把生命周期和用户体验的控制权直接交给产品团队。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三条集成路径 vs 闭源竞品</h3>
+  <table>
+    <tr><th>对比维度</th><th>codex exec</th><th>Codex SDK</th><th>app-server</th><th>Claude Code / Antigravity</th></tr>
+    <tr><td>交互模式</td><td>一次性批处理</td><td>程序化调用</td><td>长连接 + 流式事件</td><td>官方固定界面</td></tr>
+    <tr><td>会话维持</td><td>不需要</td><td>可恢复任务</td><td>完整线程与 turns</td><td>厂商控制</td></tr>
+    <tr><td>审批与沙箱</td><td>配置边界内自动</td><td>应用侧集成</td><td>原生审批请求协议</td><td>黑箱策略</td></tr>
+    <tr><td>可审查性</td><td>Harness 开源可调试</td><td>同上</td><td>协议文档化</td><td>闭源不可审计</td></tr>
+    <tr><td>一句话结论</td><td>脚本与 CI 首选</td><td>系统嵌入首选</td><td>产品级 Agent 首选</td><td>只能用官方体验</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Harness 调优 vs 换模型</h3>
+  <table>
+    <tr><th>对比维度</th><th>仅换更强模型</th><th>优化 Harness 层</th><th>组合策略</th></tr>
+    <tr><td>ARC-AGI-3 实测</td><td>GPT-5.6 Sol 基线 13.3%</td><td>保留推理 + 上下文压缩 → 38.3%</td><td>分数近翻三倍</td></tr>
+    <tr><td>Token 消耗</td><td>基线</td><td>降至约 1/6</td><td>效率与效果双赢</td></tr>
+    <tr><td>投入方向</td><td>API 费用与模型选型</td><td>上下文喂法、状态维持、压缩策略</td><td>Harness 往往是更低成本杠杆</td></tr>
+    <tr><td>一句话结论</td><td>必要但不充分</td><td>同等重要甚至更高 ROI</td><td>模型 + Harness 共同决定上限</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】你的场景该走哪条集成路线</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>CI 流水线自动修 lint / 生成 changelog</td><td>codex exec</td><td>有边界、返回结构化结果、无需会话</td><td>app-server</td><td>过度工程，无长连接需求</td></tr>
+    <tr><td>内部运维系统嵌入 Agent 查询</td><td>Codex SDK</td><td>与现有后端代码集成，流式获取进度</td><td>让用户打开 Codex App</td><td>打断原有工作流</td></tr>
+    <tr><td>IDE 插件或云控制台 Agent 常驻</td><td>app-server</td><td>GitHub、JetBrains 已验证此模式</td><td>仅 exec 批处理</td><td>无法支撑实时交互与审批</td></tr>
+    <tr><td>需审查 Agent 行为与沙箱策略</td><td>开源 Harness + 自托管</td><td>openai/codex 可检查、调试、二次开发</td><td>闭源 Claude Code</td><td>黑箱，无法按企业策略改造</td></tr>
+    <tr><td>报税、客服等垂直工作流</td><td>app-server + 自有 MCP</td><td>Thrive Holdings 试点 7000 份报税单，准备时间缩短约 1/3</td><td>通用聊天框</td><td>缺业务上下文与审批环节</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Agent 进产品，而非产品进 Agent</h3>
+  <p><strong>原则：</strong>不要把工作流搬进通用编程助手，而是把 Agent 能力嵌进团队本来就在用的软件。</p>
+  <p><strong>为什么重要：</strong>反面案例是强迫用户迁移到新的聊天界面；Relay 示范的正确姿势是应用始终掌控看板、记录与审批，Harness 只负责底层循环。</p>
+  <p><strong>怎么落地：</strong>① 明确应用层保留的界面与业务上下文；② 通过 MCP 暴露领域数据与动作；③ 在会产生实质性影响的操作上设置人工审批；④ 执行完成后刷新自有业务视图而非停留在对话框。</p>
+  <p><strong>适用边界：</strong>适用于有明确业务上下文的企业内部系统；个人开发者快速原型可先用官方 App/CLI，产品化时再迁移到嵌入模式。</p>
+  <div class="highlight"><strong>真实落地：</strong>GitHub / JetBrains（IDE）、Cisco Cloud Control App Builder（SDK）、Thrive Holdings 报税工作流（垂直场景）均已验证「Agent 进产品」模式，不限于工程团队——客服、运维、安全、销售、市场均可复用同一架构。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】平台化集成常见误区</h3>
+  <p><strong>坑 1：把「开源 Harness」等同于「完全开源」</strong>——模型 API 仍闭源且独立计费。<strong>原因：</strong>混淆工程层与模型层。<strong>解法：</strong>预算中分开核算 Harness 改造与模型 token 费用。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 2：产品级场景用 exec 凑合</strong>——无法流式进度与审批。<strong>解法：</strong>按复杂度选对集成层级。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑 3：放弃应用层控制权</strong>——让 Agent 自由操作无审批。<strong>解法：</strong>参考 Relay，实质性影响必须人工批准。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑 4：忽视 Harness 调优只追新模型</strong>——ARC-AGI-3 证明上下文压缩等工程细节可翻三倍分数。<strong>解法：</strong>投入 retained reasoning 与 context compaction 策略。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 5：强迫用户迁移到 Codex 官方界面</strong>——与平台化理念背道而驰。<strong>解法：</strong>保留现有看板/编辑器，嵌入 Harness。<strong>严重程度：</strong>致命。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Anthropic / Google 闭源产品拥护者 / 「官方体验更省心」派</p>
+  <p class="rebuttal-text">开源 Harness 意味着你要自己扛沙箱安全、协议升级与运维——对多数团队，闭源一体化产品的迭代速度、合规背书和开箱即用，远比可定制性值钱。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论与行动</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>三大编程 Agent 竞品中仅 Codex 开源 Harness（Rust 重写，Apache-2.0），走「引擎可嵌入」而非「用户进聊天框」的平台化路线。</li>
+    <li>App / CLI / IDE 只是同一底层系统的三种呈现；真正可复用的是管理状态、工具调用、沙箱与审批的 Agent 循环。</li>
+    <li>三条集成路径（exec / SDK / app-server）覆盖从脚本任务到产品级 Agent 的复杂度递增场景。</li>
+    <li>Harness 层调优（保留推理 + 上下文压缩）在 ARC-AGI-3 使分数从 13.3% 升至 38.3%，token 降至 1/6——工程细节与模型同等重要。</li>
+    <li>开源的是可审查的工程部分，模型访问仍闭源；这是扩大生态分发面而非削弱商业护城河的务实策略。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>浏览 openai/codex 仓库，理解 Harness 整体结构与 app-server 协议。</li>
+    <li>按场景选型：脚本 → codex exec；系统嵌入 → SDK；产品级 Agent → app-server。</li>
+    <li>读 Relay 示例，设计自己的应用层界面、MCP 工具与审批节点。</li>
+    <li>在 Harness 层实验上下文压缩与推理保留策略，而非仅升级模型版本。</li>
+    <li>参考 GitHub / JetBrains / Cisco / Thrive Holdings 落地模式，把 Agent 嵌进已有产品而非新建聊天入口。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>编程 Agent 的下一阶段不是「再做一个更好的聊天窗口」，而是「任何产品都能装进去的一个引擎」——Harness 开源让这条路线从口号变成可检查、可改造、可集成的工程现实。</p>
+</div>
+    </div>
+  </foreignObject>
+</svg>
