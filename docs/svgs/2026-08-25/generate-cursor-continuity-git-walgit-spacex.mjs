@@ -1,0 +1,185 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'cursor-continuity-git-walgit-spacex.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Continuity vs Spokes：AI 时代的 Git 托管架构范式转移</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Cursor Continuity</span>
+  <span class="tag tag-green">WAL + S3</span>
+  <span class="tag tag-orange">walgit</span>
+  <span class="tag tag-purple">Spokes / 3PC</span>
+  <span class="tag tag-red">AI Agent 负载</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在 AI Agent 高频创建小仓库与巨型 monorepo 并发读取的双重压力下，Git 托管架构为何要从 Spokes 的三副本强一致 + 3PC 共识，转向以对象存储 WAL 为唯一真相源、本地磁盘退化为可丢弃缓存的 Continuity 范式。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">Git 托管架构演进关系图</h3>
+  <div class="diagram">
+    <div class="node-red">packfile 随机寻址<br>+ DAG 游走</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Spokes<br>3 副本 + 3PC</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Continuity / walgit<br>WAL + S3 + CAS</div>
+    <span class="arrow-sym">↓</span>
+    <div class="node">AI Agent 负载<br>海量小仓库 + CI 洪峰</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">本地磁盘从「真相源」降级为「热缓存」，对象存储成为唯一权威</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「把 packfile 存进 S3 就是 Continuity」。微软 Azure DevOps 早就在 blob 存储 packfile，但引用仍放关系型数据库；Continuity 的关键是<strong>完全基于 WAL、不依赖任何外部数据库</strong>，用 S3 CAS 取代 3PC 共识，本地仓库可随时从 WAL 物化重建。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Spokes 架构——13 年行业标准及其天花板</h3>
+  <p><strong>在讲什么问题：</strong>为什么 GitHub 2013 年推出的 Spokes 曾是最佳实践，却在 2026 年遇到扩展性瓶颈。</p>
+  <p><strong>核心机制：</strong>不重新发明 Git，只在 packfile 层做文章；所有数据以正常 Git 仓库形式存本地 NVMe；多副本间用三阶段提交（3PC）保持强一致。一次 push 拆成 packfile（并行分发）和引用事务（3PC 同步）。</p>
+  <p><strong>关键理解：</strong>Git 客户端对最终一致性极不友好——刚 push 完 fetch 读不到会直接懵掉，所以 Spokes 选了「重」的强一致路线。但 3PC 每一步延迟取决于最慢节点，副本越多推送吞吐反而越差（tail at scale）。</p>
+  <p><strong>典型场景：</strong>2013 年「三副本」甜蜜点时代的企业 Git 托管，GitLab、Gitea 等本质都是 Spokes 变体。</p>
+  <p><strong>边界说明：</strong>对付海量 AI Agent 创建的「用完即弃」小仓库时，仍要求三副本——下限太高；对付巨型 monorepo CI 并发读取时，三副本扛不住——上限太低。运维上每份拷贝都是「宠物」而非「牲口」，需巨大路由表和持续校验。</p>
+  <div class="quote">「Spokes 把仓库当宠物养，而不是牲口——每一份拷贝都金贵得不能出任何差错。」——Cursor 博客原话</div>
+  <div class="relation"><strong>相关概念：</strong>与 Continuity 的「无状态 + 对象存储真相源」形成对立；GitHub 早期 NFS/GFS/DRBD 的失败证明 packfile 随机游走在网络文件系统上是灾难。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Continuity——WAL + S3 + CAS 的新范式</h3>
+  <p><strong>在讲什么问题：</strong>如何既保留「本地磁盘存真实 Git 仓库、复用上游工具链」的优点，又摆脱共识协议 + 路由表 + 宠物式运维。</p>
+  <p><strong>核心机制：</strong>写前日志（WAL）存进 S3 兼容对象存储作为唯一真相源；本地磁盘上的仓库退化为可随时重建的热缓存。push 只有在 packfile 完整写入 S3 且引用事务通过 CAS 成功更新索引后才返回成功，保证线性化。</p>
+  <p><strong>关键理解：</strong>没有选举、没有共识协议——所有 WAL 更新通过 S3 原子 CAS 同步，任何副本都可安全接受 push。副本间用 UDP gossip 通知「有新数据」，丢包无所谓，因为每次读都会向 S3 条件 GET 核对 etag。</p>
+  <p><strong>典型场景：</strong>巨型 monorepo 铺开成百上千副本扛 CI 读取洪峰；AI Agent 批量创建的海量小仓库一个副本就够；长时间无流量仓库可从本地彻底 GC，下次访问再从 WAL 物化。</p>
+  <p><strong>边界说明：</strong>压缩（repack）只在主节点做一次写回 WAL，其余副本下载已压缩 pack 用带宽换 CPU。rendezvous hashing 只是效率优化，映射过时也能在下一节点重新物化。</p>
+  <div class="highlight"><strong>性能数据：</strong>100 副本压测读吞吐线性增长；S3 Standard 稳定 120 push/s；S3 Express One Zone 突破 300 push/s，瓶颈转为本地 Git 压缩速度。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Spokes vs Continuity vs walgit</h3>
+  <table>
+    <tr><th>对比维度</th><th>Spokes（3PC）</th><th>Continuity（Cursor）</th><th>walgit（Tobi 周末复刻）</th></tr>
+    <tr><td>真相源</td><td>本地 NVMe 磁盘</td><td>S3 WAL</td><td>S3/GCS WAL（同架构）</td></tr>
+    <tr><td>一致性机制</td><td>三阶段提交共识</td><td>S3 CAS 原子交换</td><td>S3 CAS（同）</td></tr>
+    <tr><td>副本伸缩</td><td>副本越多 push 越慢</td><td>读吞吐随副本线性扩展</td><td>同 Continuity + 远程读取器优化</td></tr>
+    <tr><td>小仓库成本</td><td>强制三副本</td><td>一个副本 + S3 兜底</td><td>单文件二进制，零初始化</td></tr>
+    <tr><td>巨型仓库克隆</td><td>服务器扛全量</td><td>标准 Git 协议</td><td>bundle-uri 走 CDN 静态分发</td></tr>
+    <tr><td>运维复杂度</td><td>路由表 + 校验和修复</td><td>无状态，无路由表/数据库</td><td>配置指向存储桶即 serve</td></tr>
+    <tr><td>一句话结论</td><td>下限太高、上限太低</td><td>AI 时代负载模型答案</td><td>架构讲透后落地极快</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】walgit 快速上手路径</h3>
+  <p><strong>核心思路：</strong>Shopify CEO Tobi Lütke 用一个周末把 Continuity 架构用 Rust 复刻为单文件开源实现，工程上更进一步。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>① 下载 walgit 单文件二进制，写配置指向任意 S3 或 GCS 兼容存储桶；</p>
+  <p>② 运行 <code>walgit serve</code>，第一次 <code>git push</code> 自动创建仓库，无需额外初始化；</p>
+  <p>③ 巨型 monorepo 启用 bundle-uri：每周全量 bundle + 每日增量，首次 clone 走 CDN 静态文件；</p>
+  <p>④ 小机器场景启用「远程读取器」（HTTP Range 按需读 S3）和「历史 pack」（commit/tree 本地，blob 留对象存储）。</p>
+  <p><strong>选型条件：</strong>不想被 GitHub 绑定、又觉得自建 GitLab/Gitea 运维太重 → walgit 是「单文件 + 对象存储」轻量选项。</p>
+  <p><strong>落地建议：</strong>内置 Git LFS、React Web UI、JSON API + SDK、Webhook 事件、保护分支策略、none/token/oidc 三种鉴权——麻雀虽小五脏俱全，可直接跑起来验证架构。</p>
+  <div class="pitfall"><strong>避坑：</strong>不要把 walgit 当作 Cursor Origin 的替代品——它是架构验证和自建实验工具，生产级 SLA 和生态集成仍需评估。</div>
+  <div class="quote">「walgit —— 一个单文件二进制 + 对象存储的 Git 服务器，没有数据库，没有主节点，没有任何真正重要的本地状态。」</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】你的团队该继续 Spokes 还是迁移 WAL 架构</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>传统团队，人类开发者有限并发</td><td>继续 Spokes / GitHub</td><td>成熟稳定，生态完整</td><td>急着迁移 Continuity</td><td>无明确痛点时不值得换架构</td></tr>
+    <tr><td>巨型 monorepo，CI 读取压垮三副本</td><td>Continuity / walgit</td><td>读吞吐随副本线性扩展，可铺上百副本</td><td>加 Spokes 副本</td><td>3PC 副本越多 push 越慢</td></tr>
+    <tr><td>AI Agent 批量创建海量小仓库</td><td>Continuity / walgit</td><td>小仓库一副本 + S3 兜底，可 GC 闲置本地缓存</td><td>Spokes 三副本</td><td>大量闲置副本占资源</td></tr>
+    <tr><td>不想厂商绑定，运维人力有限</td><td>walgit 自建</td><td>单文件 + 对象存储，无数据库/路由表</td><td>自建 GitLab 集群</td><td>运维成本对标 Spokes 宠物模式</td></tr>
+    <tr><td>首次克隆超大仓库</td><td>walgit bundle-uri</td><td>静态 bundle 走 CDN，服务器只补差异</td><td>标准 git clone</td><td>服务器扛全量传输</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】对象存储做真相源的系统设计范式</h3>
+  <p><strong>原则：</strong>把本地磁盘降级为缓存，把对象存储提升为真相源——「什么都往 S3 里怼」从笑话变成严肃架构选择。</p>
+  <p><strong>为什么重要：</strong>从 serverless Postgres（Neon）到 Git 托管，驱动力是云对象存储在可用性、持久性和成本上的持续进化；AI Agent 正在从根本上改变 Git 基础设施的负载模型。</p>
+  <p><strong>怎么落地：</strong>① push 先写 WAL 到 S3 再更新引用（CAS）；② 本地仓库可随时从 WAL 物化；③ 读请求先条件 GET 核对 etag；④ 压缩只在主节点做一次。</p>
+  <p><strong>适用边界：</strong>依赖 S3 延迟和 CAS 语义；极端低延迟场景需 S3 Express One Zone；完全离线环境不适用。</p>
+  <div class="highlight"><strong>时代信号：</strong>一篇架构博客发布不到几天，资深工程师就能用 Rust 独立复刻可用开源实现——架构护城河正在被 AI 拉低的编码边际成本压缩。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Git 托管扩展性常见误区</h3>
+  <p><strong>坑 1：用 NFS/GFS 共享 Git 仓库</strong>——packfile 随机游走在网络文件系统上是灾难。<strong>解法：</strong>GitHub 早期已证明此路不通。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑 2：Spokes 副本无脑扩容</strong>——3PC 副本越多 push 吞吐越差。<strong>解法：</strong>读扩展用 Continuity 式线性副本，写扩展靠 WAL + CAS。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑 3：AI Agent 小仓库仍维持三副本</strong>——大量闲置副本占资源。<strong>解法：</strong>一副本 + S3 兜底，闲置可 GC。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 4：把 packfile 存 blob 但引用放数据库</strong>——引入额外一致性复杂度。<strong>解法：</strong>完全基于 WAL，不依赖外部数据库。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑 5：忽视 bundle-uri 对巨型仓库首次克隆的价值</strong>——服务器扛全量传输。<strong>解法：</strong>walgit 的静态 bundle + CDN 分发。<strong>严重程度：</strong>小心。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：GitHub 基础设施团队 / 「Spokes 够用了」派</p>
+  <p class="rebuttal-text">S3 每次读写的延迟和按请求计费，在 push 密集场景下会把成本与尾延迟直接暴露给开发者——Spokes 本地 NVMe 强一致虽重，却是经过二十年验证的确定性路径。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论与行动</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Git 天生为分布式协作设计，packfile 随机寻址 + DAG 游走使集中托管扩展性极难，GitHub 在 NFS/GFS/DRBD 上交的学费证明了这一点。</li>
+    <li>Spokes（3 副本 + 3PC）统治 13 年，但 AI Agent 负载模型暴露其「下限太高、上限太低」——小仓库浪费副本，大仓库扛不住 CI 洪峰。</li>
+    <li>Continuity 用 S3 WAL + CAS 取代共识协议和数据库，本地磁盘退化为可丢弃缓存，读吞吐随副本线性扩展。</li>
+    <li>walgit 证明架构一旦讲透，一个周末即可 Rust 复刻为可用开源实现，含 bundle-uri 等工程增强。</li>
+    <li>Git 托管被 GitHub 垄断近二十年的市场，可能迎来 Cursor Origin 与开源 walgit 的新一轮洗牌。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>阅读 Cursor 官方博客《Git at any scale》原文，理解 WAL + CAS 完整链路。</li>
+    <li>clone github.com/tobi/walgit，配置 S3 兼容存储桶，跑通 <code>walgit serve</code> + 首次 push。</li>
+    <li>评估团队负载：若 AI Agent 批量创建小仓库或 monorepo CI 压垮现有 Git 基础设施，考虑 WAL 架构试点。</li>
+    <li>对比 Spokes 三副本成本与 Continuity 一副本 + S3 方案的总拥有成本。</li>
+    <li>关注 Cursor Origin 产品化进展，以及 walgit bundle-uri 对巨型仓库克隆的实测效果。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>Git 托管的下一阶段不是「再加几个 Spokes 副本」，而是「本地磁盘只是缓存，对象存储才是仓库」——AI Agent 时代正在加速这场从宠物到牲口、从共识到 CAS 的架构范式转移。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
