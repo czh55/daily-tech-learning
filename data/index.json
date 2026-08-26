@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-26",
+    "files": [
+      {
+        "path": "svgs/2026-08-26/some-changes-in-go-1-27.svg",
+        "title": "Go 1.27 中值得关注的几个变化：从泛型方法终成正果、encoding/json/v2 转正到后量子安全全面落地",
+        "source": "https://tonybai.com/2026/08/26/some-changes-in-go-1-27/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-25",
     "files": [
       {
