@@ -1,0 +1,202 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'cybersecurity-llm-data-acquisition.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#065f46,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #059669}
+.card h3{font-size:22px;font-weight:700;color:#065f46;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:12px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:#a78bfa;color:#6b21a8}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#065f46,#059669);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#065f46;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>网络安全大模型数据获取：七类语料渠道与可复现采集实战</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">垂直领域大模型</span>
+  <span class="tag tag-blue">网络安全</span>
+  <span class="tag tag-orange">数据工程</span>
+  <span class="tag tag-purple">EasyDataset 蒸馏</span>
+  <span class="tag tag-red">CVE/CWE</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：训练网络安全垂直大模型时，面对分散、异构、时效性强的领域数据，应从哪些渠道系统获取七类核心语料，以及每类数据的具体采集方法与可执行代码示例。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#065f46;margin-bottom:12px;text-align:center">网络安全大模型语料体系关系图</h3>
+  <div class="diagram">
+    <div class="node">电子书籍<br>知识底座</div>
+    <span class="arrow-sym">+</span>
+    <div class="node-blue">学术论文<br>前沿原理</div>
+    <span class="arrow-sym">+</span>
+    <div class="node-orange">NIST/MITRE<br>规范框架</div>
+    <span class="arrow-sym">+</span>
+    <div class="node-purple">CVE/CWE<br>漏洞知识</div>
+    <span class="arrow-sym">+</span>
+    <div class="node">社区博客<br>实战经验</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">蒸馏/开源<br>数据集</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">七类渠道缺一不可：从结构化知识到鲜活案例，再到定制化蒸馏</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「只有千亿参数模型才能在安全领域出彩」。VulnLLM-R 论文证明，7B 规模模型经精心数据微调，在漏洞检测任务上同样取得不俗效果——精耕细作的小模型路线对资源有限但想打造简历亮点的同学更务实。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】网络安全语料的三大鲜明特点</h3>
+  <p><strong>在讲什么问题：</strong>安全领域数据与通用语料不同，采集前必须理解其分布特征。</p>
+  <p><strong>核心机制：</strong>分散（论文在学术库、标准在官网、漏洞在数据库、实战经验在社区）、异构（PDF、JSON、博客 HTML 格式各异）、时效性强（新漏洞、新攻击手法需持续更新）。</p>
+  <p><strong>关键理解：</strong>对目标领域知识体系和数据分布有深刻认知，才是数据工作的真正门槛，而非单纯会写爬虫。</p>
+  <p><strong>典型场景：</strong>预训练阶段构建领域知识底座；微调阶段补充漏洞问答、攻防案例。</p>
+  <p><strong>边界说明：</strong>本文聚焦「获取」，清洗与预处理在下一篇《预训练数据的处理》展开。</p>
+  <div class="highlight"><strong>落地建议：</strong>启动项目前先画一张七类数据来源清单，按优先级分批采集，避免一上来就爬社区博客（噪声最大）。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】电子书籍：系统化知识底座采集</h3>
+  <p><strong>核心思路：</strong>优质专著结构清晰、逻辑严密，解析成 Markdown 后天然保留层级，是质量最高的语料类别之一。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>① 安全专业书：吴翰清《白帽子讲Web安全》、_The Web Application Hacker's Handbook_；</p>
+  <p>② 网络基础：谢希仁《计算机网络》、Stevens《TCP/IP 详解 卷1》；</p>
+  <p>③ 计算机基础：CSAPP、Silberschatz《操作系统概念》；</p>
+  <p>④ 按作者/出版社/版本/口碑筛选，试读目录与一章正文再入库。</p>
+  <p><strong>选型条件：</strong>需要模型建立结构化知识框架时优先书籍，而非碎片博客。</p>
+  <p><strong>避坑：</strong>劣质书术语前后不一，喂给模型等于教错误知识；贵精不贵多。</p>
+  <div class="pitfall"><strong>版权提醒：</strong>个人练手通常问题不大，商用务必确认授权范围是否允许用于模型训练。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】学术论文与顶会：arXiv API 批量采集</h3>
+  <p><strong>核心思路：</strong>论文提供原理基础、同行评审可信度、前沿时效性（大模型安全攻防、AI 漏洞挖掘等近两年方向）。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>① arXiv cs.CR 板块：免费检索 API，批量采集首选；</p>
+  <p>② 四大顶会：IEEE S&P、USENIX Security、ACM CCS、NDSS；</p>
+  <p>③ 用 Python urllib 调用 export.arxiv.org/api/query，解析 Atom XML 获取标题、摘要、PDF 链接。</p>
+  <p><strong>选型条件：</strong>需要「为什么」层面的攻击防御原理、量化实验结论时选论文。</p>
+  <p><strong>对比相邻方法：</strong>社区博客是「经验之谈」，论文结论是「测出来的」，模型表述更严谨、更少幻觉。</p>
+  <div class="highlight"><strong>落地建议：</strong>搜索词示例 cat:cs.CR AND all:log4j，调节 max_results 控制批量规模。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】NIST/MITRE 标准与 CVE/CWE 漏洞库</h3>
+  <p><strong>核心思路：</strong>标准教模型「怎么做才规范」，漏洞库是安全大模型区别于通用模型的核心竞争力。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>① NIST SP 800 系列：官网免费 PDF，如 SP 800-61 应急响应指南；</p>
+  <p>② MITRE ATT&CK：官方 STIX JSON 全量下载，将 name/description/缓解措施拼装成自然语言；</p>
+  <p>③ CVE 官方 REST API：cveawg.mitre.org/api/cve/{CVE_ID}，无需鉴权；</p>
+  <p>④ CWE 全量 XML：cwec_latest.xml.zip 下载解析，近千条缺陷定义；</p>
+  <p>⑤ 大规模 CVE：GitHub CVEProject/cvelistV5 镜像仓库按年份筛选。</p>
+  <p><strong>避坑：</strong>单条 API 无法满足大规模需求，需结合镜像仓库批量获取。</p>
+  <div class="quote">结构化字段可借助大模型转化为自然语言，例如：「CVE-2021-44228 是 Apache Log4j2 中的 JNDI 注入漏洞……」</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】七类语料渠道选型指南</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>建立结构化知识框架</td><td>权威电子书籍 + 基础教材</td><td>章节即知识图谱，层级清晰</td><td>大量低质拼凑书</td><td>术语混乱难以清洗挽回</td></tr>
+    <tr><td>理解攻击防御原理</td><td>arXiv cs.CR + 四大顶会</td><td>同行评审、实验数据背书</td><td>仅依赖社区经验帖</td><td>易产生幻觉、表述不严谨</td></tr>
+    <tr><td>规范合规输出</td><td>NIST SP 800 + MITRE ATT&CK</td><td>行业标准化知识体系</td><td>非官方转载摘要</td><td>可能过时或曲解原意</td></tr>
+    <tr><td>漏洞问答与修复建议</td><td>CVE API + CWE 全量 + Exploit-DB</td><td>CVE 记具体漏洞，CWE 分类缺陷类型</td><td>只靠通用语料</td><td>无法准确回答 CVE 编号类问题</td></tr>
+    <tr><td>鲜活实战案例</td><td>FreeBuf/安全客/厂商威胁报告</td><td>事件复盘价值超十篇论文</td><td>不做清洗直接入库</td><td>转载重复、广告、标题党噪声极大</td></tr>
+    <tr><td>快速构建问答数据集</td><td>EasyDataset 蒸馏 + Hugging Face 现成集</td><td>节省人力，VulnLLM-R 等已验证</td><td>不看 License 商用</td><td>合规风险</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】EasyDataset 全自动蒸馏操作流程</h3>
+  <p><strong>核心思路：</strong>让闭源/超大模型把推理思路浓缩成高质量数据集，小模型拟合后在特定任务逼近大模型（如 s1 论文仅花约 50 美元蒸馏 Qwen2.5-32B）。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>① 创建项目，以知名书籍名称为顶级主题锚点，描述中填入完整目录；</p>
+  <p>② 进入「数据蒸馏」→「全自动蒸馏」，配置标签层级（2～4 层）与每层标签数、每标签问题数；</p>
+  <p>③ 启动后跟踪标签构建、问题生成、答案生成三阶段进度；</p>
+  <p>④ 可选手动逐级生成标签，人工介入把关。</p>
+  <p><strong>选型条件：</strong>需要定制化、覆盖完整的领域知识树且资源有限时优先蒸馏。</p>
+  <p><strong>避坑：</strong>层级过浅覆盖粗，过深则生成成本高，需根据训练需求调整右侧预览的问题总数。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】数据采集常见陷阱</h3>
+  <p><strong>坑 1：社区博客不清洗直接入库</strong>——FreeBuf 等渠道数据量最大、噪声最多。<strong>解法：</strong>下一篇专门讲清洗，此处先标记为重点关照对象。<strong>严重程度：</strong>致命（拉低训练质量）。</p>
+  <p><strong>坑 2：书籍版权忽视</strong>——商用模型训练未确认授权。<strong>解法：</strong>查 License，个人练手与商用分开管理。<strong>严重程度：</strong>致命（法律风险）。</p>
+  <p><strong>坑 3：只用 CVE 不用 CWE</strong>——模型只知「哪个产品哪个漏洞」不知「哪类缺陷」。<strong>解法：</strong>CVE 与 CWE 配套采集。<strong>严重程度：</strong>小心（理解深度不足）。</p>
+  <p><strong>坑 4：开源数据集不看标签分布</strong>——与训练目标不匹配。<strong>解法：</strong>先查标签分布、数据量级、License。<strong>严重程度：</strong>小心（浪费算力）。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】CVE 与 CWE 的分工</h3>
+  <table>
+    <tr><th>对比维度</th><th>CVE</th><th>CWE</th><th>一句话结论</th></tr>
+    <tr><td>记录内容</td><td>具体某产品暴露的某个漏洞</td><td>漏洞属于哪一类缺陷</td><td>CVE 是实例，CWE 是分类</td></tr>
+    <tr><td>典型问题</td><td>「这个代码触发哪个 CVE？」</td><td>「缓冲区溢出/SQL 注入如何防御？」</td><td>问答场景不同，需同时覆盖</td></tr>
+    <tr><td>数据形态</td><td>REST API 单条查询 + GitHub 全量镜像</td><td>官方 XML 全量 zip</td><td>均提供结构化字段可模板化</td></tr>
+    <tr><td>语料价值</td><td>漏洞编号、厂商产品、修复建议</td><td>缺陷定义 + 代码示例 + 缓解建议</td><td>CWE 近千条成体系成因语料</td></tr>
+  </table>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「通用大模型已够用」派 / 闭源 API 依赖者</p>
+  <p class="rebuttal-text">Claude 在逆向和漏洞挖掘上已展现惊人能力，你再堆七类异构语料训一个 7B 小模型，投入产出比远不如直接调 API 加 RAG——垂直模型是资源不足时的妥协，不是安全赛道的最优解。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>网络安全语料分散、异构、时效性强，七类渠道（书籍、论文、标准、漏洞库、社区、开源集、蒸馏）缺一不可</li>
+    <li>书籍贵精不贵多，需搭配网络与计算机基础教材；论文首选 arXiv cs.CR 与四大顶会</li>
+    <li>NIST/MITRE 提供规范知识，CVE/CWE 是漏洞问答的核心竞争力</li>
+    <li>社区博客价值高但噪声大，是后续清洗重点；EasyDataset 蒸馏可快速构建定制化问答集</li>
+    <li>7B 小模型经精心数据微调可在漏洞检测等任务取得不俗效果，非只有千亿参数才出彩</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>按本文清单绘制项目语料采集表，标注每类渠道的优先级与预计规模</li>
+    <li>运行 arXiv cs.CR 检索脚本，验证 log4j 等主题论文批量获取流程</li>
+    <li>用 CVE 官方 API 查询 CVE-2021-44228，练习结构化字段转自然语言</li>
+    <li>下载 CWE 全量 XML，统计弱点总数并预览前几条模板化效果</li>
+    <li>在 EasyDataset 创建「Web安全攻防」主题项目，试跑全自动蒸馏并调整标签层级</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>训练垂直安全大模型的第一步不是写训练脚本，而是像选教材一样系统规划七类语料——数据分布认知比采集技术本身更决定模型能否真正「懂安全」。</p>
+</div>`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

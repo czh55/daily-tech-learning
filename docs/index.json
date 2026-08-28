@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-08-28",
+    "files": [
+      {
+        "path": "svgs/2026-08-28/cybersecurity-llm-data-acquisition.svg",
+        "title": "大模型训练全流程实战指南实战篇（十四）——网络安全大模型数据获取",
+        "source": "https://juejin.cn/post/7678744233527787560"
+      },
+      {
+        "path": "svgs/2026-08-28/rob-pike-usenix-flame-award-2026.svg",
+        "title": "刚刚，Go语言之父荣获终身成就奖：UTF-8、Plan 9、Go，他一人写下半部计算机简史",
+        "source": "https://tonybai.com/2026/08/28/rob-pike-usenix-flame-award-2026/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-27",
     "files": [
       {
