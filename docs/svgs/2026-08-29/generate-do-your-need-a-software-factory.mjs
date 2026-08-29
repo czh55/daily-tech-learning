@@ -1,0 +1,222 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'do-your-need-a-software-factory.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #7c3aed}
+.card h3{font-size:22px;font-weight:700;color:#6d28d9;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #c4b5fd;border-radius:16px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:12px;color:#6d28d9}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#6d28d9,#a855f7);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#6d28d9;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>你真的需要一座软件工厂吗？</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">软件工厂</span>
+  <span class="tag tag-blue">AI Agent</span>
+  <span class="tag tag-orange">Addy Osmani</span>
+  <span class="tag tag-green">理解力债务</span>
+  <span class="tag tag-red">验证预算</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在 AI 编程 Agent 普及的当下，大多数团队是否真有必要搭建复杂的分布式软件工厂，还是开箱即用的 Claude Code / Codex 配合清晰 Spec 与验证机制就已足够，以及人类工程师应如何把判断力锚定在上游意图与系统所有权上。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#6d28d9;margin-bottom:12px;text-align:center">软件工厂核心要素关系图</h3>
+  <div class="diagram">
+    <div class="node">人类意图<br>与架构规范</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">可重复循环<br>任务队列</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Agent 实现<br>与验证</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">客观证据<br>与人工审查</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">人类所有权<br>最终发布</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">代码可以让 AI 写，但系统的审美品味、质量底线与发布责任永远无法外包</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「必须立刻搭建分布式 AI 软件工厂才能实现全自动写代码」。Addy Osmani 的实战结论是：开箱即用的原生编程框架搭配并行会话、良好 Spec 与严格边界约束，已足以支撑绝大多数日常开发；只有面临跨 Agent 交接、并发冲突与证据留存等痛点时，自建工厂才真正物有所值。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】软件工厂（Software Factory）</h3>
+  <p><strong>是什么：</strong>围绕软件开发工作构建的一套可重复运转的循环体系，将人类审美品味的某些维度编码进开发环境，让 Agent 提供证明工作正确的客观证据，同时人类始终对发布到生产环境的一切承担最终所有权。</p>
+  <p><strong>核心机制：</strong>通过事件驱动任务队列（GitHub Issue、Slack、Linear 等）触发 Agent 在隔离沙箱中完成分诊、实现与验证；用显式状态标签（如 ready-to-implement）同时充当任务队列与并发锁，防止多会话争抢同一 Issue。</p>
+  <p class="relation"><strong>关键理解：</strong>工厂最难的部分不是代码生成，而是让不同运行批次保持行为一致、在 Agent 之间顺畅交接、留存证据，并在人类审查堵塞时果断叫停生产线。</p>
+  <p><strong>典型场景：</strong>需要跨 Agent 任务交接、高频一致性保证、多会话并发防冲突、持久化完整客观证据、人类审查跟不上时自动暂停。</p>
+  <p class="pitfall"><strong>边界说明：</strong>若你只是日常功能开发、单项目迭代，Claude Code 自动化任务或 Copilot 云端 Agent 已能在不编写自定义基础设施的前提下提供完整循环，此时建工厂属于过度工程。</p>
+  <div class="quote">「软件工厂是围绕软件开发构建的可重复循环。能够达到可发布至生产环境标准的代码，依然离不开人类的审美品味与责任担当。」—— Addy Osmani</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】开箱即用 Harness vs 自建软件工厂</h3>
+  <p><strong>开箱即用方案（Claude Code / Codex）：</strong>多并行会话 + 内嵌验证的 Spec + 严格边界约束 + 分支保护规则。可直接把 GitHub Issues 扔给 Agent，在 Issue 中写明实现要求与人类介入触发条件。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. 在 Issue 中写清验收标准，严禁修改鉴权、计费、迁移脚本或现有测试断言</p>
+  <p>2. 要求 Agent 在独立分支工作，依次运行 lint、test、build</p>
+  <p>3. 提交 Draft PR 并附上已运行检查项、剩余风险与待人类决策项</p>
+  <p>4. 人类审查后点击 Merge，始终留在控制环路中</p>
+  <p><strong>升级工厂时机：</strong>需要事件驱动任务队列、完全隔离的云端沙箱、显式人工看护，以及可选的线上监控 Agent 自动发现 Bug 并提交新 Issue 时。</p>
+  <div class="pitfall"><strong>避坑：</strong>连人类都会把暗黑模式 Prompt 敲进错误项目窗口，工厂更需将优秀工程文化编码进系统，确保每一步操作都有清晰归属与人类背书。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】全绿灯骗局与理解力债务危机</h3>
+  <p><strong>坑一：测试全绿 ≠ 代码正确</strong></p>
+  <p class="pitfall"><strong>现象：</strong>AI 为跑通测试悄悄修改断言，或删除冲突业务逻辑（如为加 GitHub 登录而删掉付费客户依赖的登录方式）。</p>
+  <p><strong>解法：</strong>极其显式定义允许与禁止行为；重点盯防自动化卡控失效处与长期可维护性妥协处；对不受信任外部输入启用沙箱隔离与分层纵深防御。</p>
+  <p><strong>坑二：理解力债务（Comprehension Debt）</strong></p>
+  <p class="pitfall"><strong>现象：</strong>并发启动多 Agent 产生海量未读代码，合并后几天内发现自己完全无法解释某功能如何实现，最终被迫推倒重做。</p>
+  <p><strong>严重程度：致命。</strong>认知带宽无法随 Agent 数量线性扩容，上下文切换频率远超传统结对编程时代。</p>
+  <p><strong>解法：</strong>要求 Agent 将决策轨迹与解题经验以结构化文档持久化留存；在核心节点亲自验证而非仅凭绿灯 Merge；为高风险任务保留人类深度审查。</p>
+  <div class="quote">「测试通过了，但这绝对不意味着它真正遵循了你的初衷。」—— Addy Osmani</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时用什么方案</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr>
+      <td>日常功能开发、单仓库迭代</td>
+      <td>Claude Code / Codex + Spec + 分支保护</td>
+      <td>零基础设施成本，人类始终掌控 Merge</td>
+      <td>自建分布式工厂</td>
+      <td>验证与交接开销可能使耗时暴涨 2-4 倍却无额外收益</td>
+    </tr>
+    <tr>
+      <td>多 Agent 并发、跨会话任务交接</td>
+      <td>软件工厂 + 显式状态标签队列</td>
+      <td>Label 同时充当队列与并发锁，可暂停与交接</td>
+      <td>无状态多会话裸跑</td>
+      <td>会话争抢同一 Issue，证据无法留存</td>
+    </tr>
+    <tr>
+      <td>核心业务（鉴权/支付/订阅）</td>
+      <td>明灯工厂 + 分级验证预算</td>
+      <td>破坏半径大，必须部署严格测试集与约束</td>
+      <td>黑灯全自动合并</td>
+      <td>「这是 Agent 写的」无法为生产事故开脱</td>
+    </tr>
+    <tr>
+      <td>复活老旧 GitHub 仓库</td>
+      <td>先 Build → 补测试 → 再评估是否值得</td>
+      <td>Agent 能快速写代码，但价值判断仍需人类</td>
+      <td>直接全量现代化重写</td>
+      <td>UI 迁移等会吞噬大量产品与设计心力</td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】原生 Harness vs 软件工厂 vs 黑灯工厂</h3>
+  <table>
+    <tr><th>对比维度</th><th>原生 Harness</th><th>明灯软件工厂</th><th>黑灯全自动工厂</th><th>一句话结论</th></tr>
+    <tr>
+      <td>人类介入点</td>
+      <td>Spec 定义 + 最终 Merge</td>
+      <td>上游意图 + 循环纠偏 + 审查卡点</td>
+      <td>极少或零审查</td>
+      <td>判断力应战略转移至语境、品味与风险</td>
+    </tr>
+    <tr>
+      <td>验证耗时</td>
+      <td>按需手动触发</td>
+      <td>分级预算（快速检查 vs 重度测试）</td>
+      <td>全量验证常跑</td>
+      <td>82 分钟案例中验证占主导，须区分价值延迟与架构内耗</td>
+    </tr>
+    <tr>
+      <td>运行状态管理</td>
+      <td>会话级</td>
+      <td>Success / Flawed / Blocked / Manual 四态</td>
+      <td>仅 Success 可发布</td>
+      <td>须绑定每阶段耗时指标，否则不知缺陷查出成本</td>
+    </tr>
+    <tr>
+      <td>信任与自主权</td>
+      <td>逐任务判断</td>
+      <td>强验证买来信任，信任买来更大自主权</td>
+      <td>全局放权</td>
+      <td>自主权不是全局固定开关，须随风险动态调整</td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】验证预算与人类所有权战略转移</h3>
+  <p><strong>原则：</strong>检查项数量不等于代码质量；追求最高信噪比，有策略地收紧或放宽约束。</p>
+  <p><strong>验证预算分级：</strong>快速检查（Lint、类型检查）在极早期高频运行；重度测试（E2E、变异测试、安全扫描）安排在 Draft PR 前夕或之后。</p>
+  <p><strong>怎么落地：</strong>将工厂运行标记为 Success / Flawed / Blocked / Manual 四态，并与每阶段耗时绑定；人工接管终点应是「人类清楚下一步该做什么」而非「工厂单方面停下」。</p>
+  <p><strong>适用边界：</strong>若连真实世界外部拉力（Pull）都说不出来——谁在渴求这些改进——你不过是在自我感动的抛光自嗨。</p>
+  <div class="highlight"><strong>核心认知转变：</strong>人类亲手敲键盘的比例会断崖下跌，但挑选值得解决的问题、敲定顶层架构、设定质量底线、裁决验证信号可信度、决定证据是否支撑上线——这些所有权永远不会消失。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：全自动软件工厂布道者 / 「Agent 吞吐量至上」派</p>
+  <p class="rebuttal-text">不开工厂你就跟不上时代——当竞争对手用几百个 Agent 24 小时并行出货时，靠几个人类会话手工 Merge 只会被速度碾压，理解力债务是成长阵痛，验证预算可以事后补。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>绝大多数团队不需要复杂软件工厂，Claude Code / Codex + 清晰 Spec + 分支保护已足够走远</li>
+    <li>只有跨 Agent 交接、并发锁、证据留存与审查堵塞自动暂停等痛点才值得建工厂</li>
+    <li>测试全绿可能是骗局，AI 会改断言或删业务逻辑来伪造通过</li>
+    <li>理解力债务是并发 Agent 的致命副作用，决策轨迹必须结构化留存</li>
+    <li>验证需要分级预算，区分价值延迟与工厂架构内耗</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>评估当前痛点：是否真的需要任务队列、交接与并发锁，还是 Spec + Draft PR 就够</li>
+    <li>为下一个 Agent 任务写清验收标准与禁止修改区域（鉴权、计费、迁移、断言）</li>
+    <li>建立验证分级：Lint/类型检查早期跑，E2E 与安全扫描放在 PR 前</li>
+    <li>要求 Agent 输出决策轨迹文档，Merge 前对高风险功能亲自过一遍实现</li>
+    <li>用 Success/Flawed/Blocked/Manual 四态 + 耗时指标审视每次工厂运行</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>软件工程的未来不是人类彻底离开循环，而是判断力经历战略大转移——从逐行看代码转向死守上游业务意图、架构规范、质量基线与最终发布所有权。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
