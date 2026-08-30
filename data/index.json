@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-30",
+    "files": [
+      {
+        "path": "svgs/2026-08-30/kubernetes-warehouse-analogy-explained.svg",
+        "title": "别再死磕 K8s 文档了：一个「亚马逊仓库」的比喻，把 Kubernetes 全部讲透",
+        "source": "https://tonybai.com/2026/08/30/kubernetes-warehouse-analogy-explained/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-29",
     "files": [
       {

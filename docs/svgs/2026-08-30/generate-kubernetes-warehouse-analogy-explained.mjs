@@ -1,0 +1,234 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'kubernetes-warehouse-analogy-explained.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#0369a1,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #0ea5e9}
+.card h3{font-size:22px;font-weight:700;color:#0369a1;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #7dd3fc;border-radius:16px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:12px;color:#0369a1}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6d28d9}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{font-size:16px;line-height:2;opacity:0.95;margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#0369a1;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>别再死磕 K8s 文档了：亚马逊仓库比喻讲透 Kubernetes</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Kubernetes</span>
+  <span class="tag tag-green">期望状态</span>
+  <span class="tag tag-orange">控制面</span>
+  <span class="tag tag-purple">Service 发现</span>
+  <span class="tag tag-red">EndpointSlices</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：如何用「亚马逊仓库」类比把 Kubernetes 从指令式操控还原为「声明期望状态、系统持续闭环纠偏」这一核心逻辑，并据此理解 apiserver、etcd、controller-manager、scheduler、kubelet、kube-proxy 与 EndpointSlices 各自在闭环中的不可替代角色。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0369a1;margin-bottom:12px;text-align:center">K8s 期望状态闭环关系图</h3>
+  <div class="diagram">
+    <div class="node">用户声明<br>Desired State</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">apiserver<br>唯一入口</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">etcd<br>真相账本</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">controller-manager<br>发现差距</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">scheduler<br>分配节点</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">kubelet<br>落地执行</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">kube-proxy<br>流量路由</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">控制面管理集群状态；数据面（Service / Ingress）承载业务流量，二者解耦</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「必须记住十几个组件的通信拓扑才能学会 K8s」。实际上 K8s 的全部本质只有一句话——你声明期望状态，系统持续把实际状态往这个方向拉；每个组件都是为这个闭环服务的角色，而非孤立名词。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】期望状态（Desired State）</h3>
+  <p><strong>是什么：</strong>Kubernetes 的核心哲学——放弃指令式逐台操控，改为声明「我要什么」，由系统自动闭环纠偏。</p>
+  <p><strong>核心机制：</strong>如同定速巡航：设定时速 70 迈后，上坡掉速系统自动加油门，下坡超速系统自动刹车；你写一份 YAML 说「Web 应用跑 5 个副本」，容器崩了拉起新的，节点挂了迁移到健康机器。</p>
+  <p><strong>关键理解：</strong>仓库管理者不会对每台打包机器人下命令，只说「始终有 5 台在运转」——系统负责激活、补位、迁移，你自始至终不直接接触任何一台机器人。</p>
+  <p><strong>典型场景：</strong>Deployment / ReplicaSet 声明副本数；Node Controller 发现节点掉线后触发 Pod 重调度。</p>
+  <p><strong>边界说明：</strong>期望状态只描述「要什么」，不描述「怎么做」；具体调度策略、资源限制、亲和性规则仍需在 Spec 中补充，否则 scheduler 只能按默认策略打分。</p>
+  <div class="quote">「你设定一次目标，K8s 一直帮你守着这个目标——这就是整套系统的全部游戏规则。」</div>
+  <div class="relation"><strong>相关概念：</strong>与指令式运维（SSH 逐台启动容器）相对；与 GitOps（期望状态存 Git、控制器持续同步）一脉相承。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】控制面四件套：apiserver → etcd → controller-manager → scheduler</h3>
+  <p><strong>核心思路：</strong>所有变更必须经过 apiserver 前台，写入 etcd 账本，由 controller-manager 发现差距、scheduler 分配节点，形成管理闭环。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. 用户/控制器向 kube-apiserver 提交 Deployment（经认证 → 授权 → 准入控制三道关卡）</p>
+  <p>2. apiserver 将配置写入 etcd（全局唯一真相来源，仅 apiserver 可直连读写）</p>
+  <p>3. controller-manager 监听变化，发现实际 Pod 数 ≠ 期望副本数，触发创建</p>
+  <p>4. scheduler 对 Pending Pod 执行过滤 → 打分 → 绑定，选定目标 Node</p>
+  <p><strong>选型条件：</strong>任何需要集群级状态一致性的操作都必须走 apiserver；绕开它直接改 etcd 会导致控制器状态不一致。</p>
+  <div class="pitfall"><strong>避坑：</strong>apiserver 挂了整个集群等于瞎了也停了；etcd 无备份则仓库状态彻底丢失——生产环境 etcd 必须多副本集群运行。</div>
+  <div class="highlight"><strong>落地建议：</strong>排查集群故障时先查 apiserver / etcd 健康；任何「组件直连 etcd」的自定义工具都是反模式。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】节点执行层：kubelet + 容器运行时 + kube-proxy</h3>
+  <p><strong>核心思路：</strong>每个 Node 上的 kubelet 是区域主管，调用 CRI 兼容的容器运行时真正启动 Pod；kube-proxy 维护节点级路由规则实现 Service 负载均衡。</p>
+  <p><strong>操作步骤：</strong></p>
+  <p>1. kubelet 监听 apiserver，获取分配给本节点的 Pod 列表</p>
+  <p>2. 调用容器运行时（containerd / CRI-O 等）拉镜像、启动容器</p>
+  <p>3. 执行 liveness / readiness 探针，崩了重启，状态汇报回 apiserver</p>
+  <p>4. kube-proxy 维护规则：「请求打到 Service IP:Port → 转发到健康 Pod IP 之一」</p>
+  <p><strong>对比相邻方法：</strong>kubelet 管 Pod 生命周期；kube-proxy 管流量转发——二者职责不重叠。现代 Ingress Controller 可绕过 kube-proxy 做 Pod 级直连，但 EndpointSlices 仍是端点真相来源。</p>
+  <div class="pitfall"><strong>避坑：</strong>Pod IP 是临时的，崩了重建会换 IP——永远通过 Service 访问，不要硬编码 Pod IP。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Service 发现与大集群 Endpoint 风暴</h3>
+  <p><strong>坑名：</strong>万级 Pod 集群中，单个 Pod 变化触发全量 Endpoints 清单广播，拖垮 apiserver 和每个节点的 kube-proxy。</p>
+  <p><strong>原因：</strong>早期 Endpoints 机制维护一份包含全部 IP 的巨型花名册，任何变动都要重写并分发给每个节点。</p>
+  <p><strong>原文说法：</strong>「在一个拥有一万台机器人的巨型仓库里，如果每次变动都要重写一份一万行的总花名册，再复印分发给每一个节点，那份工作量本身就足以拖垮系统。」</p>
+  <p><strong>解法：</strong>使用 EndpointSlices 把巨型清单拆成多份小分册（每份通常最多 100 个 IP），一台机器人崩了只更新所在分册，其余原封不动。</p>
+  <p><strong>严重程度：</strong>致命（大规模集群必踩，不迁移则 apiserver 会被路由表更新压垮）</p>
+  <div class="highlight"><strong>落地建议：</strong>确认集群已启用 EndpointSlices；Ingress Controller、服务网格、CoreDNS 均依赖它同步活跃端点。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】Labels、Endpoints 与 EndpointSlices 选型</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr>
+      <td>Pod 分组与 Service 匹配</td>
+      <td>Labels + Selectors</td>
+      <td>每台 Pod 戴工牌（如 app: packing-robot），Service 用选择器自动匹配</td>
+      <td>硬编码 Pod 名称列表</td>
+      <td>Pod 重建后名称/IP 都变，列表瞬间失效</td>
+    </tr>
+    <tr>
+      <td>小规模集群（&lt;100 Pod/Service）</td>
+      <td>Endpoints 对象</td>
+      <td>简单直接，kube-proxy 直接消费</td>
+      <td>无特殊处理</td>
+      <td>小规模下 Endpoints 足够，无需过度设计</td>
+    </tr>
+    <tr>
+      <td>大规模集群（千级以上 Pod）</td>
+      <td>EndpointSlices</td>
+      <td>增量更新、解耦广播，apiserver 压力可控</td>
+      <td>继续用 Endpoints</td>
+      <td>单 Pod 变化触发全量清单重写，系统级风暴</td>
+    </tr>
+    <tr>
+      <td>外部公网流量接入</td>
+      <td>云 LB + Ingress Controller</td>
+      <td>ClusterIP 仅集群内有效；公网需 LB 转发到 Ingress，再 Pod 级直连</td>
+      <td>直接暴露 ClusterIP</td>
+      <td>公网路由器无私有 IP 段路由，走不通</td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】控制面 vs 数据面</h3>
+  <table>
+    <tr><th>对比维度</th><th>控制面（Control Plane）</th><th>数据面（Data Plane）</th><th>一句话结论</th></tr>
+    <tr>
+      <td>核心组件</td>
+      <td>apiserver、etcd、scheduler、controller-manager</td>
+      <td>kube-proxy、Ingress Controller、Service Mesh sidecar</td>
+      <td>管理集群状态 ≠ 承载业务流量</td>
+    </tr>
+    <tr>
+      <td>流量路径</td>
+      <td>API 请求、状态同步、调度决策</td>
+      <td>用户 HTTP/gRPC 请求直达 Pod</td>
+      <td>正常用户请求不经过 etcd 和 scheduler</td>
+    </tr>
+    <tr>
+      <td>故障影响</td>
+      <td>apiserver/etcd 挂 → 集群瘫痪</td>
+      <td>kube-proxy 挂 → 单节点 Service 路由失效</td>
+      <td>控制面故障是全局性的，数据面故障可局部容忍</td>
+    </tr>
+    <tr>
+      <td>端点发现</td>
+      <td>controller-manager 维护期望状态</td>
+      <td>EndpointSlices 提供活跃 Pod 注册表</td>
+      <td>即便 Ingress 绕过 kube-proxy，EndpointSlices 仍是端点唯一真相</td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】仓库隐喻的第一性原理</h3>
+  <p><strong>原则：</strong>你只对系统提要求，剩下的事情完全不用管——这就是 K8s 的全部本质。</p>
+  <p><strong>为什么重要：</strong>大多数教程一上来堆术语却不解释「为什么这么设计」，导致学了多遍仍云里雾里；抓住期望状态后，每个组件都「理所当然」。</p>
+  <p><strong>怎么落地：</strong>写 Deployment YAML 声明副本数 → 提交给 apiserver → 观察 Pod 是否自动维持目标数量 → 故意删一个 Pod 验证自动补位 → 通过 Service 而非 Pod IP 访问应用。</p>
+  <p><strong>适用边界：</strong>类比帮助建立直觉，但生产环境仍需深入网络策略、存储、安全上下文、资源配额等细节；仓库故事不能替代官方文档中的 API 契约与版本兼容性说明。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：云原生硬核派 / 「生产不靠比喻」派</p>
+  <p class="rebuttal-text">仓库类比把 K8s 驯化得太温柔了——真实生产里 NetworkPolicy 冲突、CSI 挂载超时、CRD 准入 webhook 级联失败，没有一个能用「打包机器人」解释，直觉懂了照样半夜被 on-call 叫醒。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>K8s 本质只有一句话：声明期望状态，系统持续闭环将实际状态向期望靠拢</li>
+    <li>apiserver 是唯一入口，etcd 是唯一真相来源，二者挂了集群即瘫痪</li>
+    <li>controller-manager 发现差距，scheduler 分配位置，kubelet 落地执行</li>
+    <li>Service + Labels/Selectors 解决 Pod IP 临时性问题；大规模集群必须用 EndpointSlices</li>
+    <li>控制面管集群状态，数据面承载业务流量，Ingress 可绕过 kube-proxy 做 Pod 级直连</li>
+  </ol>
+  <p style="margin-top:20px"><strong>行动清单：</strong></p>
+  <ol>
+    <li>用一份最小 Deployment YAML 声明 3 副本，观察 controller-manager 如何自动维持数量</li>
+    <li>故意删除一个 Pod，验证系统是否自动补位而非手动修复</li>
+    <li>为应用创建 Service，确认通过 Service DNS 访问而非 Pod IP</li>
+    <li>检查集群 EndpointSlices 是否启用，评估当前 Service 规模是否需要迁移</li>
+    <li>画一张自己业务的「控制面 vs 数据面」流量路径图，标注 Ingress 入口</li>
+  </ol>
+  <p style="margin-top:20px"><strong>关键认知转变：</strong>K8s 不是十几个需要死记硬背的组件名词，而是一套围绕「期望状态闭环」设计的角色分工——理解了仓库故事，再回头看架构图，每一个组件都会显得理所当然。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
