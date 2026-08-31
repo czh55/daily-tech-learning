@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-08-31",
+    "files": [
+      {
+        "path": "svgs/2026-08-31/go-hate-where-its-moving-generics-iterators-debate.svg",
+        "title": "「我恨Go现在的样子」：泛型、迭代器杀入语言核心，两百条评论吵翻了Reddit",
+        "source": "https://tonybai.com/2026/08/31/go-hate-where-its-moving-generics-iterators-debate/"
+      }
+    ]
+  },
+  {
     "date": "2026-08-30",
     "files": [
       {
