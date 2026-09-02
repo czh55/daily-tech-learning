@@ -1,0 +1,172 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'fluent-python-author-go-collection-is-comming.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>《Fluent Python》作者深度解读：Go 集合类型家族要「大改版」了</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">提案 #80590</span>
+  <span class="tag tag-green">container/set</span>
+  <span class="tag tag-orange">集合代数</span>
+  <span class="tag tag-purple">maphash.Hasher</span>
+  <span class="tag tag-red">F-bounded 多态</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Go 十六年来缺失原生 Set，提案 #80590 如何把子集判断、差集运算等日常需求从 O(M×N) 双重循环坍缩为 O(M+N) 集合代数，并通过 Hasher 与 F-bounded 抽象为 AI 编程时代提供一套精确的高层词汇。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">Go Collections 提案架构：从手搓 map 到标准库家族</h3>
+  <div class="diagram">
+    <div class="node">业务场景<br>子集/差集/交集</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">container/set.Set<br>map[E]struct{} 具名类型</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">mapset 底层函数<br>maphash.Hasher</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">AbstractSet<br>F-bounded 接口</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">Ramalho 在 GopherUK 2026 演讲《Sets in Modern Go》的核心论点：集合抽象让代码更少、AI 生成更少、你需要读的也更少</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Go 有 map 就够了，Set 只是语法糖」。实际上子集判断、收藏减购物车等场景本质是集合代数运算；用双重循环写不仅慢，还让 AI 生成的代码更难一眼读懂。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】集合代数与业务场景的映射</h3>
+  <p><strong>在讲什么问题：</strong>为什么「商品描述包含所有搜索词」本质是子集判断，「收藏列表去掉已在购物车的」是差集运算。</p>
+  <p><strong>核心机制：</strong>交集对应逻辑合取（and），并集对应析取（or），对称差对应异或（xor）；集合运算与逻辑运算是同一套数学的两张脸。</p>
+  <p><strong>关键理解：</strong>一旦你能用「交集」「差集」「子集」描述需求，无论是自己写还是交给 AI，都比「遍历、判断、标记」的命令式碎碎念更精确。</p>
+  <p><strong>典型场景：</strong>搜索命中判断、收藏与购物车去重、权限集合运算、日志去重。</p>
+  <p><strong>边界说明：</strong>整数集合可用位图做极快位运算（DK 圣经经典段落），但泛型元素集合仍需哈希表支撑常数时间 Contains。</p>
+  <div class="quote">原文：「如果你能一眼看出这其实就是一次子集判断，那这段代码本质上只是集合代数里的一个操作符。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】container/set.Set 上手路径</h3>
+  <p><strong>方法名：</strong>标准库 Set · 标签：Go 1.28 提案、零学习成本迁移</p>
+  <p><strong>核心思路：</strong>Set 本身就是 map[E]struct{} 的具名类型，可与无名 map 互转，len、range、_, ok := s[elem] 语法照旧。</p>
+  <p><strong>操作步骤：</strong>1) set.Of 构造集合 → 2) query.Subset(description) 做子集判断 → 3) favorites.Difference(inCart) 做差集 → 4) 变异方法看返回值 bool 判断是否真改了集合</p>
+  <p><strong>命名约定：</strong>不带 With 的方法返回新集合（Intersection）；带 With 后缀原地修改（IntersectionWith）——有望成为标准库集合 API 通用约定。</p>
+  <div class="highlight"><strong>落地建议：</strong>关注 Go issue #80590 讨论进展；当前 CL 尚未合并主干，可用 vendor 目录提取 CL 做实验，但以官方最终发布 API 为准。</div>
+  <div class="quote">原文：「学习成本几乎为零——它本身就是 map[E]struct{} 的具名类型。」</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】三种集合实现怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>可比较元素的日常 Set</td><td>container/set.Set</td><td>具名类型+集合代数方法，与 map 互转</td><td>继续手搓 map[T]struct{}</td><td>缺 Subset/Difference 等语义，AI 也难生成一致代码</td></tr>
+    <tr><td>不可比较键/自定义等价</td><td>container/hash.Set + Hasher</td><td>打破 map 键必须 == 的限制</td><td>强行序列化当键</td><td>性能差且易出等价性 bug</td></tr>
+    <tr><td>存量代码渐进迁移</td><td>container/mapset 函数包</td><td>返回裸 map[E]struct{}，算法复用</td><td>立刻全量重写</td><td>Of 构造器返回类型不一致，迁移需分阶段</td></tr>
+    <tr><td>需要插入顺序</td><td>有序 Map（提案第 7 项）</td><td>保留遍历顺序</td><td>用 slice 模拟 Set</td><td>Contains 退化为 O(n)</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】双重循环 vs 集合代数 vs 位图</h3>
+  <table>
+    <tr><th>维度</th><th>嵌套循环</th><th>container/set</th><th>位图 bitset</th><th>一句话结论</th></tr>
+    <tr><td>时间复杂度</td><td>O(M×N)</td><td>O(M+N)（哈希 Contains）</td><td>O(1) 位运算</td><td>元素可哈希时集合代数碾压循环</td></tr>
+    <tr><td>表达力</td><td>命令式、易写错</td><td>声明式、语义直达</td><td>仅适用整数域</td><td>读代码和让 AI 写代码都更省力</td></tr>
+    <tr><td>AI 协作</td><td>生成冗长难审</td><td>高层词汇精确</td><td>场景窄</td><td>Ramalho 强调 agent 写的代码你终究要读</td></tr>
+    <tr><td>适用边界</td><td>极小数据可接受</td><td>通用可比较元素</td><td>密集整数集合</td><td>别用小数据借口拒绝抽象</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】提案阶段的现实陷阱</h3>
+  <p><strong>坑名：</strong>把未合并 CL 当稳定 API 上生产</p>
+  <p><strong>原因：</strong>提案 #80590 仍在变更列表中，方法签名、命名随时调整。</p>
+  <p><strong>原文说法：</strong>「以上代码目前都还没有合并，随时可能变化。」</p>
+  <p><strong>解法：</strong>实验用 vendor 提取 CL；生产等待 Go 1.28 官方发布并锁定版本。</p>
+  <p><strong>严重程度：</strong>致命——API 不兼容会导致升级噩梦。</p>
+  <div class="pitfall">
+    <strong>设计不一致信号：</strong>set.Of 返回具名 Set，mapset 构造器返回裸 map[E]struct{}；官方示例 Hasher 用 ToLower 做 Hash 却用 EqualFold 做 Equal——对非 ASCII 语言可能不等价，需向 Go 团队反馈。
+  </div>
+  <div class="pitfall">
+    <strong>冯诺依曼瓶颈：</strong>只增删查的「瘦 API」让人习惯一次搬一个元素；集合代数是对抗这种命令式思维的方向，但别指望一个 Set 解决所有数据结构问题。
+  </div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Hasher 与 F-bounded 的设计哲学</h3>
+  <p><strong>原则：</strong>哈希相等的对象必须真相等；Hasher 让不可比较类型也能安全进集合。</p>
+  <p><strong>为什么重要：</strong>大小写不敏感字符串集、含 slice 字段的结构体，过去无法用原生 map 当键。</p>
+  <p><strong>怎么落地：</strong>实现 Hash+Equal → hash.NewSet/NewMap；CaseInsensitiveHasher 是官方示例模板。</p>
+  <p><strong>F-bounded 边界：</strong>AbstractSet[E, S AbstractSet[E,S]] 让交集等方法返回「与调用者同型的集合」——写法绕，但是表达「返回自身类型」的唯一干净方式。</p>
+  <div class="relation">与 Java Enum&lt;E extends Enum&lt;E&gt;&gt; 同构：类型理论合法，人类阅读痛苦，但工程上必要。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Go 极简主义守旧派 · 「我恨 Go 现在的样子」</p>
+  <p class="rebuttal-text">每多一个 container 子包和 F-bounded 接口，Go 就向 Java/C++ 特性膨胀迈进一步——语言本该保持小而美，而不是用标准库集合讨好 Python 难民。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>提案 #80590 一次性带来 Hasher、hash.Map/Set、container/set、mapset、有序 Map、新版 heap 共七项，填补 Go 十六年无原生 Set 的空白。</li>
+    <li>container/set.Set 即 map[E]struct{} 具名类型，Subset/Difference 等把 O(M×N) 循环坍缩为 O(M+N)。</li>
+    <li>maphash.Hasher 突破可比较限制；F-bounded 抽象接口为集合家族定规矩，目前未导出、仍在验证。</li>
+    <li>集合代数是跨语言高层词汇，对 AI 编程助手下指令尤其友好——精确描述比命令式循环更省代码、更省阅读成本。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>订阅 Go issue #80590，跟踪 CL 合并与 API 最终形态。</li>
+    <li>审视代码库中的双重循环「包含/去重」逻辑，标注哪些可改写为子集/差集/交集。</li>
+    <li>若有自定义等价关系需求，提前阅读 Go 1.27 已落地的 maphash.Hasher 文档。</li>
+    <li>给 AI 下需求时改用「求 A 与 B 的交集」「判断 query 是否为 description 的子集」等集合语言。</li>
+    <li>观看 Ramalho GopherUK 2026 演讲《Sets in Modern Go》获取一手设计语境。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>「没有 Set 的 Go」不是永恒特征——即将到来的标准库集合家族，标志 Go 从手搓 map 时代进入可与 JavaScript ES2025 Set 方法集对标的集合代数时代，但一切仍以官方合并发布为准。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
