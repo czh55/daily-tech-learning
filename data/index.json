@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-04",
+    "files": [
+      {
+        "path": "svgs/2026-09-04/rust-function-overloading-experiment-nightly-splat.svg",
+        "title": "Rust官方宣布启动函数重载实验，一个特性打通 C++ 互操作最后一公里",
+        "source": "https://tonybai.com/2026/09/04/rust-function-overloading-experiment-nightly-splat/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-03",
     "files": [
       {

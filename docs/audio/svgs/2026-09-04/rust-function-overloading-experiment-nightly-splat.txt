@@ -1,0 +1,133 @@
+欢迎收听每日技术学习语音讲解。本期主题，Rust官方宣布启动函数重载实验，一个特性打通 C++ 互操作最后一公里。标签包括Rust Nightly、C++ 互操作、#[rustc_splat]、函数重载。本次讲解预计时长 约 15 到 16 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Rust 调用 C++ 重载函数时为何长期陷入「元组包装 + 手动改名」的命名地狱，以及官方 splat 实验如何用语法脱糖打通互操作最后一公里——而不复刻 C++ 的重载解析规则。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Stable，元组 + trait，hypot((2,3,6))，然后Nightly splat，#[rustc_splat]，hypot(2,3,6)，然后Shiny Future，#[overload]，编译器幕后处理，然后C++ FFI，Crubit/cxx/bindgen
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「Rust 要引入和 C++ 一模一样的函数重载」。官方明确不复刻 C++ ADL 等解析规则——目标是「每个 C++ 函数可被调用」，必要时允许显式类型转换或消歧标记，而非语法完全对齐。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：极简主义 Rust 派 · 「trait 已经够用」的 longtime Gopher 转 Rustacean
+
+为 C++ 互操作开重载口子，会在 coherence 边界上持续消耗语言团队带宽——trait 曲线救国虽丑，但至少不会把 Rust 拖向 Java/C++ 式特性膨胀。
+
+接下来，第四部分，【概念拆解卡】#[rustc_splat] 与「语法脱糖」。
+
+在讲什么问题，C++ 重载函数在 Rust 侧为何必须打包成元组，以及 splat 如何消除这一层括号。
+
+核心机制，参数类型仍是元组（如 (c_double, c_double, c_double)），但 #[rustc_splat] 允许调用方写成 hypot(2.0, 3.0, 6.0)——编译器把独立实参「打散」传入，底层 trait 分派与 stable 完全一致。
+
+关键理解，splat 不引入新类型系统能力，是「调用表面语法」的改进；C++ 库每增删一个重载，绑定工具不必再手动 func1/func2 改名。
+
+典型场景，通过 cpp! 宏调用 std::hypot 的 2 参数与 3 参数重载版本。
+
+边界说明，2026-07-31 起进入 Nightly，无 RFC、无稳定性承诺，随时可能变更或撤销；部分重载功能仍被排除在实验范围外。
+
+原文：「类型推导和类型检查，仍然与 stable Rust 下的重载完全一致。」
+
+接下来，第五部分，【方法/工具卡】用 splat 调用 C++ 重载 hypot。
+
+方法名：HypotArgs trait + splat 网关 · 标签：C++ FFI、Nightly 实验
+
+核心思路：定义参数集合 trait 约束元组类型，每种重载组合单独实现 call_hypot，网关函数标注 splat 后对外暴露自然调用语法。
+
+操作步骤，1) 启用 #![feature(splat, tuple_trait)] ，得到 2) 定义 HypotArgs: Tuple 及 call_hypot ，得到 3) 为 2 参数/3 参数元组分别 impl ，得到 4) 网关 fn hypot<Args: HypotArgs>(#[rustc_splat] args: Args) ，得到 5) 各 impl 内用 cpp! 调用真实 C++ 函数
+
+选型条件，需要调用 C++ 重载 API、且不愿维护手动改名的绑定层时优先试用 splat；纯 Rust 项目可继续用元组 trait 方案。
+
+原文对比：旧写法 hypot((2.0, 3.0, 6.0)) ，得到 新写法 hypot(2.0, 3.0, 6.0)。
+
+落地建议：升级最新 Nightly；克隆 rustfoundation/overloading-examples 跑通示例；互操作工具作者可试用 rust-foundation/overloading-macros 降低样板代码。
+
+接下来，第六部分，【跨概念对比表】Stable 伪重载 vs splat vs 未来 #[overload]。
+
+调用语法，必须套括号 foo((1,2))，独立实参 foo(1,2)，像原生方法一样自然，违和感主要在括号，不在分派
+
+类型系统，元组 impl 分派，相同底层机制，编译器自动生成 trait/splat，splat 是脱糖，不是新语义
+
+运算符重载，Add/Neg 等 trait，不涉及，可能仍独立演进，运算符是另一类「重载」
+
+稳定性，Stable，实验性、可能 ICE，远期、形态未定，生产绑定层需评估风险
+
+适用范围，纯 Rust 也可，互操作驱动，倾向先限 extern 块，原生 Rust 重载可能是独立议题
+
+接下来，第七部分，【决策/选型表】何时用 splat、何时坚持 stable 方案。
+
+生成 C++ 绑定（Crubit/cxx/bindgen），跟踪 splat 实验 + overloading-macros，C++ API 迭代不再强制 Rust 侧破坏性改名，继续全手动 func1/func2，维护成本随重载数量线性爆炸
+
+纯 Rust 库多签名 API，继续 trait + 元组或不同函数名，无 FFI 痛点，stable 足够，强上 Nightly splat，引入不稳定编译器依赖
+
+生产环境交付，Stable + 现有绑定工具，无稳定性承诺，直接依赖 splat 上生产，特性可能随时移除
+
+编译器/工具链开发，Nightly 试用 + Zulip 反馈，实验使命是摸类型系统边界与诊断质量，只读博客不跑示例，边界 bug 需社区上报（F-splat 标签）
+
+接下来，第八部分，【心法/原则卡】四条设计公理。
+
+原则，重载应是 Rust 现有语义的自然延伸，而非另起炉灶；FFI 调用要简单；维护 C++ 侧可维护性；选出开发者预期的重载。
+
+为什么重要，Rust trait coherence 比 C++ 严格——理论上冲突的重载在 C++ 可共存，Rust 编译期直接拒绝；强行对齐 C++ 规则会让 Rust 变得不像 Rust。
+
+怎么落地，接受「每个 C++ 函数可被调用」而非「与 C++ 完全相同方式调用」；必要时显式转换或消歧标记；互操作工具按四条公理设计绑定生成策略。
+
+适用边界，不照搬 C++ ADL；不同语言重载习惯可能互相矛盾——Rust 需兼容多种外语场景。
+
+原文底线：「每一个 C++ 函数都应该可以被调用，但不代表它必须以和 C++ 完全相同的方式被调用。」
+
+接下来，第九部分，【避坑清单卡】splat 实验期已知限制。
+
+坑名，把 splat 当作已稳定语言特性上生产
+
+原因，无 RFC、无稳定性承诺，语法 #[rustc_splat] 被团队称为权宜之计。
+
+解法，仅在 Nightly 试验；关注 Inside Rust 博客与 #t-lang/interop 频道；绑定工具做 feature gate。
+
+严重程度，致命——特性撤销会导致构建中断。
+
+rustdoc 展示不稳定：8 月 12 日起 splat 参数显示为省略号「…」而非参数名，格式可能再变——文档生成流水线勿硬编码展示。
+
+函数指针 splat 刚合并：遇 ICE 应升级最新 Nightly，而非回退到旧版 workaround。
+
+假设 Rust 会全面开放原生重载：团队倾向先把能力限 extern 块；扩展到原生 Rust 可能是永不发生的独立议题。
+
+期待完全复刻 C++ 重载解析：trait 一致性规则决定了 Rust 不可能 1:1 移植 C++ 行为——应设计显式消歧而非假设「和 C++ 一样选就对了」。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Rust 官方首次系统探索函数重载，由 Rust-C++ Interop Initiative（谷歌资助）驱动，2026-08-19 官宣、7 月 31 日起 Nightly 可试用。
+
+#[rustc_splat] 实现语法脱糖：调用 hypot(2,3,6) 替代 hypot((2,3,6))，底层 trait 分派不变。
+
+四条设计公理划定边界：温和延伸、简化 FFI、维护 C++ 可维护性、选出预期重载——不复刻 C++ ADL。
+
+远期 #[overload] 可能让 trait/元组/splat 全部编译器幕后处理，但形态与是否扩展到原生 Rust 仍为时过早。
+
+对 Crubit、cxx、autocxx、bindgen 等绑定生态，这是近年来最值得跟踪的语言级信号。
+
+互操作工具维护者：跟踪 splat 与 overloading-macros，评估绑定生成策略改造。
+
+在 Nightly 上运行 rustfoundation/overloading-examples 或 Rust Playground 最小示例，亲手验证调用链。
+
+生产项目保持 Stable，对 splat 做 feature flag 隔离，勿无评估直接依赖。
+
+遇到 ICE 或边界 case 到 Rust Zulip #t-lang/interop 反馈，帮助团队完善 F-splat 诊断。
+
+阅读 Inside Rust 原文与 Project Goals 文档，理解实验使命是摸边界而非定最终语法。
+
+总结：
+
+行动清单：
+
+关键认知转变：Rust 并非突然「变成 C++」——splat 是互操作导向的语法糖，价值在于把「重载」从 trait 边缘用法提升为语言级问题；真正被凿开的，是 C++ 绑定层十余年的命名地狱，而非 Rust 核心哲学本身。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
