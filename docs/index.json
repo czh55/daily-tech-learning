@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-09-05",
+    "files": [
+      {
+        "path": "svgs/2026-09-05/deepseek-harness-agent-presets.svg",
+        "title": "DeepSeek Harness 入门很简单（二）——DeepSeek Harness通用设置及Agent预设详解",
+        "source": "https://juejin.cn/post/7681673560188256271"
+      },
+      {
+        "path": "svgs/2026-09-05/how-to-handle-errors-in-go.svg",
+        "title": "JetBrains 官方深度指南：如何在 Go 中优雅地处理错误？从底层原理到现代最佳实践",
+        "source": "https://tonybai.com/2026/09/05/how-to-handle-errors-in-go/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-04",
     "files": [
       {
