@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-06",
+    "files": [
+      {
+        "path": "svgs/2026-09-06/go-1-27-release-party-insider-story.svg",
+        "title": "Go 1.27 Release Party 实录：泛型方法为什么「憋」了五年？Go核心团队罕见自曝内幕",
+        "source": "https://tonybai.com/2026/09/06/go-1-27-release-party-insider-story/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-05",
     "files": [
       {
