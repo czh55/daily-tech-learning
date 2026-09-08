@@ -1,0 +1,127 @@
+欢迎收听每日技术学习语音讲解。本期主题，两年攻坚、11 个子任务闭环，Go 终于把 HTTP/2 这个「寄养」十年的孩子接回了标准库。标签包括Go 1.27、net/http、HTTP/2、存量重构。本次讲解预计时长 约 14 到 15 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Go 自 1.6 起「透明支持」HTTP/2 却长期把实现寄养在 golang.org/x/net/http2，这种架构积累了哪些技术债，Go 团队如何用 11 个子任务历时两年把真源迁回标准库，以及普通开发者现在能直接用到哪些原生 API。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：寄养架构，x/net + bundle，然后主线一，配置 API 暴露，然后主线二，代码物理搬家，然后主线三，x/net 体面退休
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「Go 早就原生支持 HTTP/2，这次迁移只是搬家，对业务没影响」。实际上过去十年标准库只是通过 bundle 工具把 x/net 压平成 h2_bundle.go 塞进来——安全补丁要倒灌、HTTP/1 与 HTTP/2 无法原子改动、调参还得单独 import x/net，这些隐性成本一直在累积。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：保守派基础设施维护者 · 「双实现更稳」派
+
+把十年验证过的 x/net 实现收进标准库并废弃旧 API，等于强迫全生态跟上一个 release 节奏——大规模内核迁移的回归风险，远比多维护一个外部包更致命。
+
+接下来，第四部分，【概念拆解卡】HTTP/2「寄养架构」与导入环困境。
+
+在讲什么问题，Go 从 2016 年 Go 1.6 起就透明支持 HTTP/2，但实现代码长期不在标准库仓库，而是住在 golang.org/x/net/http2。
+
+核心机制，x/net/http2 本身依赖 net/http，标准库若直接反向 import 会形成导入环。解决方案是用 bundle 工具把整个 http2 包打包压平成单文件 h2_bundle.go，塞进 net/http 一起编译——谁都不敢手改这份生成文件。
+
+关键理解，用户调用 http.ListenAndServe 享受「自动挡」HTTP/2 升级，背后却是跨仓库、跨发布节奏的双轨维护。
+
+典型场景，任何使用 net/http 的 Go 服务，TLS 握手后自动协商 HTTP/2。
+
+边界说明，寄养架构撑住了十年生态升级，但安全补丁回合并、版本矩阵膨胀、配置与实现绑定等问题在 Go 1.26 之前已不可持续。
+
+原文：「标准库要用它，得先经过一道特殊工序：用一个叫 bundle 的代码生成工具，把整个 http2 包打包压平成一份巨大的单文件 h2_bundle.go。」
+
+接下来，第五部分，【跨概念对比表】寄养架构 vs Go 1.27 标准库真源。
+
+代码真源，golang.org/x/net/http2，net/http/internal/http2，角色彻底反转
+
+安全补丁，先改 x/net，再倒灌回 net/http，同一 release cycle 原子修复，响应速度明显加快
+
+配置 HTTP/2，必须 import x/net 的 ConfigureServer，srv.HTTP2 = &http.HTTP2Config{...}，零额外依赖
+
+h2c 明文 HTTP/2，依赖 x/net/http2/h2c 补丁包，Protocols.SetUnencryptedHTTP2(true)，原生支持
+
+原子改动，HTTP/1 与 HTTP/2 分处两仓库，同一仓库内联修改，大重构成为可能
+
+接下来，第六部分，【方法/工具卡】迁移到标准库原生 HTTP/2 配置。
+
+方法名：http.HTTP2Config + http.Protocols · 标签：Go 1.24+ 配置 / Go 1.27 真源
+
+核心思路：不再 import golang.org/x/net/http2，直接在 http.Server 或 http.Transport 上声明协议与 HTTP/2 参数。
+
+操作步骤，1) 调整最大并发流：在 Server 上设置 HTTP2.MaxConcurrentStreams ，得到 2) 启用 h2c：Protocols.SetHTTP1(true) + SetUnencryptedHTTP2(true) ，得到 3) 检查项目是否仍直接 import x/net/http2 的 Transport/Server ，得到 4) 评估迁移到 net/http 原生能力 ，得到 5) 升级 Go 1.27 享受真源实现
+
+落地建议：老代码无需改动即可在 Go 1.27 运行；若曾用 http2.ConfigureServer，可逐步替换为 srv.HTTP2 字段，删除 x/net 依赖。
+
+避坑：仍直接 import x/net/http2 使用 Transport 或 Server 的项目不会立刻报错，但官方已明确废弃（#78064），应尽早评估迁移。
+
+接下来，第七部分，【决策/选型表】何时需要显式配置 HTTP/2。
+
+默认 HTTPS 服务，零配置，http.ListenAndServe，Go 自动 TLS 协商升级 HTTP/2，手动引入 x/net，多余依赖且将被废弃
+
+限制并发流数量，srv.HTTP2.MaxConcurrentStreams，标准库原生字段，http2.ConfigureServer，绑定旧实现、额外 import
+
+内网 h2c 明文，Protocols.SetUnencryptedHTTP2，Go 1.24+ 原生支持，x/net/http2/h2c，补丁包角色，维护成本高
+
+存量依赖 x/net Transport，先保持运行，规划迁移，Go 1 兼容性承诺保障，永久不升级，API 已标记废弃
+
+接下来，第八部分，【避坑清单卡】HTTP/2 迁移与使用陷阱。
+
+坑名，以为「透明支持」等于「实现就在标准库里」
+
+原因，十年寄养架构掩盖了跨仓库维护的真实复杂度。
+
+解法，了解 bundle 机制与 #67810 迁移背景，按 Go 版本选择正确配置 API。
+
+严重程度，小心（影响排障与升级决策）
+
+手改 h2_bundle.go：生成文件不可手动编辑，任何定制都应通过标准库 API 或等待官方合入。
+
+配置与实现绑定：旧模式下 import x/net 配置会整个替换标准库内置实现——现在已解耦。
+
+接下来，第九部分，【心法/原则卡】大型存量系统重构范本。
+
+原则，先公开摊牌讲清「为什么要改」，再拆成可独立评审、独立合入、互不阻塞的小任务。
+
+为什么重要，HTTP/2 是所有人都在用、谁都不敢乱动的核心组件——Go 团队用 Discussion #60746 提案 + Issue #67810 的 11 个子任务，历时两年逐个击破，而非一次性大爆炸重写。
+
+怎么落地，1) 暴露配置能力让用户先受益 ，得到 2) 物理搬家协议实现 ，得到 3) 旧包体面退休变包装壳 ，得到 4) 全程遵守 Go 1 兼容性承诺。
+
+适用边界，适用于维护「改不动又不敢不改」的核心模块；小项目可直接享受结果，不必复刻全流程。
+
+原文：「issue 最后一条评论，只有两个字：And done.——干净利落，正如整个工程本身。」
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Go HTTP/2 十年「寄养」在 x/net，通过 bundle 规避导入环，积累了安全补丁倒灌、无法原子改动、配置绑定实现四大痛点。
+
+跟踪 Issue #67810 将迁移拆为 11 个子任务：暴露配置 API ，得到 代码物理搬家至 net/http/internal/http2 ，得到 x/net 变包装壳，Go 1.27 正式收官。
+
+普通开发者无需改代码即可享受兼容保障；配置 MaxConcurrentStreams、h2c 等现可用标准库原生 API。
+
+仍直接 import x/net/http2 Transport/Server 的项目应尽早评估迁移，相关 API 已明确废弃。
+
+整个项目是「如何优雅重构核心组件」的操作手册：提案公开、任务拆解、进度透明、兼容性优先。
+
+检查项目 go.mod 是否仍依赖 golang.org/x/net/http2 做配置或自定义 Transport。
+
+将 http2.ConfigureServer 调用迁移为 srv.HTTP2 = &http.HTTP2Config{...}。
+
+若需 h2c，改用 srv.Protocols.SetUnencryptedHTTP2(true) 替代 x/net/http2/h2c。
+
+规划升级到 Go 1.27+，享受标准库真源带来的更快安全补丁响应。
+
+阅读 #67810 子任务列表，学习大型开源项目拆解不可触碰核心的工程方法。
+
+总结：
+
+行动清单：
+
+关键认知转变：「Go 早就支持 HTTP/2」不等于「实现一直在标准库里」——这次迁移的本质是把十年技术债还清，让网络栈回归单一真源、单一发布节奏。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

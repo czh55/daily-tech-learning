@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-09-08",
+    "files": [
+      {
+        "path": "svgs/2026-09-08/go-127-http2-move-into-std.svg",
+        "title": "两年攻坚、11 个子任务闭环，Go 终于把 HTTP/2 这个「寄养」十年的孩子接回了标准库",
+        "source": "https://tonybai.com/2026/09/08/go-127-http2-move-into-std/"
+      },
+      {
+        "path": "svgs/2026-09-08/pretraining-data-governance.svg",
+        "title": "大模型训练全流程实战指南实战篇（十五）——预训练数据治理",
+        "source": "https://juejin.cn/post/7682742193401888794"
+      }
+    ]
+  },
+  {
     "date": "2026-09-07",
     "files": [
       {

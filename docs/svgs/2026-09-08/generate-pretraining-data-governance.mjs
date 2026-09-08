@@ -1,0 +1,173 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'pretraining-data-governance.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#065f46,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #059669}
+.card h3{font-size:22px;font-weight:700;color:#065f46;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:12px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:#a78bfa;color:#6b21a8}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#065f46,#059669);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#065f46;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#065f46}`;
+
+const body = `
+<h1>大模型训练全流程实战指南实战篇（十五）——预训练数据治理</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">预训练数据</span>
+  <span class="tag tag-blue">MinerU</span>
+  <span class="tag tag-orange">数据清洗</span>
+  <span class="tag tag-purple">多模态描述</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：采集到的异构原始语料（论文 PDF、社区文章、漏洞 JSON 等）如何经过 MinerU 解析、多模态图片描述、去重、质量过滤、隐私脱敏五道工序，炼成可直接用于大模型预训练的干净 Markdown 数据集。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#065f46;margin-bottom:12px;text-align:center">预训练数据治理两大阶段五道工序</h3>
+  <div class="diagram">
+    <div class="node">异构原料<br>PDF/docx/网页</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">MinerU 解析<br>统一 Markdown</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Qwen-VL<br>图片描述</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">去重</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">质量过滤</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">隐私脱敏<br>可用语料</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">阶段一：结构化解析 | 阶段二：清洗与脱敏（顺序不可颠倒）</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「OCR 转成 Markdown 就能直接训练」。实际上社区爬取数据混着转载重复、广告导流、真实 IP 和邮箱；论文中的攻击链图、拓扑截图若不做多模态描述，纯文本模型会丢失关键知识；跳过脱敏还可能让模型在回答中「背出」受害单位资产信息。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】预训练数据治理流水线</h3>
+  <p><strong>在讲什么问题：</strong>数据采集只是第一步，形态各异的「原料」无法直接喂给模型，必须搭建完整加工流水线。</p>
+  <p><strong>核心机制：</strong>先用文档解析工具统一转 Markdown（保留标题层级便于分块），再经去重、质量过滤、隐私脱敏三道清洗，最后按需分块导出。</p>
+  <p><strong>关键理解：</strong>Markdown 是理想中间格式——章节语义可指导后续切分与清洗；图片信息需通过多模态模型「翻译」为文本才能被纯语言模型消化。</p>
+  <p><strong>典型场景：</strong>网络安全垂直大模型、领域预训练、企业私有语料库建设。</p>
+  <p><strong>边界说明：</strong>流水线解决的是通用预训练语料治理；指令微调/SFT 格式转换是下一篇文章（LLaMAFactory 增量预训练）的范畴。</p>
+  <div class="quote">原文：「如何将这些纷繁复杂的原始素材，转化为标准、干净的预训练数据集呢？答案在于搭建一条完整的数据加工流水线。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】MinerU 解析 + Qwen-VL 图片描述</h3>
+  <p><strong>方法名：</strong>MinerU + qwen3.8-flash 多模态描述 · 标签：文档解析 / 图文转文本</p>
+  <p><strong>核心思路：</strong>MinerU 将 PDF/docx 统一解析为 Markdown（公式转 LaTeX、双栏论文阅读顺序正确）；对 images/ 目录中的图片批量调用多模态模型生成描述，用【图片内容：...】替换原始 ![](images/xxx.jpg) 引用。</p>
+  <p><strong>操作步骤：</strong>1) conda create -n mineru &amp;&amp; pip install -U "mineru[all]" → 2) mineru -p ./raw_docs -o ./raw_output（GPU 有限加 -b pipeline）→ 3) 正则提取 Markdown 图片引用 → 4) base64 编码调用 qwen3.8-flash 生成描述 → 5) 批量替换并写回 .md 文件</p>
+  <div class="highlight"><strong>落地建议：</strong>GPU 资源紧张时用 pipeline 模式；批量图片描述加 0.5s 限速避免 API 限流；生成后按 5%~10% 抽检图文一致性。</div>
+  <div class="pitfall"><strong>避坑：</strong>多模态模型会「看图说话说过头」编造图中不存在的细节——关键报告（如威胁分析攻击链图）需全量人工复核，宁可少几张图描述也不让错误信息混入训练集。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】精确去重 vs 近似去重</h3>
+  <table>
+    <tr><th>对比维度</th><th>精确去重（MD5）</th><th>近似去重（MinHash+LSH）</th><th>一句话结论</th></tr>
+    <tr><td>适用场景</td><td>原样复制的转载</td><td>改标题、换导语的洗稿</td><td>两级策略互补</td></tr>
+    <tr><td>速度</td><td>极快，哈希判定</td><td>线性时间复杂度</td><td>先精确再近似</td></tr>
+    <tr><td>核心工具</td><td>hashlib.md5</td><td>jieba + datasketch</td><td>工业级实用组合</td></tr>
+    <tr><td>关键参数</td><td>无</td><td>num_perm=128, threshold=0.7~0.9</td><td>小样本先调参</td></tr>
+    <tr><td>传递性重复</td><td>不适用</td><td>需并查集合并关联项</td><td>LSH 召回后二次 jaccard 验证</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】三道清洗工序的工具选择</h3>
+  <table>
+    <tr><th>工序</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>去重</td><td>MD5 精确 + MinHash LSH 近似</td><td>覆盖原样复制与洗稿两类转载</td><td>仅 MD5</td><td>改几个字就失效</td></tr>
+    <tr><td>质量过滤</td><td>规则过滤为主，模型二次判断存疑项</td><td>规则快且零成本，模型慢且贵</td><td>全量模型过滤</td><td>速度慢、成本高</td></tr>
+    <tr><td>隐私脱敏</td><td>正则基础脱敏 + 模型识别叙述句实体</td><td>IP/邮箱/口令正则覆盖广，人名账号需模型</td><td>仅正则</td><td>漏掉「运维账号 admin_zhang」类叙述</td></tr>
+    <tr><td>文档解析</td><td>MinerU（学术论文/固定版式 PDF）</td><td>公式表格还原出色，支持 CPU pipeline</td><td>手工复制粘贴</td><td>无法规模化</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】数据治理常见陷阱</h3>
+  <p><strong>坑名：</strong>多模态图片描述不做一致性检验</p>
+  <p><strong>原因：</strong>模型会编造图中不存在的细节，错误描述进入训练集后难以追溯。</p>
+  <p><strong>解法：</strong>批量生成后 5%~10% 抽检；关键报告全量人工过一遍。</p>
+  <p><strong>严重程度：</strong>致命（污染训练集）</p>
+  <div class="pitfall"><strong>跳过隐私脱敏：</strong>安全文章含真实 IP、邮箱、内网主机名，模型可能在回答中泄露敏感内容。</div>
+  <div class="pitfall"><strong>模型过度脱敏：</strong>脱敏时误伤 CVE 编号、版本号等技术信息——prompt 中明确保留非敏感技术术语。</div>
+  <div class="pitfall"><strong>质量过滤太松：</strong>社区数据混着广告、导航栏残留——宁可错杀少量低质文本，也不让噪声进入训练集。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】宁可错杀也不放过噪声</h3>
+  <p><strong>原则：</strong>质量过滤的目标是「宁可错杀少量低质文本，也不让噪声进入训练集」；脱敏后按 5%~10% 抽检确认无漏网之鱼且无过度脱敏。</p>
+  <p><strong>为什么重要：</strong>同一漏洞通告被十几个网站转载，不去重会挤占学习配额并过拟合高频重复文本；低质广告和敏感实体则直接损害模型可用性与合规性。</p>
+  <p><strong>怎么落地：</strong>规则过滤（有效字数、特殊字符占比、广告关键词）覆盖明显噪声；存疑文本才调用 qwen-plus 做 0/1 判断；脱敏分正则 + 模型两段式。</p>
+  <p><strong>适用边界：</strong>适用于领域预训练语料治理；通用互联网大规模爬取可在此基础上扩展上百条规则。</p>
+  <div class="quote">原文：「经过以上三道工序——去重、质量过滤、隐私脱敏，Markdown 文档就完成了从原料到有效数据集的蜕变。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：数据规模至上派 · 「先训再说」倡导者</p>
+  <p class="rebuttal-text">五道工序下来八成语料被滤掉、图片描述还要人工抽检——治理成本远超训练本身，对小团队而言直接买现成清洗数据集更划算。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>预训练数据治理分两大阶段：结构化解析（MinerU → Markdown + 多模态图片描述）与清洗脱敏（去重 → 质量过滤 → 隐私脱敏）。</li>
+    <li>MinerU 是异构文档统一转 Markdown 的首选工具，pipeline 模式可在 CPU 环境运行；图片信息必须用多模态模型翻译为文本。</li>
+    <li>去重采用 MD5 精确 + MinHash LSH 近似两级策略，并查集处理传递性重复，threshold 建议 0.7~0.9 小样本调参。</li>
+    <li>质量过滤以规则为主（字数、特殊字符、广告关键词），模型仅判断存疑项；隐私脱敏分正则 + 模型两段式，保留 CVE 等技术信息。</li>
+    <li>多模态描述和脱敏结果均需 5%~10% 抽检，关键报告全量人工复核。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>创建 MinerU conda 环境，对 raw_docs 目录执行 mineru -p 批量解析。</li>
+    <li>配置百炼 API Key，编写正则批量提取图片引用并调用 qwen3.8-flash 生成描述。</li>
+    <li>实现 exact_dedup + MinHash LSH 两级去重，在小样本上调试 threshold。</li>
+    <li>编写 quality_filter 规则函数，对存疑文本接入 qwen-plus 二次判断。</li>
+    <li>实现 desensitize 正则 + model_desensitize 模型脱敏，抽检 5%~10% 确认合规。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>数据采集完成只是起点——没有治理流水线的「原料」比没有数据更危险，因为噪声和敏感信息会静默污染整个训练过程。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5775" viewBox="0 0 1320 5775">
+  <foreignObject x="0" y="0" width="1320" height="5775">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#1e40af}</style>
+      
+<h1>两年攻坚、11 个子任务闭环，Go 终于把 HTTP/2 这个「寄养」十年的孩子接回了标准库</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Go 1.27</span>
+  <span class="tag tag-green">net/http</span>
+  <span class="tag tag-orange">HTTP/2</span>
+  <span class="tag tag-purple">存量重构</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Go 自 1.6 起「透明支持」HTTP/2 却长期把实现寄养在 golang.org/x/net/http2，这种架构积累了哪些技术债，Go 团队如何用 11 个子任务历时两年把真源迁回标准库，以及普通开发者现在能直接用到哪些原生 API。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">HTTP/2 迁移三条主线与架构反转</h3>
+  <div class="diagram">
+    <div class="node">寄养架构<br/>x/net + bundle</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">主线一<br/>配置 API 暴露</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">主线二<br/>代码物理搬家</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">主线三<br/>x/net 体面退休</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">Go 1.27 后：net/http/internal/http2 为唯一真源，x/net/http2 变包装壳</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Go 早就原生支持 HTTP/2，这次迁移只是搬家，对业务没影响」。实际上过去十年标准库只是通过 bundle 工具把 x/net 压平成 h2_bundle.go 塞进来——安全补丁要倒灌、HTTP/1 与 HTTP/2 无法原子改动、调参还得单独 import x/net，这些隐性成本一直在累积。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】HTTP/2「寄养架构」与导入环困境</h3>
+  <p><strong>在讲什么问题：</strong>Go 从 2016 年 Go 1.6 起就透明支持 HTTP/2，但实现代码长期不在标准库仓库，而是住在 golang.org/x/net/http2。</p>
+  <p><strong>核心机制：</strong>x/net/http2 本身依赖 net/http，标准库若直接反向 import 会形成导入环。解决方案是用 bundle 工具把整个 http2 包打包压平成单文件 h2_bundle.go，塞进 net/http 一起编译——谁都不敢手改这份生成文件。</p>
+  <p><strong>关键理解：</strong>用户调用 http.ListenAndServe 享受「自动挡」HTTP/2 升级，背后却是跨仓库、跨发布节奏的双轨维护。</p>
+  <p><strong>典型场景：</strong>任何使用 net/http 的 Go 服务，TLS 握手后自动协商 HTTP/2。</p>
+  <p><strong>边界说明：</strong>寄养架构撑住了十年生态升级，但安全补丁回合并、版本矩阵膨胀、配置与实现绑定等问题在 Go 1.26 之前已不可持续。</p>
+  <div class="quote">原文：「标准库要用它，得先经过一道特殊工序：用一个叫 bundle 的代码生成工具，把整个 http2 包打包压平成一份巨大的单文件 h2_bundle.go。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】寄养架构 vs Go 1.27 标准库真源</h3>
+  <table>
+    <tr><th>对比维度</th><th>寄养架构（Go 1.6–1.26）</th><th>标准库真源（Go 1.27+）</th><th>一句话结论</th></tr>
+    <tr><td>代码真源</td><td>golang.org/x/net/http2</td><td>net/http/internal/http2</td><td>角色彻底反转</td></tr>
+    <tr><td>安全补丁</td><td>先改 x/net，再倒灌回 net/http</td><td>同一 release cycle 原子修复</td><td>响应速度明显加快</td></tr>
+    <tr><td>配置 HTTP/2</td><td>必须 import x/net 的 ConfigureServer</td><td>srv.HTTP2 = &amp;http.HTTP2Config{...}</td><td>零额外依赖</td></tr>
+    <tr><td>h2c 明文 HTTP/2</td><td>依赖 x/net/http2/h2c 补丁包</td><td>Protocols.SetUnencryptedHTTP2(true)</td><td>原生支持</td></tr>
+    <tr><td>原子改动</td><td>HTTP/1 与 HTTP/2 分处两仓库</td><td>同一仓库内联修改</td><td>大重构成为可能</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】迁移到标准库原生 HTTP/2 配置</h3>
+  <p><strong>方法名：</strong>http.HTTP2Config + http.Protocols · 标签：Go 1.24+ 配置 / Go 1.27 真源</p>
+  <p><strong>核心思路：</strong>不再 import golang.org/x/net/http2，直接在 http.Server 或 http.Transport 上声明协议与 HTTP/2 参数。</p>
+  <p><strong>操作步骤：</strong>1) 调整最大并发流：在 Server 上设置 HTTP2.MaxConcurrentStreams → 2) 启用 h2c：Protocols.SetHTTP1(true) + SetUnencryptedHTTP2(true) → 3) 检查项目是否仍直接 import x/net/http2 的 Transport/Server → 4) 评估迁移到 net/http 原生能力 → 5) 升级 Go 1.27 享受真源实现</p>
+  <div class="highlight"><strong>落地建议：</strong>老代码无需改动即可在 Go 1.27 运行；若曾用 http2.ConfigureServer，可逐步替换为 srv.HTTP2 字段，删除 x/net 依赖。</div>
+  <div class="pitfall"><strong>避坑：</strong>仍直接 import x/net/http2 使用 Transport 或 Server 的项目不会立刻报错，但官方已明确废弃（#78064），应尽早评估迁移。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时需要显式配置 HTTP/2</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>默认 HTTPS 服务</td><td>零配置，http.ListenAndServe</td><td>Go 自动 TLS 协商升级 HTTP/2</td><td>手动引入 x/net</td><td>多余依赖且将被废弃</td></tr>
+    <tr><td>限制并发流数量</td><td>srv.HTTP2.MaxConcurrentStreams</td><td>标准库原生字段</td><td>http2.ConfigureServer</td><td>绑定旧实现、额外 import</td></tr>
+    <tr><td>内网 h2c 明文</td><td>Protocols.SetUnencryptedHTTP2</td><td>Go 1.24+ 原生支持</td><td>x/net/http2/h2c</td><td>补丁包角色，维护成本高</td></tr>
+    <tr><td>存量依赖 x/net Transport</td><td>先保持运行，规划迁移</td><td>Go 1 兼容性承诺保障</td><td>永久不升级</td><td>API 已标记废弃</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】HTTP/2 迁移与使用陷阱</h3>
+  <p><strong>坑名：</strong>以为「透明支持」等于「实现就在标准库里」</p>
+  <p><strong>原因：</strong>十年寄养架构掩盖了跨仓库维护的真实复杂度。</p>
+  <p><strong>解法：</strong>了解 bundle 机制与 #67810 迁移背景，按 Go 版本选择正确配置 API。</p>
+  <p><strong>严重程度：</strong>小心（影响排障与升级决策）</p>
+  <div class="pitfall"><strong>手改 h2_bundle.go：</strong>生成文件不可手动编辑，任何定制都应通过标准库 API 或等待官方合入。</div>
+  <div class="pitfall"><strong>配置与实现绑定：</strong>旧模式下 import x/net 配置会整个替换标准库内置实现——现在已解耦。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】大型存量系统重构范本</h3>
+  <p><strong>原则：</strong>先公开摊牌讲清「为什么要改」，再拆成可独立评审、独立合入、互不阻塞的小任务。</p>
+  <p><strong>为什么重要：</strong>HTTP/2 是所有人都在用、谁都不敢乱动的核心组件——Go 团队用 Discussion #60746 提案 + Issue #67810 的 11 个子任务，历时两年逐个击破，而非一次性大爆炸重写。</p>
+  <p><strong>怎么落地：</strong>1) 暴露配置能力让用户先受益 → 2) 物理搬家协议实现 → 3) 旧包体面退休变包装壳 → 4) 全程遵守 Go 1 兼容性承诺。</p>
+  <p><strong>适用边界：</strong>适用于维护「改不动又不敢不改」的核心模块；小项目可直接享受结果，不必复刻全流程。</p>
+  <div class="quote">原文：「issue 最后一条评论，只有两个字：And done.——干净利落，正如整个工程本身。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：保守派基础设施维护者 · 「双实现更稳」派</p>
+  <p class="rebuttal-text">把十年验证过的 x/net 实现收进标准库并废弃旧 API，等于强迫全生态跟上一个 release 节奏——大规模内核迁移的回归风险，远比多维护一个外部包更致命。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Go HTTP/2 十年「寄养」在 x/net，通过 bundle 规避导入环，积累了安全补丁倒灌、无法原子改动、配置绑定实现四大痛点。</li>
+    <li>跟踪 Issue #67810 将迁移拆为 11 个子任务：暴露配置 API → 代码物理搬家至 net/http/internal/http2 → x/net 变包装壳，Go 1.27 正式收官。</li>
+    <li>普通开发者无需改代码即可享受兼容保障；配置 MaxConcurrentStreams、h2c 等现可用标准库原生 API。</li>
+    <li>仍直接 import x/net/http2 Transport/Server 的项目应尽早评估迁移，相关 API 已明确废弃。</li>
+    <li>整个项目是「如何优雅重构核心组件」的操作手册：提案公开、任务拆解、进度透明、兼容性优先。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>检查项目 go.mod 是否仍依赖 golang.org/x/net/http2 做配置或自定义 Transport。</li>
+    <li>将 http2.ConfigureServer 调用迁移为 srv.HTTP2 = &amp;http.HTTP2Config{...}。</li>
+    <li>若需 h2c，改用 srv.Protocols.SetUnencryptedHTTP2(true) 替代 x/net/http2/h2c。</li>
+    <li>规划升级到 Go 1.27+，享受标准库真源带来的更快安全补丁响应。</li>
+    <li>阅读 #67810 子任务列表，学习大型开源项目拆解不可触碰核心的工程方法。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>「Go 早就支持 HTTP/2」不等于「实现一直在标准库里」——这次迁移的本质是把十年技术债还清，让网络栈回归单一真源、单一发布节奏。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
