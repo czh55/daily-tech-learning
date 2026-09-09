@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-09-09",
+    "files": [
+      {
+        "path": "svgs/2026-09-09/deepseek-harness-tools-mcp-skill.svg",
+        "title": "DeepSeek Harness 入门很简单（三）——DeepSeek Harness接入工具、MCP、Skill",
+        "source": "https://juejin.cn/post/7683355056541483042"
+      },
+      {
+        "path": "svgs/2026-09-09/deepseek-v41-flash-price-cut.svg",
+        "title": "DeepSeek V4.1 Flash 来了，明天中午 Flash 降价 60%",
+        "source": "https://juejin.cn/post/7683375934587502643"
+      },
+      {
+        "path": "svgs/2026-09-09/grokbot-use-cases.svg",
+        "title": "Grok Bot 能干什么：九类真实场景与开源资源库",
+        "source": "https://xiangyugongzuoliu.com/grokbot-use-cases/"
+      },
+      {
+        "path": "svgs/2026-09-09/why-harness-matters-more-than-model-yc-paper-club.svg",
+        "title": "刚刚，YC 公开处刑「唯模型论」：决定 Agent 上限的，从来不是模型，而是 Harness",
+        "source": "https://tonybai.com/2026/09/09/why-harness-matters-more-than-model-yc-paper-club/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-08",
     "files": [
       {

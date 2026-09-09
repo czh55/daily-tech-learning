@@ -1,0 +1,109 @@
+欢迎收听每日技术学习语音讲解。本期主题，同一套 Claude Opus 权重，裸跑 30% 而 Harness 95%：YC Paper Club 说 Agent 胜负手不在模型而在运行时。标签包括YC Paper Club、Agent Harness、ARC-AGI、运行时层。本次讲解预计时长 约 13 到 14 分钟，共 10 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：当底层模型权重完全相同时，为什么裸跑 Claude Opus 在 ARC-AGI 上只有约 30%，加上 Harness 能冲到 95%，NVIDIA AVO 甚至做到 100%——以及 Harness 作为模型与世界之间的运行时层，六年演化脉络、V1 静态与 V2 自修改架构差异，以及 Prime Agent、Open Jarvis、QM YC 等实战案例对工程落地的启示。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：世界，API / 文件 / 浏览器，然后Harness 运行时层，工具 · 记忆 · 循环 · 权限，然后模型，Claude Opus 同权重
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「换更强的模型就能解决 Agent 能力瓶颈」。YC Paper Club 用同一套 Claude Opus 权重证明：裸循环约 30%，加上 Harness 可达 95%，NVIDIA AVO 做到 100%——差距不在权重，而在工具调用、记忆管理、执行循环与权限边界这套运行时层。六年演化从 GPT-2 裸循环到 RLM，Harness 才是复利最大的投资方向。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：模型 Scaling 派 · 「更大参数才是终极答案」
+
+Harness 的 95% 只是 benchmark 上的工程技巧 — 真正通用的智能仍需要模型内在推理能力的质变。把资源砸在运行时层是在回避根本问题：当下一代模型原生具备工具调用、长记忆与自我反思，今天精心设计的 Harness 将全部作废，唯有 Scaling Law 才是确定性最高的投资。
+
+接下来，第四部分，【概念拆解卡】Harness 是什么：模型与世界之间的运行时层。
+
+在讲什么问题，为什么同一套 Claude Opus 权重，裸跑 ARC-AGI 约 30%，加 Harness 能到 95%，NVIDIA AVO 甚至 100%？
+
+核心机制，Harness 是夹在模型与世界之间的运行时层，负责工具调用、记忆管理、执行循环（loop）、权限边界——模型只负责「想」，Harness 负责「做」与「记住」。
+
+关键理解，模型权重是常量，Harness 是变量；同一权重下，Harness 质量决定 Agent 能否把推理转化为可验证的行动。
+
+典型场景，多步推理任务、需要外部工具验证的 benchmark、长时运行自主 Agent。
+
+边界说明，Harness 不能替代模型基础能力，但在当前模型世代，运行时层的工程投入往往比换更大模型带来更确定的收益。
+
+原文核心数据：同一 Claude Opus 权重 — 裸跑 ~30%，Harness ~95%，NVIDIA AVO 100%。
+
+接下来，第五部分，【跨概念对比表】裸模型 vs V1 静态 Harness vs V2 自修改 Harness。
+
+ARC-AGI（同权重），~30%，~95%，持续进化中，运行时层决定上限
+
+工具与记忆，无，人工设计固定管线，系统自我优化管线，从手工到自适应
+
+代表技术，GPT-2 裸循环，ReAct / Reflexion / MemGPT，DSPy / Darwin machines / Continual Harness，六年演化脉络
+
+维护成本，低但能力封顶，高（每次换模型要重调），前期高、长期复利，投资方向在 Harness
+
+演化阶段，2019 few-shot，2022–2024 CoT + tools，2025+ 自修改运行时，复利最大的层
+
+接下来，第六部分，【方法/工具卡】六年 Harness 演化脉络：从 GPT-2 到 RLM。
+
+方法名：Agent Harness 演化时间线 · 标签：few-shot ，得到 CoT ，得到 tools ，得到 自修改
+
+核心思路：每一代突破不是换模型，而是在运行时层叠加新能力：记忆、技能库、反思循环、状态卸载。
+
+操作步骤，1) GPT-2 裸循环（基线），得到 2) few-shot 提示工程 ，得到 3) Chain-of-Thought 推理链 ，得到 4) 工具调用（function calling），得到 5) MemGPT 长时记忆 ，得到 6) Voyager 技能库积累 ，得到 7) ReAct / Reflexion 行动-反思循环 ，得到 8) RLM 递归语言模型
+
+落地建议：评估自家 Agent 栈时，先画清当前处于哪一代 Harness，再决定是补工具层、记忆层还是自修改层，而非盲目追更大参数模型。
+
+V1 ，得到 V2 跃迁：V1 静态 Harness 人工设计管线；V2 自修改 Harness（DSPy、Darwin machines、Continual Harness）让系统自己优化运行时策略。
+
+接下来，第七部分，【决策/选型表】三大实战案例：Prime Agent · Open Jarvis · QM YC。
+
+避坑：QM YC 教训 — 状态全放上下文窗口会快速膨胀；Postgres 状态卸载 + grind 工具（不轻易放弃）是 Harness 工程化的关键细节。
+
+Prime Agent，L1/L2/L3 分层记忆（类比 CPU 缓存）+ 持久子 Agent，7 天实验孵化 633 个 Agent，长时运行、多 Agent 协作
+
+Open Jarvis，本地栈 + 云端优化本地 Harness，800 倍成本降低，隐私敏感、成本敏感部署
+
+QM YC，四代迭代 + Postgres 状态卸载 + grind 工具，「不要太早放弃」——grind 工具让 Agent 持续尝试，复杂任务、需要韧性的自主执行
+
+接下来，第八部分，【心法/原则卡】投资 Harness 而非盲目追模型的工程原则。
+
+原则，模型权重趋同的时代，差异化来自运行时层 — 工具、记忆、循环、权限的工程质量。
+
+为什么重要，YC Paper Club 用同权重实验证明 30% ，得到 95% ，得到 100% 的跃迁完全由 Harness 驱动；六年演化显示每一代复利最大的是系统层而非参数层。
+
+怎么落地，1) 审计当前 Agent 栈的 Harness 世代 ，得到 2) 优先补工具调用与记忆管理 ，得到 3) 引入状态卸载（如 Postgres）避免上下文膨胀 ，得到 4) 设计 grind 机制防止过早放弃 ，得到 5) 探索 V2 自修改 Harness（DSPy 等）实现长期复利。
+
+适用边界，适用于已有基础模型能力、需要把推理转化为可靠行动的场景；基础推理能力不足时仍需升级模型。
+
+Open Jarvis 启示：云端不必跑大模型，优化本地 Harness 同样能实现 800 倍成本降低。
+
+接下来，第九部分，总结与行动。
+
+结论
+
+同一 Claude Opus 权重：裸跑 ARC-AGI ~30%，Harness ~95%，NVIDIA AVO 100% — 胜负手在运行时层而非模型权重。
+
+Harness = 工具 + 记忆 + 循环 + 权限，六年从 GPT-2 裸循环演化到 RLM；V1 静态正被 V2 自修改（DSPy、Darwin machines、Continual Harness）取代。
+
+Prime Agent（L1/L2/L3 记忆 + 633 Agent/7 天）、Open Jarvis（本地栈 800 倍降本）、QM YC（Postgres 状态卸载 + grind 工具）验证了 Harness 工程化的三条路径。
+
+画出当前 Agent 栈的 Harness 世代定位，识别缺失的工具层、记忆层或状态管理层。
+
+引入分层记忆（L1/L2/L3）与状态卸载（Postgres 等），避免上下文窗口膨胀导致的能力退化。
+
+设计 grind 机制 — 让 Agent 在失败时持续尝试而非过早放弃。
+
+评估 V2 自修改 Harness（DSPy 等）是否适合你的场景，为长期复利做准备。
+
+在模型选型时同步评估 Harness 成熟度，而非单独追更大参数。
+
+总结：
+
+行动清单：
+
+关键认知转变：「Agent 能力 = 模型能力」是过时公式 — 正确公式是「Agent 能力 = 模型能力 × Harness 质量」；当模型权重趋同，Harness 才是差异化与复利最大的投资方向。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
