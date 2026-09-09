@@ -1,0 +1,198 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'deepseek-harness-tools-mcp-skill.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#065f46,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #059669}
+.card h3{font-size:22px;font-weight:700;color:#065f46;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:12px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:#a78bfa;color:#6b21a8}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#065f46,#059669);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#065f46;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#065f46}`;
+
+const body = `
+<h1>DeepSeek Harness 入门很简单（三）——工具 / MCP / Skill 详解</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">内置工具</span>
+  <span class="tag tag-blue">MCP 协议</span>
+  <span class="tag tag-orange">创造模式</span>
+  <span class="tag tag-purple">Skill 技能包</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Agent 的能力边界由哪些扩展机制构成——内置 Cordis 工具、MCP 外部服务接入与 Skill 标准作业流程包如何分工协作，以及创造模式下动态生成工具的完整生命周期与持久化策略。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#065f46;margin-bottom:12px;text-align:center">Agent 能力三层扩展架构</h3>
+  <div class="diagram">
+    <div class="node-blue">LLM<br>推理引擎</div>
+    <span class="arrow-sym">+</span>
+    <div class="node-orange">Prompt<br>系统指令</div>
+    <span class="arrow-sym">+</span>
+    <div class="node">Tools<br>可调用能力</div>
+    <span class="arrow-sym">=</span>
+    <div class="node-purple">Agent<br>智能体</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:16px">工具层三分法：内置 Tool（Harness 自带） · MCP（外部服务 USB） · Skill（SOP 知识包）</p>
+  <div class="diagram" style="margin-top:12px">
+    <div class="node">内置 Tool<br>tool-fs / tool-web</div>
+    <span class="arrow-sym">|</span>
+    <div class="node-blue">MCP<br>高德地图等</div>
+    <span class="arrow-sym">|</span>
+    <div class="node-purple">Skill<br>PPT 生成等</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「工具、MCP、Skill 是同一层东西，随便挂就行」。实际上三者职责截然不同——Tool 是 Harness 内置的原子能力（读写文件、联网搜索），MCP 是连接外部服务的标准协议（像 USB 统一接口），Skill 是封装领域 SOP 的 Markdown 知识包（教 Agent「怎么做」而非「能调用什么」）。创造模式动态生成的工具更是会话级临时的，不保存就随对话消失。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Agent = LLM + Prompt + Tools</h3>
+  <p><strong>在讲什么问题：</strong>大模型本身只能生成文本，无法读写文件、搜索网页或执行命令——Agent 是在模型之上叠加 Prompt 约束与工具调用能力的完整智能体。</p>
+  <p><strong>核心机制：</strong>Harness 通过 Cordis 插件系统将每个工具注册为独立插件，Agent Loop 在推理过程中根据任务需要选择并调用工具，工具返回结果再注入上下文驱动下一轮推理。</p>
+  <p><strong>关键理解：</strong>工具越多，系统提示词中的工具定义开销越大（标准模式约 20+ 工具、~1 万 Token）——扩展能力需按场景裁剪，而非无脑全挂。</p>
+  <p><strong>典型场景：</strong>代码开发用 tool-fs 读写项目文件；信息检索用 tool-web 搜索；任务管理用 tool-todo 追踪进度；领域流程用 tool-skill 加载 Skill 包。</p>
+  <p><strong>边界说明：</strong>内置 Tool 由 Harness 团队维护、开箱即用；超出内置能力范围才需接入 MCP 或自定义 Cordis 插件。</p>
+  <div class="quote">原文：「Agent 的本质就是 LLM + Prompt + Tools。模型负责思考，Prompt 负责约束行为边界，Tools 负责连接真实世界。」</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】内置工具与创造模式动态插件</h3>
+  <p><strong>方法名：</strong>Cordis 插件体系 + 创造模式自然语言造工具 · 标签：内置能力 / 动态扩展</p>
+  <p><strong>核心思路：</strong>Harness 预置 tool-fs（文件系统）、tool-web（网页搜索）、tool-todo（任务清单）、tool-skill（技能加载）等内置工具；创造模式下 Agent 可用元工具动态生成新 Cordis 插件（如 count_words 字数统计工具），用自然语言描述需求即可。</p>
+  <p><strong>操作步骤：</strong>1) 标准任务直接用内置工具 → 2) 切换创造模式 + Full access → 3) 自然语言描述新工具（「写一个统计文本字数的工具」）→ 4) Agent 生成 Cordis 插件 YAML 并热加载 → 5) 当前会话即可调用 → 6) 满意后保存为仓库级插件实现持久化</p>
+  <div class="highlight"><strong>落地建议：</strong>动态工具默认会话级临时——关闭对话即消失；团队复用需将生成的插件文件提交到项目 .cordis/ 目录，下次启动自动加载。</div>
+  <div class="pitfall"><strong>避坑：</strong>创造模式生成的工具未经审查直接用于生产——动态代码可能含安全隐患，务必人工 Review 后再持久化。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】MCP 外部服务接入</h3>
+  <p><strong>方法名：</strong>Model Context Protocol · 标签：外部 API / 标准协议</p>
+  <p><strong>核心思路：</strong>MCP 被比作「AI 的 USB 接口」——统一协议让 Agent 连接任意外部服务（数据库、地图、支付等），无需为每个 API 写定制集成代码。</p>
+  <p><strong>操作步骤：</strong>1) 在创造模式中描述需求（「接入高德地图，支持地点搜索和路线规划」）→ 2) 提供 API Key → 3) Agent 生成 MCP Server 配置 → 4) Harness 启动 MCP 子进程并注册工具 → 5) 后续对话直接调用地图能力</p>
+  <div class="highlight"><strong>落地建议：</strong>API Key 通过 Harness 环境变量或加密配置注入，勿硬编码进插件文件；MCP Server 独立进程便于隔离故障与权限。</div>
+  <div class="relation"><strong>与内置 Tool 的关系：</strong>内置 Tool 覆盖通用本地能力（文件/终端/搜索），MCP 覆盖需要第三方凭据和远程 API 的垂直服务——互补而非替代。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Skill 标准作业流程包</h3>
+  <p><strong>方法名：</strong>Skill 技能系统 · 标签：SOP 封装 / 领域知识</p>
+  <p><strong>核心思路：</strong>Skill 是将特定领域的标准操作流程（SOP）封装为 Markdown 文档包，通过 tool-skill 加载后注入 Agent 上下文——教 Agent「按什么步骤、用什么模板、注意什么约束」完成任务。</p>
+  <p><strong>操作步骤：</strong>1) 从 ModelScope Skills 社区或自建仓库获取 Skill 包（如 PPT 生成技能）→ 2) 放置到项目 skills/ 目录 → 3) Agent 通过 tool-skill 发现并加载 → 4) 按 Skill 中的步骤、模板和检查清单执行</p>
+  <div class="highlight"><strong>落地建议：</strong>团队高频流程（Code Review、发布检查、文档模板）优先沉淀为 Skill；与 MCP 互补——Skill 偏「知道怎么做」，MCP 偏「能调用什么外部能力」。</div>
+  <div class="quote">原文：「如果说 Tool 是 Agent 的手脚，MCP 是 Agent 的外部设备接口，那 Skill 就是 Agent 的操作手册。」</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Tool vs MCP vs Skill</h3>
+  <table>
+    <tr><th>对比维度</th><th>内置 Tool</th><th>MCP</th><th>Skill</th><th>一句话结论</th></tr>
+    <tr><td>本质</td><td>Cordis 插件原子能力</td><td>外部服务标准协议</td><td>SOP 知识 Markdown 包</td><td>能力 / 接口 / 流程</td></tr>
+    <tr><td>维护方</td><td>Harness 官方</td><td>第三方 MCP Server</td><td>社区或团队自建</td><td>内置最稳、MCP 最灵活</td></tr>
+    <tr><td>典型示例</td><td>tool-fs / tool-web / tool-todo</td><td>高德地图 / 数据库 / GitHub</td><td>PPT 生成 / Code Review</td><td>各管一层</td></tr>
+    <tr><td>创建方式</td><td>开箱即用</td><td>配置 MCP Server + API Key</td><td>编写 Markdown SOP 文档</td><td>创造模式可动态生成 Tool/MCP</td></tr>
+    <tr><td>持久化</td><td>随 Harness 安装</td><td>配置文件 + 进程管理</td><td>skills/ 目录文件</td><td>动态工具需手动保存</td></tr>
+    <tr><td>Token 开销</td><td>工具定义计入系统提示词</td><td>同上 + MCP 工具 schema</td><td>加载时注入 Skill 全文</td><td>按需加载、避免全挂</td></tr>
+    <tr><td>生命周期</td><td>永久</td><td>配置后持久</td><td>文件存在即可用</td><td>创造模式工具默认会话级临时</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】扩展机制选型指南</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>读写项目文件/执行命令</td><td>内置 tool-fs + 终端</td><td>零配置、权限可控、Harness 原生支持</td><td>自写 MCP 包装 shell</td><td>多一层进程开销且无必要</td></tr>
+    <tr><td>接入地图/支付等第三方 API</td><td>MCP Server</td><td>标准协议、凭据隔离、社区有现成 Server</td><td>创造模式硬编码 API 调用</td><td>难以复用、安全风险高</td></tr>
+    <tr><td>团队固定工作流（PPT/Review）</td><td>Skill 包</td><td>纯 Markdown、版本可控、无代码执行风险</td><td>每次 Prompt 重复描述</td><td>不一致、Token 浪费</td></tr>
+    <tr><td>一次性定制小工具</td><td>创造模式动态生成</td><td>自然语言秒级产出、会话内即用</td><td>写完整 Cordis 插件仓库</td><td>过度工程、开发成本高</td></tr>
+    <tr><td>需跨项目复用的定制工具</td><td>保存为仓库 Cordis 插件</td><td>持久化、可 Review、团队共享</td><td>仅会话级临时工具</td><td>关闭对话即丢失</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】工具扩展常见陷阱</h3>
+  <p><strong>坑名：</strong>创造模式动态工具未 Review 直接持久化</p>
+  <p><strong>原因：</strong>Agent 生成的 Cordis 插件可能含未授权文件访问、命令注入或硬编码密钥。</p>
+  <p><strong>解法：</strong>动态工具先在隔离环境试用；持久化前人工审查 YAML 与关联脚本；API Key 走环境变量注入。</p>
+  <p><strong>严重程度：</strong>致命（安全与合规）</p>
+  <div class="pitfall"><strong>动态工具误当永久：</strong>创造模式生成的工具默认随会话销毁——忘记保存到 .cordis/ 目录，下次对话需重新生成。</div>
+  <div class="pitfall"><strong>Skill 与 MCP 混用不清：</strong>把需要实时 API 调用的能力写进 Skill Markdown 而非 MCP——Agent 只能「读流程」无法「调接口」。</div>
+  <div class="pitfall"><strong>工具全挂 Token 爆炸：</strong>标准模式 20+ 工具 + MCP 工具 + 多个 Skill 同时加载，系统提示词膨胀导致响应变慢、成本飙升。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】按需扩展、先内置后外挂</h3>
+  <p><strong>原则：</strong>扩展 Agent 能力遵循「内置 Tool 优先 → MCP 接外部服务 → Skill 沉淀流程 → 创造模式补缺口」四层递进，避免一上来就动态造工具。</p>
+  <p><strong>为什么重要：</strong>每增加一层扩展，系统提示词和运行时复杂度同步上升；内置工具经过 Harness 团队安全审计，动态生成物则完全依赖 Agent 输出质量。</p>
+  <p><strong>怎么落地：</strong>日常开发用极简/标准预设的内置工具；确需第三方 API 时配置 MCP；团队 SOP 沉淀为 Skill；仅当三者都不覆盖时才用创造模式造工具，且必须 Review 后持久化。</p>
+  <p><strong>适用边界：</strong>个人实验可激进使用创造模式；企业生产环境动态工具须经安全审查并纳入版本管理。</p>
+  <div class="quote">原文：「动态工具就像草稿纸上的演算——有用但 ephemeral，真正要进生产的能力必须落盘为仓库插件。」</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：企业安全与合规团队 · 「创造模式动态造工具不可控，必须全面禁用」</p>
+  <p class="rebuttal-text">Agent 在创造模式里随手生成 Cordis 插件、注入 API Key、调用外部 MCP——没有代码审查、没有权限白名单、没有审计日志，等于给 LLM 开了无限制的 root 权限。合规要求所有工具变更走 PR Review 和 CI 扫描，动态生成完全绕过这套门禁，生产环境绝不允许。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Agent = LLM + Prompt + Tools，Harness 通过 Cordis 插件体系将工具模块化注册。</li>
+    <li>内置 Tool（tool-fs / tool-web / tool-todo / tool-skill）覆盖通用本地能力，开箱即用。</li>
+    <li>MCP 是连接外部服务的标准协议（「AI 的 USB」），创造模式可配 API Key 快速接入高德地图等。</li>
+    <li>Skill 是封装领域 SOP 的 Markdown 知识包，教 Agent 流程而非提供 API 调用能力。</li>
+    <li>创造模式可自然语言动态生成 Cordis 插件（如 count_words），但默认会话级临时，须保存为仓库插件才持久化。</li>
+    <li>扩展遵循「内置 → MCP → Skill → 动态造工具」递进，按需加载控制 Token 开销。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>梳理当前任务所需能力，优先用内置 tool-fs / tool-web 解决，避免过早引入 MCP。</li>
+    <li>需要第三方 API 时，在创造模式中描述需求并配置 API Key，验证 MCP Server 可用后持久化配置。</li>
+    <li>将团队高频 SOP（PPT 生成、Code Review 等）从 ModelScope Skills 或自建仓库引入 skills/ 目录。</li>
+    <li>创造模式生成定制工具后，人工 Review 插件 YAML，确认无安全隐患再提交 .cordis/ 目录。</li>
+    <li>按场景选择 Agent 预设，避免标准模式无谓背负全部工具定义的 Token 税。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>Tool、MCP、Skill 不是「越多越好」的挂件清单，而是分层递进的扩展策略——创造模式的动态工具是快速原型手段，真正进入团队工作流的能力必须经审查后落盘为持久化插件。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
