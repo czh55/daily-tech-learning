@@ -1,0 +1,177 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'd2-goes-nonprofit-tala-open-sourced.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#c4b5fd;color:#6b21a8}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#1e40af}`;
+
+const body = `
+<h1>D2 断奶上位：Terrastruct 关停、Hack Club 代管、TALA 正交布局算法 MPL-2.0 开源</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">D2</span>
+  <span class="tag tag-green">TALA</span>
+  <span class="tag tag-orange">开源治理</span>
+  <span class="tag tag-purple">文本转图表</span>
+  <span class="tag tag-red">AI 驱动开发</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 D2 母公司 Terrastruct 关停后，项目如何通过 Hack Club 财务代管转型为完全非营利开源，TALA 正交布局算法为何在此时开源，以及创始人「全 AI 写代码 + 三不做」的产品哲学对 Agent 时代架构图生成意味着什么。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">D2 本周关键事件链</h3>
+  <div class="diagram">
+    <div class="node">Open-Core 时代<br>D2 免费 + Studio/TALA 付费</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">2026-09-05<br>Terrastruct 关停<br>捐赠 Hack Club</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">2026-09-07<br>TALA MPL-2.0 开源<br>v0.9.0 发布</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-purple">下一阶段<br>AI 写代码 · 三不做</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">从商业造血到非营利存续：项目与单一公司命运彻底脱钩</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「公司关停 = 项目死亡」。D2 通过 Hack Club（The Hack Foundation 501(c)(3)）财务代管，资金公开可查、创始人零报酬，赞助不影响路线图与 MPL-2.0 许可证——这是把项目存续与商业公司解绑的治理样本，而非简单的「项目被卖掉或放弃维护」。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】D2 非营利转型：从 Open-Core 到完全开源</h3>
+  <p><strong>在讲什么问题：</strong>Terrastruct 关停后，D2 如何不靠闭源 Studio 和 TALA 继续生存？</p>
+  <p><strong>核心机制：</strong>创始人将 D2 整体捐赠给 Hack Club 进行财务代管（fiscal sponsorship），项目转为独立、非营利、100% 开源；捐赠资金可抵税，去向完全公开，创始人和共同创始人不从基金中拿报酬。</p>
+  <p><strong>关键理解：</strong>这不是项目易手，而是治理结构重构——把项目存续与单一营利公司命运脱钩，类似 Linux/Apache 基金会模式但更轻量。</p>
+  <p><strong>典型场景：</strong>开源核心项目面临母公司战略调整或关停时，需要社区可持续维护路径。</p>
+  <p><strong>边界说明：</strong>创始人坦言个人时间投入会比过去有限，高质量维护者可能通过捐赠资金获得合同报酬——适合有开源经验的早期职业开发者，但不保证全职团队规模。</p>
+  <div class="quote">原文：赞助 D2 不会影响路线图、治理或许可证；开发全程在 GitHub 公开进行。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】TALA：专为架构图设计的正交自动布局算法</h3>
+  <p><strong>在讲什么问题：</strong>TALA 和 Dagre/ELK 有什么本质区别？为什么现在开源？</p>
+  <p><strong>核心机制：</strong>TALA（Terrastruct's AutoLayout Algorithm）走正交布局路线，优化对称性、节点间距、信息流向、同类聚类等多维美学指标；融合多篇图绘制论文思路加团队原创技术。D2 不再靠商业化生存后，闭源 TALA 失去意义，随 v0.9.0 以 MPL-2.0 同步开源。</p>
+  <p><strong>关键理解：</strong>坐标可控是 AI 时代杀手特性——大模型擅长摆方块位置，走线排版仍靠算法兜底，TALA 支持部分或全部节点锁定 top/left，算法负责剩余布局与连线路由。</p>
+  <p><strong>典型场景：</strong>系统全景类软件架构图、AI Agent 批量生成架构图后交给算法排版。</p>
+  <p><strong>边界说明：</strong>不擅长长链路 DAG 流程图、有随机性（增删节点可能整体重排）、大图渲染非线性变慢。</p>
+  <div class="highlight"><strong>落地命令：</strong><code>d2 --layout=tala architecture.d2 architecture.svg</code>；也可在 play.d2lang.com 浏览器本地体验，无需服务器。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】TALA vs Dagre vs ELK</h3>
+  <table>
+    <tr><th>对比维度</th><th>Dagre / ELK（DAG 系）</th><th>TALA（正交系）</th><th>一句话结论</th></tr>
+    <tr><td>布局风格</td><td>分层、单向延展，适合长链路流程图</td><td>更接近白板手绘的正交布局</td><td>流程图选 DAG，全景图选 TALA</td></tr>
+    <tr><td>稳定性</td><td>增删节点后局部变化，整体形态基本稳定</td><td>有随机性，同种子结果一致，但加节点可能整体重排</td><td>需要图稳定不跳变时 TALA 是短板</td></tr>
+    <tr><td>坐标控制</td><td>算法全权决定</td><td>支持部分/全部节点锁定 top/left</td><td>AI 生成 + 算法排版混合模式是 TALA 独优势</td></tr>
+    <tr><td>性能</td><td>大图渲染相对线性</td><td>非线性增长，越大越慢</td><td>大规模图谱需注意基准测试</td></tr>
+    <tr><td>适用场景</td><td>长链路架构图、DAG 关系图</td><td>系统全景、对称美观架构图、Agent 生成图形</td><td>官方坦承某些图反而更喜欢非 TALA 布局</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】D2 下一阶段：全 AI 驱动开发的操作范式</h3>
+  <p><strong>方法名：</strong>AI 写代码 + 人类写文字 · 标签：效率优先、坦诚争议</p>
+  <p><strong>核心思路：</strong>创始人宣布手写代码时代结束，所有代码贡献由 AI 完成，社区 AI 贡献也由 AI 审核；唯一例外是博客和对外沟通 100% 人类撰写。</p>
+  <p><strong>操作步骤：</strong>1) 用 AI 实现过去因人力有限搁置的功能（等距渲染器、其他画图语言转译器）→ 2) 社区可提交 AI 生成 PR → 3) 维护者用 AI 交叉审核 → 4) 主动引用 Neil Alexander「AI slop 灌水」争议文章，先丑话说在前面</p>
+  <div class="highlight"><strong>落地建议：</strong>升级到 D2 v0.9.0，对现有 .d2 文件分别用 TALA / Dagre / ELK 渲染对比，GitHub 上有 7 个真实公开项目可供横向评测。</div>
+  <div class="pitfall"><strong>避坑：</strong>创始人不向任何人推荐 AI 灌水式贡献，但坦诚自己的计划——社区需关注 PR 质量而非数量，参考 Neil Alexander 直接关闭无实质投入 PR 的做法。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】布局引擎与产品边界选型</h3>
+  <table>
+    <tr><th>场景</th><th>推荐方案</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>长链路单向流程图</td><td>Dagre 或 ELK</td><td>分层延展稳定，增删节点局部调整</td><td>TALA</td><td>官方坦承不擅长 DAG 长链路</td></tr>
+    <tr><td>系统全景架构图</td><td>TALA</td><td>正交美学、对称聚类、多维优化</td><td>纯手绘像素</td><td>无法版本化与自动化</td></tr>
+    <tr><td>AI Agent 生成架构图</td><td>模型定坐标 + TALA 排版走线</td><td>大模型摆方块强、走线弱，混合分工</td><td>纯 LLM 端到端出图</td><td>走线交叉、间距不协调不可控</td></tr>
+    <tr><td>需要图布局稳定不跳变</td><td>Dagre / ELK</td><td>增删节点见缝插针，整体形态不变</td><td>TALA</td><td>加一节点可能整体重排</td></tr>
+    <tr><td>大规模图谱（数百节点）</td><td>Dagre / ELK</td><td>线性性能，TALA 非线性变慢</td><td>TALA</td><td>官方提供 d2-benchmarks 仓库佐证</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】TALA 官方自曝的三条权衡</h3>
+  <p><strong>坑 1 — 随机性导致布局跳变：</strong>默认 3 种子选最优，同种子结果一致，但增删节点可能整张图重排。Dagre/ELK 通常只是局部调整。</p>
+  <p><strong>坑 2 — 不擅长 DAG 长链路：</strong>想要长长单向流动图时，官方自己更愿意用 Dagre 或 ELK。</p>
+  <p><strong>坑 3 — 大图性能非线性：</strong>图越大 TALA 相对 Dagre/ELK 耗时差距越大，需参考 github.com/d2lang/d2-benchmarks 做基准测试。</p>
+  <div class="relation"><strong>严重程度：</strong>坑 1 在 CI/CD 自动更新架构图场景可能是致命的；坑 2/3 可通过场景选型规避。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】三不做：拥抱 AI 效率但拒绝盲目扩张</h3>
+  <p><strong>原则：</strong>在拥有更强 AI 生产力时，主动划清「能做」与「该做」的边界。</p>
+  <p><strong>三不做清单：</strong>1) 不做臃肿万能画图工具（不加维恩图等偏离架构图定位的功能，未来用插件/模块外置）→ 2) 不在 D2 内置 LLM 对话套壳（模型看几个示例就能转 .d2，无需专门调教界面）→ 3) 不做任何服务端能力（不做 MCP、不做 API、不做账户系统、不做服务端渲染、不做多人协作；D2 Studio 纯客户端可离线）</p>
+  <p><strong>为什么重要：</strong>D2 想成为 Agent 时代「文本生成图形」的标准底座——像 HTML 之于网页，你需要文本化图源代码作为最终产物底层依据，而非被 Agent 绕过的旧工具。</p>
+  <p><strong>怎么落地：</strong>评估自家工具栈时，问自己：这个功能是否强化「文本 → 可版本化图形」核心链路？是否需要服务器？是否只是把 LLM 套壳？</p>
+  <p><strong>适用边界：</strong>适用于非营利、无商业服务器预算的开源基础设施项目；需要云端协作的场景需另寻方案。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Mermaid 生态拥护者 · 「语法更成熟、社区更大，D2 转型只是垂死挣扎」</p>
+  <p class="rebuttal-text">Mermaid 的 DAG 分层布局在 CI 自动更新场景更稳定，生态集成（GitHub、Notion、文档工具）碾压 D2；TALA 坐标锁定听起来美好，但大图性能和非线性重排让生产环境不敢押注——非营利 + 创始人兼职维护，反而比 Terrastruct 时期更不可信。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Terrastruct 关停后 D2 通过 Hack Club 财务代管转型非营利，TALA 随 v0.9.0 以 MPL-2.0 开源——从 Open-Core 到完全免费的开源路径。</li>
+    <li>TALA 正交布局 + 坐标锁定是 AI Agent 生成架构图的最佳分工模式：模型摆方块，算法兜底走线与美学排版。</li>
+    <li>创始人「全 AI 写代码 + 三不做」构成克制的产品哲学：不做 MCP/API/LLM 套壳，专注文本化图源代码作为 Agent 时代图形基础设施。</li>
+    <li>TALA 有三条官方坦承的短板：随机性跳变、不擅长 DAG 长链路、大图非线性变慢——需按场景选型。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>升级 D2 v0.9.0，对现有架构图分别用 <code>--layout=tala</code>、Dagre、ELK 渲染对比效果。</li>
+    <li>探索 AI 生成 .d2 源码 + TALA 坐标锁定的混合布局工作流，模型定关键节点位置，算法负责排版。</li>
+    <li>长链路流程图继续用 Dagre/ELK；系统全景和 AI 批量出图场景优先 TALA。</li>
+    <li>关注 D2 GitHub 上 AI 驱动开发的 PR 质量实践，评估是否适用于自家开源项目。</li>
+    <li>若认可非营利路线，可通过 hcb.hackclub.com/d2 捐赠（美国可抵税，资金用途公开）。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>「公司关停 = 项目死亡」被 D2 案例打破——财务代管 + 核心资产开源 + 克制边界声明，反而可能让项目在 AI 时代找到更清晰的定位：不是做又一个画图工具，而是做 Agent 时代文本生成图形的标准底座。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
