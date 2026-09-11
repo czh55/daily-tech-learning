@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-11",
+    "files": [
+      {
+        "path": "svgs/2026-09-11/go-simd-kills-cgo-turbopfor-avx512.svg",
+        "title": "Go SIMD杀疯了：开发者删光最后一行cgo代码，性能反超C语言库",
+        "source": "https://tonybai.com/2026/09/11/go-simd-kills-cgo-turbopfor-avx512/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-10",
     "files": [
       {
