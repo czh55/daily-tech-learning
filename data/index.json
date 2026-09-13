@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-13",
+    "files": [
+      {
+        "path": "svgs/2026-09-13/openai-habitat-storage-rust-migration-1-billion-users.svg",
+        "title": "2 名工程师 + Codex，OpenAI 用 Rust 重写扛住 10 亿人的存储系统",
+        "source": "https://tonybai.com/2026/09/13/openai-habitat-storage-rust-migration-1-billion-users/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-12",
     "files": [
       {
