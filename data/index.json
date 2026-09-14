@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-09-14",
+    "files": [
+      {
+        "path": "svgs/2026-09-14/deepseek-harness-cordis-plugins.svg",
+        "title": "DeepSeek Harness 入门很简单（四）——DeepSeek Harness接入插件",
+        "source": "https://juejin.cn/post/7685235672349556770"
+      },
+      {
+        "path": "svgs/2026-09-14/go-cgo-without-c-toolchain.svg",
+        "title": "Go 核心团队放大招：cgo 不用 C编译器也能跑，AI/GPU 库调用将迎来大简化",
+        "source": "https://tonybai.com/2026/09/14/go-cgo-without-c-toolchain/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-13",
     "files": [
       {

@@ -1,0 +1,103 @@
+欢迎收听每日技术学习语音讲解。本期主题，DeepSeek Harness 入门（四）—— Cordis 插件接入与自造。标签包括Cordis、dsh plugin、创设模式、Agent Teams。本次讲解预计时长 约 9 到 10 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：DeepSeek Harness 如何通过 Cordis 插件机制把模型、工具、会话、Agent 循环乃至 Web UI 全部可插拔——以及如何发现、安装社区插件、处理 pnpm 构建脚本拦截，并用创设模式把临时 UI 改动持久化为本地插件包。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Cordis 元框架，然后适配器 / 工具 / 会话，然后社区 dsh-plugin，然后创设模式，自造插件
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「Harness 功能弱于 Codex/Claude Code」。作者强调当前 Web 差异不大，插件化设计意在释放社区——一周内 GitHub 已出现大量 dsh-plugin 标签仓库，能力差距可被插件快速补齐。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：企业平台派 · 「插件碎片化」
+
+开源插件无统一安全审计与 SLA，pnpm 批准构建脚本等于扩大供应链攻击面，生产环境不如锁定单一厂商 IDE。
+
+接下来，第四部分，【概念拆解卡】Cordis 与 DeepSeek Harness 插件。
+
+在讲什么问题，为何同一套 Harness 能接工具、MCP、Skill 还能换 UI——底层一切皆插件。
+
+核心机制，DeepSeek Harness 构建在 Cordis 上；模型适配器、工具注册表、会话日志、Agent 循环、Web 界面均为可插拔插件，通过 dsh plugin --profile web add 等命令挂载。
+
+关键理解，插件是能力组合单元；社区生态（GitHub topic、Awesome 列表）是扩展主战场。
+
+典型场景，增强 Web（任务看板）、多智能体协作、插件市场检索。
+
+边界：公开标签质量参差，需 curated 列表或让 Harness 读 README 自动安装。
+
+接下来，第五部分，【方法/工具卡】安装与全局 dsh 环境。
+
+操作步骤，1) npm i -g pnpm ，得到 2) npm i -g @deepseek-ai/dsh@0.1.5-rc.1 ，得到 3) dsh --version 验证 ，得到 4) 日常用 dsh web 替代 npx 启动 ，得到 5) 按 README 或 Awesome 页执行 dsh plugin --profile web add … ，得到 6) 安装后重启 dsh web。
+
+选型：不熟命令行时，把插件 GitHub 地址发给 Harness，让其读 README 并执行安装命令。
+
+pnpm v10：若安装报构建脚本被拦，先 dsh plugin --profile web approve-builds，对 cloudflared、node-pty、ssh2 等按 a/y 批准后再 add。
+
+接下来，第六部分，【跨概念对比表】三款推荐插件。
+
+dsh-web-ui，Web 增强：看板、Git、主题、桌宠，dsh plugin --profile web add @linxin666/dsh-web-all@latest，pnpm approve-builds
+
+dsh-agent-teams，Captain + 多成员并行，结果汇总，add @nanmicoder/dsh-agent-teams@0.1.17，小任务别用，Token 贵
+
+dsh-market，插件发现与关键词搜索安装，npx @deepseek-ai/dsh plugin … add @dsh-market/plugin，元插件，减 GitHub 盲搜
+
+接下来，第七部分，【避坑清单卡】插件与多 Agent 使用。
+
+坑 1 — Agent Teams 滥用：简单任务也拉多角色，等待时间与 Token 暴涨。解法：仅复杂、可拆解任务启用。
+
+坑 2 — 动态插件不持久：创设模式改的 UI 关会话即失效。解法：对话要求「生成本地插件包并默认加载」。
+
+坑 3 — GitHub topic 鱼龙混杂：优先 Awesome DeepSeek Harness Plugin 分类站。
+
+严重程度：坑 2 对定制 UI 致命；坑 1 对成本致命。
+
+接下来，第八部分，【决策/选型表】扩展 Harness 的方式。
+
+官方已有能力，内置配置，依赖最少，重复造插件，维护负担
+
+社区成熟方案，安装 dsh-plugin，快、可共享，手改 node_modules，升级丢失
+
+一次性 UI 试验，创设模式动态插件，零代码，直接改源码，难回滚
+
+长期定制，持久化本地插件包 + README，可版本管理，仅动态插件，重启即丢
+
+接下来，第九部分，【心法/原则卡】会装也会造。
+
+原则，插件机制的价值不在「官方功能多」，而在「能力可组合、社区可分发、创设可降级为代码」。
+
+怎么落地，创设模式开满推理与完全权限 ，得到 自然语言描述 UI/行为变更 ，得到 确认动态版本 ，得到 再要求打包为 dsh-plugin-* 工作区插件。
+
+边界：Cordis 注册、依赖与生命周期细节留待后续章节；本篇聚焦安装与造插件入口。
+
+原文：至此，你已能「用插件」，也能「造插件」。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Cordis 插件是 Harness 一切能力的载体，社区 dsh-plugin 生态是扩展主路径。
+
+全局 dsh + dsh plugin add 是标准安装姿势；pnpm v10 需 approve-builds。
+
+dsh-web-ui / agent-teams / dsh-market 覆盖 UI、协作与发现；创设模式可持久化自定义插件。
+
+全局安装 dsh 并改用 dsh web 启动。
+
+从 Awesome 列表选 1 个增强插件试装，遇 pnpm 报错走 approve-builds。
+
+用创设模式做一个小 UI 改动并练习「动态 ，得到 本地插件包」持久化流程。
+
+总结：
+
+行动清单：
+
+关键认知转变：Harness 的竞争力 increasingly 在插件网络而非出厂功能列表——学会找插件、装插件、造插件，等于掌握 Agent 平台的扩展语法。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

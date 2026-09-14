@@ -1,0 +1,156 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'deepseek-harness-cordis-plugins.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#065f46,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #059669}
+.card h3{font-size:22px;font-weight:700;color:#065f46;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-purple{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:#a78bfa;color:#6b21a8}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#065f46,#059669);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#065f46;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#065f46}`;
+
+const body = `
+<h1>DeepSeek Harness 入门（四）—— Cordis 插件接入与自造</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">Cordis</span>
+  <span class="tag tag-blue">dsh plugin</span>
+  <span class="tag tag-orange">创设模式</span>
+  <span class="tag tag-purple">Agent Teams</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：DeepSeek Harness 如何通过 Cordis 插件机制把模型、工具、会话、Agent 循环乃至 Web UI 全部可插拔——以及如何发现、安装社区插件、处理 pnpm 构建脚本拦截，并用创设模式把临时 UI 改动持久化为本地插件包。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#065f46;margin-bottom:12px;text-align:center">插件化能力栈</h3>
+  <div class="diagram">
+    <div class="node-purple">Cordis 元框架</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">适配器 / 工具 / 会话</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">社区 dsh-plugin</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">创设模式<br>自造插件</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">工具/MCP/Skill（上篇）是能力接口；本篇是承载这些能力的插件容器与分发方式</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Harness 功能弱于 Codex/Claude Code」。作者强调当前 Web 差异不大，插件化设计意在释放社区——一周内 GitHub 已出现大量 <code>dsh-plugin</code> 标签仓库，能力差距可被插件快速补齐。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Cordis 与 DeepSeek Harness 插件</h3>
+  <p><strong>在讲什么问题：</strong>为何同一套 Harness 能接工具、MCP、Skill 还能换 UI——底层一切皆插件。</p>
+  <p><strong>核心机制：</strong>DeepSeek Harness 构建在 Cordis 上；模型适配器、工具注册表、会话日志、Agent 循环、Web 界面均为可插拔插件，通过 <code>dsh plugin --profile web add</code> 等命令挂载。</p>
+  <p><strong>关键理解：</strong>插件是能力组合单元；社区生态（GitHub topic、Awesome 列表）是扩展主战场。</p>
+  <p><strong>典型场景：</strong>增强 Web（任务看板）、多智能体协作、插件市场检索。</p>
+  <p><strong>边界：</strong>公开标签质量参差，需 curated 列表或让 Harness 读 README 自动安装。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】安装与全局 dsh 环境</h3>
+  <p><strong>操作步骤：</strong>1) <code>npm i -g pnpm</code> → 2) <code>npm i -g @deepseek-ai/dsh@0.1.5-rc.1</code> → 3) <code>dsh --version</code> 验证 → 4) 日常用 <code>dsh web</code> 替代 npx 启动 → 5) 按 README 或 Awesome 页执行 <code>dsh plugin --profile web add …</code> → 6) 安装后重启 <code>dsh web</code>。</p>
+  <p><strong>选型：</strong>不熟命令行时，把插件 GitHub 地址发给 Harness，让其读 README 并执行安装命令。</p>
+  <div class="highlight"><strong>pnpm v10：</strong>若安装报构建脚本被拦，先 <code>dsh plugin --profile web approve-builds</code>，对 cloudflared、node-pty、ssh2 等按 a/y 批准后再 add。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三款推荐插件</h3>
+  <table>
+    <tr><th>插件</th><th>解决什么</th><th>典型命令/用法</th><th>注意</th></tr>
+    <tr><td>dsh-web-ui</td><td>Web 增强：看板、Git、主题、桌宠</td><td><code>dsh plugin --profile web add @linxin666/dsh-web-all@latest</code></td><td>pnpm approve-builds</td></tr>
+    <tr><td>dsh-agent-teams</td><td>Captain + 多成员并行，结果汇总</td><td><code>add @nanmicoder/dsh-agent-teams@0.1.17</code></td><td>小任务别用，Token 贵</td></tr>
+    <tr><td>dsh-market</td><td>插件发现与关键词搜索安装</td><td><code>npx @deepseek-ai/dsh plugin … add @dsh-market/plugin</code></td><td>元插件，减 GitHub 盲搜</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】插件与多 Agent 使用</h3>
+  <p><strong>坑 1 — Agent Teams 滥用：</strong>简单任务也拉多角色，等待时间与 Token 暴涨。解法：仅复杂、可拆解任务启用。</p>
+  <p><strong>坑 2 — 动态插件不持久：</strong>创设模式改的 UI 关会话即失效。解法：对话要求「生成本地插件包并默认加载」。</p>
+  <p><strong>坑 3 — GitHub topic 鱼龙混杂：</strong>优先 Awesome DeepSeek Harness Plugin 分类站。</p>
+  <div class="pitfall"><strong>严重程度：</strong>坑 2 对定制 UI 致命；坑 1 对成本致命。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】扩展 Harness 的方式</h3>
+  <table>
+    <tr><th>需求</th><th>推荐</th><th>理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>官方已有能力</td><td>内置配置</td><td>依赖最少</td><td>重复造插件</td><td>维护负担</td></tr>
+    <tr><td>社区成熟方案</td><td>安装 dsh-plugin</td><td>快、可共享</td><td>手改 node_modules</td><td>升级丢失</td></tr>
+    <tr><td>一次性 UI 试验</td><td>创设模式动态插件</td><td>零代码</td><td>直接改源码</td><td>难回滚</td></tr>
+    <tr><td>长期定制</td><td>持久化本地插件包 + README</td><td>可版本管理</td><td>仅动态插件</td><td>重启即丢</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】会装也会造</h3>
+  <p><strong>原则：</strong>插件机制的价值不在「官方功能多」，而在「能力可组合、社区可分发、创设可降级为代码」。</p>
+  <p><strong>怎么落地：</strong>创设模式开满推理与完全权限 → 自然语言描述 UI/行为变更 → 确认动态版本 → 再要求打包为 <code>dsh-plugin-*</code> 工作区插件。</p>
+  <p><strong>边界：</strong>Cordis 注册、依赖与生命周期细节留待后续章节；本篇聚焦安装与造插件入口。</p>
+  <div class="quote">原文：至此，你已能「用插件」，也能「造插件」。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：企业平台派 · 「插件碎片化」</p>
+  <p class="rebuttal-text">开源插件无统一安全审计与 SLA，pnpm 批准构建脚本等于扩大供应链攻击面，生产环境不如锁定单一厂商 IDE。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Cordis 插件是 Harness 一切能力的载体，社区 <code>dsh-plugin</code> 生态是扩展主路径。</li>
+    <li>全局 <code>dsh</code> + <code>dsh plugin add</code> 是标准安装姿势；pnpm v10 需 approve-builds。</li>
+    <li>dsh-web-ui / agent-teams / dsh-market 覆盖 UI、协作与发现；创设模式可持久化自定义插件。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>全局安装 dsh 并改用 <code>dsh web</code> 启动。</li>
+    <li>从 Awesome 列表选 1 个增强插件试装，遇 pnpm 报错走 approve-builds。</li>
+    <li>用创设模式做一个小 UI 改动并练习「动态 → 本地插件包」持久化流程。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>Harness 的竞争力 increasingly 在插件网络而非出厂功能列表——学会找插件、装插件、造插件，等于掌握 Agent 平台的扩展语法。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
