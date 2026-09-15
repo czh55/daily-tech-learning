@@ -1,0 +1,165 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'superplane-ai-factory-go-open-source.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .relation{background:#f0fdf4;padding:10px 14px;border-radius:10px;margin:8px 0;font-size:14px;color:#166534}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#1e40af}`;
+
+const body = `
+<h1>SuperPlane 开源：Go 社区的「AI 工厂」控制平面</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">控制平面</span>
+  <span class="tag tag-green">Durable Execution</span>
+  <span class="tag tag-orange">Canvas + Console</span>
+  <span class="tag tag-purple">内置 Claude Agent</span>
+  <span class="tag tag-red">Beta</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 AI Agent 产出速度远超人工审批时，工程团队如何用一套可追溯、可回滚、人机共守护栏的「App」式系统，把发布与事件响应从脆弱脚本升级为确定性执行的控制平面。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">SuperPlane App 四件套与执行链</h3>
+  <div class="diagram">
+    <div class="node">Files<br>Git 配置</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Canvas<br>触发器+组件图</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Run<br>持久状态机</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Runner<br>脚本/AI 工具链</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Console + Memory<br>人机看板与状态</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">事件驱动 · 多 Run 并发 · RBAC 约束内置 Agent</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「又一个 n8n/Zapier 套壳大模型」。SuperPlane 的差异在于工程链路默认集成（Git/CI/可观测/事件响应）、App 自带 Console 与 Memory，以及 Runner 预装 Claude Code/Codex 等编码 Agent 工具链——定位是 AI 驱动工程的控制平面，不是泛用营销自动化。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】App 与四大构件</h3>
+  <p><strong>在讲什么问题：</strong>AI 写代码变快后，审批滞后、脚本碎片化、发布缺护栏，人要么跟不上变成橡皮图章，要么 AI 绕开流程。</p>
+  <p><strong>核心机制：</strong>App = 版本化的微型运营系统；Canvas 画触发器与组件订阅图；Console 把运行态变成 KPI 与操作手册；Memory 跨 Run 的 JSON 状态；Files 存 canvas.yaml、console.yaml 与脚本，配置即代码。</p>
+  <p><strong>关键理解：</strong>你不是写一段跑完即丢的流水线，而是部署带 UI、带状态、带 Git 历史的边界系统。</p>
+  <p><strong>典型场景：</strong>灰度发布分支、PR 预览环境、非工作时间发布门控、多仓库发布列车、PagerDuty 黄金 5 分钟证据包编排。</p>
+  <p><strong>边界说明：</strong>仍处于 Beta，核心原语与集成可能破坏性变更；不适合期待「装完就十年不变」的生产硬依赖而无迁移预案。</p>
+  <div class="quote">原文：当 AI Agent 的产出速度远超人类审批速度时，工程团队需要的不是更快的脚本，而是一套人和 AI 都必须遵守、且天然可追溯的规则系统。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】确定性执行与内置 Agent</h3>
+  <p><strong>标签：</strong>运维/SRE · 平台工程 · AI 编码工作流</p>
+  <p><strong>操作步骤：</strong>1) <code>docker pull/run</code> demo 在 localhost:3000 体验示例 Canvas → 2) 用 Files 管理 canvas/console YAML → 3) 在 Canvas 连接 GitHub Push、部署、审批、Slack 等节点 → 4) Build 模式 Agent 改图/写脚本但只能暂存，人工确认后提交 → 5) Ask 模式只读查 Run、Payload、跨源分析 → 6) Runner 节点在 Host/Docker 上跑 Shell/JS/Python，结果经 <code>$SUPERPLANE_RESULT_FILE</code> 或 JSON return 下游传递。</p>
+  <p><strong>选型条件：</strong>需要 Run 级断点恢复、并发多流程、可点开每步 Payload 审计时选 SuperPlane；只需单次 cron 脚本则不必上控制平面。</p>
+  <div class="highlight"><strong>落地：</strong>内置 Agent 权限继承会话 RBAC，不能跨 App 读数据；复杂改动先出 Rubric 施工方案再动手，降低「AI 乱改生产流」风险。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】SuperPlane vs 常见编排工具</h3>
+  <table>
+    <tr><th>维度</th><th>SuperPlane</th><th>n8n / Zapier</th><th>Airflow / Temporal</th><th>一句话</th></tr>
+    <tr><td>默认集成域</td><td>Git、CI/CD、可观测、事件响应</td><td>泛业务/API 胶水</td><td>数据/任务 DAG</td><td>工程闭环优先</td></tr>
+    <tr><td>交付物形态</td><td>App（Canvas+Console+Memory）</td><td>Workflow 跑完即结束</td><td>DAG/Workflow 定义</td><td>带界面的运营工具</td></tr>
+    <tr><td>AI 角色</td><td>内置 Agent + 预装编码 CLI 的 Runner</td><td>多为事后 HTTP 调 LLM</td><td>通常无一等 Agent</td><td>AI 是执行者之一</td></tr>
+    <tr><td>失败恢复</td><td>Run 持久状态机、断点续跑</td><td>依赖节点重试配置</td><td>Temporal 强、Airflow 因部署而异</td><td>Durable execution 是卖点</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Beta 与流程设计</h3>
+  <p><strong>坑 1 — 把 Beta 当稳定 SaaS 内核：</strong>官方明确可能有破坏性变更。严重程度：致命（架构锁定）。</p>
+  <p><strong>坑 2 — 审批节点形同虚设：</strong>AI 提速后若人不看 Payload 只点通过，护栏退化为橡皮图章。解法：Console KPI + 强制双人/值班审批分支。</p>
+  <p><strong>坑 3 — Runner 规格选错：</strong>大模型本地 CLI 任务用 e1-tiny 会 OOM。解法：按 ARM64/AMD64 与 vCPU/内存档位选型。</p>
+  <p><strong>坑 4 — 误以为 Ask 模式能改配置：</strong>只读分析，变更必须走 Build 模式与 Git 提交流程。</p>
+  <div class="pitfall"><strong>原文态度：</strong>评估生产重度依赖前，把「快速迭代」纳入风险登记，并保留回退到现有 CI/脚本的路径。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时引入 SuperPlane</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>AI 开 PR 量暴涨、发布要门控</td><td>SuperPlane App</td><td>审批+灰度+回滚画在图上可追溯</td><td>纯 Slack 提醒</td><td>无状态机与 Payload 审计</td></tr>
+    <tr><td>仅营销线索同步</td><td>n8n 等</td><td>连接器生态更贴业务 SaaS</td><td>SuperPlane</td><td>工程集成过重</td></tr>
+    <tr><td>纯数据 ETL 调度</td><td>Airflow</td><td>批处理 DAG 成熟</td><td>SuperPlane</td><td>非首要场景</td></tr>
+    <tr><td>需要编码 Agent 在隔离机执行</td><td>SuperPlane Runner</td><td>预装 Claude Code/Codex/gh</td><td>裸 CI job</td><td>工具链与结果传递未标准化</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】工厂隐喻：质检与闸门</h3>
+  <p><strong>原则：</strong>「AI 工厂」不是让 Agent 自由发挥，而是把人和 AI 都放进同一条有质检、有闸门、可回滚的产线。</p>
+  <p><strong>为什么重要：</strong>速度差拉大时，瓶颈从编码转向审批与兜底；脆弱 Bash/YAML 条件会在非工作时间发布或事件响应时集中爆雷。</p>
+  <p><strong>怎么落地：</strong>从一条高价值流（如 10%→50%→100% 灰度）画 Canvas，版本化 Files，用 Console 暴露每步 Payload；本地 demo 验证后再考虑 Compose/K8s 或 SuperPlane Cloud。</p>
+  <p><strong>适用边界：</strong>小团队若尚无基本 CI 与代码审查纪律，先补人流程再上控制平面，否则只是把混乱自动化。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：极简主义 SRE · 「Temporal + GitHub Actions 已够用」</p>
+  <p class="rebuttal-text">再叠一层 Go+React 控制平面只会复制你已在 Actions 和编排引擎里付过的运维税，Beta 期的破坏性变更比脚本难迁移，小团队不如把审批写进 CODEOWNERS 和部署保护规则。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>SuperPlane 用 App（Canvas/Console/Memory/Files）把工程流做成可版本化、可审计的运营系统，针对 AI 产出后的审批与回滚瓶颈。</li>
+    <li>确定性执行让 Run 持久化、可断点恢复，多流程并发；内置 Claude Agent 分 Build/Ask，权限绑定 RBAC。</li>
+    <li>Runner 预装编码 Agent 工具链，集成覆盖 Git、云、可观测与事件响应；与 n8n、Airflow 的差异在工程场景与 AI 一等公民设计。</li>
+    <li>项目 Apache 2.0、Go 后端，社区 7k+ Star，但 Beta 阶段需审慎评估生产依赖。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>本地运行官方 demo 容器，打开示例 Canvas 理解触发器与订阅关系。</li>
+    <li>选一条现有发布或 on-call 流程，列出审批闸门与回滚分支，对照能否用 Canvas 表达。</li>
+    <li>试用 Build 模式生成 Rubric 再改图，验证「只能暂存、不能越权提交」是否符合团队治理。</li>
+    <li>在风险登记中记录 Beta 与破坏性变更，设定评估周期与回退方案。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>AI 时代工程竞争力不只在于「谁写得更快」，而在于谁先把人机共同遵守的可追溯规则系统建好，否则提速只会放大事故半径。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
