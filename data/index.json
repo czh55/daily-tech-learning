@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-16",
+    "files": [
+      {
+        "path": "svgs/2026-09-16/go-json-v2-history.svg",
+        "title": "十四年磨一剑：Go 标准库encoding/json/v2 演进全史",
+        "source": "https://tonybai.com/2026/09/16/go-json-v2-history/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-15",
     "files": [
       {

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5312" viewBox="0 0 1320 5312">
+  <foreignObject x="0" y="0" width="1320" height="5312">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#0f766e,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #14b8a6}
+.card h3{font-size:22px;font-weight:700;color:#0f766e;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#065f46}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#0f766e;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#0f766e}</style>
+      
+<h1>Go encoding/json/v2：十四年标准库演进全史</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">Go 1.27</span>
+  <span class="tag tag-blue">jsontext 语法层</span>
+  <span class="tag tag-orange">v1 托举于 v2</span>
+  <span class="tag tag-purple">向后兼容</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在 Go 1 兼容性承诺锁死 v1 默认行为的前提下，官方如何用独立 v2 包与 jsontext 双包架构既修复大小写不敏感、重复键等历史债，又让存量代码零改动继续跑在「换芯不换 API」的 encoding/json 上。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0f766e;margin-bottom:12px;text-align:center">演进链：无法修 v1 → 第三方复刻缺陷 → v2 双包 → v1 底座换芯</h3>
+  <div class="diagram">
+    <div class="node-red">v1 文档化行为<br/>14 年不变</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">sonic/go-json<br/>兼容复刻</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">jsontext<br/>纯语法</div>
+    <span class="arrow-sym">+</span>
+    <div class="node-blue">json/v2<br/>语义映射</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">encoding/json<br/>DefaultOptionsV1</div>
+  </div>
+  <p style="text-align:center;color:#64748b;font-size:15px;margin-top:12px">GOEXPERIMENT=jsonv2（1.25）尝鲜 → Go 1.27 转正</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Go 1.27 终于修了 json 的 Bug」。大小写不敏感匹配等在 v1 路径上仍由 DefaultOptionsV1 刻意保留；v2 才是大小写敏感、重复键报错、非法 UTF-8 拦截的新语义，迁移需显式换 import 与 Options。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】jsontext 与 json/v2 解耦</h3>
+  <p><strong>在讲什么问题：</strong>v1 把语法解析与 Go 类型映射缠在一起，嵌套 <code>UnmarshalJSON</code> 导致整段 JSON 被解析两次甚至指数级放大（Kubernetes OpenAPI 案例）。</p>
+  <p><strong>核心机制：</strong><code>encoding/json/jsontext</code> 只管分词、流式与规范校验；<code>encoding/json/v2</code> 管结构体标签、Options 与类型映射。重复键、非法 UTF-8 在语法层即失败，错误前缀 <code>jsontext:</code>。</p>
+  <p><strong>关键理解：</strong>拆分首要动机是 protojson 式「严苛规范 + 真流式」，性能是架构红利而非唯一目标。</p>
+  <p><strong>典型场景：</strong>自定义高性能管道只复用 jsontext；业务 API 用 v2.Marshal/Unmarshal 并配置 Options。</p>
+  <p><strong>边界说明：</strong>jsontext 倾向 aliasing 与极致吞吐，官方明确「不是给大众随处滥用」；大众默认仍走 v1 或谨慎配置的 v2。</p>
+  <div class="quote">原文：将语法与语义清晰拆解并不是后来为了优化性能而做的事后剥离，而是在最初的 API 提交中就已被深度锚定。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】迁移与尝鲜路径</h3>
+  <p><strong>标签：</strong>标准库升级 · 渐进迁移 · 构建期开关</p>
+  <p><strong>操作步骤：</strong>1) Go 1.25+ 用 <code>GOEXPERIMENT=jsonv2</code> 本地试编译 → 2) Go 1.27 直接 <code>import "encoding/json/v2"</code> → 3) 对照 16 项行为差异清单做回归（重复键、字段名大小写、EOF 校验等）→ 4) 对 <code>time.Duration</code> 在 v2 中显式配置时间格式，勿假设纳秒整数默认 → 5) 存量服务继续 <code>encoding/json</code> 则自动享受 v2 底座性能，语义仍 v1。</p>
+  <p><strong>选型条件：</strong>新服务或安全敏感 JSON 解析选 v2；强依赖 v1 怪异行为（大小写模糊匹配）的遗留系统暂缓换 import。</p>
+  <div class="highlight"><strong>落地：</strong>勿对 v2 错误信息做字符串正则匹配——源码在 <code>cannot</code> 与 <code>unable to</code> 间蓄意随机化，防范海勒姆定律。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】v1 默认 vs v2 语义</h3>
+  <table>
+    <tr><th>维度</th><th>encoding/json (v1 行为)</th><th>encoding/json/v2</th><th>一句话</th></tr>
+    <tr><td>字段名匹配</td><td>大小写不敏感</td><td>大小写敏感</td><td>安全与可预测性向 v2 倾斜</td></tr>
+    <tr><td>重复键</td><td>静默取后者</td><td>语法层报错</td><td>v2 更早失败</td></tr>
+    <tr><td>time.Duration</td><td>纳秒整数</td><td>无默认格式则 Marshal 报错</td><td>强迫显式格式选择</td></tr>
+    <tr><td>Decode 流</td><td>易忽略 EOF</td><td>UnmarshalRead 读到 EOF</td><td>减少半包 JSON 漏检</td></tr>
+    <tr><td>实现层</td><td>Go 1.27 起基于 v2+DefaultOptionsV1</td><td>原生新实现</td><td>同底座、不同选项</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】第三方库与兼容陷阱</h3>
+  <p><strong>坑 1 — 以为 drop-in 更快就更「正确」：</strong>go-json/sonic 为 100% 复刻 v1 缺陷，go-json 在字段≥17 时曾漏掉大小写不敏感（位图优化路径）。严重程度：致命（静默语义漂移）。</p>
+  <p><strong>坑 2 — 依赖错误文案断言：</strong>v2 随机化报错措辞，测试若匹配固定字符串会 flaky。解法：断言错误类型/结构化字段。</p>
+  <p><strong>坑 3 — v2 直接 Marshal Duration：</strong>Go 1.27 v2 无 format 标签（发布前撤回），原生 Duration 需自定义类型或 Options。严重程度：小心（迁移卡点）。</p>
+  <p><strong>坑 4 — 忽视 CL 224079 教训：</strong>即便官方补丁只慢 1%，仍因破坏存量行为被拒——评估「修 Bug」前先查是否文档化行为。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】JSON 方案怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>存量 Go 服务零改动</td><td>继续 encoding/json</td><td>1.27 底层已换 v2 引擎</td><td>强行改 v2 import</td><td>16 项语义差需全量回归</td></tr>
+    <tr><td>新 API / 严格 JSON</td><td>json/v2 + 明确 Options</td><td>重复键与 UTF-8 早失败</td><td>v1 默认</td><td>历史宽松行为</td></tr>
+    <tr><td>极致吞吐、可控内存</td><td>jsontext + 自写映射</td><td>语法层流式与 aliasing</td><td>手写 bytes 切分</td><td>规范与安全难保证</td></tr>
+    <tr><td>要最快且保持 v1 语义</td><td>sonic/go-json（知悉风险）</td><td>社区优化</td><td>标准库 v2 语义</td><td>目标不同：兼容 vs 正确</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】兼容承诺高于「显然更好」</h3>
+  <p><strong>原则：</strong>文档写明的「糟糕默认」在 Go 1 承诺下不是可悄悄修的 Bug，只能新包新语义或 v2 底座 + 兼容标志托举 v1。</p>
+  <p><strong>为什么重要：</strong>第三方为性能背负复刻 v1 缺陷的包袱，说明「不换 API 的修复」在生态层已证明成本极高。</p>
+  <p><strong>怎么落地：</strong>新代码默认 v2；遗留用 v1；读 #71497 行为差异表；性能对比用自家 payload 基准，勿迷信单一数字。</p>
+  <p><strong>适用边界：</strong>跨语言 JSON 若依赖 v1 大小写模糊匹配，换 v2 会破坏对接方——需协议层显式约定字段名。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「永远不换标准库」的维护者 · 够用就行派</p>
+  <p class="rebuttal-text">再叠一个 v2 包只会让团队永远维护三套语义（v1、v2、sonic），十四年修不动的根因是承诺本身——与其学 16 条差异，不如继续 import 第三方并锁定版本。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>encoding/json 的已知缺陷因 Go 1 兼容性文档化而无法在 v1 API 内根治，CL 224079 等修复尝试因 1% 性能与行为破坏被拒。</li>
+    <li>Joe Tsai 主导的 v2 以 jsontext（语法）+ json/v2（语义）双包落地，Go 1.27 转正；v1 整包重构为 v2 + DefaultOptionsV1，实现零 API 换芯。</li>
+    <li>第三方高性能库为无缝替换被迫复刻 v1 缺陷，甚至引出生产 Bug；官方选择不合并 unsafe 方案，以调查数据优先可靠与安全。</li>
+    <li>v2 用随机化错误文案抵制字符串依赖；time.Duration 与 format 标签妥协使 v2 原生 Duration 需显式配置。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>对照官方 v1/v2 行为差异 Playground 示例，标记自己代码是否依赖大小写不敏感或重复键。</li>
+    <li>新项目试点 <code>encoding/json/v2</code>，为 Duration 等类型提前定序列化格式。</li>
+    <li>审查测试里对 json 错误信息的字符串匹配，改为稳定断言方式。</li>
+    <li>若使用 go-json/sonic，关注字段数边界与版本发布说明中的兼容性修复。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>Go 标准库进化不是「把旧包改对」，而是在不背叛承诺的前提下用新包承载正确语义，再把旧 API 变成兼容选项的组合体。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
