@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-09-17",
+    "files": [
+      {
+        "path": "svgs/2026-09-17/openmind-om1-android-for-robots.svg",
+        "title": "具身智能的安卓时刻来了？揭秘OpenMind用Go打造的机器人操作系统OM1",
+        "source": "https://tonybai.com/2026/09/17/openmind-om1-android-for-robots/"
+      },
+      {
+        "path": "svgs/2026-09-17/zhishitiaodong-seed-21.svg",
+        "title": "仅需3轮对话，Seed-2.1-pro-0915大模型帮我创造出知识跳动——智能化知识学习系统",
+        "source": "https://juejin.cn/post/7685966048848773154"
+      }
+    ]
+  },
+  {
     "date": "2026-09-16",
     "files": [
       {
