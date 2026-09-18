@@ -1,0 +1,119 @@
+欢迎收听每日技术学习语音讲解。本期主题，CUDA 原生 Rust：双轨内核与「纯 Rust AI 栈」的地址空间之墙。标签包括cuda-oxide、cutile-rs、编译期 GPU 安全、地址空间。本次讲解预计时长 约 13 到 14 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：英伟达开源 cuda-oxide（SIMT）与 cutile-rs（Tile）两条路线如何把 GPU 内核的内存别名与数据竞争前移到编译期消灭，以及为何 r/rust 热议的「纯 Rust AI 技术栈」仍被地址空间、厂商锁定与算子生态挡在门外。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：旧模式，Host Rust + C/C++ PTX，然后cuda-oxide，SIMT + DisjointSlice，然后cutile-rs，Tile + partition，然后别名/竞争，编译期拒绝，然后地址空间，语言层未解
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：英伟达「官方 CUDA Rust」等于纯 Rust AI 栈已就绪。原文与 Reddit 讨论均强调——Burn/CubeCL 等中立路线早已存在；本次更多是官方认证与 kernel 层安全，而非训练框架、算子库与跨厂商可移植性一并到位。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：CUDA 生态「够用就行」派 · 资深推理工程师
+
+编译期拦住别名救不了 H100 上算子性能与 CUTLASS 十年的积累，为 Rust 叙事重写 kernel 只会拖慢交付，推理层继续 C++/CUDA 才是理性默认。
+
+接下来，第四部分，【概念拆解卡】原生 kernel vs 传统 bindings。
+
+在讲什么问题，过去 Rust 碰 CUDA 只能 host 端写 Rust、kernel 仍用 C/C++ 编译 PTX；现在 kernel 本体也能用 Rust 直编 PTX。
+
+核心机制，两条并行模型——SIMT（线程级，cuda-oxide）与 Tile（数据块级，cutile-rs），共同目标是把借用检查延伸到 device 代码。
+
+关键理解，官方建议优先 Tile（架构细节交给编译器），需精细控制线程/共享内存再下沉 SIMT。
+
+典型场景，推理侧自定义算子、希望消灭「测试全绿、生产炸」的 GPU 别名 bug。
+
+边界说明，两项目均早期阶段，紧贴 CUDA；不解决跨厂商地址空间抽象。
+
+原文：kernel 本身也能用 Rust 写，直接编译成 PTX——和以往「绑定」路线本质不同。
+
+接下来，第五部分，【跨概念对比表】cuda-oxide vs cutile-rs。
+
+编程粒度，写一个线程做什么，写一个 tile 做什么，灵活 vs 受限
+
+工具链，锁定 nightly + 自带 LLVM，stable 1.89+，无自定义 LLVM，Tile 门槛更低
+
+CUDA 版本，12.x+、clang/libclang，13.3，依赖不同
+
+安全机制，DisjointSlice + launch_contract，所有权 + partition 跨 launch，逐次校验 vs 构造保证
+
+共享内存，支持，多需 unsafe，编译器接管，SIMT 更可控
+
+成熟度，早期 alpha，crates.io，Grout/mistral.rs 已用，Tile 更靠前
+
+接下来，第六部分，【方法/工具卡】两条路线的上手路径。
+
+cuda-oxide（SIMT）：1) Linux + CC 8.0+ GPU + CUDA 12.x + clang ，得到 2) 安装锁定 nightly，cargo oxide doctor 体检 ，得到 3) #[kernel] 函数经 Pliron IR 降到 PTX，host/device 同文件一条命令编译 ，得到 4) 用 DisjointSlice 拆可变借用，#[launch_contract] 校验 block/grid 再走安全 launch。
+
+cutile-rs（Tile）：1) CC 8.0+、CUDA 13.3、stable Rust ，得到 2) cargo add cutile ，得到 3) host 端 .partition([128]) 定 grid 并转移所有权 ，得到 4) #[cutile::module] 首次调用 JIT Tile IR ，得到 5) 全程惰性直到 .sync_on(&stream) 唯一同步点。
+
+落地：输出缓冲区当输入传回 SIMT kernel 会直接编译失败——别名从运行期幽灵 bug 变成写代码即报错。
+
+接下来，第七部分，【避坑清单卡】社区泼冷水三层。
+
+坑 1 — 以为英伟达从零发明：Burn+CubeCL 已在多后端推理，路线不同不等于更先进。严重程度：可忽略（认知）。
+
+坑 2 — 死等「纯 Rust」才上线：llama.cpp/mistral.rs 证明推理 C++、系统层 Rust 可并存。严重程度：小心（拖延交付）。
+
+坑 3 — 忽视地址空间：global/shared/constant 互不重叠，Rust 主线无一等公民；两项目绕开而非解开。严重程度：致命（跨厂商 AI 栈）。
+
+坑 4 — SIMT 共享内存：cuda-oxide 仍大量 unsafe；别假设「全安全 GPU Rust」。严重程度：小心。
+
+接下来，第八部分，【决策/选型表】GPU Rust 路线怎么选。
+
+快速试 Tile、stable 工具链，cutile-rs，partition 构造安全、已上架 crates.io，强依赖 nightly 的 SIMT，运维成本高
+
+精细线程/共享内存调优，cuda-oxide，SIMT 灵活度高，纯 Tile，表达能力受限
+
+厂商中立训练/多后端，继续评估 Burn/CubeCL，非 CUDA 锁定，仅押官方双轨，仍绑英伟达语义
+
+去 CUDA 化训练，务实接受 CUDA 或 Vulkan 消费级，训练侧几乎无 OpenCL 正式后端，指望 Vulkan 扛 H100 级 FLOPs，距 cuBLAS/CUTLASS 差距大
+
+生产就绪今天上线，成熟推理栈 + 局部 Rust GPU 试验，两项目均非生产就绪声明，全栈替换 PyTorch，算子覆盖与性能鸿沟
+
+接下来，第九部分，【心法/原则卡】「CUDA 支持 Rust」≠「纯 Rust AI 栈」。
+
+原则，编译期抓住别名与竞争是里程碑；语言级地址空间与厂商性能语义才是 AI 栈最后一堵墙。
+
+为什么重要，指针同值在不同地址空间可能完全不是同一块内存——用 64 位高位打标签也挡不住 SM 边界与 kernel 参数空间差异。
+
+怎么落地，系统团队关注官方路线图（Rust/C++/Python 前端互操作）；业务团队按场景混用 Rust host + 成熟推理引擎，而非等待乌托邦栈。
+
+适用边界，英伟达巩固 Rust GPU「官方地位」对基础设施是信号；中立栈与锁定栈将长期并存。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+cuda-oxide 与 cutile-rs 首次让 Rust kernel 直编 PTX，Tile 优先、SIMT 备精细控制。
+
+DisjointSlice、launch_contract、partition 把 GPU 别名/竞争前移到编译失败，叙事下沉到 device 层。
+
+社区三层讨论：中立栈已有、CUDA 锁定难避、地址空间是语言硬骨头。
+
+cutile-rs 更成熟（Grout/mistral.rs）；cuda-oxide 仍 alpha，共享内存多 unsafe。
+
+对国内 AI 基础设施团队：Rust 写系统层更现实，但「纯栈」与「官方 CUDA Rust」仍是两件事。
+
+用 cargo oxide doctor 或 cutile 最小 partition 示例验证本机 CUDA/Rust 版本矩阵。
+
+对照现有推理路径：哪些算子值得用 Tile 试编译期安全，哪些继续 ONNX/Torch。
+
+阅读 Fearless Concurrency on the GPU 论文与 NV 博客，理解 launch_contract 与 partition 语义差异。
+
+跟踪 Burn/CubeCL 与 NV 双轨路线图，避免押单一路线锁死招聘与部署。
+
+总结：
+
+行动清单：
+
+关键认知转变：GPU 内存安全进编译器是进步；「纯 Rust AI 栈」的瓶颈从 bindings 转向了地址空间与跨厂商性能语义——英伟达下场解决的是前者的一块，不是全部。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

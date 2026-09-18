@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-18",
+    "files": [
+      {
+        "path": "svgs/2026-09-18/nvidia-cuda-native-rust-pure-rust-ai-stack.svg",
+        "title": "英伟达亲自下场：CUDA 原生支持 Rust 了！但「纯 Rust AI 技术栈」，还差一堵墙",
+        "source": "https://tonybai.com/2026/09/18/nvidia-cuda-native-rust-pure-rust-ai-stack/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-17",
     "files": [
       {
