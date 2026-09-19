@@ -1,0 +1,162 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'mit-ai-education-watershed-report-2026.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#eef2ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#312e81,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #4f46e5}
+.card h3{font-size:22px;font-weight:700;color:#3730a3;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:2px solid #a5b4fc;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#3730a3}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#312e81,#4f46e5);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#eef2ff;padding:12px 16px;text-align:left;font-weight:700;color:#3730a3;border-bottom:2px solid #a5b4fc}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>MIT《AI and Education》：分水岭上的八条原则与三大行动</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">高等教育</span>
+  <span class="tag tag-blue">生成式 AI</span>
+  <span class="tag tag-green">逆向设计</span>
+  <span class="tag tag-orange">认知投降</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当生成式 AI 已能包办本科书面作业时，MIT 特设委员会如何用八条原则与「教学重构—社区重建—治理迭代」三大方向，把危机从「防作弊」扭转为重新定义教育目标与师生社会契约。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#3730a3;margin-bottom:12px;text-align:center">从校园现状到落地治理的递进关系</h3>
+  <div class="diagram">
+    <div class="node-orange">AI 无处不在<br>作业可被包办</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">八条原则<br>亲学习者 AI</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">重构评估<br>口试/作品集</div>
+    <span class="arrow-sym">+</span>
+    <div class="node-green">重建连接<br>UROP/社群</div>
+    <span class="arrow-sym">+</span>
+    <div class="node">治理迭代<br>Parley/AI Leads</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：高校 AI 议题等于「禁不禁 ChatGPT」。报告明确写进正文的是认知投降、基础设施被掏空、师生契约受损——技术管理题背后是「教育为了什么」的价值观重审。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】认知投降（cognitive surrender）</h3>
+  <p><strong>在讲什么问题：</strong>比显性作弊更隐蔽的危机——学生遇阻即问 AI，误以为「拿到正确答案」等于学会。</p>
+  <p><strong>核心机制：</strong>学习过程被绕过；委员会援引「亲劳动者 AI」，主张教育系统需要「亲学习者 AI」——拓展能思考、能解决的问题边界，而非代劳。</p>
+  <p><strong>关键理解：</strong>报告判断生成式 AI 已能胜任本科几乎所有书面作业（论文、证明、编程），速度远超社会适应节奏。</p>
+  <p><strong>典型场景：</strong>回家作业、习题集、备考；办公室答疑与学习小组同时萎缩。</p>
+  <p><strong>边界说明：</strong>诗歌研讨与建筑设计工作室对 AI 的容忍度不同，不存在全校一刀切公式。</p>
+  <div class="quote">原文：学生一遇到困难，第一反应不是琢磨，而是打开对话框问 AI。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】八条指导原则（节选落地）</h3>
+  <p><strong>原则：</strong>谦逊、大胆、以人为本、拥抱学习、有意图地教学、因材施教、增强而非替代、跳出课堂看长远。</p>
+  <p><strong>为什么重要：</strong>problem set、UROP、办公室答疑、学习小组等「灵魂设施」正被悄悄掏空，孤立感与评估失真同步加剧。</p>
+  <p><strong>怎么落地：</strong>院系采用「政策菜单」自主选型并说明理由；教师用 AI 生成讲义/批改须告知学生，避免双重标准透支互信。</p>
+  <p><strong>适用边界：</strong>增强（augmentation）不等于自动化替代——用 AI 智能体替代 UROP 助理在效率上说得通，却可能砍掉学徒制成长通道。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】逆向设计与抗 AI 评估</h3>
+  <p><strong>核心思路：</strong>不要试图把课程「AI-proof」，先问学生结业后应知道什么、能做什么、看重什么，再设计作业与考核。</p>
+  <p><strong>操作步骤：</strong>1) backward design 明确学习目标 → 2) 选用口试、学期作品集、课下作业与课堂讨论配对 → 3) 加大助教与课堂时间投入 → 4) 为 UROP（覆盖 93% 本科生）保留人类科研共同体体验。</p>
+  <p><strong>避坑：</strong>反对限制 A 比例逼学生用 AI 卷绩点；反对不可靠的 AI 检测与锁定式监考（易误伤非母语与神经多样性学生）。</p>
+  <div class="highlight"><strong>落地：</strong>信任修复手段——课堂手写起草、分阶段提交、保留版本历史，替代猫鼠游戏式监控。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】报告明确劝退的做法</h3>
+  <p><strong>坑 1 — 全校统一 AI 禁令：</strong>课程类型差异大，一刀切取消练习意义或让学生毕业时吃亏。严重程度：小心。</p>
+  <p><strong>坑 2 — 依赖 AI 检测工具：</strong>不可靠且破坏师生关系。严重程度：致命（公平与信任）。</p>
+  <p><strong>坑 3 — 用 AI 替代 UROP 人力：</strong>损失的是提问、被同行评判、形成学术判断力的通道。严重程度：致命（教育本质）。</p>
+  <p><strong>坑 4 — 教师隐身使用 AI 批改：</strong>学生已对双重标准极其敏感。严重程度：小心。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】教学与治理怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>定义课程目标</td><td>逆向设计 + 政策菜单</td><td>比防 AI 更根本</td><td>仅加检测/监考</td><td>治标不治本</td></tr>
+    <tr><td>验证真实水平</td><td>口试、作品集、课堂配对</td><td>抗 AI 且促学习</td><td>回家考试 alone</td><td>易被模型包办</td></tr>
+    <tr><td>校内 AI 接入</td><td>Parley 统一平台 + 免费额度</td><td>避免商业订阅装备差距</td><td>绑死单一厂商</td><td>公平与可持续</td></tr>
+    <tr><td>持续改进</td><td>常设委员会 + 院系 AI Leads + 试点基金</td><td>技术迭代快</td><td>一次性政策</td><td>六个月已装不下问题</td></tr>
+    <tr><td>AI 素养</td><td>有效/负责任/伦理三层贯穿新生教育</td><td>披露使用、禁止 AI 共著</td><td>只教提示词</td><td>缺伦理与偏见维度</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】「防 AI」vs「重新设计」</h3>
+  <table>
+    <tr><th>维度</th><th>防 AI / 检测路线</th><th>重新设计 / 亲学习者路线</th><th>一句话</th></tr>
+    <tr><td>目标</td><td>堵住作弊入口</td><td>澄清教育价值与能力</td><td>管理题 vs 使命题</td></tr>
+    <tr><td>师生关系</td><td>猫鼠游戏、监控感</td><td>信任修复与透明</td><td>契约修复是关键</td></tr>
+    <tr><td>评估形态</td><td>传统书面作业</td><td>口试、作品集、现场实践</td><td>让过程可见</td></tr>
+    <tr><td>基础设施</td><td>忽视 UROP/答疑萎缩</td><td>Explicit 保护师徒制与社群</td><td>低效场景最值钱</td></tr>
+    <tr><td>公平</td><td>检测误伤弱势群体</td><td>Parley 抹平订阅差距</td><td>装备差也是学分差</td></tr>
+  </table>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：效率优先的科研 PI / 「能自动就自动」派</p>
+  <p class="rebuttal-text">UROP 和口试是工业时代奢侈品，AI 智能体 24 小时出结果还更便宜，死守师徒制只会把 MIT 拖成博物馆。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>校长所称「分水岭」指向教育使命重审，而非单次课程微调。</li>
+    <li>最大风险是认知投降与社区设施空心化，而非单独作弊率。</li>
+    <li>八条原则 + 三大行动：重构评估、重建人际连接、迭代治理（含 Parley 与 AI Leads）。</li>
+    <li>明确反对一刀切禁令、AI 检测与锁定监考；推荐逆向设计与增强式 AI 素养。</li>
+    <li>对国内教育者：先定学习目标，再谈工具；连接与师徒制是 AI 难替代的护城河。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>用 backward design 写清一门课「结业能力」，倒推作业是否必须禁 AI。</li>
+    <li>在 syllabus 中分层写 AI 使用规则（有效/负责任/伦理）并要求论文披露、禁止 AI 共著。</li>
+    <li>增加一次口试或作品集环节，验证学生能否脱离模型解释思路。</li>
+    <li>审视科研/助教岗位：哪些环节必须保留人类新手以维持判断力训练。</li>
+    <li>阅读 MIT 报告全文与 FAQ，对照本校算力与订阅是否造成「装备差距」。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>AI 时代的高校议题不是「要不要禁用 ChatGPT」，而是承认书面作业可被包办后，还敢不敢重新定义什么值得人类花时间一起做。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);
