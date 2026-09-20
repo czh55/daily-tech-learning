@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-09-20",
+    "files": [
+      {
+        "path": "svgs/2026-09-20/jev-laya-non-autoregressive-decision-model-priority-dispute.svg",
+        "title": "Jev刚发布就封神？一位独立研究员在HN开怼：这套「非自回归决策模型」，我一年前就做出来了",
+        "source": "https://tonybai.com/2026/09/20/jev-laya-non-autoregressive-decision-model-priority-dispute/"
+      },
+      {
+        "path": "svgs/2026-09-20/jev-typesafe-system-one-model-intro.svg",
+        "title": "刚刚，TypeSafe 发布「反 LLM」新物种 JEV：0.1 秒出结果、宣称零幻觉、比大模型便宜上百倍",
+        "source": "https://tonybai.com/2026/09/20/jev-typesafe-system-one-model-intro/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-19",
     "files": [
       {

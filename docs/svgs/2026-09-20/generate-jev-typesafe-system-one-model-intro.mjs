@@ -1,0 +1,161 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'jev-typesafe-system-one-model-intro.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ecfeff,#cffafe);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#0e7490,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #0891b2}
+.card h3{font-size:22px;font-weight:700;color:#0e7490;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfeff,#cffafe);border:2px solid #67e8f9;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#0e7490}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0e7490,#0891b2);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#ecfeff;padding:12px 16px;text-align:left;font-weight:700;color:#0e7490;border-bottom:2px solid #67e8f9}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>JEV：System One 决策引擎快速上手</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">System 1</span>
+  <span class="tag tag-blue">RLCD</span>
+  <span class="tag tag-green">结构化输出</span>
+  <span class="tag tag-orange">Agent 守门员</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当通用 LLM 用逐 token 生成去硬做分类与路由时，JEV 如何用 Noul / Choice / Score 三类原语、并行采样与校准概率，在毫秒级延迟和近零输出成本下充当「更聪明的 if 语句」，以及它在 Agent 循环里应放在哪一环、不能替代什么。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0e7490;margin-bottom:12px;text-align:center">JEV 在软件栈中的位置</h3>
+  <div class="diagram">
+    <div class="node-orange">业务 state<br>工单/对话</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">JEV 并行<br>questions</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">概率 +<br>confidence</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">普通 if/switch<br>执行动作</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「结构上零幻觉」等于判断永远正确。原文强调输出落在预定义选项内故无格式幻觉；语义对错仍取决于 state 质量与阈值策略，confidence 只反映分布集中度，不保证单次正确。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】System One 模型 / JEV</h3>
+  <p><strong>在讲什么问题：</strong>大量软件分支是语义判断，传统 if 写不出，全量 LLM 又慢又贵。</p>
+  <p><strong>核心机制：</strong>给定 state + 预定义 questions，一次调用并行输出各题概率分布与置信度，不生成自由文本。</p>
+  <p><strong>关键理解：</strong>卡尼曼 System 1（快直觉） vs LLM 代表的 System 2（慢推理）；Jevons 悖论押注「判断成本趋零 → 调用次数爆炸」。 </p>
+  <p><strong>典型场景：</strong>工单分类与严重度、数据打标、实时交互里的语气/风险判断。</p>
+  <p><strong>边界说明：</strong>不写代码、不长文、不擅长精确计数与日期比较；headline 193×/444× 来自官方自建评测，非普适保证。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】三种问题原语怎么用</h3>
+  <p><strong>Noul：</strong>二元判断，概率近 0.5 说明题干不清，先改 instructions 而非换模型。</p>
+  <p><strong>Choice：</strong>互斥分类，选项可能不全时必须加「其他」，避免矮子里拔将军。</p>
+  <p><strong>Score：</strong>有序档位，criteria 写具体情境而非「轻/中/重」抽象词；多 Score 加权比单一「综合优先级」更稳、更可调试。</p>
+  <p><strong>State 原则：</strong>只放答题所需字段，无关信息会拖累准确率——与 prompt 污染同理。</p>
+  <div class="highlight"><strong>置信度分层：</strong>高置信自动执行；中置信加确认；低置信转人工或回退更强 LLM——阈值是业务风险决策。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】集成 JEV 时别踩的坑</h3>
+  <p><strong>坑 1 — 把 JEV 当 ChatGPT 平替：</strong>它不做开放生成。严重程度：致命。</p>
+  <p><strong>坑 2 — 迷信 headline 倍数：</strong>美西机房测速，跨区域网络会抬高延迟。严重程度：小心。</p>
+  <p><strong>坑 3 — Choice 缺「其他」：</strong>强迫模型在错误选项里选最高概率。严重程度：致命。</p>
+  <p><strong>坑 4 — 高置信即正确：</strong>忽略单次误判代价。严重程度：小心。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】JEV vs 传统 LLM 结构化输出</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>Agent 循环内高频判断</td><td>JEV</td><td>70–500ms 级，输出免费</td><td>每步完整 chat completion</td><td>成本与延迟</td></tr>
+    <tr><td>开放对话/写代码</td><td>通用 LLM</td><td>JEV 无生成能力</td><td>强行用 Choice 凑答案</td><td>能力边界</td></tr>
+    <tr><td>工具风险拦截</td><td>JEV + LangChain 中间件</td><td>只读/可逆/不可逆分类</td><td>纯规则 regex</td><td>语义覆盖不足</td></tr>
+    <tr><td>需精确计数日期</td><td>确定性代码或 LLM+验证</td><td>JEV 明确不擅长</td><td>单独 JEV</td><td>错误类型不同</td></tr>
+    <tr><td>大规模打标</td><td>JEV 批量 questions</td><td>并行评估多加题几乎不增时延</td><td>串行 JSON 生成</td><td>token 串行瓶颈</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】LLM vs JEV（官方对照摘要）</h3>
+  <table>
+    <tr><th>维度</th><th>传统 LLM</th><th>JEV / System One</th><th>一句话</th></tr>
+    <tr><td>训练目标</td><td>RLHF / RLVR 偏好或可验证奖励</td><td>RLCD 校准决策</td><td>优化「像人话」vs「概率准」</td></tr>
+    <tr><td>采样</td><td>逐 token 串行</td><td>同 state 并行评估</td><td>决定延迟曲线</td></tr>
+    <tr><td>输出</td><td>自由文本需解析</td><td>类型化数值天然合法</td><td>格式风险转移</td></tr>
+    <tr><td>价格</td><td>输入贵、输出更贵</td><td>输入约 $0.042/M，输出免费</td><td>适合高频小判断</td></tr>
+    <tr><td>生态</td><td>通用</td><td>LangChain TypeSafeClassifier、Vercel experimental_evaluate</td><td>发布即被中间件吸收</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Agent 里的「守门员」定位</h3>
+  <p><strong>原则：</strong>JEV 替换循环里「其实只是判断题」的环节，而非替代规划与工具执行。</p>
+  <p><strong>为什么重要：</strong>商业化 Coding Agent 的闭源护栏正被廉价分类模型 democratize。</p>
+  <p><strong>怎么落地：</strong>用 LangChain AutoModeMiddleware 或 SDK evaluate 在工具调用前做风险分级，再交 if 逻辑。</p>
+  <p><strong>适用边界：</strong>发布仅数日，多数案例仍在「能跑」阶段，离扛真实流量尚需观察。</p>
+  <div class="quote">官方自我修正：193.6× 更快、444.6× 更便宜是 workflow 评测较高值，勿当普遍预期。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「一个模型搞定一切」的 LLM 原教旨主义者</p>
+  <p class="rebuttal-text">多一套专有 API 只是把 if-else 换成黑盒分类，维护 questions/schema 的边际成本未必低于微调小模型或规则引擎，生态锁定风险还在。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>JEV 是 System One 决策引擎：封闭输出空间 + 并行采样 + RLCD，主打快、便宜、类型安全。</li>
+    <li>三类原语 Noul / Choice / Score 覆盖多数路由与打标；state 精简与「其他」选项是准确率关键。</li>
+    <li>confidence 用于分层自动化，不是单次正确保证；语义幻觉与格式幻觉要分开理解。</li>
+    <li>在 Agent 中充当守门员节点，LangChain / Vercel 已提供集成路径。</li>
+    <li>性能 headline 需按区域与自建集打折；长文生成与精确算术仍归 LLM 或确定性代码。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>列出 Agent 循环中可改写成 Choice/Score 的判断点，估算调用频次。</li>
+    <li>为每题写清 criteria，Choice 加「其他」，Score 用情境描述而非抽象程度词。</li>
+    <li>按业务风险设定 confidence 阈值与人工回退路径。</li>
+    <li>用 LangChain TypeSafeClassifier 或 Vercel experimental_evaluate 做 POC 对比延迟账单。</li>
+    <li>对精确计数/日期类需求保留代码路径，勿硬塞 JEV。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>智能软件不必把所有分支都交给会聊天的模型——把「判断」与「叙述」拆开会同时改善延迟、成本与可控性。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);
