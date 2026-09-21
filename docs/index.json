@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-21",
+    "files": [
+      {
+        "path": "svgs/2026-09-21/go-testing-goroutine-labels-proposal.svg",
+        "title": "测试超时卡死，却不知道是哪个 goroutine 在作妖？Go 官方提案：给每个测试自动打标签",
+        "source": "https://tonybai.com/2026/09/21/go-testing-goroutine-labels-proposal/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-20",
     "files": [
       {

@@ -1,0 +1,117 @@
+欢迎收听每日技术学习语音讲解。本期主题，Go 提案 #75047：测试 goroutine 自动打标签。标签包括go test、pprof label、#75047、CI 排障。本次讲解预计时长 约 12 到 13 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Go 1.21 已能列出「哪些测试还没结束」，但并发测试超时后仍无法把海量 goroutine 堆栈归到具体测试；提案 #75047 拟在每次测试/基准/模糊测试入口用 pprof.Do 自动打上测试名与 -count 迭代号，并借 CL 694119 把 label 写进 panic/traceback 状态行，让 CI 卡死排查从猜归属变成搜字符串。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：go test，调用 TestX，然后pprof.Do，test + test_iter，然后子 goroutine，继承 label，然后traceback，{test: …}
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「有 goroutine label 就能自动杀掉卡死测试」。标签只解决归因与 profile 聚合，不负责终止；超时仍靠 -timeout，价值在于 dump 里能搜 test: 定位堆栈。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「测试写干净就不会超时」的极简派
+
+label 只改善事后归因，不减少泄漏 goroutine 与死锁；若团队从不做 profile，多两行字符串也只是更长的噪音。
+
+接下来，第四部分，【概念拆解卡】goroutine profile label 与测试缺口。
+
+在讲什么问题，多测试并行 + 测试内再起 goroutine 时，CI 超时日志是「几百行匿名堆栈」。
+
+核心机制，Go 1.9 起 pprof.Labels + pprof.Do 让子 goroutine 继承 key-value；CPU/goroutine profile 可按标签聚合。
+
+关键理解，基础设施早就有，但 testing 包从未默认给每个 Test/Benchmark/Fuzz 套上标签——#75047 是「测试框架吃自己的狗粮」。
+
+典型场景，包级并行测试、内部 fan-out goroutine、-count 复现偶发卡死。
+
+边界说明，不替代写好测试超时与 t.Cleanup；模糊测试命名用 f.Name()，与 t.Run 子测试路径仍要读完整字符串。
+
+期望效果示例：goroutine 36 [running] {test: TestWithPanic#0}: —— 一眼知归属与第几次迭代。
+
+接下来，第五部分，【方法/工具卡】提案里的两个 label 怎么用。
+
+稻草人方案：test = 完整测试名（t.Name()）；test_iter = -count 下的第几次运行（从 0 起）。
+
+操作链路：CL 696117 / 696595 在 testing 入口 pprof.Do ，得到 子 goroutine 继承 ，得到 CL 694119 在 runtime traceback 状态行打印 label。
+
+日常排障：超时 dump 里 grep 'test: TestFoo'；profile 里按 test 看哪条测试吃 CPU/泄漏 goroutine。
+
+性能取舍：每次改 label 会分配新 context——不会放进 benchmark 内层热循环，只在外层测试/基准调用打一次。
+
+落地前可先手动：在可疑测试外包一层 pprof.Do(ctx, pprof.Labels("test", t.Name()), …)，验证 profile 与日志是否够归因。
+
+接下来，第六部分，【避坑清单卡】读提案与社区讨论时的坑。
+
+坑 1 — 把「未结束测试列表」当完整答案：Go 1.21+ 只列测试函数名，不映射每个 goroutine。严重程度：小心。
+
+坑 2 — 单 label 拼接迭代号做 profile：-count 100 会把同测试拆成 100 条样本，聚合变差；双 label 或 -taghide 才干净。严重程度：致命（对性能分析）。
+
+坑 3 — 用 # 拼迭代与子测试：t.Run 已用 # 区分重名用例，再叠迭代易出现 Foo#1#0 误读。严重程度：小心。
+
+坑 4 — 指望旧式 benchmark 内层迭代号语义完美：auto-scaling 循环让 setup 与迭代纠缠；委员会倾向不为旧模式过度设计，b.Loop 路径更简单。严重程度：可忽略（新代码用 Loop）。
+
+接下来，第七部分，【决策/选型表】一个 label 还是两个？。
+
+CI 超时看 traceback，双 label 或拼接名 Test#0，状态行要人类可读的一眼归属，无 label，只能猜调用链
+
+-count 很大时看 CPU profile，test + test_iter 分离，按测试名聚合，迭代可选隐藏，全拼进一个字符串，样本被拆散
+
+模糊测试多轮输入，讨论中的 TestFuzz#0#3 式拼接或扩展 iter 语义，区分外层 count 与 fuzz 轮次，只标函数名，无法区分第几轮输入
+
+命名风格长期维护，倾向 test.name / test.iter 点分（评审倾向），与 grpc-go 等生态 label 风格收敛，临时下划线名未定就依赖，API 多年难改
+
+接下来，第八部分，【跨概念对比表】排障信息演进。
+
+超时 dump，裸 goroutine 堆栈，+ 未结束测试名列表，每 goroutine 带 test label，从「知道卡在哪几个 Test」到「这条栈属于谁」
+
+profile，手工 pprof.Do，不变，测试默认带标签，零成本按测试归因
+
+生态，各项目自建，—，grpc-go 等已对齐命名讨论，label 规范化跨项目
+
+接下来，第九部分，【心法/原则卡】「小提案」里的 Go 评审文化。
+
+原则，先确认痛点真实、方向可行，再花大量时间抠命名、分隔符、兼容与分配开销。
+
+为什么重要，#75047 已 active，CL 已存在但 label 定稿前实现仍会改——跟进提案比背死字段名更有用。
+
+怎么落地，star/follow issue #75047、#23458；CI 卡死时保存完整 goroutine dump 备将来对比；新 benchmark 优先 b.Loop 减轻迭代语义包袱。
+
+适用边界，提案未合并前行为以你本地 Go 版本为准；合入后注意 traceback 格式变化可能影响日志解析脚本。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+#75047 目标明确：为每次 Test/Benchmark/Fuzz 自动打 goroutine label，继承到子 goroutine。
+
+双 label（名 + 迭代）利于 profile 聚合；单 label 拼接更简单但牺牲 -count 场景的可读聚合。
+
+CL 694119 + 696117/696595 分别解决「怎么显示」与「怎么打」；benchmark 内层不打标签是为分配开销。
+
+评审委员会（aclements）认可方向，倾向迭代号从第一次就打印、命名走向点分风格。
+
+对日常 Gopher：CI 超时排查与按测试看 profile 将显著省事，值得跟踪 active 提案直至合入。
+
+收藏 issue #75047 与关联 CL，合入后升级工具链。
+
+下次包测试 CI 超时，保存 dump 并尝试搜测试名 vs 未来 {test: 格式对比。
+
+在高度并发可疑测试里临时用 pprof.Do 打 label 做一次性 profile 验证。
+
+新基准测试用 b.Loop，避免旧 auto-scaling 与迭代号语义纠缠。
+
+若维护日志解析器，预留 traceback 状态行嵌入 label 的格式变更。
+
+总结：
+
+行动清单：
+
+关键认知转变：测试框架的可观测性不该只靠开发者记得包 pprof.Do——把 label 做成默认行为，才能把「大海捞针式排障」变成可搜索、可聚合的工程问题。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

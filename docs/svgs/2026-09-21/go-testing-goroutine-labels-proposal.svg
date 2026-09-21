@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5348" viewBox="0 0 1320 5348">
+  <foreignObject x="0" y="0" width="1320" height="5348">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f0fdf4,#dcfce7);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#166534,#15803d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #16a34a}
+.card h3{font-size:22px;font-weight:700;color:#166534;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#166534}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#166534,#15803d);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f0fdf4;padding:12px 16px;text-align:left;font-weight:700;color:#166534;border-bottom:2px solid #86efac}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#0f172a}</style>
+      
+<h1>Go 提案 #75047：测试 goroutine 自动打标签</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">go test</span>
+  <span class="tag tag-blue">pprof label</span>
+  <span class="tag tag-purple">#75047</span>
+  <span class="tag tag-orange">CI 排障</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Go 1.21 已能列出「哪些测试还没结束」，但并发测试超时后仍无法把海量 goroutine 堆栈归到具体测试；提案 #75047 拟在每次测试/基准/模糊测试入口用 <code>pprof.Do</code> 自动打上测试名与 <code>-count</code> 迭代号，并借 CL 694119 把 label 写进 panic/traceback 状态行，让 CI 卡死排查从猜归属变成搜字符串。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#166534;margin-bottom:12px;text-align:center">标签从测试入口传到子 goroutine</h3>
+  <div class="diagram">
+    <div class="node">go test<br/>调用 TestX</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">pprof.Do<br/>test + test_iter</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">子 goroutine<br/>继承 label</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">traceback<br/>{test: …}</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「有 goroutine label 就能自动杀掉卡死测试」。标签只解决<strong>归因与 profile 聚合</strong>，不负责终止；超时仍靠 <code>-timeout</code>，价值在于 dump 里能搜 <code>test:</code> 定位堆栈。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】goroutine profile label 与测试缺口</h3>
+  <p><strong>在讲什么问题：</strong>多测试并行 + 测试内再起 goroutine 时，CI 超时日志是「几百行匿名堆栈」。</p>
+  <p><strong>核心机制：</strong>Go 1.9 起 <code>pprof.Labels</code> + <code>pprof.Do</code> 让子 goroutine 继承 key-value；CPU/goroutine profile 可按标签聚合。</p>
+  <p><strong>关键理解：</strong>基础设施早就有，但 <code>testing</code> 包从未默认给每个 Test/Benchmark/Fuzz 套上标签——#75047 是「测试框架吃自己的狗粮」。 </p>
+  <p><strong>典型场景：</strong>包级并行测试、内部 fan-out goroutine、<code>-count</code> 复现偶发卡死。</p>
+  <p><strong>边界说明：</strong>不替代写好测试超时与 <code>t.Cleanup</code>；模糊测试命名用 <code>f.Name()</code>，与 <code>t.Run</code> 子测试路径仍要读完整字符串。</p>
+  <div class="quote">期望效果示例：<code>goroutine 36 [running] {test: TestWithPanic#0}:</code> —— 一眼知归属与第几次迭代。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】提案里的两个 label 怎么用</h3>
+  <p><strong>稻草人方案：</strong><code>test</code> = 完整测试名（<code>t.Name()</code>）；<code>test_iter</code> = <code>-count</code> 下的第几次运行（从 0 起）。</p>
+  <p><strong>操作链路：</strong>CL 696117 / 696595 在 testing 入口 <code>pprof.Do</code> → 子 goroutine 继承 → CL 694119 在 runtime traceback 状态行打印 label。</p>
+  <p><strong>日常排障：</strong>超时 dump 里 <code>grep 'test: TestFoo'</code>；profile 里按 <code>test</code> 看哪条测试吃 CPU/泄漏 goroutine。</p>
+  <p><strong>性能取舍：</strong>每次改 label 会分配新 context——<strong>不会</strong>放进 benchmark 内层热循环，只在外层测试/基准调用打一次。</p>
+  <div class="highlight"><strong>落地前可先手动：</strong>在可疑测试外包一层 <code>pprof.Do(ctx, pprof.Labels("test", t.Name()), …)</code>，验证 profile 与日志是否够归因。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】读提案与社区讨论时的坑</h3>
+  <p><strong>坑 1 — 把「未结束测试列表」当完整答案：</strong>Go 1.21+ 只列测试函数名，不映射每个 goroutine。严重程度：小心。</p>
+  <p><strong>坑 2 — 单 label 拼接迭代号做 profile：</strong><code>-count 100</code> 会把同测试拆成 100 条样本，聚合变差；双 label 或 <code>-taghide</code> 才干净。严重程度：致命（对性能分析）。</p>
+  <p><strong>坑 3 — 用 <code>#</code> 拼迭代与子测试：</strong><code>t.Run</code> 已用 <code>#</code> 区分重名用例，再叠迭代易出现 <code>Foo#1#0</code> 误读。严重程度：小心。</p>
+  <p><strong>坑 4 — 指望旧式 benchmark 内层迭代号语义完美：</strong>auto-scaling 循环让 setup 与迭代纠缠；委员会倾向不为旧模式过度设计，<code>b.Loop</code> 路径更简单。严重程度：可忽略（新代码用 Loop）。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】一个 label 还是两个？</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>CI 超时看 traceback</td><td>双 label 或拼接名 <code>Test#0</code></td><td>状态行要人类可读的一眼归属</td><td>无 label</td><td>只能猜调用链</td></tr>
+    <tr><td><code>-count</code> 很大时看 CPU profile</td><td><code>test</code> + <code>test_iter</code> 分离</td><td>按测试名聚合，迭代可选隐藏</td><td>全拼进一个字符串</td><td>样本被拆散</td></tr>
+    <tr><td>模糊测试多轮输入</td><td>讨论中的 <code>TestFuzz#0#3</code> 式拼接或扩展 iter 语义</td><td>区分外层 count 与 fuzz 轮次</td><td>只标函数名</td><td>无法区分第几轮输入</td></tr>
+    <tr><td>命名风格长期维护</td><td>倾向 <code>test.name</code> / <code>test.iter</code> 点分（评审倾向）</td><td>与 grpc-go 等生态 label 风格收敛</td><td>临时下划线名未定就依赖</td><td>API 多年难改</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】排障信息演进</h3>
+  <table>
+    <tr><th>维度</th><th>Go 1.21 前/无 label</th><th>列出未结束测试</th><th>#75047 落地后</th><th>一句话</th></tr>
+    <tr><td>超时 dump</td><td>裸 goroutine 堆栈</td><td>+ 未结束测试名列表</td><td>每 goroutine 带 test label</td><td>从「知道卡在哪几个 Test」到「这条栈属于谁」</td></tr>
+    <tr><td>profile</td><td>手工 <code>pprof.Do</code></td><td>不变</td><td>测试默认带标签</td><td>零成本按测试归因</td></tr>
+    <tr><td>生态</td><td>各项目自建</td><td>—</td><td>grpc-go 等已对齐命名讨论</td><td>label 规范化跨项目</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】「小提案」里的 Go 评审文化</h3>
+  <p><strong>原则：</strong>先确认痛点真实、方向可行，再花大量时间抠命名、分隔符、兼容与分配开销。</p>
+  <p><strong>为什么重要：</strong>#75047 已 active，CL 已存在但 label 定稿前实现仍会改——跟进提案比背死字段名更有用。</p>
+  <p><strong>怎么落地：</strong>star/follow issue #75047、#23458；CI 卡死时保存完整 goroutine dump 备将来对比；新 benchmark 优先 <code>b.Loop</code> 减轻迭代语义包袱。</p>
+  <p><strong>适用边界：</strong>提案未合并前行为以你本地 Go 版本为准；合入后注意 traceback 格式变化可能影响日志解析脚本。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「测试写干净就不会超时」的极简派</p>
+  <p class="rebuttal-text">label 只改善事后归因，不减少泄漏 goroutine 与死锁；若团队从不做 profile，多两行字符串也只是更长的噪音。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>#75047 目标明确：为每次 Test/Benchmark/Fuzz 自动打 goroutine label，继承到子 goroutine。</li>
+    <li>双 label（名 + 迭代）利于 profile 聚合；单 label 拼接更简单但牺牲 <code>-count</code> 场景的可读聚合。</li>
+    <li>CL 694119 + 696117/696595 分别解决「怎么显示」与「怎么打」；benchmark 内层不打标签是为分配开销。</li>
+    <li>评审委员会（aclements）认可方向，倾向迭代号从第一次就打印、命名走向点分风格。</li>
+    <li>对日常 Gopher：CI 超时排查与按测试看 profile 将显著省事，值得跟踪 active 提案直至合入。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>收藏 <a href="https://github.com/golang/go/issues/75047">issue #75047</a> 与关联 CL，合入后升级工具链。</li>
+    <li>下次包测试 CI 超时，保存 dump 并尝试搜测试名 vs 未来 <code>{test:</code> 格式对比。</li>
+    <li>在高度并发可疑测试里临时用 <code>pprof.Do</code> 打 label 做一次性 profile 验证。</li>
+    <li>新基准测试用 <code>b.Loop</code>，避免旧 auto-scaling 与迭代号语义纠缠。</li>
+    <li>若维护日志解析器，预留 traceback 状态行嵌入 label 的格式变更。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>测试框架的可观测性不该只靠开发者记得包 <code>pprof.Do</code>——把 label 做成默认行为，才能把「大海捞针式排障」变成可搜索、可聚合的工程问题。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
