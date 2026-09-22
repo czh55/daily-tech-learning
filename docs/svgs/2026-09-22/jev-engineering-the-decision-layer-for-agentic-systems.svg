@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5553" viewBox="0 0 1320 5553">
+  <foreignObject x="0" y="0" width="1320" height="5553">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#eef2ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#3730a3,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #6366f1}
+.card h3{font-size:22px;font-weight:700;color:#4338ca;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:2px solid #a5b4fc;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#3730a3}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#86efac;color:#166534}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#eef2ff;padding:12px 16px;text-align:left;font-weight:700;color:#4338ca;border-bottom:2px solid #a5b4fc}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#0f172a}</style>
+      
+<h1>JEV 工程学：智能体系统的决策层</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">Agent 架构</span>
+  <span class="tag tag-blue">TypeSafe Jev</span>
+  <span class="tag tag-green">Choice/Score/Noul</span>
+  <span class="tag tag-orange">置信度门控</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：把「写作、路由、评估、执行」全塞进一次 LLM 补全会导致慢、贵、不可调试；Jev 工程学主张三层解耦——大模型生成、Jev 做有界类型化决策、代码执行与验证——用 Choice/Score/Noul 契约、并行提问与置信度门槛，把分叉从散文解析里解放出来。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#4338ca;margin-bottom:12px;text-align:center">观察 → 决策 → 门控 → 执行 → 验证</h3>
+  <div class="diagram">
+    <div class="node-green">State<br/>证据快照</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Jev<br/>类型化答案</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Code<br/>阈值/权限</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">Act<br/>单步动作</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Verify<br/>读真实世界</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Jev 要取代大模型」。文中强调<strong>互补</strong>——创意写作、长文调研仍用 LLM；Jev 只接管<strong>答案空间有界、高频重复、输出直接进代码</strong>的分叉，且高置信≠事实正确。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】三层权责与 System One 三原语</h3>
+  <p><strong>在讲什么问题：</strong>单一 LLM 包办决策与生成时，故障无法归因到「写错了」还是「选错了」。</p>
+  <p><strong>核心机制：</strong>LLM writes / Jev decides / Code acts；Jev 吃结构化 state + 原子问题，返回答案对象（非段落）。</p>
+  <p><strong>三原语：</strong>Choice（单选+分布+置信度）、Score（标尺+置信度）、Noul（是/否概率 0–1）。</p>
+  <p><strong>状态设计：</strong>goal / evidence / rules / available_actions / previous_actions——传证据不传散文；每步外部动作后<strong>重建 state</strong>。</p>
+  <p><strong>边界：</strong>数学日期计算、开放式创作、巨型脏 state 仍不适合 Jev；提示词注入对类型化输出仍有效。</p>
+  <div class="quote">问题即契约：准则写可观测情境（如「动笔前需查外部证据」），勿用选项标签复读当准则。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】七法则 + 决策闭环落地</h3>
+  <p><strong>操作链路：</strong>Observe → Decide → Gate → Execute → Verify → Repeat；Jev 只选分叉，<strong>永不直接调工具</strong>。</p>
+  <p><strong>法则要点：</strong>① 传证据 ② 问题契约 ③ 每步重建选项 ④ 同 state 多问题一次调用（文中 GDPR 例：快 10×、省 12×）⑤ 按置信度门控 ⑥ 权限/预算在代码 ⑦ 按<strong>整任务</strong>算成本。</p>
+  <p><strong>置信度起步线：</strong>内部打标 0.70；Agent 交接 0.80；浏览器/工具 0.90；发布/支付/删除 → 确定性检查 + 人工。</p>
+  <p><strong>接入：</strong>Path A 原生 Jev API；Path B System One Adapter（OpenAI/Anthropic 垫片，概率校准不可互换，上线需重标阈值）。</p>
+  <div class="highlight"><strong>立刻可做：</strong>把现有「让 LLM 输出 JSON 路由」改成 state schema + 1 个 Choice + 代码 gate；同一 state 下把紧急/欺诈/审批拆成并行 Noul。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】五大反模式</h3>
+  <p><strong>Prompt-as-State：</strong> state 里塞自然语言指令 → 改显式字段。严重程度：小心。</p>
+  <p><strong>Choice-as-Multi-Label：</strong> 多条件可同时成立却强行单选 → 多个独立 Noul + 代码合并。严重程度：致命（路由错）。</p>
+  <p><strong>DONE Without Proof：</strong> 模型说完成就停 → 必须读文件/DB/页面做验收。严重程度：<strong>致命</strong>（Demo vs 生产的分水岭）。</p>
+  <p><strong>Stale Action Menu：</strong> 环境变了菜单未更新 → 每次决策前重算可用动作。严重程度：致命。</p>
+  <p><strong>Confidence-as-Truth：</strong> 高置信当真理 → 标定集定阈值 + Abstain + 高危人工。严重程度：致命。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时用 Jev / LLM / 纯代码</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>邮件路由、技能挂载、浏览器点选</td><td>Jev Choice/Noul</td><td>候选有限、高频、进代码分支</td><td>长链 CoT 单 prompt</td><td>解析脆弱、贵且慢</td></tr>
+    <tr><td>写回复草稿、论文摘要</td><td>通用 LLM</td><td>需要可读散文与创意</td><td>Jev</td><td>非决策接口</td></tr>
+    <tr><td>时间戳加减、权限 bitmask</td><td>确定性代码</td><td>可证明正确</td><td>Jev/LLM</td><td>手册明确归代码</td></tr>
+    <tr><td>质量 linter 全量筛</td><td>Jev 并行 Noul + 边界 case 上大模型</td><td>Every 测：777 判 0.7s；漏 1/7 缺陷需二段</td><td>全篇 High-reasoning LLM</td><td>慢 25×、贵 580×</td></tr>
+    <tr><td>DOM 巨页逐节点 Score</td><td>先瘦候选再决策</td><td>Retriever 反例：决策便宜但前置膨胀致总成本 +38~51%</td><td>无脑扩大 state</td><td>端到端任务成本才诚实</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Jev System One vs 通用 LLM 调用</h3>
+  <table>
+    <tr><th>维度</th><th>Jev</th><th>通用 LLM</th><th>一句话</th></tr>
+    <tr><td>输入</td><td>结构化 state + 类型问题</td><td>自由 prompt</td><td>契约 vs 散文</td></tr>
+    <tr><td>输出</td><td>概率/置信度对象</td><td>长文本</td><td>零解析 vs 正则/JSON 提取地狱</td></tr>
+    <tr><td>并行</td><td>同 call 多问题（同 state）</td><td>通常一问一 call</td><td>决策密度决定 ROI</td></tr>
+    <tr><td>调试</td><td>看分布与阈值</td><td>重读生成文</td><td>分叉可审计</td></tr>
+    <tr><td>计费</td><td>按决策次数</td><td>按 token</td><td>高频小判 Jev 占优</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】决策密度与 Harness 解耦</h3>
+  <p><strong>原则：</strong>当单次决策边际成本→0，系统可在每条消息、每次工具调用、每次 handoff 都做判定——价值随频次复合增长。</p>
+  <p><strong>数据锚点：</strong>Browser Use 调用 1092→101；500 封邮件 ~3.5¢；1,018 篇论文分类 ~0.08$（不含摘要 LLM）。</p>
+  <p><strong>与 Google Harness Thesis：</strong> Jev 把 Harness 里最乱的「决策块」抽成显式类型接口，接口规范比底层权重更持久。</p>
+  <p><strong>无人值守纪律：</strong>可逆步骤可自治；红线挂起；恢复先读<strong>最后一次外部确认成功</strong>的状态；置信度不能证明付款/发信已成功。</p>
+  <p><strong>适用边界：</strong>基准来自公开 demo，阈值是冷启动线；Adapter ≠ 生产概率校准；闭源 Jev 需自有标定集。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「一个强推理模型 + 结构化输出就够了」派</p>
+  <p class="rebuttal-text">把路由塞进长思考仍按 token 付费、仍靠解析 JSON，并行 13 问要串 13 次时延迟与账单不会 magically 消失——专用决策层卖的是有界分叉的工程接口，不是再包装一次 chat completion。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>三层解耦 + Choice/Score/Noul 消灭「决策输出解析」类故障。</li>
+    <li>State 是证据、问题是契约；同 state 批量提问是性能杠杆。</li>
+    <li>代码门控权限与阈值；高危必须人工 + 确定性规则。</li>
+    <li>完工与成功以<strong>外部状态探针</strong>为准，不信模型 DONE。</li>
+    <li>方法论可脱离单一产品：类型契约 + 置信度 + 验证闭环即核心。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>选一个高频路由（邮件/技能/模型选择），画 state schema 与 2–4 个原子问题。</li>
+    <li>用标注集标定置信度阈值并保留 Abstain/人工分支。</li>
+    <li>把「LLM 返回 JSON 分支」迁移为 gate 在代码、决策在 Jev/Adapter。</li>
+    <li>为 Agent 循环加 Verify 步骤：每步只执行一个可逆动作并重读 state。</li>
+    <li>用<strong>端到端单任务成本</strong>评估，避免只看单次 API 标价。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>Agent 竞争力 increasingly 来自毫秒级<strong>有界决策吞吐</strong>，而非单次更长的「冥想式」生成。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
