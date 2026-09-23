@@ -1,0 +1,154 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'thorsten-ball-predictions-future-of-software-development.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff1f2,#fce7f3);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#9f1239,#be123c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;line-height:1.35}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px;margin-bottom:6px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #e11d48}
+.card h3{font-size:22px;font-weight:700;color:#9f1239;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fff1f2,#ffe4e6);border:2px solid #fda4af;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#9f1239}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#86efac;color:#166534}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#9f1239,#e11d48);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#fff1f2;padding:12px 16px;text-align:left;font-weight:700;color:#9f1239;border-bottom:2px solid #fda4af}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Thorsten Ball 16 条判断：AI 时代软件工程终局推演</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-red">软件工程未来</span>
+  <span class="tag tag-purple">Thorsten Ball</span>
+  <span class="tag tag-blue">价值迁移</span>
+  <span class="tag tag-orange">Token 范式</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当模型写代码的可靠性逼近「一次编译通过、一次烧录可用」时，代码审查、单测、终端、甚至「好代码」共识这些为人类协作设计的质量关卡，是否仍不可替代；以及工程师价值应如何从写代码手艺迁到造软件与需求判断。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#9f1239;margin-bottom:12px;text-align:center">可靠性↑ → 人工关卡↓ → 价值上移到需求与系统</h3>
+  <div class="diagram">
+    <div class="node">AI 产码<br>高可靠</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">审查/测试/CLI<br>主体迁移</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">造软件<br>业务+反馈</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">Token 交互<br>后二进制</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「审查已死 = 完全不做质量把关」。Ball 说的是<strong>把关对象</strong>从逐行 PR 转向<strong>系统组合与上线判断</strong>，测试从人写用例转向模型自证，而非裸奔上线。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】第一层震荡：审查、单测、写代码手艺</h3>
+  <p><strong>在讲什么问题：</strong>人类为防错设计的经典关卡，在模型产码足够可靠时是否还有必要。</p>
+  <p><strong>关键理解：</strong>三条判断共享同一逻辑——当错误率被模型压低，为「人犯错」设计的流程变成可选项；行为不消失，<strong>执行主体</strong>在变。</p>
+  <p><strong>怎么落地：</strong>把 PR 审查清单改成「系统边界、组合方式、上线条件」；保留对高风险域（安全、支付）的确定性规则与探针。</p>
+  <p><strong>边界：</strong>900 行 Arduino 零错误是<strong>体感样本</strong>，不能外推到所有领域；性能与 1% 极致优化仍可能是人工边缘贡献。</p>
+  <p class="quote">原文：人类会审查「系统与其组合方式」，而不是一行行地看 PR 里的代码。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】价值迁移：从写代码到造软件</h3>
+  <p><strong>原则：</strong>「造软件」手艺比以往更重要——懂业务、懂他人软件为何如此、知道何时上线、如何拿真实反馈。</p>
+  <p><strong>为什么重要：</strong>多数 bug 将变成「需求提错了」而非代码 bug；Prompt/Spec 正在成为新的工程语言。</p>
+  <p><strong>怎么落地：</strong>需求评审写清验收与反例；上线前定义可观测反馈（指标、用户路径），而非只盯覆盖率。</p>
+  <p><strong>适用边界：</strong>99% 软件里数据结构/算法选型「根本不重要」——前提是确实没有规模与客户；有用户与 SLA 时仍要工程化。</p>
+  <p class="highlight">落地建议：本周选一个功能，用「用户故事 + 失败场景 + 上线信号」三页 Spec 替代纯任务列表。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】人类协作范式 vs Token 后二进制范式</h3>
+  <table>
+    <tr><th>对比维度</th><th>确定性/人类协作时代</th><th>Ball 描述的 Token 时代</th><th>一句话</th></tr>
+    <tr><td>交互界面</td><td>Shell、编辑器、CLI 参数</td><td>自然语言 token 对话</td><td>工具链围绕「指令」→ 围绕「意图」</td></tr>
+    <tr><td>质量证明</td><td>人写单测 + 人审代码</td><td>模型自证 + 人审系统</td><td>证明责任上移</td></tr>
+    <tr><td>组织分工</td><td>PM/设计/工程三角 + Agile</td><td>围绕「谁拥有问题判断权」重组</td><td>职能切分意义下降</td></tr>
+    <tr><td>「好代码」</td><td>便于人类维护、可读性</td><td>若人类不改代码，前提动摇</td><td>价值观可能重构而非删除</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】团队规模与工程实践</h3>
+  <table>
+    <tr><th>场景</th><th>推荐取向</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>小团队、0→1</td><td>少约束、快迭代、AI 产可用系统</td><td>执行成本被压缩，学大厂流程反而拖慢</td><td>照搬 Google 式重型流程</td><td>Ball：在 AI 时代更显荒唐</td></tr>
+    <tr><td>大厂存量系统</td><td>系统级审查 + 合规探针</td><td>责任链与审计不可省略</td><td>全面取消单测/审查</td><td>演化与故障成本仍在</td></tr>
+    <tr><td>个人/ token 受限</td><td>优先买「少犯错、少轮次」的模型</td><td>便宜模型多轮纠错可能更贵</td><td>只比 API 单价</td><td>端到端成本与交互轮次决定 TCO</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】把 16 条判断当预言时的三个坑</h3>
+  <p><strong>坑 1 — 责任真空：</strong>不再逐行审代码后，线上事故责任落在谁身上未定义就推全 AI 产码。</p>
+  <p class="pitfall"><strong>解法：</strong>明确「系统 Owner + 上线签字 + 外部探针」三角，别默认模型担责。</p>
+  <p><strong>坑 2 — 低估长期演化：</strong>「好代码」崩塌论忽略多年迭代、安全审计、故障排查仍要读结构。</p>
+  <p class="pitfall"><strong>解法：</strong>对 5 年以上寿命的系统保留可读性与模块边界，即使用 AI 生成首版。</p>
+  <p><strong>坑 3 — Token 鸿沟：</strong>生产力门槛从「会写代码」变成「买不买得起 token」可能加剧不平等。</p>
+  <p class="pitfall"><strong>解法：</strong>小团队用混合策略：开源/小模型做批量，强模型做关键决策与审查。</p>
+  <p><strong>严重程度：</strong>坑 1 致命；坑 2、3 需长期观察，Ball 自己也说需<strong>一代人</strong>时间。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：SRE / 受监管行业从业者</p>
+  <p class="rebuttal-text">Heartbleed 与支付链路从未靠「900 行一次编译通过」证明安全——去掉人审与单测只是把未知风险推迟到审计与诉讼时爆发。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Ball 的 16 条是<strong>一线 AI 产码体感</strong>下的推演，不是 overnight 时间表，但方向值得严肃对待。</li>
+    <li>审查、测试、CLI 的「死」指的是<strong>默认人类执行方式</strong>过时，质量责任上移到系统与需求。</li>
+    <li>工程师稀缺能力转向造软件、Spec 与反馈闭环；组织与 Agile 三角面临重组。</li>
+    <li>Token 作为计算范式 + 实时生成 UI，会重塑工具链与产品形态。</li>
+    <li>「好代码」、开源「足够眼睛」、token 定价公平性——三条都还有<strong>未证伪的争议</strong>。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>读原文推文/X 长文，标出与你日常冲突最大的 3 条，写下你的反例或支持证据。</li>
+    <li>把下一次 PR 审查时间的一半改审「系统组合图 + 上线/回滚条件」。</li>
+    <li>为一个 AI 生成功能写 Spec：含错误需求示例与验收探针。</li>
+    <li>算一次<strong>端到端</strong>任务成本（模型价 × 轮次 + 人工补救），别只比单次 API。</li>
+    <li>对长寿命模块保留可读性规范，即使用 Agent 写首版代码。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>讨论焦点从「AI 会不会取代程序员」变为「写代码趋近零成本后，软件工程还剩什么是不可替代的」——答案在问题定义、系统判断与真实反馈，而非打字速度。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);
