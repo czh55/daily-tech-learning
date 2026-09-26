@@ -1,0 +1,119 @@
+欢迎收听每日技术学习语音讲解。本期主题，Go pprof 提案 #79179：heap profile 补上 RSS 与死堆。标签包括pprof、memory_space、#79179、RSS / OOM 排障。本次讲解预计时长 约 12 到 13 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：容器 RSS 已逼近 OOM 线而 pprof.Lookup("heap") 的 inuse_space 往往不到一半——死堆、协程栈、运行时元数据与非 Go 内存都不在默认堆里；提案 #79179 拟在现有 heap/alloc profile 中新增 memory_space 并设为默认视图，用一份 profile 串起 RSS ，得到 Go/非 Go ，得到 堆/栈/运行时的分层归因。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：RSS，（若可读），然后Go Memory，然后Non-Go，Memory，然后Heap Live，/ Dead，然后Stack，Runtime
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+常见误解：「heap profile 数字小说明没有内存泄漏」。在 GOGC=100 下存活堆常不足 RSS 一半；另一半可能是尚未清扫的死堆、栈、runtime、cgo/mmap，而非「神秘泄漏」。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「够用就行」的 inuse_space 派
+
+更大更重的 heap profile 让持续剖析和边缘节点多付 10–30% 存储与带宽，而多数服务只需盯存活对象——为少数 RSS 对账场景让全体默认买单并不经济。
+
+接下来，第四部分，【概念拆解卡】inuse_space 为什么对不上 RSS。
+
+在讲什么问题，运维看 cgroup/K8s memory，开发看 pprof heap，两边数字长期「对不上账」。
+
+核心机制，inuse_space 只统计仍被引用、尚未判垃圾的对象；死堆、mspan/mcache、goroutine 栈、可执行文件与 mmap、cgo 分配等不在此列。
+
+关键理解，默认 GOGC=100 时堆可在 GC 前膨胀到存活对象约两倍，大量「已死未扫」内存不会出现在 heap profile 里。
+
+典型场景，深夜 RSS 告警、/debug/pprof/heap 却只有不到 1GB 的「灵异事件」。
+
+边界说明，runtime/metrics 能细拆 /memory/classes/...，但零散；本提案目标是与调用栈归因缝合，不是替代 metrics API。
+
+提案原文：在默认设置（GOGC=100）下，存活堆通常占不到 Go 程序内存使用量的 50%。
+
+接下来，第五部分，【方法/工具卡】#79179 怎么用 memory_space。
+
+核心思路：不新建独立 profile，给现有 heap/alloc 增加采样类型 memory_space，并让 pprof.Lookup("heap") 默认展示它。
+
+操作步骤，① 照常抓 /debug/pprof/heap 或 pprof.Lookup("heap").WriteTo；② 在 pprof UI 查看升级后的层级树；③ 若仅见 Go Memory 根节点，读根上的 WARNING（RSS 不可用或 Go>RSS）。
+
+快照时刻：在最近一次标记终止（mark termination）对齐 runtime 指标与存活/死堆栈归因；RSS 在 STW 外尽快读取，接受轻微时间偏差。
+
+选型条件，需要「从容器 memory 到调用栈」一条链路时用新默认视图；自动化 continuous profiling 若固定读 inuse_space 字段，行为可能不变。
+
+落地前：关注 issue #79179 与原型 CL 770882；提案状态为「临时通过，待正式实现验证」，未合入主线前仍须三方对账 RSS + metrics + heap。
+
+接下来，第六部分，【避坑清单卡】读 memory_space 时的陷阱。
+
+坑 1 — 把 RSS 与 Go 虚拟内存当同一口径：runtime 多统计虚拟 memory，RSS 是物理占用；方案用警告帧坦承鸿沟，勿强行相等。严重程度：致命（误判优化方向）。
+
+坑 2 — Go Memory > RSS：压舱石、大块预留未 touch 等会出现；profile 会退化为仅 Go 部分并告警。严重程度：小心。
+
+坑 3 — 忽视死堆：认为死堆无优化价值；请求型服务里死堆与存活堆热点常相似，减抖动还能支撑更激进 GOMEMLIMIT。严重程度：小心。
+
+坑 4 — 忽略 profile 体积：未压缩约 +30%、压缩约 +10%，样本可能因双采样类型集合不完全重合而接近翻倍；APM 需评估存储与传输。严重程度：小心。
+
+接下来，第七部分，【决策/选型表】内存数据该看哪份。
+
+K8s OOM 前 5 分钟，RSS + 合入后的 memory_space heap，与 limit 同语言，且能分到 cgo/非 Go，仅 inuse_space，常不到 RSS 一半
+
+找分配热点函数，heap 中 Live/Dead 栈归因，死堆仍指向同类分配路径，只看 OS top，无调用栈
+
+精细容量规划，runtime/metrics classes，长期趋势与分类最全，单次 pprof 当唯一真相，口径与时刻不同
+
+持续剖析平台，固定 sample_type + 评估体积增幅，不依赖 default_sample_type 的客户端更安全，未评估就全量升级采集，成本与兼容性
+
+接下来，第八部分，【跨概念对比表】RSS vs Go Memory vs inuse_space。
+
+谁关心，运维、cgroup、OOM，runtime 工程师，应用开发者查泄漏，同一进程三种「内存」叙事
+
+含死堆，间接（未归还页），是，否，灵异差额的重要来源
+
+含 cgo/mmap，是（Non-Go），部分在 Non-Go 差值，否，cgo 背锅要靠 Non-Go 帧
+
+调用栈归因，否，部分经 pprof 缝合，是（仅存活对象），memory_space 要补的是「全景+栈」
+
+接下来，第九部分，【心法/原则卡】十年磨一剑的 Go 可观测性。
+
+原则，不一步做大而全 profile，而是在讨论与原型验证后，把复杂度 cautiously 放进标准库。
+
+为什么重要，从 #13463、#15848 到今日 #79179，团队宁愿晚十年也要避免误导性数字（警告帧 > 假装精确）。
+
+怎么落地，star #79179；OOM 复盘时记录 RSS、metrics 截图与 heap 三份证据；合入后重训团队「默认 heap 即全景」心智。
+
+适用边界，命名曾争论 rss vs memory，最终倾向与 K8s/docker「memory」生态一致；实现需「非 vibe-coded」正式 CL 才会定案。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+痛点是 heap 默认视图与容器 RSS 长期脱节，死堆与非 Go 内存是主因。
+
+#79179 用 memory_space 扩展 heap/alloc，默认 API 不变、发现性拉满。
+
+层级树 RSS ，得到 Go/Non-Go ，得到 Heap/Stack/Runtime，异常时用 WARNING 而非假精确。
+
+评审 active、原则性通过，但须正式实现验证；体积与 GODEBUG/GOEXPERIMENT 退出通道仍在讨论。
+
+命名走向 memory 以对齐云原生指标语言，与 /memory/classes 一致。
+
+收藏 #79179 与 CL 770882，合入后升级 Go 与剖析代理。
+
+下次 RSS 告警时同时保存 RSS、runtime/metrics 与 heap，练「三方对账」备将来对比。
+
+若运营 continuous profiling，评估 default_sample_type 与压缩后体积增幅。
+
+排查 cgo 嫌疑时，在提案落地后优先看 Non-Go Memory 帧而非猜 mmap。
+
+向团队同步：死堆火焰图同样值得优化，尤其在请求驱动型服务。
+
+总结：
+
+行动清单：
+
+关键认知转变：heap profile 从来不是「进程用了多少内存」，只是「还活着的对象」；#79179 若落地，默认 heap 才更接近 SRE 眼中的 memory 故事。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

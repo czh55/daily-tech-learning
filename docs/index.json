@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-26",
+    "files": [
+      {
+        "path": "svgs/2026-09-26/go-pprof-heap-profile-memory-space-rss-proposal.svg",
+        "title": "Go 内存分析要「动大手术」了：pprof 提案拟为 heap profile 补上失踪的另一半",
+        "source": "https://tonybai.com/2026/09/26/go-pprof-heap-profile-memory-space-rss-proposal/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-24",
     "files": [
       {
