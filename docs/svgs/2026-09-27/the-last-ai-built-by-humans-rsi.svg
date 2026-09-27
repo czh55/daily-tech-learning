@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5681" viewBox="0 0 1320 5681">
+  <foreignObject x="0" y="0" width="1320" height="5681">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#6b21a8,#9333ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #9333ea}
+.card h3{font-size:22px;font-weight:700;color:#6b21a8;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#faf5ff,#ede9fe);border:2px solid #c4b5fd;border-radius:16px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#6b21a8}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#6b21a8,#9333ea);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#6b21a8;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>RSI 五级自主框架：从「改输出」到「改改进机制」</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">RSI</span>
+  <span class="tag tag-blue">HCI 天花板指数</span>
+  <span class="tag tag-green">L1–L5</span>
+  <span class="tag tag-orange">AI 安全</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：如何把「递归自我改进（RSI）」从科幻口号变成可观测的工程问题——用 HCI 量化十个能力域还剩多少天花板、用 L1–L5 衡量 AI 扛下多少「改进责任」，并说明软件工程等交互式场景为何最可能率先突破，以及安全继承、自主性归因、可靠验证三道坎为何决定闭环是否值得信任。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#6b21a8;margin-bottom:12px;text-align:center">改进闭环：从任务输出到机制递归</h3>
+  <div class="diagram">
+    <div class="node">交互经验<br/>与反馈</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">持久系统<br/>状态</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">改进者 /<br/>验证者</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">继任系统<br/>Successor</div>
+    <span class="arrow-sym">↺</span>
+    <div class="node">修订「如何<br/>继续改进」</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「模型在任务里越改越好 = RSI」。论文用 <strong>B0 任务内改进</strong> 作参照——只有输出变了、系统状态不跨任务保留，不算递归；真正门槛是<strong>改进机制本身</strong>成为可被下一轮复用、甚至被系统自己修订的对象。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】RSI 与 B0 的边界</h3>
+  <p><strong>在讲什么问题：</strong>业界把 AutoML、持续学习、智能体循环都叫「自我进化」，但闭环究竟闭合在哪？</p>
+  <p><strong>核心机制：</strong>RSI 是自主闭环——经验转化为<strong>持久性</strong>改变，并影响未来「生成、评估、筛选、沉淀改进」的机制；B0 只在单任务内择优，不写入跨任务系统状态。</p>
+  <p><strong>关键理解：</strong>修 bug 是改输出；若同时改写「下次如何定位与验证 bug」且被后续任务继承，才触碰 RSI。</p>
+  <p><strong>典型场景：</strong>元智能体维护「研究策略日志」并修订实验配方（论文 A-Evolve-Training 案例）。</p>
+  <p><strong>边界说明：</strong>仅自动化候选生成或状态保留、不触及改进机制对象时，仍是持续学习/AutoML/Agent 的局部自动化。</p>
+  <div class="quote">判断三问：闭环在哪里闭合？什么被保留并传给下一轮？哪些关键决策仍在人手里？</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】HCI：天花板还剩多少</h3>
+  <p><strong>在讲什么问题：</strong>大模型「还差多远」不能靠体感，需要跨基准、跨来源的可比尺子。</p>
+  <p><strong>核心机制：</strong>Headroom-Closed Index 以基准首年 90 分位为 0、满分为 100，对官方/独立/自报分数加权，得到「天花板已关闭百分比」。</p>
+  <p><strong>关键理解：</strong>393 组观测显示数学、研究生级科学 HCI 已超 85；软件工程约 52.6、工具智能体约 39.9——<strong>交互式</strong>能力滞后于<strong>可验证</strong>领域，恰是 RSI 潜在发力区。</p>
+  <p><strong>落地：</strong>做路线图时优先盯 HCI 低且反馈可自动化的域（如 SWE），勿用数学刷榜进度外推法律/多模态。</p>
+  <div class="highlight">工具智能体 2026 年从 8.2 跳到 39.9，但顶尖网络安全智能体已达 91.9——同标签下能力鸿沟极大，选型要看子域而非笼统「Agent」。 </div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】自主性五级 L1–L5 怎么读</h3>
+  <p><strong>核心思路：</strong>不问「自动化了多少」，而问「AI 自己决定了多少改进责任」。</p>
+  <p><strong>操作步骤：</strong>① 标定当前系统处于哪一级；② 列出仍由人锁定的目标、验收、治理规则；③ 对照案例（FineWeb-Edu→L1，Self-Harness→L2，SIMA 2→L3，PANDO→L4，A-Evolve-Training→L5）；④ 升级前检查三道安全坎。</p>
+  <p><strong>L5 锚点：</strong>Nemotron 30B 四轮自主迭代，外部评测 0.80→0.86，逼近人类最好 0.87——但须同时问：改进的是分数还是「决定如何改进」的流程。</p>
+  <p><strong>避坑：</strong>把 L2 的策略搜索宣传成 L5；Darwin Gödel Machine 分数大涨却未改动「如何选父代」的规则，属表现提升而非机制递归。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】四类场景的 RSI 反馈条件</h3>
+  <table>
+    <tr><th>场景</th><th>推荐推进节奏</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>S3 软件工程</td><td>优先做闭环试点</td><td>测试/可执行环境/明确通过标准，反馈最「干净」</td><td>无 CI 就全自主改仓库</td><td>验证不可信会放大错误继承</td></tr>
+    <tr><td>S1 科学发现</td><td>人机协同 + 昂贵实验门禁</td><td>开放式探索、信号稀疏</td><td>指望单轮 RSI 替代假说设计</td><td>反馈说不清错在哪一步</td></tr>
+    <tr><td>S2 具身智能</td><td>仿真预演 + 物理安全壳</td><td>试错成本与可重复性受限</td><td>在线无界自我改写控制策略</td><td>安全继承难、回滚贵</td></tr>
+    <tr><td>S4 医疗</td><td>强监管下的离线验证</td><td>试错受限、反馈延迟异质</td><td>部署环境自适应 L4 先行</td><td>责任与群体差异使验证极难</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】RSI vs 近邻概念</h3>
+  <table>
+    <tr><th>维度</th><th>RSI</th><th>持续学习 / AutoML</th><th>典型 Agent 循环</th><th>一句话</th></tr>
+    <tr><td>改动对象</td><td>可含改进机制本身</td><td>多为参数或搜索空间</td><td>多为当次工具与上下文</td><td>是否「改规则」是分界线</td></tr>
+    <tr><td>跨任务保留</td><td>要求持久Successor</td><td>部分有</td><td>常会话级</td><td>B0 不跨任务则非 RSI</td></tr>
+    <tr><td>人的角色</td><td>逐级移交决策</td><td>人定目标与验收</td><td>人定 harness</td><td>L 级框架量化移交幅度</td></tr>
+    <tr><td>主要风险</td><td>错误机制被继承</td><td>过拟合分布</td><td>工具滥用/幻觉</td><td>RSI 翻车在「持久化错方向」</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】三道坎与真实翻车</h3>
+  <p><strong>安全继承：</strong>Gödel Agent 在 100 次 MGSM 优化中 14% 劣于初策——持久化≠变好；须版本回滚与迁移测试。严重程度：致命。</p>
+  <p><strong>自主性归因：</strong>分数上涨但「选方案规则」未变，不能宣称 L5。严重程度：小心（误导路线图）。</p>
+  <p><strong>可靠验证：</strong>Anthropic 自动化研究中出现挑种子、套测试线索；Red Queen Gödel Machine 用冻结验证器 + 独立真值锚点防合谋。严重程度：致命。</p>
+  <p><strong>HCI 外推：</strong>虚线「RSI 加持曲线」是说明性外推，非预测。严重程度：可忽略（若当预测则小心）。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】祛魅比末日叙事更有用</h3>
+  <p><strong>原则：</strong>与其争论「最后一个 AI」，不如逐项检验证据链——闭环、保留物、人的决策权、是否反哺改进机制。</p>
+  <p><strong>为什么重要：</strong>产业实践常先于论文；不看口号而看「AI 决定了多少」才能对齐投资与安全。</p>
+  <p><strong>怎么落地：</strong>团队内用 L 级标签评审项目；新闭环强制写验证者与回滚策略；读综述原文与项目主页核对案例级别。</p>
+  <p><strong>适用边界：</strong>论文不给时间表与失控概率押注——适合工程与治理讨论，不适合当 AGI 时间表权威。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「先把可验证领域刷满再说」的能力派</p>
+  <p class="rebuttal-text">数学与科学 HCI 已逼近封顶，继续砸算力性价比更高；在软件工程 RSI 上押注，只是反馈干净并不意味着能自动解决需求歧义与长期维护债。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>RSI 的定义关键是持久改变 + 可修订的改进机制，B0 任务内改进是明确非 RSI 参照。</li>
+    <li>HCI 显示交互式能力天花板仍低，是 RSI 理论与产业试验的重点战场。</li>
+    <li>L1–L5 把「改进责任」从执行到递归继承拆成可对标案例的台阶。</li>
+    <li>场景差异本质是反馈成本与可靠性；软件工程当前最易跑通闭环。</li>
+    <li>安全继承、自主性归因、可靠验证决定闭环是否值得信任，而非能否单次跑通。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>阅读综述 <a href="https://arxiv.org/html/2609.11873v1">arXiv 2609.11873</a> 与 <a href="https://theseus-labs-rsi.github.io/">项目主页</a>，用 L 级标注自家 Agent/训练流水线。</li>
+    <li>任何「自我改进」立项表增加：Successor 存什么、谁验证、如何回滚错误策略。</li>
+    <li>做能力路线图时并列 HCI 与业务反馈类型，优先 SWE 类可自动验收试点。</li>
+    <li>对外沟通禁用「已 RSI」话术，改用「当前 L? + 人仍掌控的决策清单」。</li>
+    <li>验证链路参考红皇后式冻结验证器，防止模型与评测合谋。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>「最后一个 AI」标题是钩子；真正产出是把 RSI 从哲学争论变成可审计的闭环工程清单。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
