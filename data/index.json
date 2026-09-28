@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-09-28",
+    "files": [
+      {
+        "path": "svgs/2026-09-28/ai-coding-not-side-hustle.svg",
+        "title": "别跟风 AI 副业，工程师最该学的是 AI Coding",
+        "source": "https://juejin.cn/post/7689830772006846498"
+      },
+      {
+        "path": "svgs/2026-09-28/go-vs-rust-portable-simd-2026.svg",
+        "title": "Go与Rust同日交卷：一场关于可移植SIMD的路线之争",
+        "source": "https://tonybai.com/2026/09/28/go-vs-rust-portable-simd-2026/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-27",
     "files": [
       {
