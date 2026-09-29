@@ -1,0 +1,165 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'code-is-cheap-billion-tokens.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.tag-red{background:#fee2e2;color:#991b1b}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fdba74;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#9a3412}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-red{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5;color:#991b1b}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Code is cheap？百亿 Token 后的 AI 编码真相</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-red">AI Coding</span>
+  <span class="tag tag-blue">SDD</span>
+  <span class="tag tag-green">深模块</span>
+  <span class="tag tag-orange">反馈闭环</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：「Code is cheap」是否成立——作者用百亿级 Token 与 SDD 落地经验说明，AI 对烂代码容忍度更低、乱码指数会指数传染；百万上下文只有前段可靠，反馈闭环是导航而非加分项，深模块由人定边界、AI 填实现。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">AI 编码质量飞轮</h3>
+  <div class="diagram">
+    <div class="node-green">干净样本<br>库基准</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">AI 生成</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-red">烂模式<br>传染</div>
+    <span class="arrow-sym">↺</span>
+    <div class="node-green">Lint/测试<br>防火墙</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「不会写代码也没关系，AI 能补」。原文指出<strong>代码库真实现状比 CLAUDE.md 规范更有影响力</strong>——五十个违规接口会让模型优先模仿违规模式。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】乱码指数与死亡螺旋</h3>
+  <p><strong>在讲什么问题：</strong>AI 提高提交频率，却不自动提升架构与测试质量，库倾向更快腐化。</p>
+  <p><strong>核心机制：</strong>乱码指数低时 AI 还能找到干净参考；超过约六成劣质样本淹没优质模式，输出更差实现，螺旋上升。</p>
+  <p><strong>关键理解：</strong>人靠长期记忆绕坑；<strong>新会话 AI 只能从仓库归纳</strong>，烂代码会指数级传染。</p>
+  <p><strong>典型场景：</strong>文档写满规范，现存接口却无一遵守——模型照搬接口而非文档。</p>
+  <p><strong>边界说明：</strong>架构缺陷可能数月后才暴露，单会话看不见三年业务演进，委托 AI 做架构要问回滚成本。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】上下文窗口的有效区</h3>
+  <p><strong>在讲什么问题：</strong>百万 Token 看似能装下全库，可靠推理区仍有限。</p>
+  <p><strong>核心机制：</strong>靠前约六成内容判断稳定；越往后幻觉、遗忘约束越明显。LLM 非确定性，上周过的测试下周可能挂。</p>
+  <p><strong>关键理解：</strong>compact 压缩层层损信息；<strong>任务拆解 + 短会话</strong>优于硬撑长上下文。</p>
+  <p><strong>典型场景：</strong>独立干净会话完成子任务后结束，而非一条线程堆满全项目。</p>
+  <p><strong>边界说明：</strong>窗口变大不取消「前段清醒区」规律，只改变能塞多少噪声。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】分层反馈导航系统</h3>
+  <p><strong>核心思路：</strong>AI 无人类脑内业务地图，缺闭环等于闭眼开车。</p>
+  <p><strong>操作步骤：</strong>① 改文件后 10 秒内跑类型检查/Lint；② 两分钟内跑模块单测；③ 提交前全量测试；④ 能写进 Lint 的规则不要写进 Prompt（成功时零 Token）；⑤ 编码 Agent 与审查 Agent 分上下文，规范只给审查方。</p>
+  <p><strong>选型条件：</strong>TypeScript 等强类型近乎零延迟纠偏；弱类型需更靠测试兜底。</p>
+  <p><strong>避坑：</strong>漏到第三层才发现的错误，可能已基于错误假设写满文件，推翻成本远高于第一层拦截。</p>
+  <div class="highlight">铁律：能自动化校验的约束放进 Lint/pre-commit，省下的上下文留给业务与架构判断。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】深模块与灰盒协作</h3>
+  <p><strong>核心思路：</strong>薄接口、厚实现（Ousterhout 深模块），对外只暴露 SDK 与 API Handler，复杂度内聚。</p>
+  <p><strong>操作步骤：</strong>① 人识别纠缠子系统（多文件跨前后端 CLI）；② 收敛对外导出；③ AI 在接口下填实现；④ 用端到端集成测试定位故障。</p>
+  <p><strong>对比相邻方法：</strong>浅模块大量导出，AI 错一个返回值可污染全链；深模块错误被薄接口阻断。</p>
+  <p><strong>避坑：</strong>「该封成深模块」的判断<strong>现阶段 AI 做不好</strong>，需人跨层抽象。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】人类编码 vs AI 编码</h3>
+  <table>
+    <tr><th>维度</th><th>人类</th><th>AI</th><th>结论</th></tr>
+    <tr><td>全局业务图</td><td>可一小时不写测试仍方向对</td><td>每行概率采样，无距离感</td><td>AI 更依赖即时反馈</td></tr>
+    <tr><td>历史烂坑</td><td>长期记忆绕过</td><td>新会话从库归纳</td><td>库质量是上限</td></tr>
+    <tr><td>架构决策</td><td>可权衡多年演进</td><td>单会话难见全局</td><td>人选可回滚方案</td></tr>
+    <tr><td>自我审查</td><td>能中途察觉跑偏</td><td>偏爱自己刚写的代码</td><td>独立审查 Agent</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】AI 编码急性风险</h3>
+  <p><strong>规范文档幻觉：</strong>以为写了 CLAUDE.md 就能约束输出。原因：库样本权重更大。解法：先清理基准接口与模式。严重程度：致命。</p>
+  <p><strong>长会话依赖 compact：</strong>压缩噪声累积。原因：信息损耗不可预测。解法：拆任务、新会话。严重程度：小心。</p>
+  <p><strong>Prompt 堆规则：</strong>占用全程 Token。原因：Lint 成功时不消耗。解法：规则下沉工具链。严重程度：小心。</p>
+  <p><strong>浅模块 + 高自治：</strong>错误沿依赖扩散。原因：接口过宽。解法：人收敛边界。严重程度：致命。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】人管接口，AI 管实现</h3>
+  <p><strong>原则：</strong>代码不廉价——烂代码在 AI 时代从慢性病变急性隐患。</p>
+  <p><strong>为什么重要：</strong>腐化、深模块、反馈闭环都是老话题，新变量是提交频率与模仿速度。</p>
+  <p><strong>怎么落地：</strong>Red-Green-Refactor；委托设计前问回滚成本；平铺与低耦合优先于炫技嵌套。</p>
+  <p><strong>适用边界：</strong>审查与架构判断永不过时，AI 是强实习生而非架构师。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「Code is cheap」效率派</p>
+  <p class="rebuttal-text">在原型验证与一次性脚本场景，先堆出能跑的代码再重构，比死守深模块和分层测试更快拿到业务反馈——质量投资应跟在产品已验证的需求后面。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>AI 放大提交频率，也放大库腐化速度；烂模式会指数传染。</li>
+    <li>百万上下文可信区仍在会话前段，compact 不如拆任务。</li>
+    <li>分层 Lint/单测/全量是 AI 的导航系统，不是可选项。</li>
+    <li>规则进 Lint 不进 Prompt；编码与审查应分 Agent。</li>
+    <li>深模块由人定界，控制 AI 写错时的爆炸半径。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>抽样审计现存 API/模块，对齐团队规范，降低乱码指数。</li>
+    <li>为常用栈配置保存后 10 秒内触发的 Lint/typecheck。</li>
+    <li>下一次让 AI 做设计前写下回滚方案与最差情况成本。</li>
+    <li>选一个纠缠子系统试点深模块封装与集成测试。</li>
+    <li>建立独立审查流程，规范文档只注入审查上下文。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「代码可以随便生成」到「仓库是 AI 的训练集，质量与接口边界是人的职责」。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);

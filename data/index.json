@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-09-29",
+    "files": [
+      {
+        "path": "svgs/2026-09-29/code-is-cheap-billion-tokens.svg",
+        "title": "花了 100 亿 Token 后，我发现 Code is cheap 是最大的谎言",
+        "source": "https://juejin.cn/post/7690490009980403712"
+      },
+      {
+        "path": "svgs/2026-09-29/go-import-path-decouple-github-hn-debate.svg",
+        "title": "HN 热帖引爆讨论：Go 的 import 路径，为什么不该耦合 github.com？",
+        "source": "https://tonybai.com/2026/09/29/go-import-path-decouple-github-hn-debate/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-28",
     "files": [
       {
