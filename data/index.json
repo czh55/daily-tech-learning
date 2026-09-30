@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-30",
+    "files": [
+      {
+        "path": "svgs/2026-09-30/tailscale-faster-go-performance-optimization.svg",
+        "title": "Tailscale 官方揭秘提速方案：一场关于「少拷贝、多队列、缓存」的 Go 语言网络性能优化实战",
+        "source": "https://tonybai.com/2026/09/30/tailscale-faster-go-performance-optimization/"
+      }
+    ]
+  },
+  {
     "date": "2026-09-29",
     "files": [
       {
