@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5262" viewBox="0 0 1320 5262">
+  <foreignObject x="0" y="0" width="1320" height="5262">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #6366f1}
+.card h3{font-size:22px;font-weight:700;color:#4338ca;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:12px 16px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#4338ca;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>AI 时代如何守住编程乐趣：turion 的六步工作法</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">AI 编程</span>
+  <span class="tag tag-green">工作流</span>
+  <span class="tag tag-orange">Haskell 社区</span>
+  <span class="tag tag-purple">工程师成长</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当大模型能替你写代码时，如何通过「规划与调研交给 AI、核心实现亲手写」的分工，避免代码库变成只有 Agent 能维护的荒原，同时保住手感、责任与长期可维护性。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#4338ca;margin-bottom:12px;text-align:center">turion 工作流：人机分工链</h3>
+  <div class="diagram">
+    <div class="node">规划 Planning<br/>AI 记账、人决策</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">调研 Research<br/>人机并行验证</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">编码 Coding<br/>人类主笔</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">GAN 式审稿<br/>生成 vs 挑刺</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">收尾/重构<br/>可交 Agent</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「少用 AI 才能保住乐趣」。原文立场是<strong>不是反 AI</strong>，而是反对把编写核心实现全权外包；乐趣来自亲手把想法敲成可维护代码，AI 更适合事务性、可审稿的环节。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】「LLM 荒原」与技能退化</h3>
+  <p><strong>在讲什么问题：</strong>全权让 Agent 写代码后，人类失去读懂与排障能力，代码库对人类变成陌生领地。</p>
+  <p><strong>核心机制：</strong>模型擅长生成「能跑」但未必可读、可长期维护的代码，几周不亲手写就会手感退化。</p>
+  <p><strong>关键理解：</strong>维护权与乐趣同源——放弃手写等于放弃对系统的长久掌控。</p>
+  <p><strong>典型场景：</strong>面对整文件 AI 生成物却不知从哪查 bug 时，正是荒原信号。</p>
+  <p><strong>边界说明：</strong>清理 FIXME、重复样板、低风险重构仍可交给 Agent；从零设计复杂系统不宜甩手。</p>
+  <div class="quote">turion：LLM 更擅长写「只有它自己以后会继续维护」的代码。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】一起规划，但你来写代码</h3>
+  <p><strong>核心思路：</strong>拒绝主流「规划完就放手让 Agent 写」；让 LLM 考古仓库、列 todo、提示坑，敲键盘由人完成。</p>
+  <p><strong>操作步骤：</strong>① 让 LLM 读仓库并输出带 frontmatter 的 Markdown todo；② 决策权在人，让 AI 提问而非替你做关键决定；③ 调研时人与搜索引擎并行，要求引用存档；④ 按 todo 亲手实现；⑤ 用审稿 Agent 过滤规划与代码；⑥ token 中断时切换离线任务清单。</p>
+  <p><strong>选型条件：</strong>你喜欢编程、在乎代码库真实状态、需要早期发现错误方案时，优先此模式。</p>
+  <p><strong>避坑：</strong>只写 3 个典型 case 就让 AI 复制剩余 7 个，往往说明该抽象（如 Traversable）而非复制粘贴。</p>
+  <div class="highlight">落地：规划文档持久化到文件，避免上下文塞满后静默丢内容。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】主流 Agent 流 vs turion 流</h3>
+  <table>
+    <tr><th>维度</th><th>规划后全权编码 Agent</th><th>一起规划、人写代码</th><th>一句话</th></tr>
+    <tr><td>代码库认知</td><td>易积累「氛围编程」屎山</td><td>人始终掌握真实状态</td><td>责任与可读性在人这边</td></tr>
+    <tr><td>错误发现</td><td>自主 Agent 可能沿错方向狂奔</td><td>人类更早识别糟糕方案</td><td>规划好 + 手写 = 敏捷无烦人流程</td></tr>
+    <tr><td>技能曲线</td><td>几周不写即退化</td><td>手艺持续在线</td><td>乐趣与能力同向</td></tr>
+    <tr><td>适合任务</td><td>重复劳动、小收尾</td><td>核心设计与实现</td><td>分工而非二选一</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】编程任务谁来做</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>冗长讨论整理成 todo</td><td>LLM 记账 + 人拍板</td><td>自然语言持久化清单</td><td>AI 做关键架构决策</td><td>看不懂它的提问说明上下文或精力有问题</td></tr>
+    <tr><td>技术调研</td><td>Agent 检索 + 人同步搜</td><td>追问依据，约一半它会自纠</td><td>直接采纳 AI 结论</td><td>会埋技术债与尴尬错误</td></tr>
+    <tr><td>核心库 / 奇怪 API（如 PowerShell）</td><td>人主导，LLM 当搜索</td><td>模型易收敛到「大家都这么干」</td><td>指望 LLM 维护原语</td><td>hasufell：核心库场景不及预期</td></tr>
+    <tr><td>PR / commit 沟通</td><td>人写主文，AI 文折叠在 details</td><td>编程是社交活动</td><td>整份 AI PR 描述甩给同事</td><td>不是沟通，只是工具输出</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】精神石棉与平台依赖</h3>
+  <p><strong>车轱辘话：</strong>长期读不懂的 AI 废话消耗心智。解法：多和真人聊代码，只读经审稿 Agent 打磨后的产出。严重程度：小心。</p>
+  <p><strong>前沿模型迷信：</strong>高能耗、黑盒信任难、token 不透明。解法：小模型能搞定优先小模型，预留开源替代路径。严重程度：小心。</p>
+  <p><strong>token 耗尽：</strong>视为服务中断而非自己买少了。解法：像飞机上工作一样准备离线 todo。严重程度：致命（对连续交付预期）。</p>
+  <p><strong>AI 表面自信：</strong>消解你对判断的不安全感。解法：核心库与低容错场景保持怀疑。严重程度：致命。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】有机园丁，而非化肥狂魔</h3>
+  <p><strong>原则：</strong>温和使用 LLM 辅助，产出约两倍于不用时的可持续节奏，而非短期全氛围编程的夸张倍数。</p>
+  <p><strong>为什么重要：</strong>短期化学施肥产量亮眼，长期土壤（技能与代码库健康）可能透支。</p>
+  <p><strong>怎么落地：</strong>硬规则——任何 LLM 产出未经自动化审稿不采纳；让 AI 审你手写代码以补盲区。</p>
+  <p><strong>适用边界：</strong>评论区亦有人靠 AI 首次实现过去做不到的想法；团队可探索「AI 派」与「零 AI 派」共存政策，但需明确评审与 commit 规范。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「全栈氛围编程 / 交付速度优先派」</p>
+  <p class="rebuttal-text">在产品窗口和人力紧缺时，坚持核心手写会把迭代速度输给「几乎不会编程却坐拥巨额 Claude 额度」的对手，乐趣换不来上线。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>甩手掌柜式 AI 编码的隐性成本：可维护性、个人手艺、团队信任会在出问题时集中兑现。</li>
+    <li>AI 更适合记账员、调研助理、GAN 式审稿人；决策与手感留在人侧。</li>
+    <li>「一起规划、你来写代码」是 turion 自认的游戏规则改变者，兼顾清单清晰与编码心流。</li>
+    <li>警惕 LLM 文字污染与平台 token 策略绑架工作流——需离线清单与沟通规范。</li>
+    <li>核心库与奇怪平台 API 上，社区经验支持更保守的 AI 使用尺度。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>把当前迭代讨论让 LLM 整理成带 frontmatter 的 Markdown todo，但关键决定自己拍板。</li>
+    <li>下一次调研要求 Agent 附引用，并自己用搜索引擎抽查同一主题。</li>
+    <li>选一个小功能：让 AI 只列改动点与坑，实现由你亲手完成。</li>
+    <li>加一道「审稿 Agent」：规划与（必要时）生成代码都必须过 automated review。</li>
+    <li>准备一份 token 中断时可离线推进的任务清单；PR 描述以人手写为主。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「AI 能不能替我写」到「哪些环节必须我写才能对代码库与人负责」——编程乐趣不是怀旧，而是可持续掌控力的副产品。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
