@@ -1,0 +1,155 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'pi-1-0-durable-agent-harness-release.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#0f766e,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #6366f1}
+.card h3{font-size:22px;font-weight:700;color:#4338ca;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:12px 16px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0f766e,#6366f1);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#4338ca;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Pi 1.0 与 Pi Durable：从终端编码 Agent 到「杀不死」的 Harness</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Agent Harness</span>
+  <span class="tag tag-green">Pi / OpenClaw</span>
+  <span class="tag tag-orange">MCP · Codemode</span>
+  <span class="tag tag-purple">耐久执行</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：OpenClaw 热度回落后，Pi 如何用「先验证再收纳」的 1.0 能力（含 MCP 反转与 Codemode）服务单人终端编码，又通过实验性 Pi Durable 把检查点、幂等与所有权树搬进 Agent 应用，支撑崩溃恢复与多人协作。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#4338ca;margin-bottom:12px;text-align:center">产品分层：Pi 1.0 ↔ Pi Durable</h3>
+  <div class="diagram">
+    <div class="node">Pi 1.0<br>单人终端编码 Agent</div>
+    <span class="arrow-sym">共享 pi-ai</span>
+    <div class="node-green">Pi Durable<br>任意 Agent 应用框架</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">存储 + 并行对话<br>+ 工具 + 执行环境</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">常见误解：「Pi 曾经反对 MCP，现在收编等于打脸」。原文三层逻辑是 MCP 生态已变、为 MCP 做的工具分层改造对 Jev/图像模型也通用，且团队希望参与塑造「可组合的 OpenAPI 式 MCP」，而非场外吐槽。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Harness 与 Codemode</h3>
+  <p><strong>在讲什么问题：</strong>模型之外，让模型真正干活的运行时——对话存储、工具调用、执行环境、任务调度。</p>
+  <p><strong>核心机制：</strong>Codemode 在 harness 受信任侧用 JS/WASM 沙箱编排工具；中间结果进会话记录而非反复塞进 LLM 上下文。</p>
+  <p><strong>关键理解：</strong>官方 Linear+Jev 演示 331+ 次工具调用，上下文零浪费——编排脚本替代「一轮一轮 chat 调工具」。 </p>
+  <p><strong>典型场景：</strong>批量拉 issue、并发情绪分类、只把汇总表返回模型。</p>
+  <p><strong>边界说明：</strong>Codemode 不是 bash 沙箱替代品；高危副作用工具应声明不可安全重放。</p>
+  <div class="quote">团队：MCP 应更像带智能发现的 OpenAPI——结构化返回，而非把文本工具全倒进上下文。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Pi 1.0 七项「粘住墙」的更新</h3>
+  <p><strong>核心思路：</strong>每周新概念很多，Pi 等被证明有用再权衡复杂度后收纳。</p>
+  <p><strong>操作步骤：</strong>① 安装 <code>curl -fsSL https://pi.dev/install.sh | sh</code>；② 体验 Codemode+MCP、虚拟模型扩展、延迟工具加载；③ 需要长运行/多界面/多人时再评估 <code>npm install @earendil-works/pi-durable</code> 与 Demo。</p>
+  <p><strong>选型条件：</strong>终端单人编码、要极简可塑 harness 时选 Pi 1.0；要 Slack 频道+线程分叉、崩溃续跑时上 Durable。</p>
+  <p><strong>避坑：</strong>别把 Pi Durable 当已稳定生产 API——官方写明仍可能变。</p>
+  <div class="highlight">落地：虚拟模型 router/auto 示例——Opus 规划、Jev 决策切换、GPT 实现；用 /session 看各模型花费与缓存命中。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Pi 编码 Agent vs Pi Durable</h3>
+  <table>
+    <tr><th>维度</th><th>Pi 1.0 编码 Agent</th><th>Pi Durable</th><th>一句话</th></tr>
+    <tr><td>典型用户</td><td>一人、终端、进程挂了人工续</td><td>多界面、多人、要灾难恢复</td><td>不强行把编码 Agent 撑成大平台</td></tr>
+    <tr><td>状态</td><td>会话为主</td><td>检查点 + requestId 恰好一次提交</td><td>分布式老概念进 Agent</td></tr>
+    <tr><td>工具副作用</td><td>常规 harness</td><td>replay: safe 只读可重跑，deploy 中断只告知模型</td><td>生产务实边界</td></tr>
+    <tr><td>代码规模</td><td>极简哲学延续</td><td>约 1.5 万行，目标让 Agent 能读框架</td><td>可跳过存储后端等模块</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】Agent 运行时怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>本地/远程终端写代码</td><td>Pi 1.0</td><td>官方明确专注此场景不变</td><td>为协作硬改同一包</td><td>另起 Durable 保持克制</td></tr>
+    <tr><td>331 次工具编排、省上下文</td><td>Codemode + MCP</td><td>脚本在 harness 侧执行</td><td>全工具塞进每轮 prompt</td><td>组合难、token 爆炸</td></tr>
+    <tr><td>Slack 频道与线程隔离权限</td><td>Durable 对话分叉</td><td>零拷贝分支、并发不阻塞</td><td>复制整段历史</td><td>官方频道/线程模型</td></tr>
+    <tr><td>需要内置权限 RBAC</td><td>外置 Gondolin/Docker/OpenShell</td><td>Pi 坦诚无内置权限</td><td>指望 harness 假安全</td><td>以启动用户权限运行</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Pi Durable 六能力里的硬细节</h3>
+  <p><strong>部署重复执行：</strong>未声明 replay 的 deploy 绝不会自动重放。解法：只读工具标 replay: safe。严重程度：致命。</p>
+  <p><strong>长对话卡顿：</strong>前台总结会停对话。解法：后台压缩任务，旧消息仍留存储可检索。严重程度：小心。</p>
+  <p><strong>供应链投毒：</strong>依赖当日新版本。解法：min-release-age、lockfile、npm ci --ignore-scripts。严重程度：致命。</p>
+  <p><strong>社区 PR 被关：</strong>新贡献者默认自动关闭。解法：知悉维护模式再评估参与成本。严重程度：可忽略（对使用者）。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】先验证、再收纳、保持小</h3>
+  <p><strong>原则：</strong>特性「扔墙上看谁粘住」；终端 Agent 不够用时新包扩展，而非臃肿一体化。</p>
+  <p><strong>为什么重要：</strong>OpenClaw 声量可起落，引擎 Pi 用克制换可依赖与可演进。</p>
+  <p><strong>怎么落地：</strong>Durable 上试设计，有效经验反哺 Pi；Agent 读 packages/durable README 与示例上手。</p>
+  <p><strong>适用边界：</strong>目前仅 TypeScript；Jev/Codemode 完整设计仍待后续文章。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「追新 MCP/多模型路由的集成派」</p>
+  <p class="rebuttal-text">企业已押注 LangGraph/Temporal 等成熟编排，再引入 1.5 万行实验框架只是重复造轮子，极简反而缺权限与可观测开箱即用。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Pi 1.0 巩固「可依赖的极简编码 harness」，并以 Codemode 反转 MCP 立场，解决工具组合与上下文浪费。</li>
+    <li>Pi Durable 把检查点、幂等提交、所有权树、后台压缩系统搬进 Agent，面向长跑与多人，API 仍实验。</li>
+    <li>安全与供应链靠外置沙箱与锁定依赖，而非 harness 内假安全感。</li>
+    <li>「让 Agent 能读懂框架」是明确设计指标，影响模块划分与上手路径。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>安装 Pi 1.0，用一次 Codemode 脚本完成多步 MCP 调用并对比纯对话调工具 token。</li>
+    <li>为只读与写操作工具分别设计 replay 策略，在 Durable 存储上模拟进程中断恢复。</li>
+    <li>若要多 Slack/多端协作，原型对话分叉与扩展热更新，再评估 API 稳定性风险。</li>
+    <li>生产前用 Gondolin/Docker/OpenShell 补权限边界，并核对 lockfile 与 npm audit 流程。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「追每周 Agent 新概念」到「用墙测试 + 分层产品」——终端编码与耐久应用分治，才是 Pi 在喧嚣里加速的原因。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);
