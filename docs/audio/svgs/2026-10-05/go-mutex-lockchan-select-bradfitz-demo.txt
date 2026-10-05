@@ -1,0 +1,117 @@
+欢迎收听每日技术学习语音讲解。本期主题，Go #16620 与 Mutex.LockChan：十年并发老病的新切口。标签包括sync.Mutex、select 语义、边沿 vs 电平、context 取消。本次讲解预计时长 约 11 到 12 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：为什么 sync.Cond 十年进不了 select，以及 bradfitz Demo CL 828544 里 Mutex.LockChan() 如何用「一次性关闭 channel」先解决「带超时/取消的加锁」，又仍未覆盖 Cond.Broadcast。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：HTTP/2 流量控制，Cond + Cancel，然后Cond 边沿触发，vs channel 电平，然后社区土办法，桥接 / AfterFunc，然后Demo：LockChan()，Mutex 独占加锁
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：「给 Cond 加个 WaitChan() 就能和 channel 一样 select」。正确理解：channel 值是持续状态，Cond 的 Signal/Broadcast 是瞬时事件；没人等时通知会丢失，硬转 channel 会在 Broadcast 与重复唤醒上爆炸式复杂。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「Go 就该只用 channel，别给 Mutex 加花样 API」
+
+channel 无法表达 Cond 的 Broadcast 与锁的公平排队，HTTP/2 流量控制这类真实战场十年都在用补丁 goroutine 硬扛——拒绝 LockChan 等于继续把泄漏和竞态留给业务。
+
+接下来，第四部分，【概念拆解卡】电平触发与边沿触发。
+
+在讲什么问题，为何 ianlancetaylor 认为 Cond 进 select 不是小补丁。
+
+关键理解，channel 有值可读是「状态」；Cond 唤醒是「事件」，错过即作废。
+
+和其他概念关系：Mutex 加锁成功也是一次性独占事件，更接近「关 channel」而非「塞一个值进缓冲」。
+
+怎么落地用：设计可 select 的同步原语时，先问「丢失通知是否可接受」。
+
+边界说明，Broadcast 要唤醒多个状态各异的等待者，无法用单一电平 channel 简单表达。
+
+原文：channel 是电平触发，条件变量的 Signal/Broadcast 是边沿触发。
+
+接下来，第五部分，【方法/工具卡】Mutex.LockChan() 用法。
+
+标签：实验性 Demo CL 828544 · 带 ctx 的加锁
+
+核心思路：每次 LockChan() 返回新 channel，成功抢到锁时 close；close 可多次 recv 但不会重复持锁。
+
+操作步骤，1）select 上 <-mu.LockChan() 与 <-ctx.Done()；2）进入持锁分支后干活并 mu.Unlock()；3）循环重试时在 for 里每次重新 LockChan()。
+
+选型条件，需要「抢锁与取消/超时竞争」且不想手写桥接 goroutine。
+
+对比相邻方法，比纯 Lock() 多了可取消；比 cond 桥接少一层泄漏 goroutine。
+
+示例：select { case <-mu.LockChan(): /* 已持锁 */ case <-ctx.Done(): /* 未持锁 */ }
+
+接下来，第六部分，【避坑清单卡】社区绕行方案的坑。
+
+桥接 goroutine：外层 ctx 取消后，cond.Wait 上的 goroutine 常泄漏。严重程度：致命（长期服务）。
+
+AfterFunc + Signal：取消触发的 Broadcast 可能被别的 Wait 截胡，必须用 Broadcast 并让所有 Wait 检查 ctx。严重程度：小心。
+
+第三方 condchan：Signal 与 Broadcast 并发可能竞态甚至 panic（rogpeppe 演示）。严重程度：致命（生产勿盲信）。
+
+把 Demo 当稳定 API：尚未进正式 proposal，RWMutex/Cond 仍无对应方案。严重程度：小心。
+
+接下来，第七部分，【决策/选型表】等待与取消怎么写。
+
+仅 channel + ctx，原生 select，电平语义一致，套 Cond 桥接，多余 goroutine
+
+Mutex + 超时取消，LockChan() Demo 模式，一次性 close 表达独占，Lock + time.After 轮询，忙等或丢取消
+
+Cond 多等待者 + ctx，AfterFunc Broadcast + Wait 内查 ctx，社区成熟补丁，仅 Signal，取消唤醒被截胡
+
+Cond Broadcast select，继续等标准库方案，语义未定论，自研 condchan 上生产，竞态难证
+
+接下来，第八部分，【跨概念对比表】Mutex.LockChan vs Cond vs channel。
+
+触发模型，电平（值持续存在），边沿（Signal/Broadcast），边沿，得到一次性 close
+
+进 select，原生支持，不支持，支持（仅 Mutex 加锁）
+
+多等待者，竞争接收或广播需设计，Broadcast 原生，互斥，仅一人持锁
+
+与 ctx 竞争，直接 case ctx.Done()，需 AfterFunc 等补丁，同 select 并列
+
+接下来，第九部分，【心法/原则卡】先缩小问题再进 select。
+
+原则，把「边沿事件」转成「可重复观测的关闭 channel」，且每次操作独立 channel，避免电平/边沿混用。
+
+为什么重要，#16620 十年卡在 Broadcast 语义，Mutex 独占加锁是更小的可证明子问题。
+
+怎么落地，网络服务里带 ctx 的池化/限流加锁，可对照 Demo 写 select；Cond 场景仍用 Broadcast+ctx 检查。
+
+适用边界，Demo 不解决 RWMutex、Cond.WaitChan；合并进 release 前仍需 proposal 与测试。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+#16620 十年未决的根因是 Cond 边沿语义与 channel 电平语义难以统一，Broadcast 尤其棘手。
+
+LockChan() 用「每次调用新 channel + close 表成功加锁」先解决 Mutex 与 ctx 的 select 竞争。
+
+社区土办法（桥接 goroutine、AfterFunc、第三方库）各有泄漏、截胡或竞态代价。
+
+Demo 仍是实验代码，Cond/RWMutex 的 select 故事尚未完结。
+
+读 issue #16620 与 CL 828544，确认 LockChan 在 for-select 循环里每次是否新 channel。
+
+盘点项目里「Lock + ctx」或 cond 桥接 goroutine，评估能否改为 LockChan 或 AfterFunc+Broadcast 模式。
+
+Cond 场景统一在 Wait 返回路径检查 ctx.Err()，取消路径用 Broadcast 而非 Signal。
+
+跟踪 proposal 进展，勿把 Demo 当稳定 Go 版本 API 依赖。
+
+总结：
+
+行动清单：
+
+关键认知转变：从「Cond 也该有个 channel」到「先承认触发模型不同，再为 Mutex 这种独占边沿找最小正确抽象」。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

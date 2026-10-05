@@ -1,0 +1,159 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'go-mutex-lockchan-select-bradfitz-demo.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:110px;font-weight:700;font-size:13px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>Go #16620 与 Mutex.LockChan：十年并发老病的新切口</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">sync.Mutex</span>
+  <span class="tag tag-green">select 语义</span>
+  <span class="tag tag-orange">边沿 vs 电平</span>
+  <span class="tag tag-purple">context 取消</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：为什么 sync.Cond 十年进不了 select，以及 bradfitz Demo CL 828544 里 Mutex.LockChan() 如何用「一次性关闭 channel」先解决「带超时/取消的加锁」，又仍未覆盖 Cond.Broadcast。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">issue #16620 脉络</h3>
+  <div class="diagram">
+    <div class="node">HTTP/2 流量控制<br/>Cond + Cancel</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">Cond 边沿触发<br/>vs channel 电平</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">社区土办法<br/>桥接 / AfterFunc</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">Demo：LockChan()<br/>Mutex 独占加锁</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「给 Cond 加个 WaitChan() 就能和 channel 一样 select」。正确理解：channel 值是持续状态，Cond 的 Signal/Broadcast 是瞬时事件；没人等时通知会丢失，硬转 channel 会在 Broadcast 与重复唤醒上爆炸式复杂。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】电平触发与边沿触发</h3>
+  <p><strong>在讲什么问题：</strong>为何 ianlancetaylor 认为 Cond 进 select 不是小补丁。</p>
+  <p><strong>关键理解：</strong>channel 有值可读是「状态」；Cond 唤醒是「事件」，错过即作废。</p>
+  <p><strong>和其他概念关系：</strong>Mutex 加锁成功也是一次性独占事件，更接近「关 channel」而非「塞一个值进缓冲」。</p>
+  <p><strong>怎么落地用：</strong>设计可 select 的同步原语时，先问「丢失通知是否可接受」。</p>
+  <p><strong>边界说明：</strong>Broadcast 要唤醒多个状态各异的等待者，无法用单一电平 channel 简单表达。</p>
+  <div class="quote">原文：channel 是电平触发，条件变量的 Signal/Broadcast 是边沿触发。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Mutex.LockChan() 用法</h3>
+  <p><strong>标签：</strong>实验性 Demo CL 828544 · 带 ctx 的加锁</p>
+  <p><strong>核心思路：</strong>每次 LockChan() 返回新 channel，成功抢到锁时 close；close 可多次 recv 但不会重复持锁。</p>
+  <p><strong>操作步骤：</strong>1）select 上 &lt;-mu.LockChan() 与 &lt;-ctx.Done()；2）进入持锁分支后干活并 mu.Unlock()；3）循环重试时在 for 里每次重新 LockChan()。</p>
+  <p><strong>选型条件：</strong>需要「抢锁与取消/超时竞争」且不想手写桥接 goroutine。</p>
+  <div class="highlight">示例：select { case &lt;-mu.LockChan(): /* 已持锁 */ case &lt;-ctx.Done(): /* 未持锁 */ }</div>
+  <p><strong>对比相邻方法：</strong>比纯 Lock() 多了可取消；比 cond 桥接少一层泄漏 goroutine。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】社区绕行方案的坑</h3>
+  <p><strong>桥接 goroutine：</strong>外层 ctx 取消后，cond.Wait 上的 goroutine 常泄漏。严重程度：致命（长期服务）。</p>
+  <p><strong>AfterFunc + Signal：</strong>取消触发的 Broadcast 可能被别的 Wait 截胡，必须用 Broadcast 并让所有 Wait 检查 ctx。严重程度：小心。</p>
+  <p><strong>第三方 condchan：</strong>Signal 与 Broadcast 并发可能竞态甚至 panic（rogpeppe 演示）。严重程度：致命（生产勿盲信）。</p>
+  <p><strong>把 Demo 当稳定 API：</strong>尚未进正式 proposal，RWMutex/Cond 仍无对应方案。严重程度：小心。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】等待与取消怎么写</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>仅 channel + ctx</td><td>原生 select</td><td>电平语义一致</td><td>套 Cond 桥接</td><td>多余 goroutine</td></tr>
+    <tr><td>Mutex + 超时取消</td><td>LockChan() Demo 模式</td><td>一次性 close 表达独占</td><td>Lock + time.After 轮询</td><td>忙等或丢取消</td></tr>
+    <tr><td>Cond 多等待者 + ctx</td><td>AfterFunc Broadcast + Wait 内查 ctx</td><td>社区成熟补丁</td><td>仅 Signal</td><td>取消唤醒被截胡</td></tr>
+    <tr><td>Cond Broadcast select</td><td>继续等标准库方案</td><td>语义未定论</td><td>自研 condchan 上生产</td><td>竞态难证</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Mutex.LockChan vs Cond vs channel</h3>
+  <table>
+    <tr><th>维度</th><th>channel</th><th>sync.Cond</th><th>LockChan()（Demo）</th></tr>
+    <tr><td>触发模型</td><td>电平（值持续存在）</td><td>边沿（Signal/Broadcast）</td><td>边沿→一次性 close</td></tr>
+    <tr><td>进 select</td><td>原生支持</td><td>不支持</td><td>支持（仅 Mutex 加锁）</td></tr>
+    <tr><td>多等待者</td><td>竞争接收或广播需设计</td><td>Broadcast 原生</td><td>互斥，仅一人持锁</td></tr>
+    <tr><td>与 ctx 竞争</td><td>直接 case ctx.Done()</td><td>需 AfterFunc 等补丁</td><td>同 select 并列</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】先缩小问题再进 select</h3>
+  <p><strong>原则：</strong>把「边沿事件」转成「可重复观测的关闭 channel」，且每次操作独立 channel，避免电平/边沿混用。</p>
+  <p><strong>为什么重要：</strong>#16620 十年卡在 Broadcast 语义，Mutex 独占加锁是更小的可证明子问题。</p>
+  <p><strong>怎么落地：</strong>网络服务里带 ctx 的池化/限流加锁，可对照 Demo 写 select；Cond 场景仍用 Broadcast+ctx 检查。</p>
+  <p><strong>适用边界：</strong>Demo 不解决 RWMutex、Cond.WaitChan；合并进 release 前仍需 proposal 与测试。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「Go 就该只用 channel，别给 Mutex 加花样 API」</p>
+  <p class="rebuttal-text">channel 无法表达 Cond 的 Broadcast 与锁的公平排队，HTTP/2 流量控制这类真实战场十年都在用补丁 goroutine 硬扛——拒绝 LockChan 等于继续把泄漏和竞态留给业务。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>#16620 十年未决的根因是 Cond 边沿语义与 channel 电平语义难以统一，Broadcast 尤其棘手。</li>
+    <li>LockChan() 用「每次调用新 channel + close 表成功加锁」先解决 Mutex 与 ctx 的 select 竞争。</li>
+    <li>社区土办法（桥接 goroutine、AfterFunc、第三方库）各有泄漏、截胡或竞态代价。</li>
+    <li>Demo 仍是实验代码，Cond/RWMutex 的 select 故事尚未完结。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>读 issue #16620 与 CL 828544，确认 LockChan 在 for-select 循环里每次是否新 channel。</li>
+    <li>盘点项目里「Lock + ctx」或 cond 桥接 goroutine，评估能否改为 LockChan 或 AfterFunc+Broadcast 模式。</li>
+    <li>Cond 场景统一在 Wait 返回路径检查 ctx.Err()，取消路径用 Broadcast 而非 Signal。</li>
+    <li>跟踪 proposal 进展，勿把 Demo 当稳定 Go 版本 API 依赖。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「Cond 也该有个 channel」到「先承认触发模型不同，再为 Mutex 这种独占边沿找最小正确抽象」。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);

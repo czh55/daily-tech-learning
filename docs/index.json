@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-10-05",
+    "files": [
+      {
+        "path": "svgs/2026-10-05/go-mutex-lockchan-select-bradfitz-demo.svg",
+        "title": "尘封十年的 Go 提案迎来转机？bradfitz 亲自操刀 Demo，让加锁也能 select 了",
+        "source": "https://tonybai.com/2026/10/05/go-mutex-lockchan-select-bradfitz-demo/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-04",
     "files": [
       {
