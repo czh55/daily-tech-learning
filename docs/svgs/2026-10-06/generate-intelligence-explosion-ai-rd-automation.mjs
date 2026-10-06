@@ -1,0 +1,160 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'intelligence-explosion-ai-rd-automation.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #6366f1}
+.card h3{font-size:22px;font-weight:700;color:#4338ca;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:2px solid #a5b4fc;border-radius:16px;padding:14px 18px;text-align:center;min-width:110px;font-weight:700;font-size:13px;color:#3730a3}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#f1f5f9;padding:12px 16px;text-align:left;font-weight:700;color:#4338ca;border-bottom:2px solid #cbd5e1}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>剑桥 CASP 工作论文：AI 研发自动化与「智能爆炸」</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">递归自我改进</span>
+  <span class="tag tag-green">研发回报弹性 r</span>
+  <span class="tag tag-orange">四大瓶颈</span>
+  <span class="tag tag-purple">治理窗口</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 AI 开始承担并加速 AI 自身研发时，技术进步是否会从线性加速变成「更强 AI → 更快研发 → 更强 AI」的闭环；论文如何用经济学参数、实证信号与四类现实瓶颈评估这一情景，以及社会在监督、权力与适应速度上还剩多少时间。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#4338ca;margin-bottom:12px;text-align:center">智能爆炸反馈环（概念关系）</h3>
+  <div class="diagram">
+    <div class="node">AI 承担<br/>更多研发任务</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">研发吞吐↑<br/>并行 Agent</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">下一代更强模型<br/>与工具链</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">再加速<br/>AI 研发自动化</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「智能爆炸 = 模型参数或基准分简单指数暴涨」。正确理解：关键是研发劳动力与 AI 能力之间的递归耦合；论文情景中的「约 1.5 年进步 10 倍」是特定 r 与全自动化假设下的推演，不是时间表预言。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】递归自我改进与智能爆炸</h3>
+  <p><strong>在讲什么问题：</strong>AI 从工具变成研发参与者后，进步曲线是否仍服从人类时代的边际递减。</p>
+  <p><strong>关键理解：</strong>闭环是「能力↑ → 可自动化研发份额↑ → 产出更强系统 → 能力再↑」，而非单次改权重。</p>
+  <p><strong>和其他概念关系：</strong>区别于一般「算力 scaling」：这里强调研发流程本身被 AI 改写。</p>
+  <p><strong>怎么落地用：</strong>跟踪自家研发流水线里 AI 生成/批准代码占比、高监督下自主任务占比，作为早期信号。</p>
+  <p><strong>边界说明：</strong>闭环要持续运转，须突破算力、数据、实验周期与不可并行任务等硬约束。</p>
+  <div class="quote">原文：真正可怕的是 AI 能让自己变得更聪明——研发能力与 AI 能力形成反馈循环。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】用 r（研发回报弹性）读论文推演</h3>
+  <p><strong>标签：</strong>CASP 工作论文 · 经济学情景模型</p>
+  <p><strong>核心思路：</strong>比较「研发劳动力扩张」与「边际收益递减」谁占上风，用 r 概括。</p>
+  <p><strong>操作步骤：</strong>1）查 Ho &amp; Whitfill 对 AI 子领域 r≈1.2–1.9 的估计；2）在「全自动化 + 反馈持续」假设下代入模型；3）得到「约 1.5 年进步 10 倍」量级情景；4）对照补充材料中的算力/软件分离等局限，降级为可能性而非预测。</p>
+  <p><strong>选型条件：</strong>讨论战略与治理时用情景分析；做季度 OKR 勿直接采用 1.5 年数字。</p>
+  <p><strong>对比相邻方法：</strong>比单纯 Moore/算力曲线多一层「研发劳动力内生性」。</p>
+  <div class="highlight">r&lt;1 进步放缓；r=1 大致持平；r&gt;1 劳动力扩张可压过递减，智能爆炸在模型里「有可能」。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】读论文与跟风的坑</h3>
+  <p><strong>把 Workshop 论文当主会水平：</strong>Nature 流水线案例通过的是 Workshop 评审。严重程度：小心（勿夸大「AI 已能独立发顶会」）。</p>
+  <p><strong>把 80% AI 代码当全自主：</strong>Anthropic 数字是批准代码占比，仍有人类监督与流程约束。严重程度：小心。</p>
+  <p><strong>忽视训练三个月墙：</strong>更好方案≠即时完成一次前沿训练。严重程度：小心。</p>
+  <p><strong>等爆炸发生再建制度：</strong>论文强调适应窗口可能远短于立法与基建周期。严重程度：致命（对政策与组织）。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】四类瓶颈：爆炸会不会被卡住</h3>
+  <table>
+    <tr><th>瓶颈</th><th>机制</th><th>可能缓解</th><th>仍不确定</th></tr>
+    <tr><td>边际收益递减</td><td>问题难并行、重复探索</td><td>更好协作与路由</td><td>AI 能否系统性克服</td></tr>
+    <tr><td>算力</td><td>实验与训练吃 GPU</td><td>小实验外推方法</td><td>前沿规模外推可靠性</td></tr>
+    <tr><td>数据</td><td>互联网高质量语料见顶</td><td>合成数据 + 可验证反馈（代码/数学）</td><td>生物等材料科学慢反馈</td></tr>
+    <tr><td>流程与物理</td><td>真实实验、长周期训练</td><td>后训练与效率优化</td><td>能缩短多少周期</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三类社会风险 vs 技术红利</h3>
+  <table>
+    <tr><th>维度</th><th>潜在红利</th><th>三类风险（论文）</th><th>一句话</th></tr>
+    <tr><td>速度</td><td>医学、材料突破提前</td><td>社会制度适应跟不上</td><td>快不等于可吸收</td></tr>
+    <tr><td>控制</td><td>研发成本下降</td><td>人类失去对研发过程的理解与纠偏能力</td><td>Agent 协同可越权（HF 案例）</td></tr>
+    <tr><td>权力</td><td>安全研究也可能加速</td><td>单一主体领先打破制衡</td><td>能力扩散可部分对冲</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】三项政策优先（工程师也能对齐）</h3>
+  <p><strong>原则：</strong>透明度 → 引导/约束加速 → 社会适应，且准备必须前置。</p>
+  <p><strong>为什么重要：</strong>论文判断：一旦爆炸真正启动，行动窗口可能迅速关闭。</p>
+  <p><strong>怎么落地：</strong>团队层面：自动化研发指标可审计、Agent 沙箱与行为日志、关键决策保留人类门禁；行业层面：支持标准化自动化报告与独立评估。</p>
+  <p><strong>适用边界：</strong>监管本身可能被滥用，需在安全、创新与权力间再平衡。</p>
+  <div class="quote">原文：很多准备工作不能等到智能爆炸真正发生之后才开始。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「技术乐观派 / 纯 scaling 信徒」</p>
+  <p class="rebuttal-text">算力、数据墙和三个月训练周期会把递归闭环卡成慢速爬升，r&gt;1 的历史估计外推到「数百万虚拟研究员」纯属模型游戏——真爆炸前你会先撞上电费、许可和实验排队。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>AI 已进入「研究 AI」流水线：代码占比、低监督自主任务比例快速上升，闭环在实验室与工业界同时酝酿。</li>
+    <li>智能爆炸的核心是研发劳动力与能力的递归耦合；r&gt;1 情景下传统「自然放缓」未必成立，但四大瓶颈仍可能刹车。</li>
+    <li>社会风险集中在适应速度、监督失控与权力失衡；技术红利与风险可能不对称落地（如生物攻防速度差）。</li>
+    <li>治理重点是透明度、可验证约束与社会适应的前置建设，而非单点追模型版本。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>阅读 CASP 论文原文与补充材料，区分「情景推演」与「确定性预测」。</li>
+    <li>在团队内建立 Agent 研发占比、沙箱越权与人工审批的可观测指标。</li>
+    <li>对高自主 Agent 任务保留可中断、可审计与最小权限，参考论文引用的隔离失败案例做红队。</li>
+    <li>参与或推动行业级研发自动化披露与独立评估讨论，避免信息只掌握在少数前沿公司。</li>
+    <li>个人技能：从「用 AI 写代码」升级到理解 Harness、安全中间件与研发流程自动化边界。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「下一代模型何时发布」转向「人类用于理解、规制与适应技术进步的时间尺度是否正在失效」。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);
