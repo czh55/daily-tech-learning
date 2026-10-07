@@ -1,0 +1,170 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'python-cpython-rust-integration.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#fef3c7);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#2563eb,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #f97316}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#eff6ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#1e40af;border-left:4px solid #3b82f6}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 18px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#1d4ed8}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1d4ed8,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{background:#fff7ed;padding:12px 16px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #fed7aa}
+td{padding:12px 16px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>Rust for CPython：渐进式双语言底座</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Python Language Summit 2026</span>
+  <span class="tag tag-orange">zlib-rs 首模块</span>
+  <span class="tag tag-green">可选 Rust 后端</span>
+  <span class="tag tag-purple">内存安全 + 工程维护</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：CPython 为何在 JIT、Free-threading 等复杂度上升时考虑引入 Rust；项目如何以 zlib 为试验田、按 3.16→3.17→远期必需工具链分阶段落地；以及社区、性能、平台与 Cargo 供应链四条门槛如何决定 Rust 能否成为正式组成部分。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">演进路径（概念关系）</h3>
+  <div class="diagram">
+    <div class="node">2026 基建<br/>PEP 成功标准</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">3.16 可选 Rust<br/>zlib + C 回退</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">3.17 扩模块<br/>io/json 等探索</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">2029+ 可能<br/>Rust 为构建必需</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「CPython 要用 Rust 重写 Python」。正确理解：长期 C 与 Rust 并存；只为合适模块引入 Rust，且 3.16 起 Rust 实现为<strong>可选</strong>，C 实现保留回退。Rust 减少一类内存安全风险，不消除逻辑 Bug，仍须 fuzz/属性测试与审查。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Rust for CPython 与 type-crash 压力</h3>
+  <p><strong>在讲什么问题：</strong>百万行 C 底座在 Free-threading 等改造下，维护与崩溃类 issue（type-crash）趋势上升，需要更可靠的底层工程手段。</p>
+  <p><strong>关键理解：</strong>Rust 的价值是编译期所有权/借用约束 + RAII，把部分「靠自觉」的内存规则变成编译器强制；引用 Android「Move fast and fix things」指补丁轮次可能更少，而非零 Bug。</p>
+  <p><strong>和其他概念关系：</strong>区别于 PyPy/独立分支重写——官方路线是<strong>协同集成</strong>，不是全面替换 C。</p>
+  <p><strong>怎么落地用：</strong>关注 3.16 发行说明中的可选 Rust zlib 开关与构建依赖；业务代码通常无感，但运维需准备 Rust 工具链若启用该后端。</p>
+  <p><strong>边界说明：</strong>并发设计错误、算法错误 Rust 同样拦不住；不能省测试。</p>
+  <div class="quote">原文：CPython 不应该为了使用 Rust 而使用 Rust。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】首模块 zlib-rs 与 pip 安装链</h3>
+  <p><strong>标签：</strong>标准库试点 · Cargo 集成验证</p>
+  <p><strong>核心思路：</strong>选边界清晰、已有成熟 Rust 实现（zlib-rs，Firefox/uv/Cargo 在用）的模块，验证「外部 Cargo 依赖如何进入 CPython 构建」。</p>
+  <p><strong>操作步骤：</strong>1）跟踪 Rust for CPython PEP 与 2026 年底成功标准；2）3.16 尝试启用可选 Rust zlib 构建；3）对比解压性能与回归测试；4）观察 vendor 化依赖是否满足离线构建。</p>
+  <p><strong>选型条件：</strong>需要验证压缩热点时关注 zlib；解释器核心仍主要在 C。</p>
+  <p><strong>对比相邻方法：</strong>比「从零写 Rust 压缩库」风险低——集成问题才是主战场。</p>
+  <div class="highlight">团队引用：若成功，3.16 中许多 pip install 路径上的解压缩可能受益，但收益取决于包格式与其它瓶颈，非一刀切加速。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Rust API 五条设计原则（示意）</h3>
+  <p><strong>核心思路：</strong>不做「C API 套壳」，用 Rust 惯用法服务扩展模块作者。</p>
+  <p><strong>操作步骤：</strong>属性宏 <code>#[pyfunction]</code> 减样板；显式 <code>Python&lt;'_&gt;</code> 适配多解释器/无 GIL；<code>Py&lt;T&gt;</code> 管对象生命周期；<code>PyResult</code> + <code>?</code> 传播错误；RAII 在作用域退出释放 buffer。</p>
+  <p><strong>选型条件：</strong>写新 Rust 扩展模块时遵循；读 C 模块不必学 Rust。</p>
+  <p><strong>避坑：</strong>会议代码为设计示意，非稳定公共 API。</p>
+  <p><strong>对比相邻方法：</strong>完全迁就 C 风格会浪费类型系统；完全不顾「恐龙」C 维护者会抬高协作成本——需在两者间平衡。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】集成 Rust 时的工程与社会坑</h3>
+  <p><strong>把 type-crash 全怪 C：</strong>数据只说明复杂度与稳定性压力上升，非全部内存安全。严重程度：小心。</p>
+  <p><strong>假设 Rust 可跳过测试：</strong>仍需 property test、fuzz、审查。严重程度：致命（若据此砍 QA）。</p>
+  <p><strong>Cargo 依赖膨胀：</strong>每个上游 CVE 可能牵动 Python 重发；须 vendor、少依赖、走 cpython-source-deps。严重程度：致命（Pablo 称或阻碍项目）。</p>
+  <p><strong>只测 Tier1 桌面平台：</strong>CPython 约 20 种正式支持组合，Rust 须全覆盖才可晋级。严重程度：致命。</p>
+  <p><strong>宣称 Rust 永远可选：</strong>长期目标含构建必需工具链，对核心维护者不诚实。严重程度：小心（规划预期）。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】什么场景用 C、什么场景尝试 Rust</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>成熟高性能 C 模块</td><td>保留 C</td><td>无迁移收益、兼容性风险大</td><td>为现代感重写</td><td>违背「不为 Rust 而 Rust」</td></tr>
+    <tr><td>有成熟 Rust 生态实现的标准库（zlib）</td><td>可选 Rust 后端</td><td>验证集成 + 可能性能</td><td>强制默认 Rust</td><td>平台/构建未就绪</td></tr>
+    <tr><td>高并发/无 GIL 新底层</td><td>评估 Rust API</td><td>显式解释器上下文与所有权</td><td>继续隐式全局状态</td><td>Free-threading 放大竞态</td></tr>
+    <tr><td>核心开发者不愿学 Rust</td><td>继续维护 C 分区</td><td>社区接受度是考核维度之一</td><td>要求全员立即精通</td><td>「Open」≠「Familiar」</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】进入下一阶段的三项考核</h3>
+  <table>
+    <tr><th>维度</th><th>要求</th><th>可观测信号</th><th>未达标后果</th></tr>
+    <tr><td>社区接受度</td><td>多数活跃核心开发者愿意用 Rust API 做功能</td><td>问卷、实际 PR 分布</td><td>停滞在试点</td></tr>
+    <tr><td>性能</td><td>基准无有意义负面</td><td>官方 perf 回归</td><td>不扩大范围</td></tr>
+    <tr><td>平台兼容</td><td>全分级平台可构建</td><td>发行商反馈 3.16→3.17</td><td>Rust 不能成必需链</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】基础设施演进应有的样子</h3>
+  <p><strong>原则：</strong>在合适处用合适工具；用户无感、底层渐进替换。</p>
+  <p><strong>为什么重要：</strong>大型基础设施不能赌一次性重写，也不能因恐惧拒绝更安全实现。</p>
+  <p><strong>怎么落地：</strong>离线构建要求 vendor Cargo；安全响应流程预演「依赖 CVE → 发版」；跟踪 PEP 与 Summit 纪要而非自媒体「Python 变 Rust」标题。</p>
+  <p><strong>适用边界：</strong>若三项考核长期不达标，C 仍将是主角很多年。</p>
+  <div class="quote">原文：Python 不需要成为 Rust，但 Python 的未来，很可能需要 Rust。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：极简 CPython 维护者 / 「再加一门语言」派</p>
+  <p class="rebuttal-text">双语言仓库加 Cargo 供应链会把发布团队绑死在 Rust 工具链与上游 CVE 上，而 type-crash 大半是逻辑与并发设计——用 Rust 换维护地狱，对百万行 C 遗产几乎没净收益。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Rust for CPython 是渐进、可选的双语言战略，首刀 zlib-rs，验证构建与 Cargo 集成而非重写解释器。</li>
+    <li>动机是复杂度上升下的工程安全与维护效率；Rust 补内存安全基础，不替代测试与社区治理。</li>
+    <li>API 设计、平台全覆盖、vendor 依赖与核心开发者「愿意用」同样决定成败。</li>
+    <li>用户侧可能从压缩等高频路径间接受益（含 pip 安装链），但应理性看待幅度。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>阅读 Python Language Summit 2026 官方纪要与后续 PEP 成功标准。</li>
+    <li>若在发行版打包 Python，预研 3.16 可选 Rust 构建与离线 vendor 流程。</li>
+    <li>扩展模块作者：关注 Rust API 草案中的 <code>Python</code> 上下文与 <code>PyResult</code> 模式。</li>
+    <li>安全/运维：把「CPython 引入 Rust 依赖」纳入依赖漏洞响应演练。</li>
+    <li>业务开发：继续写 Python；把「是否会 Rust」与参与 CPython 贡献场景挂钩即可。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「Python 会不会被 Rust 重写」转向「CPython 如何在 C 遗产、无 GIL 未来与供应链现实之间，分阶段引入第二种实现语言」。 </p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);

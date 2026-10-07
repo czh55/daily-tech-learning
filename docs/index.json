@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-10-07",
+    "files": [
+      {
+        "path": "svgs/2026-10-07/python-cpython-rust-integration.svg",
+        "title": "Python 正式向 Rust 招手：CPython 准备告别纯 C 时代，连 pip install 都可能因此变快？",
+        "source": "https://tonybai.com/2026/10/07/python-cpython-rust-integration/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-06",
     "files": [
       {
