@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-08",
+    "files": [
+      {
+        "path": "svgs/2026-10-08/deepseek-harness-desktop.svg",
+        "title": "DeepSeek Harness 桌面端来啦！更便捷更安全的选择",
+        "source": "https://juejin.cn/post/7693712140221792271"
+      },
+      {
+        "path": "svgs/2026-10-08/spec-harness-brownfield-workflow.svg",
+        "title": "Spec Kit vs OpenSpec vs Superpowers：我为什么最后自己搭了一套",
+        "source": "https://juejin.cn/post/7693824347871363072"
+      },
+      {
+        "path": "svgs/2026-10-08/who-says-cloud-native-is-outdated-agent-foundation.svg",
+        "title": "谁说云原生过时了？Kubernetes 等主流项目正在为 Agent 重做「地基」",
+        "source": "https://tonybai.com/2026/10/08/who-says-cloud-native-is-outdated-agent-foundation/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-07",
     "files": [
       {

@@ -1,0 +1,117 @@
+欢迎收听每日技术学习语音讲解。本期主题，云原生未过时：Agent 逼出的「接口级地基重做」。标签包括K8s v1.33–1.37、DRA / WAS、Gateway Payload、AX · OTel GenAI。本次讲解预计时长 约 11 到 12 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：「云原生过时论」三条论据（Agent 不合 Pod、K8s 太重、Substrate 绕开控制面）为何只说对一半——过去 21 个月官方演进显示调度从 Pod 升维到 Workload、DRA 成 GPU 标准抽象、流量从 Header 走向 Payload 与 MCP，Sandbox/AX 分层而非推倒 K8s，Cilium 与 OpenTelemetry 为 Agent 补安全与证据链。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Gateway，Payload/MCP，然后Sandbox /，Substrate·AX，然后DRA + WAS，资源/组调度，然后Cilium，边界策略，然后OTel，调用树证据
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：「AX/Substrate 证明可以抛弃 Kubernetes」。事实：Substrate 仍把 K8s 当基础设施供给层，且用补丁对齐 Pod 证书；最激进的运行时也在向上游标准靠拢。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：裸机/Serverless 极简派
+
+为长驻 Agent 把 K8s、CRD、Gateway 与 OTel 全栈搬上，运维税远超 Substrate 省下的那一秒唤醒——小团队真正该用的是托管 API，不是给 Pod 办户口。
+
+接下来，第四部分，【概念拆解卡】过时论的三条依据与反证。
+
+在讲什么问题，为何舆论唱衰与项目路线图相反。
+
+依据 1：Agent 有状态、闲忙波动、不可信代码 ，得到 反证：WAS/Gang、HPA 缩容到零、用户命名空间 GA、Agent Sandbox CRD。
+
+依据 2：K8s 运维重 ，得到 反证：Conformance 平台 18，得到31、Ingress NGINX 退役换 Gateway API 统一入口。
+
+依据 3：新运行时绕开 K8s ，得到 反证：控制面移出热路径 ≠ 离开云原生地盘；多数团队算力/网络/身份已长在云上。
+
+结论句式：过时论说对「旧抽象不够」，答案是在地基上改造接口、加建楼层。
+
+接下来，第五部分，【方法/工具卡】Kubernetes 调度与 DRA（v1.33–1.37）。
+
+Workload 感知：CompositePodGroup、Gang Scheduling Beta（v1.37）——一组 Pod 同起同停，服务 JobSet/LeaderWorkerSet。
+
+DRA：v1.34 GA；v1.37 Extended Resource GA、设备污点、PodGroup 共享 ResourceClaim Beta——渐进替代 Device Plugin 写法。
+
+Agent 弹性：In-Place Resize GA、HPA 缩容到零 Beta、Memory QoS Beta 默认开。
+
+操作注意：WAS API v1alpha1，得到2，得到3 连续破坏性变更，KEP-4671 Stable 目标 v1.38——预发验证后再生产。
+
+Ingress NGINX 2026 年 3 月停维：约半数环境曾依赖——迁移工具 Ingress2Gateway 1.0，流量标准压在 Gateway API。
+
+接下来，第六部分，【跨概念对比表】两条 Agent 运行时路线。
+
+原文立场：AX 是作业编排，不是 Agent 框架；HN 批评运维负担成立，但不削弱「多数团队绕开云原生成本更高」。
+
+抽象，Pod 内强隔离沙箱，Actor 多路复用到少量 Worker Pod，改进 Pod vs 移出热路径
+
+冷启动，WarmPool、缩容到零再恢复，快照挂起，<1s 恢复，都针对空闲烧钱
+
+编排，SandboxTemplate/Claim，Task/Workspace/Gateway/Model，AX 像 kubectl 式作业编排
+
+成熟度，KubeCon 预览、上游 CRD，早期开发、README 非官方支持产品，生产谨慎
+
+接下来，第七部分，【方法/工具卡】流量层与 CNCF「合同」。
+
+Payload：AI Gateway WG——载荷处理（注入防护、MCP）、出站路由；Inference Extension GA；llm-d（CNCF Sandbox）做 Prefill/Decode 分离与前缀缓存感知（Vertex 案例 35%，得到70%）。
+
+Conformance：KAR 对齐 v1.35 原语；验证范围扩到 Agent 工作负载；MCP/A2A 归 LF AAIF。
+
+怎么落地，新入口用 Gateway API；评估 agentgateway/kagent CRD 时注意多为 v1alpha1。
+
+接下来，第八部分，【避坑清单卡】官方风险清单（原文摘录）。
+
+WAS API 连变：勿直接上生产——严重程度：致命。
+
+AI Gateway CRD 未合并：提案阶段——严重程度：小心。
+
+AX/Substrate 早期 + GKE Standard 导向：——严重程度：小心。
+
+OTel GenAI 约定 Development：属性名仍会变——严重程度：小心（但现在应按 gen_ai.* 插桩）。
+
+Ingress NGINX 维护者集中：关键组件单点风险教训——严重程度：致命（历史）。
+
+接下来，第九部分，【心法/原则卡】五个判断 + Cilium/OTel 横切。
+
+原则，分层而非替换；调度单元 Pod，得到Workload，得到Actor；网关看 Body；标准先行（Conformance）；可观测是证据链但未定型。
+
+Cilium 1.20：Gateway ExternalAuth、ClusterNetworkPolicy、Tetragon FQDN/二进制策略——Agent 出站白名单与审计关联。
+
+OpenTelemetry：2026 毕业；GenAI/MCP 语义约定拆仓快迭代——Agent 与 MCP 为一等公民，整体仍 Development。
+
+一次 Agent 请求：网关管入口，Sandbox/Substrate 管运行，DRA 与调度管资源，Cilium 管边界，OTel 管证据。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+云原生在 Agent 时代是「接口重做」：调度、设备、流量、沙箱、观测五层都在演进。
+
+K8s v1.37 与 DRA/WAS 针对组调度与 GPU 标准化；Sandbox 与 AX 是互补路线而非二选一弃云。
+
+流量与治理从 Header/MCP 载荷、Conformance 到 Cilium/OTel，形成可审计闭环雏形。
+
+生产需对照原文风险清单：API 版本、alpha 组件、未定型语义约定。
+
+盘点是否仍依赖 Ingress NGINX，规划 Gateway API + Ingress2Gateway。
+
+GPU 工作负载评估 DRA 渐进迁移路径与设备污点策略。
+
+Agent 试点在预发验证 WAS/Gang 与缩容到零，勿跟 alpha API 进生产。
+
+按 gen_ai.* / MCP 约定插桩 OTel，并为属性变更留版本缓冲。
+
+跟踪 AI Conformance 与 KAR 对 Agent 工作负载的认证要求。
+
+总结：
+
+行动清单：
+
+关键认知转变：从「云原生 vs Agent 二选一」到「Agent 时代地基被拆开重新分层，K8s 仍是多数团队的供给与标准锚点」。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
