@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4869" viewBox="0 0 1320 4869">
+  <foreignObject x="0" y="0" width="1320" height="4869">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#0c4a6e,#0284c7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #0284c7}
+.card h3{font-size:22px;font-weight:700;color:#0c4a6e;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#1e40af}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0c4a6e,#0284c7);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#0c4a6e;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}</style>
+      
+<h1>tsc-rs：AI 在「可判分」任务上移植工业级 TypeScript 编译器</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Test Oracle</span>
+  <span class="tag tag-green">Rust 移植</span>
+  <span class="tag tag-orange">长程 Agent</span>
+  <span class="tag tag-purple">验证闭环</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Theo 用智能体在约两周、约 2.4 万美元内把 Go 版 tsc 逐行译成 Rust（tsc-rs），几何平均比 tsc 7 快约 1.61 倍却无人读过源码——这究竟证明「模型能写编译器」，还是证明「有 18 万测试当标准答案时，瓶颈从写代码转向定义验收与长期维护」？</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0c4a6e;margin-bottom:12px;text-align:center">移植链路（非从零发明）</h3>
+  <div class="diagram">
+    <div class="node">微软 tsc 6<br/>JS 实现</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">tsc 7<br/>Go 重写</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">tsc-rs<br/>AI+Rust 移植</div>
+    <span class="arrow-sym">⇄</span>
+    <div class="node-orange">181,711<br/>移植测试</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「AI 从零发明了更快的 TypeScript 编译器」。实际是<strong>对 Go 版行为的直接移植</strong>，算法与并发模型带 Go 印记；性能对比里 Bun <code>bun check</code> 几何平均更快（约 20.9× vs tsc 6）。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】两条 Agent 路线与竞品检查器</h3>
+  <table>
+    <tr><th>维度</th><th>OpenAI 路线</th><th>Opus 5.5 路线</th><th>bun check</th></tr>
+    <tr><td>成本/时长</td><td>&gt;40 万美元，数月</td><td>约 2.4 万美元，2 周</td><td>—</td></tr>
+    <tr><td>兼容/结果</td><td>卡在约 84%</td><td>与 Go 版对齐（已知问题除外）</td><td>部分项目报出独有错误</td></tr>
+    <tr><td>相对 tsc 7</td><td>未完成</td><td>类型检查约 1.61× 快（六项目几何平均）</td><td>约 2.95× 快于 tsc 7</td></tr>
+    <tr><td>一句话</td><td>长程任务易偏</td><td>样本量 1，但成本差一个数量级</td><td>速度王者，语义需单独验证</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Test Oracle 为何让编译器移植「可自动化」</h3>
+  <p><strong>在讲什么问题：</strong>智能体为何能啃下类型检查器这种硬骨头。</p>
+  <p><strong>关键理解：</strong>移植不是猜语义，而是对着<strong>可执行、可自动比对</strong>的标准答案做翻译——181,711 个从 Go 版来的测试、oracle 测试集、120 个仓库 CLI  diff。</p>
+  <p><strong>怎么落地用：</strong>长程 AI 工程先搭「判分器」（测试、基准、真实项目对照），再让 Agent 循环；Theo 不读代码却能背书，靠的是这层闭环。</p>
+  <p><strong>边界说明：</strong>最后约 16% 兼容、诊断文本、错误恢复、并发顺序——无 oracle 就极易越改越偏；OpenAI 路线卡 84% 是典型信号。</p>
+  <div class="quote">作者：它不是「被人精心设计、可读可维护」的工程成果，而是「能跑、能对上答案」的交付物——两件事不同。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】评估 tsc-rs 是否进 CI</h3>
+  <p><strong>操作步骤：</strong>① <code>npm install -D tsc-rs</code>；② 在 CI 并行跑 <code>npx tsc-rs -p tsconfig.json</code> 与现有 tsc；③ 对比诊断与产物 diff；④ 关注 monorepo、<code>tsc -b</code>、watch 已知问题。</p>
+  <p><strong>选型条件：</strong>需要比 Go 版更快类型检查、可接受 Linux x64 / macOS arm64、接受早期版本与维护不确定。</p>
+  <p><strong>Effect 场景：</strong>内置 Effect 诊断时一次检查 11.13s，比 tsc7+插件方案快约 1.89×且无需第二遍。</p>
+  <div class="highlight">作者自述：「我不知道它能不能用」——生产切换前务必并行对照，勿因 benchmark 直接替换发布闸门。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】AI 移植编译器的工程风险</h3>
+  <p><strong>无人读过代码：</strong>性能/正确性可测，安全与可维护难测——严重程度：致命（生产背书）。</p>
+  <p><strong>Go 并发搬进 Rust：</strong>goroutine 风格残留、<code>unported!</code> 标记——后续重构成本高——严重程度：小心。</p>
+  <p><strong>维护承诺缺失：</strong>评论区「Will it be maintained?」高赞——像抢「第一」的名分而非长期产品——严重程度：小心。</p>
+  <p><strong>平台与 watch：</strong>无 Windows/Linux arm64；<code>-b --watch</code> 可能退出码 70——严重程度：可忽略（非目标平台）。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】类型检查加速方案</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>保守生产 CI</td><td>官方 tsc 7</td><td>微软团队维护</td><td>tsc-rs 单轨</td><td>维护与平台缺口</td></tr>
+    <tr><td>极致速度+愿意验语义</td><td>bun check</td><td>基准最快</td><td>盲目当 tsc 等价</td><td>会报独有错误</td></tr>
+    <tr><td>实验/WASM 路线</td><td>关注 tsc-rs</td><td>作者强调 WASM 动机</td><td>期待地道 Rust 风格</td><td>这是移植不是重写</td></tr>
+    <tr><td>研究 Agent 上限</td><td>读 ts-rust 方法论</td><td>验证闭环 &gt; 读码</td><td>解读为模型榜单</td><td>样本量 1、变量多</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】瓶颈从写代码转向验收</h3>
+  <p><strong>原则：</strong>有判分器的任务，Agent 已可达工业级；稀缺的是验证设计与模型/workflow 选型。</p>
+  <p><strong>怎么落地：</strong>定目标 → 固定上游版本 → 测试 oracle → 真实项目基准 → 公开已知差异。</p>
+  <p><strong>适用边界：</strong>无自动验收的创意架构仍靠人；开源「AI 移植」泛滥后<strong>谁对代码负责</strong>成为新课题。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：资深编译器工程师 / 维护责任派</p>
+  <p class="rebuttal-text">没人读过、没人承诺维护的 Rust 泥球，就算 benchmark 赢 1.61 倍也只是 demo——生产类型检查不能靠「测试碰巧全绿」赌明天还有人修 TS 8 的破坏性变更。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>tsc-rs 是 Go tsc 的 AI 辅助移植，快于 tsc 7 但非最快；Bun 与 C++ 移植等竞品叙事需独立验证。</li>
+    <li>40 万 vs 2.4 万说明长程任务上模型与工作流差距可被放大，但不宜当成普适榜单。</li>
+    <li>核心价值是「验证闭环 + Test Oracle」让编译器级任务进入 Agent 可行域。</li>
+    <li>可读性、维护、安全与平台覆盖仍是采纳前必须单独决策的维度。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>在分支 CI 并行跑 tsc-rs 与 tsc，记录 diff 分类（已知/未知）。</li>
+    <li>为自己团队的 Agent 大任务先写清「判分器」清单，再选模型。</li>
+    <li>读 README 已知问题，排除 monorepo / project references 踩坑场景。</li>
+    <li>把「谁维护」写入采纳 checklist，勿因热搜默认长期可用。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「AI 会不会写编译器」到「你是否能提供可自动验收的规格——写代码正在变便宜，定义对与负责长期演进正在变贵。」</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

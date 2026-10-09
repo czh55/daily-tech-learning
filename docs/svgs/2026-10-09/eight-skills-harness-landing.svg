@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4839" viewBox="0 0 1320 4839">
+  <foreignObject x="0" y="0" width="1320" height="4839">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:30px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:16px 0;font-size:10px}
+.node{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fdba74;border-radius:12px;padding:8px 10px;text-align:center;font-weight:700;color:#9a3412;min-width:72px}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 12px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #cbd5e1}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px}
+.correction h3{color:#92400e;margin-bottom:8px;text-align:center}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px}</style>
+      
+<h1>8 个 Skill 落地实录：从三件套长到全链路 Harness</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">棕地/绿地</span>
+  <span class="tag tag-blue">CLAUDE.md 宪法</span>
+  <span class="tag tag-green">按需 Skill</span>
+  <span class="tag tag-purple">工程基本功升值</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：架构图之外，八个 Skill 如何被业务「逼」出来、三条内部设计如何保证企业场景稳定运行、四个月量化效果如何——以及当工具名会过时，「拆框架看环节 + 可验证约束」为何比记住 Spec Kit 阶段数更持久。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">典型 full 链路（可裁剪）</h3>
+  <div class="diagram">
+    <div class="node-green">product</div><span class="arrow-sym">→</span>
+    <div class="node">api</div><span class="arrow-sym">∥</span>
+    <div class="node">ui</div><span class="arrow-sym">→</span>
+    <div class="node">page</div><span class="arrow-sym">→</span>
+    <div class="node">test</div><span class="arrow-sym">→</span>
+    <div class="node">qa</div><span class="arrow-sym">→</span>
+    <div class="node-green">review</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:8px">bugfix 独立链路 · light 模式跳过 YAML/部分 Skill</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px;text-align:center">误解：「八个 Skill 是一次设计好的成品」。作者：<strong>从 product/page/review 三个起步</strong>，qa、bugfix 等是被返工与线上问题逼出来的；每 3–4 个需求还要微调决策点。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】八个 Skill 职责速查</h3>
+  <table>
+    <tr><th>Skill</th><th>职责</th><th>借鉴/要点</th></tr>
+    <tr><td>product</td><td>六维评审、任务拆解</td><td>grill-me：一次一问，PRD×代码交叉审</td></tr>
+    <tr><td>api / ui / page</td><td>类型与请求、组件、四态页面</td><td>ui 强制封装组件；page 覆盖加载/空/错/正常</td></tr>
+    <tr><td>test / qa</td><td>行为基线、提测前扫 Excel 用例</td><td>qa 对照 product.md 验收标准</td></tr>
+    <tr><td>review</td><td>CR + 规范回写 CLAUDE.md</td><td>与框架自带 review 不同：可回流宪法</td></tr>
+    <tr><td>bugfix</td><td>根因→范围→验证</td><td>根因说不清不许动手</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】三条共同设计（比步骤更重要）</h3>
+  <p><strong>设计一：</strong>每个 Skill 开头<strong>必须先读 CLAUDE.md</strong>——否则 ui 会满屏 antd 原生，违背 L1 封装。</p>
+  <p><strong>设计二：</strong>明确决策点，不确定就停（<code>[待确认]</code>）——企业场景<strong>全自动是灾难</strong>。</p>
+  <p><strong>设计三：</strong>末尾「常见坑速查表」三列（现象/原因/处理），review 交付后持续追加——灵感来自 Superpowers Red Flags，堵 LLM 自我合理化。</p>
+  <div class="quote">AI 不知道的事不会主动问——不喂约束，它就按训练数据里的通用实践来。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】四个月量化 vs Superpowers 全链</h3>
+  <table>
+    <tr><th>指标</th><th>变化</th><th>对比参照</th></tr>
+    <tr><td>中等需求交付</td><td>评审→review 约 2 天</td><td>纯手工约 2× 时长</td></tr>
+    <tr><td>PR 轮次</td><td>1–2 轮（原 2–3）</td><td>review 首轮拦约 70% 低级问题</td></tr>
+    <tr><td>Token</td><td>按需调用 Skill</td><td>约为 Superpowers 全链 1/4–1/3</td></tr>
+    <tr><td>CLAUDE.md</td><td>20 行→80 行</td><td>每条来自 review 真实漏洞</td></tr>
+    <tr><td>spec 复用</td><td>20+ 需求归档</td><td>新需求约 30% 可复用</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】何时别上八 Skill</h3>
+  <p><strong>极致 TDD / 小团队 hotfix：</strong>Superpowers 14 Skill 或裸 Claude Code 更划算——流程固定成本大于收益。</p>
+  <p><strong>把建议写进 CLAUDE.md：</strong>「好好写代码」无效——改成可 review 的必须/禁止——严重程度：致命。</p>
+  <p><strong>期待装完就不用管：</strong>活系统，每几条需求就要调决策点——严重程度：小心。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】立刻能做的三件事</h3>
+  <table>
+    <tr><th>动作</th><th>最小交付</th><th>不必等待</th></tr>
+    <tr><td>单目录收产出</td><td><code>spec/changes/&lt;feature&gt;/</code></td><td>八个 Skill、Delta、三层架构</td></tr>
+    <tr><td>宪法可验证</td><td>删模糊建议，写一条硬约束</td><td>完整组件分层表</td></tr>
+    <tr><td>一个最痛 Skill</td><td>触发条件+步骤+坑表</td><td>八个全写</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】工具会过时，方法不会</h3>
+  <p><strong>架构变强制项：</strong>AI 以同样速度复制烂模式——组件分层表是架构约束的可执行版。</p>
+  <p><strong>执行占比下降、判断占比上升：</strong>AI 卷低敲键盘门槛，卷高「该不该用 hooks」这类判断天花板。</p>
+  <p><strong>拆工具三问：</strong>做什么 / 怎么做 / 按什么标准——明年第四个框架仍可用。</p>
+  <p><strong>胶水成本：</strong>工具之间的缝靠人手填——缝越多人越累。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：裸 Copilot 效率派</p>
+  <p class="rebuttal-text">2 天交付还搭八 Skill、80 行宪法，是把 AI 又套回瀑布——小改动能秒级生成时，流程是在为流程付费。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>Skill 数量与内容是跑出来的，三条内部设计（读宪法、决策点、坑表）是稳定运行的底座。</li>
+    <li>四个月数据说明速度与纪律可兼得，但 TDD 铁律深度仍不及 Superpowers。</li>
+    <li>文章数字是 2026-07 快照，相对差异比绝对分钟数更值得记住。</li>
+    <li>选型前先问：要解决流程哪一环——量身定做比万能钥匙可靠。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>下一需求起用 <code>spec/changes/</code> 单目录收拢产出。</li>
+    <li>把 CLAUDE.md 里一条「建议」改成 review 可抓的必须/禁止。</li>
+    <li>为最痛环节（需求/ui/bugfix）写一个 Skill 并跑两轮迭代坑表。</li>
+    <li>用 full/light/bugfix 标注 WORKFLOW，避免小改动走全链。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「跟新框架跑」到「用环节思维拆工具 + 让 AI 放大你的工程判断——烂架构会被加速复制，好约束会被加速沉淀。」</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

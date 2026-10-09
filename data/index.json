@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-09",
+    "files": [
+      {
+        "path": "svgs/2026-10-09/agent-sdk-pi-harness-taxonomy.svg",
+        "title": "从 SDK 到成熟智能体：拆解 LangChain、Pi、DeepSeek Harness、Claude Code的本质区别",
+        "source": "https://juejin.cn/post/7694502106560446504"
+      },
+      {
+        "path": "svgs/2026-10-09/eight-skills-harness-landing.svg",
+        "title": "Spec Kit vs OpenSpec vs Superpowers：8 个 Skill 的落地实录与工程方法论",
+        "source": "https://juejin.cn/post/7694184507926495267"
+      },
+      {
+        "path": "svgs/2026-10-09/ts-rust-ai-ported-typescript-compiler.svg",
+        "title": "微软刚用 Go 重写完 tsc，有人就用 AI 写出了 Rust 版：比 Go 版快 1.61 倍",
+        "source": "https://tonybai.com/2026/10/09/ts-rust-ai-ported-typescript-compiler/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-08",
     "files": [
       {
