@@ -1,0 +1,123 @@
+欢迎收听每日技术学习语音讲解。本期主题，原生 CLI 借 npm 分发：把包管理器当跨平台应用商店。标签包括npm 分发、Go/Rust CLI、postinstall、开发者体验。本次讲解预计时长 约 11 到 12 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：飞书 CLI、esbuild、Prisma 等核心并非 JavaScript，却统一让你敲 npm/npx——在 Homebrew、deb、Scoop 各维护一套之外，为什么越来越多团队把 npm 当成原生二进制的「跨平台应用商店」，以及三种套壳模式各自该何时选用。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：GoReleaser，交叉编译，然后GitHub Release，或包内 bin/，然后npm 包，JS 启动器，然后用户，npx / 全局 bin
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：「用 npm 装 Go 工具 = 依赖 Node 运行时跑业务逻辑」。实际是几十行 JS 当启动器，真正执行的是原生二进制；代价是用户必须先有 Node，因此适合开发者工具，不适合面向大众的桌面软件。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：系统包管理器原教旨 / 供应链极简派
+
+为装一个 Go 二进制强塞 Node 依赖，是把供应链从「一个签名包」膨胀成「npm 脚本 + 外网下载」，企业安全与 SBOM 审计成本反而更高。
+
+接下来，第四部分，【概念拆解卡】npm 在此扮演的角色。
+
+在讲什么问题，为何不用各系统原生包管理器而选 npm。
+
+关键理解，统一命令（npm i -g / npx）、全球 CDN + semver + dist-tag、自动写 PATH 软链，把多渠道维护折叠成一份文档。
+
+和其他概念关系：与 PyPI（pip/uvx）、Cargo 预编译二进制并列，但与前端/全栈开发者环境重合度最高。
+
+怎么落地用：文档只写一行安装命令；用 npx 包@latest 当引导器减少「旧版本 Bug 已修」类反馈。
+
+边界说明，企业若全面禁用 Node 或 postinstall，需改 optionalDependencies 或自带安装器。
+
+一句话：npm 在这里不是 JavaScript 包管理器，而是覆盖面最广、摩擦最小的跨平台应用商店。
+
+接下来，第五部分，【跨概念对比表】三种 npm 套壳模式。
+
+包体积，大（各平台全下），极小（仅脚本），中等（只装匹配平台）
+
+离线/镜像，友好，依赖外网 Release，友好
+
+--ignore-scripts，不受影响，易失效，不受影响
+
+代表，教学 HelloWorld，飞书 CLI，esbuild
+
+一句话，最简单，二进制可放任意 CDN，发布流程最复杂但最稳
+
+接下来，第六部分，【方法/工具卡】飞书 CLI 式 postinstall 四件套。
+
+核心思路：包内无二进制，安装时按 os/cpu 下载 + 校验，运行时 run.js 转发。
+
+操作步骤，① package.json 声明 bin，得到run.js、postinstall，得到install.js、os/cpu 白名单；② GoReleaser 出矩阵产物 + checksums.txt；③ install.js 映射平台、多源下载、SHA-256、域名白名单；④ run.js 拦截 install 子命令、懒加载补下载、Windows .old 自更新。
+
+选型条件，二进制几十 MB、不想把 Release 塞进 tarball、愿意写安全校验。
+
+国内网络：像飞书一样准备 GitHub 失败回退 npmmirror，并读用户 npm_config_registry。
+
+接下来，第七部分，【方法/工具卡】Go HelloWorld 发布 npm 最小路径。
+
+操作步骤，① npm login + 2FA；② CGO_ENABLED=0 交叉编译到 bin/hello-<os>-<arch>；③ run.js 按 process.platform/arch 选二进制，stdio:inherit 透传退出码；④ npm pack --dry-run ，得到 npm publish --access public；⑤ 干净目录 npx 包@latest 验证。
+
+避坑，版本号不可复用；用 dist-tag beta 灰度；优先 Trusted Publishing 而非长期高权限 token。
+
+接下来，第八部分，【避坑清单卡】原生 CLI 走 npm 的常见翻车。
+
+企业禁用 postinstall：必须在 run.js 懒加载补下载，或改用 optionalDependencies——严重程度：致命。
+
+供应链：postinstall 拉外链无校验 = 攻击面——SHA-256 + 主机白名单——严重程度：致命。
+
+静态链接：Go 忘 CGO_ENABLED=0 在 Alpine musl 跑不起来——严重程度：小心。
+
+Windows 自更新：运行中 .exe 无法覆盖，需改名 .old——严重程度：小心。
+
+macOS Gatekeeper：无签名/公证可能被拦——面向公众值得投入——严重程度：小心。
+
+接下来，第九部分，【决策/选型表】二进制分发渠道。
+
+前端/全栈开发者 CLI，npm 三种模式之一，环境重合、文档一份，仅 Homebrew，Linux/Windows 用户断层
+
+二进制 <5MB 教学，单包内置，实现最快，postinstall，过度工程
+
+大厂 CLI + 多架构，postinstall + 校验，小包 + 灵活 CDN，fat package，每次安装下载全平台
+
+禁 scripts 的企业，optionalDependencies，不依赖钩子，纯 postinstall，安装后无二进制
+
+Python 数据科学用户，PyPI 轮子，pip/uvx 生态，强推 npm，无 Node 摩擦大
+
+接下来，第十部分，【心法/原则卡】用 JS 换分发体验。
+
+原则，几十行启动器换统一安装体验与极低推广成本，是开发者工具的经典 trade-off。
+
+怎么落地，先 fat package 跑通 ，得到 体积痛则 postinstall ，得到 企业客户多则 optionalDependencies。
+
+适用边界，终端用户无 Node 时，应保留传统安装包渠道作为补充。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+原生 CLI 走 npm 是为统一入口、npx 零安装、CDN 与 PATH，而非因为需要 Node 跑逻辑。
+
+三种模式：内置简单、postinstall 省体积、optionalDependencies 抗禁脚本。
+
+飞书 CLI 示范了校验、镜像回退、懒加载与 Windows 自更新等工程细节。
+
+受众是开发者；普通用户仍应保留传统分发。
+
+用 HelloWorld 模式本地 npm pack --dry-run 验证 files 白名单含 LICENSE/README。
+
+若二进制 >10MB，规划 postinstall 或平台子包，并写 checksum 流程。
+
+在 run.js 实现 --ignore-scripts 兜底。
+
+发布前在 CI 用干净容器跑 npx 包@latest 冒烟测试。
+
+总结：
+
+行动清单：
+
+关键认知转变：从「我的 CLI 该上哪个系统商店」到「我的用户桌上已经有什么运行时——对开发者工具，npm 往往是摩擦最小的商店。」
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

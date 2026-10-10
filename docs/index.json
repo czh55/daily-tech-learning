@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-10-10",
+    "files": [
+      {
+        "path": "svgs/2026-10-10/41-herdr-ai-company.svg",
+        "title": "41. Herdr 实战：从零搭建 AI 一人公司，用 Claude Code、Codex 组建 AI 员工团队",
+        "source": "https://xiangyugongzuoliu.com/41-herdr-ai-company/"
+      },
+      {
+        "path": "svgs/2026-10-10/why-native-cli-ships-on-npm.svg",
+        "title": "Go 写的 CLI，为什么正越来越多地通过 npm 分发？",
+        "source": "https://tonybai.com/2026/10/10/why-native-cli-ships-on-npm/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-09",
     "files": [
       {

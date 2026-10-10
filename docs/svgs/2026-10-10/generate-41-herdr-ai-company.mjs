@@ -1,0 +1,165 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, '41-herdr-ai-company.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f5f3ff,#ede9fe);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#4c1d95,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #7c3aed}
+.card h3{font-size:22px;font-weight:700;color:#4c1d95;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#ede9fe;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#5b21b6;border-left:4px solid #7c3aed}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border:2px solid #a78bfa;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#4c1d95}
+.node-green{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-color:#6ee7b7;color:#065f46}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#4c1d95,#7c3aed);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#4c1d95;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>Herdr 一人公司：知识库 + 办公室 + 多 Agent 协作五段提示词</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">Herdr</span>
+  <span class="tag tag-blue">驾驭工程</span>
+  <span class="tag tag-green">知识库</span>
+  <span class="tag tag-orange">任务卡</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：如何从空文件夹搭一家「老板一句话、总经理写任务卡、经理请帮手、以文件验收」的 AI 一人公司——模型是租来的，运营体系沉淀在自有文件夹里，并用 Herdr 把 Claude Code、Codex 等 CLI 智能体拉进同一间可持久、可互发消息的办公室。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#4c1d95;margin-bottom:12px;text-align:center">公司三要素</h3>
+  <div class="diagram">
+    <div class="node-green">知识库<br>文件夹根目录</div>
+    <span class="arrow-sym">+</span>
+    <div class="node">办公室<br>Herdr 工作区</div>
+    <span class="arrow-sym">+</span>
+    <div class="node-green">员工<br>驾驭工程+模型</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">九维目录（我是谁/做什么/怎么做/谁来做/规矩/进度）→ 四位固定岗位 + tmp 帮手 → 协作九条写进总规矩</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「Herdr 是又一个 Agent 框架」。实际是<strong>终端里的智能体复用器/办公室</strong>：后台服务持久、界面可关、员工间用官方 <code>herdr agent</code> 命令交接；<strong>必须在 Herdr 窗口内</strong>（<code>HERDR_ENV=1</code>）才能用这些协作命令。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】员工、办公室、知识库</h3>
+  <p><strong>在讲什么问题：</strong>一人公司最小组成是什么。</p>
+  <p><strong>关键理解：</strong>员工 = 驾驭工程（手脚：读写文件、跑命令）+ 大模型（大脑）；办公室 = Herdr 三层（server 持久 / UI / 员工体系）；知识库 = 启动目录，空则每次失忆。</p>
+  <p><strong>关系：</strong>员工可换租，办公室开源免费，<strong>只有知识库是你长期资产</strong>。</p>
+  <p><strong>怎么落地：</strong>按「我是谁、我做什么…」九目录建骨架；Skill 实体只放 <code>工具/技能/</code>，软链到 <code>.claude/skills</code> 与 <code>.agents/skills</code>。</p>
+  <p><strong>边界：</strong>知识库只放文字；大视频放外链并在库里记路径。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】五段提示词流水线</h3>
+  <p><strong>统一框架：</strong>目标+背景 →【规矩】→【要做的 N 件事】→【汇报】→【过关标志】；先访谈复述计划、只说「可以」再动手。</p>
+  <table>
+    <tr><th>段</th><th>在哪粘</th><th>产出</th></tr>
+    <tr><td>1 建知识库</td><td>普通终端 CLI</td><td>九目录 AGENTS.md、四岗位手册、git 首 commit</td></tr>
+    <tr><td>2 装 Herdr</td><td>普通终端 CLI</td><td>herdr 版本、集成、herdr Skill、权限 JSON、协作九条</td></tr>
+    <tr><td>3 请员工上岗</td><td><strong>Herdr 窗口内</strong></td><td>工作区+四页固定岗位在 <code>角色/&lt;名&gt;/</code></td></tr>
+    <tr><td>4 新建岗位</td><td>Herdr 内总经理</td><td>演示 dev 开发经理</td></tr>
+    <tr><td>5 第一项任务</td><td>老板对总经理</td><td>SEO Skill 升级：任务卡→内容经理→tmp 查资料→增长审稿</td></tr>
+  </table>
+  <div class="highlight">过关依赖链：第一段汇报里的<strong>公司根目录完整路径</strong>是后面每段的填空项。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】协作规矩核心命令</h3>
+  <p><strong>操作步骤：</strong>① 写任务卡到 <code>驾驶舱/任务/</code>；② <code>herdr agent list</code> 看状态灯（working/done/blocked/idle）；③ <code>herdr agent prompt</code> 带 <code>--wait</code> 交接；④ timeout 不重发，按规矩等；⑤ 以产出文件路径验收。</p>
+  <p><strong>固定 vs 临时：</strong>固定岗位 <code>herdr tab create</code> + <code>agent start</code> 在 <code>角色/&lt;英文名&gt;/</code>；临时帮手 <code>tmp-</code> 前缀、根目录上岗、做完关页。</p>
+  <div class="quote">总经理原话：「我不亲自写长稿；改正式文件、对外发布，先停下来等老板确认。」</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】搭 Herdr 公司常见卡点</h3>
+  <p><strong>没 git init：</strong>Codex 等从 git 根往下读 AGENTS.md，不初始化读不到总规矩——严重程度：致命。</p>
+  <p><strong>在普通终端粘第三段：</strong>无 <code>HERDR_ENV</code>，herdr 协作命令不可用——严重程度：致命。</p>
+  <p><strong>Windows 软链接失败：</strong>用 Junction 或 <code>@AGENTS.md</code> 一行引入，禁止复制两份内容——严重程度：小心。</p>
+  <p><strong>说明文件过长：</strong>总规矩 ≤9000 字节、目录说明 ≤3000——上下文爆炸——严重程度：小心。</p>
+  <p><strong>timeout 后重发 prompt：</strong>官方规矩：话多半已送到，按第 6 条等，绝不重发——严重程度：小心。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】岗位与模型分工（文内建议）</h3>
+  <table>
+    <tr><th>场景</th><th>推荐驾驭工程/模型</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>中文长文、查资料</td><td>反重力等检索强</td><td>内容经理、tmp 帮手</td><td>与审稿同模型</td><td>看不出前稿盲点</td></tr>
+    <tr><td>视频脚本动效</td><td>Claude Code + 强模型</td><td>视频经理</td><td>省模型凑合</td><td>出片质量差</td></tr>
+    <tr><td>流量/标题审稿</td><td>与内容经理不同家</td><td>增长经理</td><td>自己审自己</td><td>视频经理规矩：换人挑稿</td></tr>
+    <tr><td>只有一家 CLI</td><td>全岗位同名册</td><td>仍可走通五段</td><td>放弃多模型审稿</td><td>接受质量折中</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】固定岗位 vs 临时帮手</h3>
+  <table>
+    <tr><th>维度</th><th>固定岗位 gm/content…</th><th>临时帮手 tmp-*</th></tr>
+    <tr><td>页面</td><td>长期一页一窗</td><td>用完关页</td></tr>
+    <tr><td>手册</td><td>读岗位 AGENTS.md</td><td>只读总规矩</td></tr>
+    <tr><td>上下文</td><td>积累工作记录</td><td>零碎任务不占主岗上下文</td></tr>
+    <tr><td>典型用途</td><td>管线角色</td><td>并行查资料、试模型</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】以文件为准、先计划再动手</h3>
+  <p><strong>原则：</strong>做没做完看文件（任务卡、研究、工作记录），不靠盯屏幕；访谈复述是最便宜纠错点。</p>
+  <p><strong>怎么落地：</strong>正式文件改前先请示老板；草稿只在 <code>驾驶舱/任务/</code>；有价值改动 <code>git commit</code>。</p>
+  <p><strong>长期：</strong>岗位 <code>工作记录/</code> 积运行数据，为以后总经理自动规划打底。</p>
+  <p><strong>边界：</strong>目录命名是演示分法，可按自己生意改维度，但「Skill 单份实体+软链」建议保留。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：极简个人开发者 / 反流程派</p>
+  <p class="rebuttal-text">为一个人写公众号搭九目录、四手册、Herdr 九条协作，维护成本已超过内容本身——直接单会话 Claude 往往更快交付。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>一人公司 = 自有知识库 + Herdr 办公室 + 可换租的 CLI 员工。</li>
+    <li>五段提示词把建库、装 Herdr、上岗、扩岗、首任务串成可验收流水线。</li>
+    <li>协作靠任务卡 + herdr 官方命令 + 状态灯，timeout 不重发是铁律。</li>
+    <li>模型租来，运营与 Skill 沉淀在文件夹与 git 里才是护城河。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>准备已登录的 CLI（claude/codex/opencode/agy 任一），复制官网第一段提示词开访谈。</li>
+    <li>记录公司根路径，第二段装 Herdr 并写入协作规矩占位替换。</li>
+    <li>第三段起只在 Herdr 窗口操作，核对 <code>herdr --version</code> 与 integration status。</li>
+    <li>用第五段 SEO Skill 案例走通任务卡→tmp 并行→增长审稿的完整验收。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「多开几个 AI 聊天窗」到「把公司运行系统写进目录与规矩，让总经理可调度、可留痕、可版本化。」</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);

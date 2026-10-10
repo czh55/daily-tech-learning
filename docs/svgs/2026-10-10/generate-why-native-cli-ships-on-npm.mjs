@@ -1,0 +1,161 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'why-native-cli-ships-on-npm.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fefce8,#fef9c3);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#713f12,#ca8a04);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ca8a04}
+.card h3{font-size:22px;font-weight:700;color:#713f12;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fef9c3,#fde68a);border:2px solid #facc15;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#713f12}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#713f12,#ca8a04);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#713f12;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>原生 CLI 借 npm 分发：把包管理器当跨平台应用商店</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">npm 分发</span>
+  <span class="tag tag-green">Go/Rust CLI</span>
+  <span class="tag tag-orange">postinstall</span>
+  <span class="tag tag-purple">开发者体验</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：飞书 CLI、esbuild、Prisma 等核心并非 JavaScript，却统一让你敲 npm/npx——在 Homebrew、deb、Scoop 各维护一套之外，为什么越来越多团队把 npm 当成原生二进制的「跨平台应用商店」，以及三种套壳模式各自该何时选用。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#713f12;margin-bottom:12px;text-align:center">分发链路</h3>
+  <div class="diagram">
+    <div class="node">GoReleaser<br>交叉编译</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">GitHub Release<br>或包内 bin/</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">npm 包<br>JS 启动器</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">用户<br>npx / 全局 bin</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「用 npm 装 Go 工具 = 依赖 Node 运行时跑业务逻辑」。实际是<strong>几十行 JS 当启动器</strong>，真正执行的是原生二进制；代价是用户必须先有 Node，因此适合<strong>开发者工具</strong>，不适合面向大众的桌面软件。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】npm 在此扮演的角色</h3>
+  <p><strong>在讲什么问题：</strong>为何不用各系统原生包管理器而选 npm。</p>
+  <p><strong>关键理解：</strong>统一命令（<code>npm i -g</code> / <code>npx</code>）、全球 CDN + semver + dist-tag、自动写 PATH 软链，把多渠道维护折叠成一份文档。</p>
+  <p><strong>和其他概念关系：</strong>与 PyPI（pip/uvx）、Cargo 预编译二进制并列，但<strong>与前端/全栈开发者环境重合度最高</strong>。</p>
+  <p><strong>怎么落地用：</strong>文档只写一行安装命令；用 <code>npx 包@latest</code> 当引导器减少「旧版本 Bug 已修」类反馈。</p>
+  <p><strong>边界说明：</strong>企业若全面禁用 Node 或 <code>postinstall</code>，需改 optionalDependencies 或自带安装器。</p>
+  <div class="quote">一句话：npm 在这里不是 JavaScript 包管理器，而是覆盖面最广、摩擦最小的跨平台应用商店。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三种 npm 套壳模式</h3>
+  <table>
+    <tr><th>维度</th><th>单包内置全部二进制</th><th>postinstall 下载</th><th>optionalDependencies 子包</th></tr>
+    <tr><td>包体积</td><td>大（各平台全下）</td><td>极小（仅脚本）</td><td>中等（只装匹配平台）</td></tr>
+    <tr><td>离线/镜像</td><td>友好</td><td>依赖外网 Release</td><td>友好</td></tr>
+    <tr><td>--ignore-scripts</td><td>不受影响</td><td>易失效</td><td>不受影响</td></tr>
+    <tr><td>代表</td><td>教学 HelloWorld</td><td>飞书 CLI</td><td>esbuild</td></tr>
+    <tr><td>一句话</td><td>最简单</td><td>二进制可放任意 CDN</td><td>发布流程最复杂但最稳</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】飞书 CLI 式 postinstall 四件套</h3>
+  <p><strong>核心思路：</strong>包内无二进制，安装时按 os/cpu 下载 + 校验，运行时 <code>run.js</code> 转发。</p>
+  <p><strong>操作步骤：</strong>① <code>package.json</code> 声明 <code>bin→run.js</code>、<code>postinstall→install.js</code>、<code>os/cpu</code> 白名单；② GoReleaser 出矩阵产物 + <code>checksums.txt</code>；③ <code>install.js</code> 映射平台、多源下载、SHA-256、域名白名单；④ <code>run.js</code> 拦截 <code>install</code> 子命令、懒加载补下载、Windows <code>.old</code> 自更新。</p>
+  <p><strong>选型条件：</strong>二进制几十 MB、不想把 Release 塞进 tarball、愿意写安全校验。</p>
+  <div class="highlight">国内网络：像飞书一样准备 GitHub 失败回退 npmmirror，并读用户 <code>npm_config_registry</code>。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Go HelloWorld 发布 npm 最小路径</h3>
+  <p><strong>操作步骤：</strong>① <code>npm login</code> + 2FA；② <code>CGO_ENABLED=0</code> 交叉编译到 <code>bin/hello-&lt;os&gt;-&lt;arch&gt;</code>；③ <code>run.js</code> 按 <code>process.platform/arch</code> 选二进制，<code>stdio:inherit</code> 透传退出码；④ <code>npm pack --dry-run</code> → <code>npm publish --access public</code>；⑤ 干净目录 <code>npx 包@latest</code> 验证。</p>
+  <p><strong>避坑：</strong>版本号不可复用；用 dist-tag <code>beta</code> 灰度；优先 Trusted Publishing 而非长期高权限 token。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】原生 CLI 走 npm 的常见翻车</h3>
+  <p><strong>企业禁用 postinstall：</strong>必须在 <code>run.js</code> 懒加载补下载，或改用 optionalDependencies——严重程度：致命。</p>
+  <p><strong>供应链：</strong>postinstall 拉外链无校验 = 攻击面——SHA-256 + 主机白名单——严重程度：致命。</p>
+  <p><strong>静态链接：</strong>Go 忘 <code>CGO_ENABLED=0</code> 在 Alpine musl 跑不起来——严重程度：小心。</p>
+  <p><strong>Windows 自更新：</strong>运行中 .exe 无法覆盖，需改名 .old——严重程度：小心。</p>
+  <p><strong>macOS  Gatekeeper：</strong>无签名/公证可能被拦——面向公众值得投入——严重程度：小心。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】二进制分发渠道</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>前端/全栈开发者 CLI</td><td>npm 三种模式之一</td><td>环境重合、文档一份</td><td>仅 Homebrew</td><td>Linux/Windows 用户断层</td></tr>
+    <tr><td>二进制 &lt;5MB 教学</td><td>单包内置</td><td>实现最快</td><td>postinstall</td><td>过度工程</td></tr>
+    <tr><td>大厂 CLI + 多架构</td><td>postinstall + 校验</td><td>小包 + 灵活 CDN</td><td>fat package</td><td>每次安装下载全平台</td></tr>
+    <tr><td>禁 scripts 的企业</td><td>optionalDependencies</td><td>不依赖钩子</td><td>纯 postinstall</td><td>安装后无二进制</td></tr>
+    <tr><td>Python 数据科学用户</td><td>PyPI 轮子</td><td>pip/uvx 生态</td><td>强推 npm</td><td>无 Node 摩擦大</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】用 JS 换分发体验</h3>
+  <p><strong>原则：</strong>几十行启动器换统一安装体验与极低推广成本，是开发者工具的经典 trade-off。</p>
+  <p><strong>怎么落地：</strong>先 fat package 跑通 → 体积痛则 postinstall → 企业客户多则 optionalDependencies。</p>
+  <p><strong>适用边界：</strong>终端用户无 Node 时，应保留传统安装包渠道作为补充。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：系统包管理器原教旨 / 供应链极简派</p>
+  <p class="rebuttal-text">为装一个 Go 二进制强塞 Node 依赖，是把供应链从「一个签名包」膨胀成「npm 脚本 + 外网下载」，企业安全与 SBOM 审计成本反而更高。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结：</strong></p>
+  <ol>
+    <li>原生 CLI 走 npm 是为统一入口、npx 零安装、CDN 与 PATH，而非因为需要 Node 跑逻辑。</li>
+    <li>三种模式：内置简单、postinstall 省体积、optionalDependencies 抗禁脚本。</li>
+    <li>飞书 CLI 示范了校验、镜像回退、懒加载与 Windows 自更新等工程细节。</li>
+    <li>受众是开发者；普通用户仍应保留传统分发。</li>
+  </ol>
+  <p><strong>行动清单：</strong></p>
+  <ol>
+    <li>用 HelloWorld 模式本地 <code>npm pack --dry-run</code> 验证 files 白名单含 LICENSE/README。</li>
+    <li>若二进制 &gt;10MB，规划 postinstall 或平台子包，并写 checksum 流程。</li>
+    <li>在 <code>run.js</code> 实现 <code>--ignore-scripts</code> 兜底。</li>
+    <li>发布前在 CI 用干净容器跑 <code>npx 包@latest</code> 冒烟测试。</li>
+  </ol>
+  <p><strong>关键认知转变：</strong>从「我的 CLI 该上哪个系统商店」到「我的用户桌上已经有什么运行时——对开发者工具，npm 往往是摩擦最小的商店。」</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log(`Wrote ${OUT} (${height}px)`);
