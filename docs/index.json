@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-10-11",
+    "files": [
+      {
+        "path": "svgs/2026-10-11/go-benchmark-every-release-since-2013.svg",
+        "title": "Go 性能 13 年大复盘：26 个版本全部实测，Go 1.27 比 1.23 快 11.5%",
+        "source": "https://tonybai.com/2026/10/11/go-benchmark-every-release-since-2013/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-10",
     "files": [
       {
