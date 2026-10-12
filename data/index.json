@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-10-12",
+    "files": [
+      {
+        "path": "svgs/2026-10-12/spec-kit-openspec-superpowers-compare.svg",
+        "title": "Spec Kit vs OpenSpec vs Superpowers：三大 AI Coding 框架深度对比",
+        "source": "https://juejin.cn/post/7695570947150970889"
+      },
+      {
+        "path": "svgs/2026-10-12/turborepo-go-to-rust-agent-era-calculus.svg",
+        "title": "Go 很快、很美、好迭代，为什么 Vercel 还是改成了 Rust？CEO 说：计算公式变了",
+        "source": "https://tonybai.com/2026/10/12/turborepo-go-to-rust-agent-era-calculus/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-11",
     "files": [
       {

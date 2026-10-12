@@ -1,0 +1,152 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'spec-kit-openspec-superpowers-compare.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#1e40af,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #3b82f6}
+.card h3{font-size:22px;font-weight:700;color:#1e40af;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fef3c7;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#92400e;border-left:4px solid #f59e0b}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.card .quote{background:#f8fafc;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#475569;border:1px dashed #cbd5e1;font-style:italic}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:16px;padding:14px 16px;text-align:center;min-width:100px;font-weight:700;font-size:12px;color:#1e40af}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#1e40af;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>Spec Kit / OpenSpec / Superpowers：SDD 三角怎么选</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">OpenSpec</span>
+  <span class="tag tag-green">Spec Kit</span>
+  <span class="tag tag-orange">Superpowers</span>
+  <span class="tag tag-purple">棕地 vs 绿地</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：三大 AI 编码框架分别回答「对齐什么」「门控什么」「执行纪律是什么」，以及同一 JWT 需求实测下如何在速度、方向安全与代码质量之间做选型或组合。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center">三类工具：规格变更书 · 审批流程 · 施工规程</h3>
+  <div class="diagram">
+    <div class="node">OpenSpec<br>Delta 对齐</div>
+    <span class="arrow-sym">|</span>
+    <div class="node-green">Spec Kit<br>宪法+门控</div>
+    <span class="arrow-sym">|</span>
+    <div class="node-orange">Superpowers<br>铁律+TDD</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「装 star 最多的就够用」。三者不是同类替代品——OpenSpec 管<strong>改什么</strong>，Spec Kit 管<strong>先想清楚再做什么</strong>，Superpowers 管<strong>怎么做才算完成</strong>；混用需对齐两个 source of truth。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】OpenSpec 的 Brownfield-first 与 Delta Spec</h3>
+  <p><strong>在讲什么问题：</strong>已有代码库上如何让 AI 只对「变化」对齐，而不是重写全书规范。</p>
+  <p><strong>关键理解：</strong>explore（只读）→ propose（四件套）→ apply → archive；Delta 支持 ADDED/MODIFIED/REMOVED/RENAMED，archive 按固定顺序合并并做冲突检测。</p>
+  <p><strong>怎么落地用：</strong>棕地初始 <code>specs/</code> 可为空；用 <code>/opsx:new</code> + <code>continue</code> 逐个 artifact 审查，避免 propose 一把梭误读旧代码。</p>
+  <p><strong>边界说明：</strong>verify 只对齐「实现 vs 规范」，不能证明规范本身正确；错误 spec 会「错得更一致」。</p>
+  <div class="quote">创始人：The only thing worse than no specs is incorrect specs——禁止全量逆向生成「看起来合理」的规范。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Spec Kit 宪法与复合衰减</h3>
+  <p><strong>关键理解：</strong>Full 模式 constitution → specify → … → implement；宪法须可验证（函数 ≤50 行），否则每阶段约 80% 理解率连乘，五阶段后正确率可跌至约 33%。</p>
+  <p><strong>怎么落地用：</strong>禁止项优于允许项、具体优于抽象、每条附理由、避免引用外部标准、术语准确、长度 500–2000 字。</p>
+  <p><strong>边界说明：</strong>绿地、大团队、合规场景甜；棕地无 Delta，小改动与脚本过重。</p>
+  <div class="highlight">JWT 实测：约 1.5 小时，文档可达代码量 3.7–7.5 倍——审查负担是真实成本。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Superpowers：Skill 围栏与 TDD 铁律</h3>
+  <p><strong>核心思路：</strong>LLM 乐观偏见使「请 TDD」无效；用 SessionStart Hook、HARD-GATE、12 条 Red Flags 与「先写测试否则删码」闭环约束行为。</p>
+  <p><strong>操作步骤：</strong>brainstorming → worktree → writing-plans → subagent-dev（内嵌 TDD）→ code-review → finishing；每 task 双 agent（implementer + reviewer），先 spec 再审 code。</p>
+  <p><strong>避坑：</strong>跨 session/compact 后约束衰减，仍需人工 Review；方向靠 brainstorming，易与需求偏离（实测 2 次返工 vs OpenSpec 0 次）。</p>
+  <p><strong>对比相邻方法：</strong>Spec Kit 在外筑墙（门控），Superpowers 在内驯兽（语义围栏）——解决的是同一类「跳过流程」问题，机制不同。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】同一 JWT 需求实测怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>棕地增量、要快</td><td>OpenSpec</td><td>约 40 分钟，Delta+并行 Change 文件夹</td><td>Spec Kit Full</td><td>文档膨胀、拼装旧规范成本高</td></tr>
+    <tr><td>绿地、强治理合规</td><td>Spec Kit</td><td>宪法+门控，超范围实现最少</td><td>仅 Superpowers</td><td>无规范累积，方向易漂</td></tr>
+    <tr><td>长期维护、质量优先</td><td>Superpowers 或组合</td><td>10 测、8 次原子提交、TDD 有效</td><td>单独 OpenSpec apply</td><td>缺 TDD/审查纪律，测试需手补</td></tr>
+    <tr><td>要「又要方向又要质量」</td><td>Spec Kit + Superpowers 九步协同</td><td>spec is truth + workflow is truth 分轨对接</td><td>三框架各装一半</td><td>层次错位（宪法写模板、规则写 Command）必翻车</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】耗时 · 文档 · Token · 质量信号</h3>
+  <table>
+    <tr><th>维度</th><th>OpenSpec</th><th>Spec Kit</th><th>Superpowers</th><th>一句话</th></tr>
+    <tr><td>总耗时（JWT）</td><td>~40 分钟</td><td>~1.5 小时</td><td>~55 分钟</td><td>速度 vs 门控 vs 执行税</td></tr>
+    <tr><td>文档量</td><td>~800 行 MD</td><td>~3500 行 MD</td><td>主要是代码+测试</td><td>Spec Kit 审查最重</td></tr>
+    <tr><td>测试/提交</td><td>0 测、1 提交</td><td>0 测、1 提交</td><td>10 测、8 提交</td><td>质量信号在 Superpowers</td></tr>
+    <tr><td>返工</td><td>0</td><td>1（阶段漂移）</td><td>2（方向偏差）</td><td>没有全能赢家</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】三类常见 AI 编码坑与填法差异</h3>
+  <p><strong>需求理解偏差：</strong>OpenSpec 用 explore+Delta；Spec Kit 用 clarify+宪法；Superpowers 靠 brainstorming（最弱）。</p>
+  <p><strong>范围蔓延：</strong>Spec Kit 门控最强；OpenSpec 缺阶段锁易跳过规范；Superpowers HARD-GATE 挡实现不挡需求膨胀。</p>
+  <p><strong>执行质量退化：</strong>Superpowers TDD+双 agent 审查；OpenSpec apply「自觉性」；Spec Kit 流程对但不保证测试。</p>
+  <div class="pitfall"><strong>严重程度：</strong>棕地切勿全量逆向 spec；Spec Kit 宪法写模糊废话等于给 AI 开漏洞传播器。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Vibe Coding / 「规范即拖慢交付」派</p>
+  <p class="rebuttal-text">四十分钟 Delta 仍可能零测试一次大提交，组合九步流水线 Token 与审查成本足以拖垮小团队——多数项目需要的是删流程而不是再叠三层 SDD。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>三框架分属对齐、门控、执行纪律，不可按 star 数单选。</li>
+    <li>OpenSpec 棕地+速度最均衡；Spec Kit 绿地+治理最稳；Superpowers 代码质量最高但方向与成本最险。</li>
+    <li>热门组合是 Spec Kit（需求）+ Superpowers（执行），用三个接入点串九步。</li>
+    <li>verify、宪法、铁律都治不好「规范本身错了」——人工判断仍不可省。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>先判绿地/棕地，再选主框架，避免「别人装啥我装啥」。 </li>
+    <li>棕地：空 specs 起步，new+continue 逐个审 artifact。</li>
+    <li>绿地：先写可验证 Constitution，再开 Full 门控链。</li>
+    <li>要测试与提交粒度：在 Spec/OpenSpec 流水线末端接 Superpowers 执行段。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>AI 编码框架的竞争不是「谁更全」，而是<strong>你把哪类错误挡在哪一层</strong>；组合的前提是承认两个 source of truth，并用接入点钉死，而不是堆插件。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
