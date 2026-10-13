@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-10-13",
+    "files": [
+      {
+        "path": "svgs/2026-10-13/ai-era-debug-constraint-satisfaction.svg",
+        "title": "代码看不懂了，Bug 还怎么修？AI 时代的调试心法",
+        "source": "https://tonybai.com/2026/10/13/debug-when-you-no-longer-understand-the-code/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-12",
     "files": [
       {
