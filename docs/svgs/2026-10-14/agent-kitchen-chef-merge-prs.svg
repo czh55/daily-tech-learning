@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4107" viewBox="0 0 1320 4107">
+  <foreignObject x="0" y="0" width="1320" height="4107">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fce7f3,#fbcfe8);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#831843,#be185d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}.tag-purple{background:#ede9fe;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #db2777}
+.card h3{font-size:22px;font-weight:700;color:#9d174d;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fdf2f8;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9d174d;border-left:4px solid #ec4899}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fdf2f8,#fbcfe8);border:2px solid #f9a8d4;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#9d174d}
+.node-blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;color:#1e40af}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#831843,#be185d);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#9d174d;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#ecfdf5;border:2px solid #10b981;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#065f46;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#047857;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#065f46}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>主厨不炒菜：一人月合并 2500 PR 的厨房隐喻</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">Agent 编排</span>
+  <span class="tag tag-blue">Harness</span>
+  <span class="tag tag-green">工作流</span>
+  <span class="tag tag-orange">规模化合并</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在 AI 能批量产出 PR 时，个人如何把精力从「亲自写每一行」转到「设计厨房」——工具、流程、Agent 技能与验收标准，从而支撑极高合并吞吐而不失控。（正文抓取受掘金 WAF 限制，以下结合 API 摘要与行业同主题实践整理。）</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#9d174d;margin-bottom:12px;text-align:center">厨房模型：设备 → 流程 → 厨师（Agent）→ 菜品（PR）</h3>
+  <div class="diagram">
+    <div class="node">主厨（你）<br/>定菜单与标准</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-blue">厨房设备<br/>工具链 / CI</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">每位厨师 Agent<br/>分工与培训</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">创意菜品<br/>非流水线组装</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「合并 2500 PR = 更勤奋地手写和审每一单」。高吞吐来自<strong>前置的厨房设置</strong>占去大部分时间，成品是创造性产出而非简单拼装。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】主厨 vs 厨师（人机分工）</h3>
+  <p><strong>在讲什么问题：</strong>一人团队如何在一个月内吸收海量 Agent 产出。</p>
+  <p><strong>关键理解：</strong>主厨价值在设备（IDE、模板、仓库策略）、流程（分支、测试、合并规则）、以及对每个 Agent 的「培训」（系统提示、技能包、边界）。</p>
+  <p><strong>和其他概念关系：</strong>与 Harness Engineering、SDD 框架、合并队列/无队列策略（参见超大规模 monorepo 实践）同谱系。</p>
+  <p><strong>怎么落地用：</strong>先画厨房平面图再开灶——缺任一层，PR 越多越乱。</p>
+  <p><strong>边界说明：</strong>强监管、强审计行业仍需人类逐单签字，不能照搬纯 Agent 厨房。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】三高合并的前置投入清单</h3>
+  <p><strong>核心思路：</strong>合并数是结果指标；输入指标是厨房是否可重复、可度量。</p>
+  <p><strong>操作步骤：</strong>1）统一工具与仓库约定（lint、测试、目录）→ 2）为任务类型配置专用 Agent（评审、实现、修 CI）→ 3）自动化门禁（测试、diff 范围、意图说明）→ 4）主厨只处理例外与菜单级决策。</p>
+  <p><strong>选型条件：</strong>个人或小团队 + 可接受 Agent 主导实现时。</p>
+  <p><strong>避坑：</strong>没有流程先开多个 Agent 并行——冲突与评审债爆炸。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】</h3>
+  <div class="pitfall"><strong>坑名：</strong>把「合并数」当 KPI 而忽视测试与回滚 — 吞吐虚假。</div>
+  <div class="pitfall"><strong>坑名：</strong>主厨下场炒菜 — 厨房无人维护，Agent 漂移。</div>
+  <div class="pitfall"><strong>坑名：</strong>所有菜一个厨师 — 应分技能 Agent，避免上下文混杂。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】精力分配</h3>
+  <table>
+    <tr><th>场景</th><th>主厨时间应投在</th><th>少做</th></tr>
+    <tr><td>启动期</td><td>工具、模板、CI、Agent 说明书</td><td>逐 PR 改代码</td></tr>
+    <tr><td>稳态高合并</td><td>菜单（优先级）、例外仲裁、度量</td><td>重复性实现</td></tr>
+    <tr><td>质量事故</td><td>改流程/门禁，而非只骂模型</td><td>单纯加人工审行数</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】创造性产品 vs 组装线</h3>
+  <p><strong>原则：</strong>最终代码应是创造性艺术；若像流水线组装，说明厨房设计失败或任务被拆得过碎。</p>
+  <p><strong>怎么落地：</strong>为 Agent 保留足够任务粒度与上下文；用规范驱动（Spec）约束方向而非逐行指挥。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「纯手工精品厨房」派</p>
+  <p class="rebuttal-text">在竞品以 Agent 规模迭代时，主厨亲自炒每一道菜只会把瓶颈锁死在人类工时，厨房再精致也出不了馆规模。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>超高 PR 合并是厨房设计的结果，不是熬夜手写的结果。</li>
+    <li>工具、流程、Agent 培训三件套先于放量。</li>
+    <li>主厨角色是标准与例外，不是默认实现者。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>画出当前「厨房」组件图并标出瓶颈。</li>
+    <li>为每类任务写 Agent 技能与禁区。</li>
+    <li>设合并前自动门禁，主厨只审意图与例外。</li>
+    <li>用合并数与回滚率联合度量，避免虚荣 KPI。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「我能写多少」转为「我的厨房一天能可靠产出多少」——个人杠杆在系统设计，不在键盘速度。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

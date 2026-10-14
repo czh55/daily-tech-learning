@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-14",
+    "files": [
+      {
+        "path": "svgs/2026-10-14/agent-kitchen-chef-merge-prs.svg",
+        "title": "一个人一个月合并 2500 PRs 的秘密是什么？",
+        "source": "https://juejin.cn/post/7696056977000628275"
+      },
+      {
+        "path": "svgs/2026-10-14/anthropic-scion-agent-scale-source-control.svg",
+        "title": "Anthropic 把 Git 扔了！7 人 5 个月自研 Scion，日合并代码从 2500 暴涨到 3 万次",
+        "source": "https://tonybai.com/2026/10/14/anthropic-scion-replaces-git-agent-scale-source-control/"
+      },
+      {
+        "path": "svgs/2026-10-14/post-quantum-cryptographic-right-answers-2026.svg",
+        "title": "2029 年大限将至！Go 前密码学掌门人更新密码学正确答案：所有非对称算法都得换",
+        "source": "https://tonybai.com/2026/10/14/post-quantum-cryptographic-right-answers-2026/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-13",
     "files": [
       {
