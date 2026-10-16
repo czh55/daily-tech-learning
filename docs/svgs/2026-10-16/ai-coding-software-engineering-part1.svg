@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5276" viewBox="0 0 1320 5276">
+  <foreignObject x="0" y="0" width="1320" height="5276">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ecfdf5,#d1fae5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#047857,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-green{background:#d1fae5;color:#065f46}.tag-blue{background:#dbeafe;color:#1e40af}.tag-purple{background:#ede9fe;color:#6b21a8}.tag-orange{background:#ffedd5;color:#9a3412}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #059669}
+.card h3{font-size:22px;font-weight:700;color:#047857;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#ecfdf5;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#065f46;border-left:4px solid #10b981}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#a7f3d0);border:2px solid #6ee7b7;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#065f46}
+.node-orange{background:linear-gradient(135deg,#fff7ed,#fed7aa);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#047857,#10b981);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#047857;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}</style>
+      
+<h1>AI Coding 时代：软件工程才是硬通货（上）</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">深度模块</span>
+  <span class="tag tag-blue">Matt Pocock Skills</span>
+  <span class="tag tag-purple">代码库熵</span>
+  <span class="tag tag-orange">渐进式披露</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：AI 放大的是软件工程老毛病而非取代架构师——在「没对齐、太啰嗦、跑不起来、泥球化」四类失败模式中，为何第四条不可逆，以及为何约束 AI 输出的优先级是代码库形态大于 skills 大于 CLAUDE.md。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#047857;margin-bottom:12px;text-align:center">失败模式 → 泥球不可逆 → 深度模块 + 渐进披露 → 可改动的代码库</h3>
+  <div class="diagram">
+    <div class="node-orange">对齐/啰嗦<br/>可补救</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-orange">跑不起来<br/>加测试</div>
+    <span class="arrow-sym">→</span>
+    <div class="node" style="border-color:#ef4444;color:#991b1b;background:#fee2e2">泥球<br/>不可逆</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">深度模块<br/>藏复杂度</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">渐进披露<br/>AI 只读所需</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：AI 会写代码了架构师就失业。作者认为 AI coding 本质是<strong>软件工程与项目管理</strong>；Matt Pocock 的 skills 骨架是在复习基本功，不是教工具快捷键。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】四种 Agent 失败模式</h3>
+  <p><strong>在讲什么问题：</strong>skills 仓库 README 里「Why These Skills Exist」四条坑与经典工程问题的对应。</p>
+  <p><strong>关键理解：</strong>没做要的=需求澄清；太啰嗦=领域语言；跑不起来=反馈闭环；泥球=深度模块与持续重构。前三可事后补，泥球一旦成型后续都在泥上改。</p>
+  <p><strong>怎么落地用：</strong>本篇聚焦第四条——先治架构与模块深度，对齐与提示词留到下篇。</p>
+  <p><strong>原文依据：</strong>AI 加快写代码也加快软件熵增长，变乱速度前所未有。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】代码库 &gt; skills &gt; CLAUDE.md</h3>
+  <p><strong>原则：</strong>影响 AI 输出的排序：代码库形态第一，skills 第二，项目说明第三——talk is cheap, show me code 对 AI 同样成立。</p>
+  <p><strong>为什么重要：</strong>AI 每次从零读库、无品味地复制烂模式；CLAUDE.md 写「别这么写」仍可能照抄库里的写法。</p>
+  <p><strong>怎么落地：</strong>投资可维护结构；写清 commit message（改了什么+为什么），给下一会话的 AI 当「生长史」。</p>
+  <p><strong>边界说明：</strong>人靠记忆能忍烂代码；AI 没有这种耐受度。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】好架构三句话（Ousterhout）</h3>
+  <p><strong>改得动：</strong>单次改动影响面小，变更放大低。</p>
+  <p><strong>读得懂：</strong>认知负荷低，少「未知的未知」。</p>
+  <p><strong>边界清楚：</strong>复杂度压在深模块里，接口薄，决策不外泄。</p>
+  <p><strong>怎么验证：</strong>挑最近改过的模块——波及几个文件？有没有不敢动的地方？十分钟内可验，与设计模式数量无关。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】深度模块与「删模块」检验</h3>
+  <p><strong>核心思路：</strong>大量行为藏在小接口后（灰盒，出事可往里看）；深度是接口属性不是实现属性。</p>
+  <p><strong>操作步骤：</strong>1）想象删掉模块 → 2）若只换调用名=浅转发，可删 → 3）若复杂度散落各调用方=深模块，复杂度被收住 → 4）人管接口，AI 可重写实现只要接口与测试不变。</p>
+  <p><strong>避坑：</strong>只有一个实现就别为「以后换数据库」先垫接口——等第二种实现出现再切。</p>
+  <p><strong>测试写不下去：</strong>不是「代码不好测」，是架构没留接缝（seam），应重划边界而非硬补测试。</p>
+  <div class="highlight">课程示例：改前 <code>load → materialize → update</code> 三步自己记；改后 <code>courseManager.publish(lessonId)</code> 单入口。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】渐进式披露三级梯</h3>
+  <p><strong>第一级：</strong>步骤——怎么做直接摆出来（对外三个函数）。</p>
+  <p><strong>第二级：</strong>同层参考——实现细节在旁边（源代码）。</p>
+  <p><strong>第三级：</strong>外部参考——少数情况才要（设计说明、单测失败才翻）。</p>
+  <p><strong>选型：</strong>分不清放前还是放后时先放前——放前最多多读一段，放后可能永远读不到。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】浅模块 vs 深度模块</h3>
+  <table>
+    <tr><th>维度</th><th>浅模块</th><th>深度模块</th><th>对 AI 的影响</th></tr>
+    <tr><td>理解成本</td><td>开五个文件才懂一概念</td><td>单入口 + 可选下钻</td><td>浅=上下文爆炸</td></tr>
+    <tr><td>Bug 位置</td><td>边界散落多文件</td><td>接口端到端可测</td><td>深=几分钟定位</td></tr>
+    <tr><td>实现替换</td><td>调用方牵连大</td><td>实现可整删重写</td><td>深=适合 AI 填实现</td></tr>
+    <tr><td>接口层数</td><td>为假想变化多一层</td><td>有第二实现再加</td><td>少无效转发</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】在泥球上堆 skills 和提示词</h3>
+  <p><strong>坑名：</strong>库已是二十文件互 import，却指望 CLAUDE.md 约束 AI 不乱抄。</p>
+  <p><strong>原因：</strong>模型权重向现有模式；约束文档弱于结构示范。</p>
+  <p><strong>解法：</strong>先收口深模块与披露层级，再配 skills；commit 写清「为什么」。</p>
+  <p><strong>严重程度：</strong>对长期 AI 协作：致命。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「提示词工程足够，不必动架构」派</p>
+  <p class="rebuttal-text">当 AI 每轮全库复读，再精的 CLAUDE.md 也打不过它亲眼看到的泥球——你优化的是台词，它学的是布景。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>AI coding 放大的是对齐、反馈、可维护性等经典工程问题。</li>
+    <li>「建出泥球」不可逆，应优先于前三类可补救失败。</li>
+    <li>约束 AI 的首要杠杆是代码库架构，而非提示词 alone。</li>
+    <li>深度模块收复杂度，渐进式披露控制 AI 阅读路径。</li>
+    <li>commit message 成为 AI 读者理解「为什么」的关键文献。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>选一个最近难改的模块，做「删掉它」检验判断深浅。</li>
+    <li>把多步业务流程收成单一对外入口，复杂度下沉。</li>
+    <li>为对外 API 写行为测试，把测试当接口契约主文档。</li>
+    <li>下三次 commit 强制写清动机，而不仅是 diff 摘要。</li>
+    <li>阅读 mattpocock/skills 的 CONTEXT 思路，准备下篇对齐与闭环。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「把 AI 当更快的打字机」转为「把代码库当成给无记忆协作者的唯一教材」。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

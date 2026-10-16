@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-16",
+    "files": [
+      {
+        "path": "svgs/2026-10-16/ai-coding-software-engineering-part1.svg",
+        "title": "AI Coding 时代最值钱的东西，软件工程（上）",
+        "source": "https://juejin.cn/post/7696821865848733705"
+      },
+      {
+        "path": "svgs/2026-10-16/deepseek-harness-plugin-from-scratch.svg",
+        "title": "DeepSeek Harness 进阶——认识插件机制并从 0 到 1 实现一个插件",
+        "source": "https://juejin.cn/post/7696822189491912742"
+      },
+      {
+        "path": "svgs/2026-10-16/unsafe-rust-safety-boundary.svg",
+        "title": "Unsafe Rust：当 Rust 的安全边界开始变得模糊",
+        "source": "https://tonybai.com/2026/10/16/unsafe-rust-safety-boundary/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-15",
     "files": [
       {

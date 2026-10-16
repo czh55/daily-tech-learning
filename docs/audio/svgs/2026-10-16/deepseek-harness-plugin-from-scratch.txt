@@ -1,0 +1,123 @@
+欢迎收听每日技术学习语音讲解。本期主题，DeepSeek Harness 插件机制与 text_stats 实战。标签包括Cordis、Bundle / Profile、ctx.tools、patch vs add。本次讲解预计时长 约 10 到 11 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：DeepSeek Harness 如何在 Cordis 底座上通过「一切皆插件」组织智能体能力，以及开发者如何用 patch 本地验证、用 Bundle+Profile 正式分发，并完成从插件加载到模型调用工具的完整链路。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Cordis，加载/生命周期，然后Plugin，apply(ctx)，然后Bundle，cordis.patch.yml，然后Profile，bundles 列表，然后dsh web，合并配置树
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：DSH 自研了一套智能体内核。实际上 Cordis 只管插件装载与依赖，会话、工具、Agent 循环、UI 等均由 packages/ 下插件提供。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「直接 fork 改 core 更快」派
+
+绕过 Bundle/Profile 树改内核，升级 DSH 时你的补丁与官方插件依赖图必冲突——插件化不是为了炫技，是为了可组合地跟上上游。
+
+接下来，第四部分，【概念拆解卡】插件、Bundle、Profile。
+
+插件：开发者编写的模块，通过 apply(ctx) 向共享 context 注册服务。
+
+Bundle：可分发单元，package.json 的 dsh.bundle.patch 指向 cordis.patch.yml，声明向配置树 insert 哪些插件 id/name。
+
+Profile：$DSH_HOME/profiles/<name> 下的组合方案，dsh.profile.bundles 按序加载 Bundle，启动时合并成完整 Cordis 插件树。
+
+怎么落地用：dsh web = 加载 dsh-base + dsh-web-app 等内置 Profile 组合。
+
+接下来，第五部分，【概念拆解卡】packages/core 六个核心服务。
+
+session：事件溯源会话日志（ctx.sessions）。
+
+system-prompt / tools / agent / agent-loop / scope：提示词组装、工具注册表、Agent 类型、驱动循环、作用域隔离。
+
+关系：其他系列如 llm/、shell/、client/ 聚合相关插件；例如 tool-skill 依赖 tools、session、skill。
+
+接下来，第六部分，【决策/选型表】patch 还是 add。
+
+本地改插件源码验证，pnpm dsh web --patch ./cordis.yml，快速插入配置层，直接改 Profile 依赖，迭代慢
+
+分享给他人/长期启用，打包 Bundle + dsh plugin --profile add，安装依赖并写入 bundles 列表，长期靠绝对路径 patch，路径不可移植
+
+检查是否挂上，dsh --profile web --dump-config | grep id，看配置树，只看目录存在，未应用 patch 无效
+
+接下来，第七部分，【方法/工具卡】text_stats 插件五步。
+
+1 编写：inject = ['tools'] 声明依赖；ctx.tools.register(defineTool({...})) 注册 text_stats。
+
+2 patch 调试：cordis.yml insert id/name（开发期 name 可为绝对路径到 .ts）。
+
+3 打包：编译到 dist/index.js，cordis.patch.yml 中 name 改为包名 dsh-text-stats。
+
+4 安装：dsh plugin --profile web add . 写入 Profile 依赖与 bundles。
+
+5 验证：Web 中让模型统计文字，日志应出现 Tool call text_stats。
+
+机制：ctx.effect() 管理注册副作用，插件卸载时工具自动移除；tools 未就绪时 apply 会等待。
+
+接下来，第八部分，【避坑清单卡】Bundle 与 TypeScript 编译。
+
+坑名，Cordis 默认加载 Bundle 的 index.js，忘记 tsc 或 main 指向错误。
+
+坑名，tsconfig 缺 lib: ES2021, DOM 导致 WeakRef 等类型报错。
+
+解法，files 字段包含 dist 与 cordis.patch.yml；分发用 npm 包名而非文件路径。
+
+严重程度，打包分发阶段：小心。
+
+接下来，第九部分，【跨概念对比表】入门配置 vs 插件开发者路径。
+
+目标，配模型/MCP/Skill，扩展 ctx 服务与工具
+
+关键命令，dsh web，patch ，得到 add ，得到 dump-config
+
+必读目录，配置与文档，packages/、vendor/cordis
+
+验证标准，对话可用，配置树含插件 + Tool 链路通
+
+接下来，第十部分，【心法/原则卡】一切皆插件。
+
+原则，除 Cordis 装载外，能力皆插件互依；写插件 = 向 context 注册服务供其他插件使用。
+
+怎么落地，先弄清自己依赖 inject 哪些服务，再 register；发布 npm 后他人 dsh plugin --profile add 包名。
+
+边界：Python SDK、native 扩展在仓库其他目录，本文聚焦 Node/Cordis 插件线。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+DSH 智能体能力建立在 Cordis 插件生命周期之上。
+
+插件是代码，Bundle 是可分发补丁，Profile 是运行时组合清单。
+
+开发用 patch，交付用 Bundle + profile add。
+
+工具类插件通过 inject tools 与 defineTool 接入 Agent 工具链。
+
+text_stats 示例验证了加载，得到注册，得到模型发现，得到执行的闭环。
+
+源码安装 DSH 后浏览 packages/core 六个包的职责分工。
+
+在 scratch-plugin 复现 patch 启动与 Tool 调用日志。
+
+完成 tsc 打包并用 dsh plugin --profile web add . 安装自测 Bundle。
+
+用 --dump-config 确认插件 id 出现在最终树中。
+
+计划下一个插件：依赖 session 或 skill 而非仅 tools。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「DSH 是一个单体 Agent 应用」转为「DSH 是可编排的插件运行时，你的差异化在 apply(ctx) 里」。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

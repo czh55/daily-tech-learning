@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5207" viewBox="0 0 1320 5207">
+  <foreignObject x="0" y="0" width="1320" height="5207">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#eff6ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#1d4ed8,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-purple{background:#ede9fe;color:#6b21a8}.tag-green{background:#d1fae5;color:#065f46}.tag-orange{background:#ffedd5;color:#9a3412}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #4f46e5}
+.card h3{font-size:22px;font-weight:700;color:#4338ca;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#eef2ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#3730a3;border-left:4px solid #6366f1}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eef2ff,#c7d2fe);border:2px solid #a5b4fc;border-radius:16px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#3730a3}
+.node-green{background:linear-gradient(135deg,#ecfdf5,#a7f3d0);border-color:#6ee7b7;color:#065f46}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#312e81,#4f46e5);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#4338ca;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}</style>
+      
+<h1>DeepSeek Harness 插件机制与 text_stats 实战</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Cordis</span>
+  <span class="tag tag-purple">Bundle / Profile</span>
+  <span class="tag tag-green">ctx.tools</span>
+  <span class="tag tag-orange">patch vs add</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：DeepSeek Harness 如何在 Cordis 底座上通过「一切皆插件」组织智能体能力，以及开发者如何用 patch 本地验证、用 Bundle+Profile 正式分发，并完成从插件加载到模型调用工具的完整链路。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#4338ca;margin-bottom:12px;text-align:center">Cordis 底座 → packages 插件 → Bundle → Profile → 运行时插件树</h3>
+  <div class="diagram">
+    <div class="node">Cordis<br/>加载/生命周期</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Plugin<br/>apply(ctx)</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Bundle<br/>cordis.patch.yml</div>
+    <span class="arrow-sym">→</span>
+    <div class="node">Profile<br/>bundles 列表</div>
+    <span class="arrow-sym">→</span>
+    <div class="node-green">dsh web<br/>合并配置树</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：DSH 自研了一套智能体内核。实际上 <strong>Cordis 只管插件装载与依赖</strong>，会话、工具、Agent 循环、UI 等均由 <code>packages/</code> 下插件提供。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】插件、Bundle、Profile</h3>
+  <p><strong>插件：</strong>开发者编写的模块，通过 <code>apply(ctx)</code> 向共享 context 注册服务。</p>
+  <p><strong>Bundle：</strong>可分发单元，<code>package.json</code> 的 <code>dsh.bundle.patch</code> 指向 <code>cordis.patch.yml</code>，声明向配置树 insert 哪些插件 id/name。</p>
+  <p><strong>Profile：</strong><code>$DSH_HOME/profiles/&lt;name&gt;</code> 下的组合方案，<code>dsh.profile.bundles</code> 按序加载 Bundle，启动时合并成完整 Cordis 插件树。</p>
+  <p><strong>怎么落地用：</strong><code>dsh web</code> = 加载 <code>dsh-base</code> + <code>dsh-web-app</code> 等内置 Profile 组合。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】packages/core 六个核心服务</h3>
+  <p><strong>session：</strong>事件溯源会话日志（<code>ctx.sessions</code>）。</p>
+  <p><strong>system-prompt / tools / agent / agent-loop / scope：</strong>提示词组装、工具注册表、Agent 类型、驱动循环、作用域隔离。</p>
+  <p><strong>关系：</strong>其他系列如 <code>llm/</code>、<code>shell/</code>、<code>client/</code> 聚合相关插件；例如 tool-skill 依赖 tools、session、skill。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】patch 还是 add</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>不推荐</th><th>原因</th></tr>
+    <tr><td>本地改插件源码验证</td><td><code>pnpm dsh web --patch ./cordis.yml</code></td><td>快速插入配置层</td><td>直接改 Profile 依赖</td><td>迭代慢</td></tr>
+    <tr><td>分享给他人/长期启用</td><td>打包 Bundle + <code>dsh plugin --profile add</code></td><td>安装依赖并写入 bundles 列表</td><td>长期靠绝对路径 patch</td><td>路径不可移植</td></tr>
+    <tr><td>检查是否挂上</td><td><code>dsh --profile web --dump-config | grep id</code></td><td>看配置树</td><td>只看目录存在</td><td>未应用 patch 无效</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】text_stats 插件五步</h3>
+  <p><strong>1 编写：</strong><code>inject = ['tools']</code> 声明依赖；<code>ctx.tools.register(defineTool({...}))</code> 注册 <code>text_stats</code>。</p>
+  <p><strong>2 patch 调试：</strong><code>cordis.yml</code> insert id/name（开发期 name 可为绝对路径到 .ts）。</p>
+  <p><strong>3 打包：</strong>编译到 <code>dist/index.js</code>，<code>cordis.patch.yml</code> 中 name 改为包名 <code>dsh-text-stats</code>。</p>
+  <p><strong>4 安装：</strong><code>dsh plugin --profile web add .</code> 写入 Profile 依赖与 bundles。</p>
+  <p><strong>5 验证：</strong>Web 中让模型统计文字，日志应出现 Tool call <code>text_stats</code>。</p>
+  <div class="highlight"><strong>机制：</strong><code>ctx.effect()</code> 管理注册副作用，插件卸载时工具自动移除；<code>tools</code> 未就绪时 <code>apply</code> 会等待。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Bundle 与 TypeScript 编译</h3>
+  <p><strong>坑名：</strong> Cordis 默认加载 Bundle 的 <code>index.js</code>，忘记 <code>tsc</code> 或 <code>main</code> 指向错误。</p>
+  <p><strong>坑名：</strong> tsconfig 缺 <code>lib: ES2021, DOM</code> 导致 WeakRef 等类型报错。</p>
+  <p><strong>解法：</strong><code>files</code> 字段包含 <code>dist</code> 与 <code>cordis.patch.yml</code>；分发用 npm 包名而非文件路径。</p>
+  <p><strong>严重程度：</strong>打包分发阶段：小心。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】入门配置 vs 插件开发者路径</h3>
+  <table>
+    <tr><th>维度</th><th>日常用户</th><th>插件开发者</th></tr>
+    <tr><td>目标</td><td>配模型/MCP/Skill</td><td>扩展 ctx 服务与工具</td></tr>
+    <tr><td>关键命令</td><td><code>dsh web</code></td><td>patch → add → dump-config</td></tr>
+    <tr><td>必读目录</td><td>配置与文档</td><td><code>packages/</code>、<code>vendor/cordis</code></td></tr>
+    <tr><td>验证标准</td><td>对话可用</td><td>配置树含插件 + Tool 链路通</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】一切皆插件</h3>
+  <p><strong>原则：</strong>除 Cordis 装载外，能力皆插件互依；写插件 = 向 context 注册服务供其他插件使用。</p>
+  <p><strong>怎么落地：</strong>先弄清自己依赖 inject 哪些服务，再 register；发布 npm 后他人 <code>dsh plugin --profile add 包名</code>。</p>
+  <p><strong>边界：</strong>Python SDK、native 扩展在仓库其他目录，本文聚焦 Node/Cordis 插件线。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「直接 fork 改 core 更快」派</p>
+  <p class="rebuttal-text">绕过 Bundle/Profile 树改内核，升级 DSH 时你的补丁与官方插件依赖图必冲突——插件化不是为了炫技，是为了可组合地跟上上游。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>DSH 智能体能力建立在 Cordis 插件生命周期之上。</li>
+    <li>插件是代码，Bundle 是可分发补丁，Profile 是运行时组合清单。</li>
+    <li>开发用 patch，交付用 Bundle + profile add。</li>
+    <li>工具类插件通过 inject tools 与 defineTool 接入 Agent 工具链。</li>
+    <li>text_stats 示例验证了加载→注册→模型发现→执行的闭环。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>源码安装 DSH 后浏览 <code>packages/core</code> 六个包的职责分工。</li>
+    <li>在 <code>scratch-plugin</code> 复现 patch 启动与 Tool 调用日志。</li>
+    <li>完成 tsc 打包并用 <code>dsh plugin --profile web add .</code> 安装自测 Bundle。</li>
+    <li>用 <code>--dump-config</code> 确认插件 id 出现在最终树中。</li>
+    <li>计划下一个插件：依赖 session 或 skill 而非仅 tools。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「DSH 是一个单体 Agent 应用」转为「DSH 是可编排的插件运行时，你的差异化在 apply(ctx) 里」。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
