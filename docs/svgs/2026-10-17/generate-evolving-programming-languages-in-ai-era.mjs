@@ -1,0 +1,156 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'evolving-programming-languages-in-ai-era.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#faf5ff,#f3e8ff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-purple{background:#ede9fe;color:#6b21a8}.tag-pink{background:#fce7f3;color:#9d174d}.tag-teal{background:#ccfbf1;color:#115e59}.tag-amber{background:#fef3c7;color:#92400e}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #7c3aed}
+.card h3{font-size:22px;font-weight:700;color:#6b21a8;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#f5f3ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#5b21b6;border-left:4px solid #a78bfa}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#f5f3ff,#ddd6fe);border:2px solid #c4b5fd;border-radius:14px;padding:10px 12px;text-align:center;min-width:80px;font-weight:700;font-size:11px;color:#5b21b6}
+.node-dim{background:#f8fafc;border-color:#cbd5e1;color:#64748b}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#6b21a8,#9333ea);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f5f3ff;padding:10px 14px;text-align:left;font-weight:700;color:#6b21a8;border-bottom:2px solid #ddd6fe}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#ecfdf5;border:2px solid #059669;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#047857;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#065f46;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#064e3b}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>AI 时代编程语言与工具往哪演进</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">José Valim</span>
+  <span class="tag tag-pink">程序数据库</span>
+  <span class="tag tag-teal">运行时可观测性</span>
+  <span class="tag tag-amber">Agent 为新用户</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 Agent 写掉大部分代码后，语法人体工学是否仍值得投入、编译器为何不会消失，以及 IDE/LSP/调试器应如何改成 Agent 能查询程序结构与运行时状态的新接口。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#6b21a8;margin-bottom:12px;text-align:center">社区张力 → 语法权重下降 → 编译器保留 → 类型松绑 → 程序 DB → 运行时观测</h3>
+  <div class="diagram">
+    <div class="node">生态成本↓<br>共建动力?</div><span class="arrow-sym">→</span>
+    <div class="node-dim">人体工学<br>对 Agent 弱</div><span class="arrow-sym">→</span>
+    <div class="node">多领域<br>抽象层</div><span class="arrow-sym">→</span>
+    <div class="node">显式类型<br>+组合保证</div><span class="arrow-sym">→</span>
+    <div class="node">查程序 DB<br>替 LSP</div><span class="arrow-sym">→</span>
+    <div class="node">BEAM 式<br>可编程运行时</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：Agent 会直接写汇编绕过语言。Valim 认为你仍需要架构无关 IR 与降级能力——那已是编译器；且不存在一种底层语言统一系统编程、定理证明、分布式与查询等语义。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】社区与生态的「Agent 张力」</h3>
+  <p><strong>在讲什么问题：</strong>Python/Ruby/Lisp 等社区价值观，在人类不再主写代码后是否还有粘合剂。</p>
+  <p><strong>关键理解：</strong>Agent 降低搭框架/复现论文成本，小生态可追平；同时「量身定做库」变便宜，共建单一方案的动机变弱。</p>
+  <p><strong>怎么落地用：</strong>做语言/平台战略时同时评估「追赶成本」与「凝聚成本」，别只谈 star 数。</p>
+  <p><strong>边界说明：</strong>语言演进可能更多由主导团队愿景驱动，而非社区呼声——Valim 坦言是猜测。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】人体工学 vs Token</h3>
+  <p><strong>关键理解：</strong>可选链等语法糖主要服务人类烦度；Agent 是 token 进 token 出，美感差异有限。</p>
+  <p><strong>和其他概念关系：</strong>token 效率不应排优先级前列——模型更便宜、上下文更大时尤甚。</p>
+  <p><strong>避坑：</strong>标榜「为 Agent 设计」却主攻语法的新语言，多在绕当前局限打转。</p>
+  <p><strong>原文依据：</strong>Valim 用多语言 Agent 经验说明：人类眼里差异大，模型侧未必。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】类型系统为谁松绑</h3>
+  <p><strong>核心思路：</strong>在表达力、保证、人体工学三角中，Agent 不怕繁琐，显式签名反而利于编译器与其他 Agent。</p>
+  <p><strong>操作步骤：</strong>1）接受可推断类型 ⊂ 可检查类型 → 2）组合静态/运行时/模型检查/架构约束四类保证 → 3）按领域选 Erlang 式消息隔离等架构级保证。</p>
+  <p><strong>选型条件：</strong>人类好用工具往往也利于 Agent；但 Agent 可承担人类不愿做的超信息量任务，需额外接口。</p>
+  <p><strong>对比：</strong>一味优化推断性会压低类型系统能提供的保证上限。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】程序数据库取代 LSP</h3>
+  <p><strong>核心思路：</strong>LSP 围绕文件行列定位，Agent 更适合「foo_bar 文档在哪」式问答；应暴露符号/引用/调用图/类型等为可查询库。</p>
+  <p><strong>怎么落地用：</strong>用 Datalog 或类似查询让 Agent 组合「所有会调用 X 的公开 API」「可能 nil 的路径」等跨文件问题。</p>
+  <p><strong>避坑：</strong>猴子补丁、隐式钩子、动态绑定等「远程作用」即使有 DB 也难追全——局部性仍极重要。</p>
+  <div class="highlight">Tidewave 实践：问答式 CLI 比逼 Agent 报精确行列引用更顺手。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】运行时可观测性取代传统调试器</h3>
+  <p><strong>核心思路：</strong>Agent 可插桩、采轨迹、高速关联；接口不必模拟人类单步，但要能编程查询进程/套接字/监督树等状态。</p>
+  <p><strong>典型场景：</strong>线上诊断、性能瓶颈、可靠性问题——不仅写代码阶段。</p>
+  <p><strong>边界说明：</strong>评论区「调试器不会死」派：目标同是更好触达状态，接口可不同，信息可一致。</p>
+  <p><strong>原文依据：</strong>BEAM 内建检查能力，缺口在安全暴露给 Agent 的工具/查询/沙箱。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】LSP/调试器 vs Agent 原生工具</h3>
+  <table>
+    <tr><th>维度</th><th>人类交互工具</th><th>Agent 友好形态</th><th>结论</th></tr>
+    <tr><td>定位</td><td>文件:行:列</td><td>符号/关系查询</td><td>程序数据库</td></tr>
+    <tr><td>信息粒度</td><td>小块 + 手动跳转</td><td>组合查询 + CLI</td><td>减少拼凑成本</td></tr>
+    <tr><td>执行理解</td><td>断点单步</td><td>轨迹/可查询运行时</td><td>速度换接口</td></tr>
+    <tr><td>反馈环</td><td>编译器报错给人读</td><td>结构化可恢复错误</td><td>中文评论强调 CI/linter 瓶颈</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】初学者被 Agent 悄悄修好</h3>
+  <p><strong>坑名：</strong>错误在进社区前就被 Agent 抹平，新人不知卡在哪。</p>
+  <p><strong>原因：</strong>自动化修复降低摩擦，也削弱公开讨论与传承。</p>
+  <p><strong>解法：</strong>Valim 承认无答案；团队需自行设计「可见失败」与导师环节。</p>
+  <p><strong>严重程度：</strong>对社区长期：需警惕。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「人类需要的 Agent 最终也需要」派</p>
+  <p class="rebuttal-text">若 Agent 真要承担运维与排障，它们迟早还要模拟断点与可读栈——你换的是 UI，不是对精确程序状态的需求，LSP 只会改皮不会消亡。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>语言与编译器不会消失，但优化对象从「人类书写」转向「Agent 工作流」。 </li>
+    <li>语法人体工学权重下降，类型显式化与保证组合更重要。</li>
+    <li>LSP/IDE/调试器需重想：程序数据库 + 运行时可观测性是两个落点。</li>
+    <li>社区面临低成本定制与生态凝聚的张力，答案仍开放。</li>
+    <li>为人类做好的工具常惠及 Agent，但超信息量任务需要专用接口。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>在工具链路线图里评估：能否暴露调用图/引用为机器可查询 API。</li>
+    <li>试点「符号问答」替代强迫 Agent 报行列的集成方式。</li>
+    <li>梳理运行时内省能力（进程、队列、连接）并设计 Agent 安全访问层。</li>
+    <li>把 CI/编译错误改成结构化、可自动修复的反馈，而不只是给人读。</li>
+    <li>团队内讨论：哪些保证应静态、哪些用架构（如进程隔离）换取。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「语言为人眼舒服」转为「语言与工具为 Agent 可验证、可查询、可观测地操纵程序」。 </p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

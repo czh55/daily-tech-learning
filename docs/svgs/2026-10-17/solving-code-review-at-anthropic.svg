@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5396" viewBox="0 0 1320 5396">
+  <foreignObject x="0" y="0" width="1320" height="5396">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#eff6ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#1d4ed8,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-purple{background:#ede9fe;color:#6b21a8}.tag-orange{background:#ffedd5;color:#9a3412}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #4f46e5}
+.card h3{font-size:22px;font-weight:700;color:#3730a3;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#eef2ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#312e81;border-left:4px solid #6366f1}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#eef2ff,#c7d2fe);border:2px solid #a5b4fc;border-radius:14px;padding:10px 12px;text-align:center;min-width:72px;font-weight:700;font-size:10px;color:#312e81}
+.node-warn{background:linear-gradient(135deg,#fff7ed,#fed7aa);border-color:#fdba74;color:#9a3412}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#3730a3,#6366f1);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 14px;text-align:left;font-weight:700;color:#3730a3;border-bottom:2px solid #cbd5e1}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}</style>
+      
+<h1>Claude Code 团队如何做代码审查</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Agent 规模工程</span>
+  <span class="tag tag-purple">分级防御</span>
+  <span class="tag tag-orange">审查收敛</span>
+  <span class="tag tag-slate">You Land It</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当约 90% 代码由 Agent 编写、PR 吞吐翻倍时，如何用「持续审查 + 风险分级 + 机器读 diff」把人类注意力留给架构与意图，同时让回滚率下降超 40%。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#3730a3;margin-bottom:12px;text-align:center">提 PR 前自验 → AI 审查 → 安全/CI 阻断 → 风险审批 → 合并队列 → 极速回滚</h3>
+  <div class="diagram">
+    <div class="node">本地验证<br/>+Skills</div><span class="arrow-sym">→</span>
+    <div class="node">多 Agent<br/>投票审查</div><span class="arrow-sym">→</span>
+    <div class="node-warn">安全<br/>阻断</div><span class="arrow-sym">→</span>
+    <div class="node">低/中/高<br/>人工档</div><span class="arrow-sym">→</span>
+    <div class="node">Merge Queue<br/>+Flag</div><span class="arrow-sym">→</span>
+    <div class="node-warn">事故→Eval</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：Agent 时代可以取消 Code Review。Anthropic 并未取消审查，而是把「是否有人读过」换成「哪道检查最能拦截该变更的风险」，并把审查前移到打字时的拼写检查阶段。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】审查目的的两条腿</h3>
+  <p><strong>在讲什么问题：</strong>日合并从数千到数万后，逐行人肉审查失效，但质量不能丢。</p>
+  <p><strong>关键理解：</strong>职责一是发布前发现问题；二是团队共享上下文。本文主攻前者，后者用 Claude 切片解读 + 透明频道协作替代死磕 diff。</p>
+  <p><strong>怎么落地用：</strong>为每条变更问「风险是什么？哪道自动化/人工检查最合适？」而非「谁还没点批准」。</p>
+  <p><strong>边界说明：</strong>外部提交仍保留人工「我们真的要做吗」闸门，机器不能替代产品判断。</p>
+  <p><strong>原文依据：</strong>「是否有人读过」只是粗糙代理指标，核心是可拦截的风险与检查匹配。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】提 PR 前的验证闭环</h3>
+  <p><strong>核心思路：</strong>绝大多数审查在 PR 创建前完成；Claude 必须展示可运行验证结果，不能只说「已完成」。</p>
+  <p><strong>操作步骤：</strong>1）配置测试/构建/截图对比 → 2）子 Agent 在干净上下文审 diff → 3）可选 Skills：找 Bug、精简 diff、E2E、UI 设计准则 → 4）再开 PR。</p>
+  <p><strong>选型条件：</strong>Boris Cherny 估计「能验证自己工作」可把交付质量提升 2–3 倍。</p>
+  <p><strong>避坑：</strong>审查器反复报同类问题时，应改 Skill、加 Lint 或更新规范，而不是让人重复关评论。</p>
+  <div class="highlight"><code>CLAUDE.md</code> 保持简短并索引其他文档；<code>REVIEW.md</code> 由 Code Owner 写清「失败长什么样」、限制 nit 数量、要求带行号证据。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】PR 级 AI 审查与共识过滤</h3>
+  <p><strong>核心思路：</strong>每个 PR 先经 Claude 结合仓库意图审 diff；多 Agent 并行找 Bug，独立验证 Agent 投票后才发布意见。</p>
+  <p><strong>操作步骤：</strong>设置 Quick/Standard/Deep → 过滤纯风格/nit → 行内评论按 Important/Nit/Pre-existing 分级 → 每条必须修复或解释关闭 → Agent 可夜间自动修一轮。</p>
+  <p><strong>对比相邻方法：</strong>本地 <code>/code-review</code> 轻量；Team/Enterprise 的 Code Review 功能更重，内部 PR 有实质意见比例从 16% 升到 54%。</p>
+  <p><strong>避坑：</strong>Agent 作者看到 nit 会老实改代码触发新轮次——噪音成本远高于人类忽略一条评论。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】三档风险与人工批准</h3>
+  <table>
+    <tr><th>风险</th><th>典型变更</th><th>人工批准</th><th>注意</th></tr>
+    <tr><td>低</td><td>文档、文案、内部功能、Flag 后增量</td><td>自动化全绿即可</td><td>分类器读 diff 定级，非提交人自报</td></tr>
+    <tr><td>中</td><td>常规产品、缓存/自动更新/系统提示词</td><td>1 人</td><td>受信任作者可走轻通道</td></tr>
+    <tr><td>高</td><td>核心路径、CI 工作流等敏感区</td><td>2 人</td><td>Agent 批准≠人类批准；新 commit 作废旧批准</td></tr>
+  </table>
+  <p><strong>怎么落地：</strong>Agent PR 的指导人列为必需审查人，责任等同手写代码。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】传统终点审查 vs 持续审查</h3>
+  <table>
+    <tr><th>维度</th><th>传统 PR 终点审查</th><th>Claude Code 模式</th><th>一句话</th></tr>
+    <tr><td>发生时机</td><td>写完才等人看</td><td>提交前已多轮机器审</td><td>审查像拼写检查</td></tr>
+    <tr><td>人类角色</td><td>读每一行 diff</td><td>架构、品味、高危区、验证据</td><td>注意力上收</td></tr>
+    <tr><td>失败信号</td><td>评论数</td><td>回滚率+事故率+人工等待时长</td><td>省时间不能转嫁到救火</td></tr>
+    <tr><td>上下文学习</td><td>读队友 PR</td><td>让 Claude 生成模块解读/Artifact</td><td>深度讲解 &gt; 改文案 diff</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Agent 审查无限拉扯</h3>
+  <p><strong>坑名：</strong>作者 Agent 与审查 Agent 夜间来回 50+ 轮，人类早上才叫停。</p>
+  <p><strong>原因：</strong>默认多轮重审；约 59% 意见在第一轮就存在，后续在挖陈年旧账；Agent 对 nit 也会改代码。</p>
+  <p><strong>解法：</strong>三轮封顶并要求重新审视方案；之后只审增量 diff；要求一次性修同类问题；禁止重复已发意见；用「轮数」与「召回率」一起度量。</p>
+  <p><strong>严重程度：</strong>对 Agent 主导仓库：致命（吞吐与士气）。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】You Land It, You Own It</h3>
+  <p><strong>原则：</strong>合入者负责跟进问题，但靠小粒度、可回滚、Flag、免责复盘文化兜底，而非人肉逐行防错。</p>
+  <p><strong>怎么落地：</strong>合并队列重跑 main 上检查；内部狗粮 + latest/stable 通道；事故转 Eval 每日跑审查器回归。</p>
+  <p><strong>适用边界：</strong>计费、发布、安装脚本等始终人类双签；低风险自动化合并边界随信任前移。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「速度至上、零人工合并」激进派</p>
+  <p class="rebuttal-text">把阅读 diff 全交给机器，等于把「我们是否该做」与隐性架构债一起自动化——合并翻倍时你省的是眼疲劳，丢的是产品灵魂与跨团队否决权。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>审查指标应从「有人读过」转为「风险与检查匹配」，并前移到 PR 之前。</li>
+    <li>人类稀缺资源应花在方向、高危代码、架构模式与验证凭据上。</li>
+    <li>AI 审查需共识过滤 + 分级 + 轮数封顶，否则 Agent 噪音会自我放大。</li>
+    <li>低/中/高风险分级 + 合并队列 + Flag 是规模下的默认组合。</li>
+    <li>事故 Eval 与回滚率是审查策略的真实记分牌。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>写简短 <code>CLAUDE.md</code> 并为关键模块补 <code>REVIEW.md</code>（失败定义 + 证据要求）。</li>
+    <li>在单仓库试点 AI 审查，调几周后再推广；合并前 unresolved 讨论清零。</li>
+    <li>定义三档风险并由分类器读 diff，禁止 Agent 批准顶替人类名额。</li>
+    <li>为 Agent 工作流设审查轮数上限与增量-only 重审规则。</li>
+    <li>把历史事故 PR 收成 Eval，模型/提示词升级后全量回归。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「审查是合并前的关卡」转为「审查是贯穿变更生命周期的分层免疫系统」。 </p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

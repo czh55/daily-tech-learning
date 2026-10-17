@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-10-17",
+    "files": [
+      {
+        "path": "svgs/2026-10-17/evolving-programming-languages-in-ai-era.svg",
+        "title": "当90%代码由AI写完，程序员社区、编程语言、开发工具将何去何从？",
+        "source": "https://tonybai.com/2026/10/17/evolving-programming-languages-in-ai-era/"
+      },
+      {
+        "path": "svgs/2026-10-17/solving-code-review-at-anthropic.svg",
+        "title": "Claude Code 团队是如何进行代码审查的",
+        "source": "https://tonybai.com/2026/10/17/solving-code-review-at-anthropic/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-16",
     "files": [
       {
