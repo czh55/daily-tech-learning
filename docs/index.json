@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-18",
+    "files": [
+      {
+        "path": "svgs/2026-10-18/rust-in-the-agentic-era-guardrails-proofs-and-design-languages.svg",
+        "title": "Rust 核心开发者发出「存在主义焦虑」：Agent 写代码的时代，语言设计者还有饭碗吗？",
+        "source": "https://tonybai.com/2026/10/18/rust-in-the-agentic-era-guardrails-proofs-and-design-languages/"
+      },
+      {
+        "path": "svgs/2026-10-18/trae-deepseek-tesla-roadster-flight.svg",
+        "title": "用TRAE、DeepSeek-Harness、DeepSeek-V4.1-Flash-1017再现特斯拉Roadster汽车飞行名场面",
+        "source": "https://juejin.cn/post/7697461814015524915"
+      },
+      {
+        "path": "svgs/2026-10-18/verus-rust-formal-verification-amazon-nitro.svg",
+        "title": "给Rust代码办一张「数学身份证」：亚马逊揭秘Nitro背后的形式化验证武器Verus",
+        "source": "https://tonybai.com/2026/10/18/verus-rust-formal-verification-amazon-nitro/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-17",
     "files": [
       {
