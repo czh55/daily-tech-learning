@@ -1,0 +1,158 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'harness2-recursive-agent-harnessing-google-research.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#eef2ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#3730a3,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-indigo{background:#e0e7ff;color:#3730a3}.tag-violet{background:#ede9fe;color:#5b21b6}.tag-slate{background:#f1f5f9;color:#334155}.tag-amber{background:#fef3c7;color:#92400e}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #6366f1}
+.card h3{font-size:22px;font-weight:700;color:#3730a3;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#eef2ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#312e81;border-left:4px solid #6366f1}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border:2px solid #a5b4fc;border-radius:14px;padding:10px 12px;text-align:center;min-width:72px;font-weight:700;font-size:10px;color:#3730a3}
+.node-warn{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#fbbf24;color:#92400e}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#3730a3,#6366f1);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#eef2ff;padding:10px 14px;text-align:left;font-weight:700;color:#3730a3;border-bottom:2px solid #a5b4fc}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>Harness²：不动权重，让 Agent Harness 递归自我改装</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-indigo">Agent Harness</span>
+  <span class="tag tag-violet">Propose–Probe–Compose</span>
+  <span class="tag tag-slate">改进库</span>
+  <span class="tag tag-amber">开放世界</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在开放世界任务没有真值验证器时，如何让 Agent 的执行外壳（提示词、工具说明、子 Agent、护栏等）靠「同一任务下的行为对照」自我迭代，并把可迁移的改装经验沉淀给后续任务。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#3730a3;margin-bottom:12px;text-align:center">任务级 PPC 循环 → 并行/串行放大 → Harness 级改进库复盘</h3>
+  <div class="diagram">
+    <div class="node">参考<br>执行</div><span class="arrow-sym">→</span>
+    <div class="node">Propose<br>通用+领域</div><span class="arrow-sym">→</span>
+    <div class="node">Probe<br>对照</div><span class="arrow-sym">→</span>
+    <div class="node">Compose<br>有据合并</div><span class="arrow-sym">→</span>
+    <div class="node-warn">改进库<br>EXPERIENCE</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：行为对照分数上涨就等于答案正确。原文强调对照是合成依据，受随机性与模型共同偏见影响，不是正确性裁判。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Harness 与开放世界两道坎</h3>
+  <p><strong>在讲什么问题：</strong>同模型换 Harness 可差十几分，但手工调壳成本高，静态壳难泛化。</p>
+  <p><strong>关键理解：</strong>无标准答案时不能靠验证器打分；为任务 A 改的壳不能直接继承到任务 B。</p>
+  <p><strong>怎么落地用：</strong>把「怎么改 Harness」本身当可学习对象，用改进库存证据化经验而非整包继承。</p>
+  <p><strong>边界说明：</strong>对照证据 ≠ 安全/合规证明；评测需自行限制网络防泄题。</p>
+  <p><strong>原文依据：</strong>「改进的过程本身就是宝贵的经验……应该被留下来。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Propose–Probe–Compose</h3>
+  <p><strong>核心思路：</strong>先跑参考执行，再生成通用候选（规划/工具/委派）与领域候选（行业知识），同任务重跑后对照，仅保留有观察支撑的合并。</p>
+  <p><strong>操作步骤：</strong>1）基线执行 → 2）双候选 Harness → 3）并行探测 → 4）Compose 选择性采纳/保留原壳。</p>
+  <p><strong>避坑：</strong>「直接让编辑器改基础 Harness」在论文中反而退步（Code 73.4→63.2），缺对照与库会伤性能。</p>
+  <div class="highlight">可编辑 8 类组件：系统提示、护栏、记忆、技能、工具说明、脚本、子 Agent、中间件——均以文件挂载，改动即改文件。</div>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】递归预算与改进库</h3>
+  <p><strong>选型条件：</strong><code>k=1</code> 并行与串行等价；<code>k&gt;1</code> 时并行铺开多路合成，串行把上步证据传给下步修正。</p>
+  <p><strong>怎么落地：</strong>每任务结束复盘，写入可执行 Harness + <code>EXPERIENCE.md</code>；下一任务仍从统一初始壳出发，Propose 阶段选择性复用。</p>
+  <p><strong>原文依据：</strong>证据不足时反思宁可不写新经验——「仅仅某个输出被选中」不算可迁移证据。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时值得跑 Harness²</h3>
+  <table>
+    <tr><th>场景</th><th>建议</th><th>判断依据</th></tr>
+    <tr><td>开放世界办公/法律/端到端任务</td><td>试单步 k=1</td><td>论文三基准四配置全部涨分，弱模型 GLM-5 可反超原 Gemini 壳</td></tr>
+    <tr><td>已有强验证器的封闭任务</td><td>优先传统 RL/验证器</td><td>框架卖点是无真值对照，封闭环境优势不明显</td></tr>
+    <tr><td>token 成本敏感</td><td>先算帕累托账</td><td>虽在论文算力前沿，业务需自评编辑+执行 token</td></tr>
+    <tr><td>安全评测</td><td>必须加网络限制</td><td>仓库默认执行器网络不受限，防接触答案</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Harness² vs 直接改 vs ReasoningBank</h3>
+  <table>
+    <tr><th>维度</th><th>Harness²</th><th>直接编辑</th><th>部分基线</th></tr>
+    <tr><td>证据来源</td><td>同任务多轨迹对照</td><td>无对照</td><td>因方法而异</td></tr>
+    <tr><td>经验沉淀</td><td>改进库 + 分域/通用编辑器</td><td>无</td><td>ReasoningBank 在代码任务可低 6.6 分</td></tr>
+    <tr><td>单步增益</td><td>WorkBuddy 最高 +11.5</td><td>可能退步</td><td>Harness Scaling 多组低于基线</td></tr>
+    <tr><td>步数成本</td><td>多数低于或接近基线步数</td><td>低但效果差</td><td>—</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】把对照当正确性证书</h3>
+  <p><strong>坑名：</strong>涨分就默认业务逻辑无误。</p>
+  <p><strong>原因：</strong>执行随机性、编辑器与执行器强弱、LAB 上 Meta-Harness 仍可在部分指标领先。</p>
+  <p><strong>解法：</strong>关键任务保留人工抽检；正式评测前 <code>--dry-run</code> 与沙箱策略对齐。</p>
+  <p><strong>严重程度：</strong>对合规/安全任务：致命。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】模型拉不开差距时拼 Harness</h3>
+  <p><strong>原则：</strong>权重不动，把外壳工程当成下一道护城河。</p>
+  <p><strong>怎么落地：</strong><code>uv</code> 装依赖 → <code>harness2-demo</code> 本地确定性演示 → Vertex 配好后 <code>harness2 --bench lab --k 1</code> 小流量试跑。</p>
+  <p><strong>适用边界：</strong>非 Google 官方产品；社区需用真实业务检验稳定复现范围。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「强编辑器 Opus 4.8 代劳，不过是强模型带弱模型」</p>
+  <p class="rebuttal-text">论文给了同模型自我改进曲线且五模型全涨，但主实验绝对增益仍混用不同编辑器——你不能把「弱模型反超强模型原壳」直接等同于「零成本、零强教师」。 </p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>开放世界缺真值时，用同任务行为对照驱动 Harness 改装，而非空猜涨分。</li>
+    <li>双层递归：任务级 PPC + Harness 级证据化改进库，避免盲目继承旧壳。</li>
+    <li>单步即可显著涨分，加 k 继续收益；弱执行模型受益更大。</li>
+    <li>消融证明改进库、范围划分、合成缺一不可；「直接改」会退步。</li>
+    <li>对照是证据不是证明，成本与安全约束需自行落地。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>克隆 google-research/harness2，跑 <code>harness2-demo --k 2</code> 理解并行/串行差异。</li>
+    <li>选一个真实任务记录参考执行轨迹，手工模拟「通用 vs 领域」两处改动是否可观察验证。</li>
+    <li>为生产 Agent 列出 8 类可文件化组件，评估哪些适合自动 diff。</li>
+    <li>在评测环境关闭不受控外网，避免答案泄露。</li>
+    <li>对比当前 Harness 调参人力与一次 k=1 的 token 账单，决定是否试点。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「调 prompt 靠直觉」转为「把每次改装当成可复盘、可入库、可对照的实验记录」。 </p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

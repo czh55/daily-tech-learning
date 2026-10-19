@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-19",
+    "files": [
+      {
+        "path": "svgs/2026-10-19/gophercon-eu-2026-go-team-panel.svg",
+        "title": "漏洞报告暴增十倍，Go 团队：我们睡不好了",
+        "source": "https://tonybai.com/2026/10/19/gophercon-eu-2026-go-team-panel/"
+      },
+      {
+        "path": "svgs/2026-10-19/harness2-recursive-agent-harnessing-google-research.svg",
+        "title": "谷歌开源Harness²：不碰权重，让Agent学会了自我进化",
+        "source": "https://tonybai.com/2026/10/19/harness2-recursive-agent-harnessing-google-research/"
+      },
+      {
+        "path": "svgs/2026-10-19/jev-parallel-classifier-harness.svg",
+        "title": "和AI一起搞事情#9. Jev不就是个 JSON 分类器？我劝你把这篇看完再说",
+        "source": "https://www.cnblogs.com/gogoSandy/p/23351507"
+      }
+    ]
+  },
+  {
     "date": "2026-10-18",
     "files": [
       {

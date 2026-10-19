@@ -1,0 +1,125 @@
+欢迎收听每日技术学习语音讲解。本期主题，Jev：一次 Forward Pass 输出可校准概率的「状态→决策」机。标签包括零 decode token、概率校准、Laya / Kev、Harness 加速。本次讲解预计时长 约 9 到 10 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：在 Agent Harness 里大量「选技能、拦风险、验引用」若都走自回归 LLM 会又慢又不可信；Jev 用单次前向同时追求 BERT 级速度、大模型级语义与接近真实频率的校准概率，并可通过 Kev/Laya 两条开源路线落地。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：state，上下文，然后Laya，[MASK]×选项，然后Kev，block-causal，然后校准，t_scale/T，然后Harness，路由/围栏
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：Jev 只是 JSON 分类器。任务范式相近，但差异在「一步读数 vs 逐 token 生成」以及专门训练对齐真实发生频率，而非 next-token 条件概率。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「反正都是分类，继续用便宜 BERT 调阈值就行」
+
+长上下文工单与多跳语义下 BERT 的「伪概率」只能排序；Harness 若要用概率做自动放行/拒答，校准误差会直接变成业务风险。
+
+接下来，第四部分，【概念拆解卡】Jev 输入输出契约。
+
+在讲什么问题，把共享 state 与多个运行时问题映射为各选项概率，全程不 decode 文本。
+
+关键理解，题型含 choice、有序 score、noul；模型说 60% 应约等于真实 60% 发生率（校准）。
+
+怎么落地用：在 Harness 里替换「让 LLM 写一行 JSON 再 parse」的慢路径。
+
+边界说明，官方训练未开源；实现细节来自 Kev/Laya 推断。
+
+原文依据，「0 个输出 token 被 decode，所有结果一次 forward pass 全部得到。」
+
+接下来，第五部分，【方法/工具卡】Laya 编码器路线。
+
+核心思路：ModernBERT；每选项前 [MASK]，双向 attend 问题+state，读 MASK 隐藏态打分。
+
+操作步骤，拼 [CLS] type question [SEP] [MASK]opt… [SEP] state ，得到 加题型 embedding ，得到 小 Transformer 决策头 ，得到 按题型 softmax(logits/t_scale)。
+
+避坑，多题并发靠 batch 复制 state，显存换速度，无 KV 共享。
+
+对比：联合 softmax 对选项数敏感；靠分桶温度 ECE 从 0.466 降到 0.081。
+
+接下来，第六部分，【方法/工具卡】Kev 解码器路线。
+
+核心思路：Qwen 基座；Block-Causal Mask 隔离题目；<decide> 对 </opt> 做 Pointer Head 点积。
+
+选型条件，选项含「其他」等相对语义时禁用 Option Isolation（选项需互见）。
+
+Pointer Head 先独立算各选项 logit 再 softmax，缓解选项数稀释；已被阿里云场景采用。
+
+接下来，第七部分，【决策/选型表】Laya vs Kev vs 自回归 LLM。
+
+毫秒级 skill/MCP 路由，Jev 类模型，延迟与并发优于 decode
+
+需可解释长链推理，LLM，Jev 不生成理由文本
+
+encoder 生态/短文本，Laya 思路，MASK 双向语境成熟
+
+长 state + 多题隔离，Kev 思路，block-causal + pointer
+
+model routing 质量优先，慎用纯 Jev，复杂度评估需更全面上文
+
+接下来，第八部分，【跨概念对比表】BERT 分类 vs LLM vs Jev。
+
+速度，极快，慢，极快
+
+复杂语义，弱，强，强（大底座）
+
+概率含义，伪概率 0.999…，next-token 非真实频率，校准目标
+
+训练抓手，硬标签 CE，生成损失，soft label、置换 KL、RPS、分桶 T
+
+接下来，第九部分，【避坑清单卡】跨题比较概率刻度。
+
+坑名，用不同选项数的两道题概率直接比大小做全局路由。
+
+原因，softmax 归一化耦合选项数；即使 Pointer 缓解，语义上跨题比较本就不等价。
+
+解法，分桶温度 + 置信度阈值（Laya 用 CLS+熵）；无正确答案用 NONE_OF_ABOVE 或拒答。
+
+严重程度，对自动化护栏：可能误拦或误放。
+
+接下来，第十部分，【心法/原则卡】Harness 里的 Jev 落点。
+
+原则，把「分类/围栏/校验」从生成任务里剥离，交给一步概率机。
+
+怎么落地，技能检索、LLM Guardrail 九类风险、inline 引用 verify；可参考社区 jev_harness_tool 示例（部分场景待验证）。
+
+适用边界，AI 写集成快，复杂场景仍需端到端压测与人工抽检。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+Jev 核心是 state，得到多题概率，零输出 token，服务 Harness 高频决策。
+
+Laya（MASK+encoder）与 Kev（block-causal+pointer）是两条可复现技术路线。
+
+校准靠 soft label、置换一致性、RPS 与分桶温度，而非迷信 softmax 尖峰。
+
+适用于 skill 路由、围栏与引用校验；复杂 routing 仍可能需要 LLM。
+
+训练细节未开源，工程落地应预留评测与阈值策略。
+
+读 Kev/Laya 仓库，对照本文序列拼装与 mask 规则画一张数据流图。
+
+选一个 Harness 分支（如技能选择）统计当前 LLM 延迟，估算 forward-only 收益。
+
+在验证集上画 reliability diagram，检查现有分类器是否过度自信。
+
+对含「其他」选项的题目关闭 Option Isolation 做 A/B。
+
+为 guardrail 输出设置信度拒答路径，避免硬选错误选项。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「让 LLM 顺便输出一个标签」转为「生成与决策解耦：生成慢路径保留，决策走可校准的一步读数」。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

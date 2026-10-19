@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5306" viewBox="0 0 1320 5306">
+  <foreignObject x="0" y="0" width="1320" height="5306">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f0fdf4,#dcfce7);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#166534,#16a34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-green{background:#dcfce7;color:#166534}.tag-lime{background:#ecfccb;color:#3f6212}.tag-slate{background:#f1f5f9;color:#334155}.tag-purple{background:#f3e8ff;color:#6b21a8}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #16a34a}
+.card h3{font-size:22px;font-weight:700;color:#166534;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#f0fdf4;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#14532d;border-left:4px solid #22c55e}
+.card .pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #86efac;border-radius:14px;padding:10px 12px;text-align:center;min-width:72px;font-weight:700;font-size:10px;color:#166534}
+.node-alt{background:linear-gradient(135deg,#f3e8ff,#e9d5ff);border-color:#c084fc;color:#6b21a8}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#166534,#16a34a);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f0fdf4;padding:10px 14px;text-align:left;font-weight:700;color:#166534;border-bottom:2px solid #86efac}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}</style>
+      
+<h1>Jev：一次 Forward Pass 输出可校准概率的「状态→决策」机</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">零 decode token</span>
+  <span class="tag tag-lime">概率校准</span>
+  <span class="tag tag-purple">Laya / Kev</span>
+  <span class="tag tag-slate">Harness 加速</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在 Agent Harness 里大量「选技能、拦风险、验引用」若都走自回归 LLM 会又慢又不可信；Jev 用单次前向同时追求 BERT 级速度、大模型级语义与接近真实频率的校准概率，并可通过 Kev/Laya 两条开源路线落地。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#166534;margin-bottom:12px;text-align:center">state + 多题型问题 → 一次 forward → choice/score/noul 概率（0 个输出 token）</h3>
+  <div class="diagram">
+    <div class="node">state<br/>上下文</div><span class="arrow-sym">→</span>
+    <div class="node">Laya<br/>[MASK]×选项</div><span class="arrow-sym">/</span>
+    <div class="node-alt">Kev<br/>block-causal</div><span class="arrow-sym">→</span>
+    <div class="node">校准<br/>t_scale/T</div><span class="arrow-sym">→</span>
+    <div class="node">Harness<br/>路由/围栏</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：Jev 只是 JSON 分类器。任务范式相近，但差异在「一步读数 vs 逐 token 生成」以及专门训练对齐真实发生频率，而非 next-token 条件概率。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Jev 输入输出契约</h3>
+  <p><strong>在讲什么问题：</strong>把共享 state 与多个运行时问题映射为各选项概率，全程不 decode 文本。</p>
+  <p><strong>关键理解：</strong>题型含 choice、有序 score、noul；模型说 60% 应约等于真实 60% 发生率（校准）。</p>
+  <p><strong>怎么落地用：</strong>在 Harness 里替换「让 LLM 写一行 JSON 再 parse」的慢路径。</p>
+  <p><strong>边界说明：</strong>官方训练未开源；实现细节来自 Kev/Laya 推断。</p>
+  <p><strong>原文依据：</strong>「0 个输出 token 被 decode，所有结果一次 forward pass 全部得到。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Laya 编码器路线</h3>
+  <p><strong>核心思路：</strong>ModernBERT；每选项前 <code>[MASK]</code>，双向 attend 问题+state，读 MASK 隐藏态打分。</p>
+  <p><strong>操作步骤：</strong>拼 <code>[CLS] type question [SEP] [MASK]opt… [SEP] state</code> → 加题型 embedding → 小 Transformer 决策头 → 按题型 <code>softmax(logits/t_scale)</code>。</p>
+  <p><strong>避坑：</strong>多题并发靠 batch 复制 state，显存换速度，无 KV 共享。</p>
+  <p><strong>对比：</strong>联合 softmax 对选项数敏感；靠分桶温度 ECE 从 0.466 降到 0.081。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Kev 解码器路线</h3>
+  <p><strong>核心思路：</strong>Qwen 基座；Block-Causal Mask 隔离题目；<code>&lt;decide&gt;</code> 对 <code>&lt;/opt&gt;</code> 做 Pointer Head 点积。</p>
+  <p><strong>选型条件：</strong>选项含「其他」等相对语义时禁用 Option Isolation（选项需互见）。</p>
+  <div class="highlight">Pointer Head 先独立算各选项 logit 再 softmax，缓解选项数稀释；已被阿里云场景采用。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】Laya vs Kev vs 自回归 LLM</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th></tr>
+    <tr><td>毫秒级 skill/MCP 路由</td><td>Jev 类模型</td><td>延迟与并发优于 decode</td></tr>
+    <tr><td>需可解释长链推理</td><td>LLM</td><td>Jev 不生成理由文本</td></tr>
+    <tr><td>encoder 生态/短文本</td><td>Laya 思路</td><td>MASK 双向语境成熟</td></tr>
+    <tr><td>长 state + 多题隔离</td><td>Kev 思路</td><td>block-causal + pointer</td></tr>
+    <tr><td>model routing 质量优先</td><td>慎用纯 Jev</td><td>复杂度评估需更全面上文</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】BERT 分类 vs LLM vs Jev</h3>
+  <table>
+    <tr><th>维度</th><th>BERT 分类</th><th>自回归 LLM</th><th>Jev</th></tr>
+    <tr><td>速度</td><td>极快</td><td>慢</td><td>极快</td></tr>
+    <tr><td>复杂语义</td><td>弱</td><td>强</td><td>强（大底座）</td></tr>
+    <tr><td>概率含义</td><td>伪概率 0.999…</td><td>next-token 非真实频率</td><td>校准目标</td></tr>
+    <tr><td>训练抓手</td><td>硬标签 CE</td><td>生成损失</td><td>soft label、置换 KL、RPS、分桶 T</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】跨题比较概率刻度</h3>
+  <p><strong>坑名：</strong>用不同选项数的两道题概率直接比大小做全局路由。</p>
+  <p><strong>原因：</strong>softmax 归一化耦合选项数；即使 Pointer 缓解，语义上跨题比较本就不等价。</p>
+  <p><strong>解法：</strong>分桶温度 + 置信度阈值（Laya 用 CLS+熵）；无正确答案用 NONE_OF_ABOVE 或拒答。</p>
+  <p><strong>严重程度：</strong>对自动化护栏：可能误拦或误放。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Harness 里的 Jev 落点</h3>
+  <p><strong>原则：</strong>把「分类/围栏/校验」从生成任务里剥离，交给一步概率机。</p>
+  <p><strong>怎么落地：</strong>技能检索、LLM Guardrail 九类风险、inline 引用 verify；可参考社区 <code>jev_harness_tool</code> 示例（部分场景待验证）。</p>
+  <p><strong>适用边界：</strong>AI 写集成快，复杂场景仍需端到端压测与人工抽检。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「反正都是分类，继续用便宜 BERT 调阈值就行」</p>
+  <p class="rebuttal-text">长上下文工单与多跳语义下 BERT 的「伪概率」只能排序；Harness 若要用概率做自动放行/拒答，校准误差会直接变成业务风险。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Jev 核心是 state→多题概率，零输出 token，服务 Harness 高频决策。</li>
+    <li>Laya（MASK+encoder）与 Kev（block-causal+pointer）是两条可复现技术路线。</li>
+    <li>校准靠 soft label、置换一致性、RPS 与分桶温度，而非迷信 softmax 尖峰。</li>
+    <li>适用于 skill 路由、围栏与引用校验；复杂 routing 仍可能需要 LLM。</li>
+    <li>训练细节未开源，工程落地应预留评测与阈值策略。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>读 Kev/Laya 仓库，对照本文序列拼装与 mask 规则画一张数据流图。</li>
+    <li>选一个 Harness 分支（如技能选择）统计当前 LLM 延迟，估算 forward-only 收益。</li>
+    <li>在验证集上画 reliability diagram，检查现有分类器是否过度自信。</li>
+    <li>对含「其他」选项的题目关闭 Option Isolation 做 A/B。</li>
+    <li>为 guardrail 输出设置信度拒答路径，避免硬选错误选项。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「让 LLM 顺便输出一个标签」转为「生成与决策解耦：生成慢路径保留，决策走可校准的一步读数」。 </p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>
