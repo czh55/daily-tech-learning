@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-10-20",
+    "files": [
+      {
+        "path": "svgs/2026-10-20/go-net-http-server-handlerequest-accepted.svg",
+        "title": "Go 标准库要给 http.Server 开一个「后门」了：Server.HandleRequest 提案通过，HTTP/3 时代的关键拼图",
+        "source": "https://tonybai.com/2026/10/20/go-net-http-server-handlerequest-accepted/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-19",
     "files": [
       {

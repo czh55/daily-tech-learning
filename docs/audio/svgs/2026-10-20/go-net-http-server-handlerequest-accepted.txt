@@ -1,0 +1,115 @@
+欢迎收听每日技术学习语音讲解。本期主题，HandleRequest：把 http.Server「看不见的那层路」变成官方 API。标签包括Go net/http、提案 #77441、HTTP/3、API 设计。本次讲解预计时长 约 11 到 12 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：当请求不是由标准库从连接上读出来（HTTP/3、自定义协议、集成测试），如何让第三方实现与测试复用 Server 内部那层 OPTIONS 兜底、DefaultServeMux 回退与 panic 恢复，而不再复制一份易漂移的中间件逻辑。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：TCP/UDP，读字节，然后Server，内部层，然后OPTIONS*，然后Mux，然后Handler
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：HandleRequest 是给业务开发者挂中间件的新入口。实际定位是「我已有一个 *Request，请按这个 Server 收到它来处理」——全球协议实现者可能不到 10 人，另一大用途是集成测试。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「标准库就该提供 Preprocess 式 Handler 包装，更 Go 惯用」
+
+本提案要的是「像这个 Server 真收到了请求」的固定语义，必须绑死 Server 自己的 Handler 与 OPTIONS/panic 规则，返回可复用 Handler 反而会鼓励绕开官方路径再抄一遍。
+
+接下来，第四部分，【概念拆解卡】Server 内部处理层。
+
+在讲什么问题，用户 Handler 之前，Server 还有一层「看不见」的逻辑，平时只有从连接读请求才能触发。
+
+关键理解，HTTP/2 并入前曾复制过这层逻辑；HTTP/3 若再复制，既重复劳动又行为不一致。
+
+典型场景，在 UDP/QUIC 上读出请求后，委托 srv.HandleRequest(w, r) 与 HTTP/1、HTTP/2 对齐。
+
+边界说明，不监听端口、不替代 http.Serve；不应塞进 Server.Handler 当 Handler 用。
+
+原文依据，「当请求不是由 net/http.Server 自己从连接上读出来的，怎么让它享受 Server 内部那层处理逻辑？」
+
+接下来，第五部分，【方法/工具卡】HandleRequest 契约。
+
+签名：func (*Server) HandleRequest(ResponseWriter, *Request) error
+
+操作语义：① 未禁用时对 OPTIONS * 返回 200、Content-Length 0 ② Handler==nil 走 DefaultServeMux ③ panic 恢复并记日志 ④ panic 返回 error（ErrAbortHandler 特例透传）。
+
+怎么落地，协议库在构造好 *Request 后一行委托；测试用 httptest.NewRecorder 断言 OPTIONS 与 panic 行为。
+
+命名从 ServeHTTP 改为 HandleRequest，且带 error 返回值，刻意不满足 http.Handler，避免被误挂到生产路径。
+
+接下来，第六部分，【跨概念对比表】三种调用形态。
+
+handler.ServeHTTP(rec, req)，叶子 Handler 逻辑，跳过 Server 层 OPTIONS/panic/默认 Mux
+
+srv.HandleRequest(rec, req)，完整 Server 语义，仍需自己构造 Request；不读连接
+
+Preprocess(h) Handler（讨论过未采纳），包装任意 Handler，与「固定用 Server 自己的 Handler」目标不同
+
+接下来，第七部分，【决策/选型表】我该用哪种测试/集成路径？。
+
+单函数 Handler 单元测，直接 ServeHTTP，快、隔离，HandleRequest（过重）
+
+断言 OPTIONS * / panic 恢复，HandleRequest，走官方 Server 路径，手写复制 OPTIONS 逻辑
+
+自研 HTTP/3 服务，读流后 HandleRequest，与标准库演进同步，复制 neild 描述的三段中间件
+
+业务中间件链，自己的 ServeMux 包装，HandleRequest 不接收 Handler 参数，把 HandleRequest 当 Handler 挂 Server
+
+接下来，第八部分，【避坑清单卡】把 HandleRequest 当生产 Handler。
+
+坑名，看到名字像 ServeHTTP 就把它挂进 Server.Handler 或对外暴露。
+
+原因，社区评审明确担心「误用于生产」；它是一次性处理已构造请求，不是监听入口。
+
+解法，仅协议实现与集成测试调用；业务路由仍用 Mux/中间件栈。
+
+严重程度，致命（架构误用）/ 测试场景为小心（需断言返回的 error）。
+
+接下来，第九部分，【心法/原则卡】先命名边界，再公开内部步骤。
+
+原则，不发明新概念，只把已有内部步骤命名并公开；扩展 panic 细节留待 HandlerPanicError 等未来类型。
+
+为什么重要，Server 字段大多配置「字节，得到Request」；少量配置「Request，得到Handler」——只暴露后一步，抽象自洽。
+
+怎么落地，关注 #77440 可插拔 HTTP/3 与 x/net 实验实现（目前 hold）；HandleRequest 是先落地的基础拼图。
+
+适用边界，CrossOriginProtection 等 Server 级默认行为未来增多时，统一走此入口；具体合入版本以发布说明为准。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+#77441 接受：一行 API 解决 HTTP/3 与测试对 Server 内部层的复用，避免 HTTP/2 式的复制教训。
+
+HandleRequest 通过改名与 error 返回值，与 http.Handler 刻意脱钩，降低误用。
+
+行为覆盖 OPTIONS *、DefaultServeMux 兜底、panic 恢复与 ErrAbortHandler 语义。
+
+未来 Server 级默认策略（如 CrossOriginProtection）可集中挂在此入口。
+
+多数业务开发者短期无感；测试与基础设施作者应纳入工具箱。
+
+为关键 HTTP 服务补一条用 HandleRequest 的 OPTIONS * 与 panic 集成测试。
+
+若维护自定义传输层，评估是否用委托替代自写 OPTIONS/panic 逻辑。
+
+阅读提案 #77441 与评审纪要 #33502，跟踪合入 Go 版本。
+
+关注 #73626 跨站保护与 #77440 HTTP/3 可插拔方案的时间线。
+
+代码评审时拒绝把 HandleRequest 塞进 Server.Handler 链。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「net/http 只有 ServeHTTP 一条故事线」转为「连接读请求」与「Request 进 Handler」是两条可独立暴露的边界——HTTP/3 时代后者必须先官方化。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
