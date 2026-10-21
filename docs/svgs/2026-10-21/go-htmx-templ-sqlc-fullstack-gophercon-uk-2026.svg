@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4892" viewBox="0 0 1320 4892">
+  <foreignObject x="0" y="0" width="1320" height="4892">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ecfdf5,#d1fae5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#047857,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-emerald{background:#d1fae5;color:#047857}.tag-teal{background:#ccfbf1;color:#0f766e}.tag-slate{background:#f1f5f9;color:#334155}.tag-amber{background:#fef3c7;color:#92400e}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #10b981}
+.card h3{font-size:22px;font-weight:700;color:#047857;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#ecfdf5;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#047857;border-left:4px solid #34d399}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:2px solid #6ee7b7;border-radius:14px;padding:10px 12px;text-align:center;min-width:72px;font-weight:700;font-size:10px;color:#047857}
+.node-warn{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#fbbf24;color:#92400e}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#047857,#10b981);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#ecfdf5;padding:10px 14px;text-align:left;font-weight:700;color:#047857;border-bottom:2px solid #6ee7b7}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}</style>
+      
+<h1>Go + HTMX：把全栈状态收进后端，用 HTML 片段当 API</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-emerald">HTMX</span>
+  <span class="tag tag-teal">templ + sqlc</span>
+  <span class="tag tag-slate">GopherCon UK</span>
+  <span class="tag tag-amber">全栈 Go</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：后端工程师做「有交互的 Web 应用」时，如何避免 SPA 前后端双份状态失控，同时又不牺牲可分享 URL、懒加载、多区域更新等体验——用 HTMX 把请求留在 HTML 属性里，用 templ/sqlc 把视图与数据层强类型化。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#047857;margin-bottom:12px;text-align:center">浏览器 hx-* 请求 → Go Handler 返回 HTML 片段 → 局部替换 DOM</h3>
+  <div class="diagram">
+    <div class="node">HTML<br/>hx-post/get</div><span class="arrow-sym">→</span>
+    <div class="node">Handler</div><span class="arrow-sym">→</span>
+    <div class="node">templ<br/>片段</div><span class="arrow-sym">→</span>
+    <div class="node">sqlc<br/>查询</div><span class="arrow-sym">→</span>
+    <div class="node-warn">#target<br/>局部更新</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：HTMX 是「不用 JavaScript」。实际是少写手写 fetch/状态机；复杂局部 UI 仍可配 Alpine.js，重交互产品仍应选 SPA。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】HTMX 四步循环</h3>
+  <p><strong>在讲什么问题：</strong>如何用声明式 HTML 属性触发 HTTP，并把响应 HTML 塞进指定 DOM 节点。</p>
+  <p><strong>关键理解：</strong>前端变「哑界面」，权威状态只在服务端——对多人游戏、表单工作流尤其关键。</p>
+  <p><strong>怎么落地：</strong><code>hx-post</code> + <code>hx-target</code> 最小表单；默认更新发起元素本身。</p>
+  <p><strong>边界说明：</strong>离线优先、复杂客户端路由、设计系统重度定制时不适合硬上。</p>
+  <p><strong>原文依据：</strong>「没有 JSON 序列化，没有前端状态管理，也没有手写 fetch。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】进阶 hx 属性组合</h3>
+  <p><strong>搜索：</strong><code>hx-trigger="input changed delay:300ms"</code> 防抖 + <code>hx-push-url</code> 可分享结果页。</p>
+  <p><strong>懒加载：</strong><code>hx-trigger="load"</code> 先出壳再拉昂贵 SQL 片段。</p>
+  <p><strong>OOB：</strong><code>hx-swap-oob</code> 一次响应更新 badge、toast 等多块区域。</p>
+  <p><strong>鉴权坑：</strong>HTMX 请求遇 302 会把登录页塞进小表单；识别 <code>HX-Request</code> 用 <code>HX-Redirect</code>。</p>
+  <div class="highlight">4xx/5xx 默认不替换内容；要展示错误需 200 或调整 swap 策略；默认 <code>innerHTML</code> 替换。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三种 API 形态</h3>
+  <table>
+    <tr><th>类型</th><th>返回</th><th>消费者</th><th>一句话</th></tr>
+    <tr><td>移动端 API</td><td>JSON</td><td>App</td><td>版本与字段演进独立</td></tr>
+    <tr><td>Web 应用 API</td><td>HTML 片段</td><td>HTMX</td><td>与页面结构同构，易审查</td></tr>
+    <tr><td>数据/开放 API</td><td>JSON</td><td>第三方</td><td>不要与 Web 片段混为一谈</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】该不该用 HTMX？</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>避开</th></tr>
+    <tr><td>后端主导的 CRUD/表单/仪表盘</td><td>Go+HTMX+templ</td><td>零构建链、状态单点</td><td>强行上 React</td></tr>
+    <tr><td>多人实时、防作弊状态</td><td>服务端状态 + HTMX/WebSocket</td><td>原文 Banter Bus 教训</td><td>前端记分</td></tr>
+    <tr><td>重动画/离线/复杂路由</td><td>SPA 或混合</td><td>HTMX 边界明确</td><td>全站 HTMX</td></tr>
+    <tr><td>LLM 辅助开发</td><td>Go 栈</td><td>演讲者：能审 Go，React 只能看能跑</td><td>把审查交给黑盒组件</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】登录重定向与错误展示</h3>
+  <p><strong>坑名：</strong>302 在 HTMX 里不跳转，登录页嵌入表单区域。</p>
+  <p><strong>解法：</strong><code>HX-Redirect</code> 响应头；预检 <code>HX-Request</code>。</p>
+  <p><strong>坑名：</strong>期望 4xx 片段自动上屏。</p>
+  <p><strong>解法：</strong>返回 200 错误片段或配置 swap；或用 <code>HX-Retarget</code> 指到 toast 区。</p>
+  <p><strong>严重程度：</strong>鉴权为致命；错误展示为小心。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】零构建与可嵌入交付</h3>
+  <p><strong>原则：</strong>HTMX 单文件可 CDN、本地或 <code>go:embed</code>，无 npm 链。</p>
+  <p><strong>落地：</strong>templ 生成类型安全 HTML；sqlc 从 SQL 生成 Go；Task/Air/Nix/Playwright 拉满 DX。</p>
+  <p><strong>边界：</strong>需要完善组件库与设计 token 时，仍要额外 CSS/组件策略。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「LLM 写 React 更强，HTMX 是倒退」</p>
+  <p class="rebuttal-text">强的是组件生态而非你的可审查性；HTMX 数据流「请求→片段→替换」一眼读完，人和模型都能验收，后端团队才控得住质量。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>HTMX 用 HTML 属性完成交互，把状态收敛到 Go 后端，消灭一类前后端不一致 Bug。</li>
+    <li>templ + sqlc 让视图与数据层强类型，契合 Go 工程师心智。</li>
+    <li>防抖搜索、懒加载、OOB、响应头控制覆盖多数「像 SPA」的需求。</li>
+    <li>移动端 JSON、Web HTML、开放 API 应分层设计，勿混返回格式。</li>
+    <li>重交互与强设计系统场景应诚实选型，局部可用 Alpine 补位。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>用附录最小示例跑通 hx-post 表单 + 片段替换。</li>
+    <li>为鉴权路径加 HX-Redirect 分支并写集成测试。</li>
+    <li>新功能先问：状态能否只存服务端？能则优先 HTML 片段端点。</li>
+    <li>引入 templ/sqlc 替换字符串拼接模板与 ad-hoc SQL。</li>
+    <li>用 Playwright for Go 给关键 HTMX 流做端到端回归。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「全栈 = 必须 SPA」转为「Web UI 可以是服务端渲染的增量更新」——交互复杂度决定是否上重型前端。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

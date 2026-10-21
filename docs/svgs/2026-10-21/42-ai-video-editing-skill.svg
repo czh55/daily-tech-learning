@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5148" viewBox="0 0 1320 5148">
+  <foreignObject x="0" y="0" width="1320" height="5148">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-orange{background:#ffedd5;color:#c2410c}.tag-rose{background:#ffe4e6;color:#be123c}.tag-slate{background:#f1f5f9;color:#334155}.tag-violet{background:#ede9fe;color:#5b21b6}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #f97316}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fff7ed;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9a3412;border-left:4px solid #fb923c}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ffedd5,#fed7aa);border:2px solid #fdba74;border-radius:14px;padding:10px 12px;text-align:center;min-width:68px;font-weight:700;font-size:10px;color:#9a3412}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#fff7ed;padding:10px 14px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #fdba74}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}</style>
+      
+<h1>八步剪辑 Skill：长口播用 Remotion + 子 Agent 并行，而不是拖时间轴</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Claude Code</span>
+  <span class="tag tag-rose">Remotion</span>
+  <span class="tag tag-violet">子 Agent</span>
+  <span class="tag tag-slate">口播长视频</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：30 分钟级口播在一个会话里剪不完、组合空间爆炸、上下文装不下——用「旁白锁定 + 分镜切片 + 委派任务卡 + 四象限协作」把流程固化成八步 Skill，主 Agent 定框架，子 Agent 并行写 Remotion 画面。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">预检→开题→旁白分镜→定调→委派→初版→精修→复盘</h3>
+  <div class="diagram">
+    <div class="node">锁定<br/>旁白轨</div><span class="arrow-sym">→</span>
+    <div class="node">切<br/>分镜</div><span class="arrow-sym">→</span>
+    <div class="node">子Agent<br/>并行</div><span class="arrow-sym">→</span>
+    <div class="node">初版<br/>拼接</div><span class="arrow-sym">→</span>
+    <div class="node">新会话<br/>精修</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：把整页教程当逐步操作手册逐条执行。正确用法是交给<strong>空白会话</strong>当参考材料，硬关口（旁白锁定、开题前不出画、风格你选、花钱先问）不可越过，其余 Agent 自主推进并写 progress.md。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】画面是时间的函数</h3>
+  <p><strong>在讲什么问题：</strong>剪辑是在天文数字级的画面组合里，为每个字的时间点选一条路径。</p>
+  <p><strong>关键理解：</strong>旁白定稿后，画面必须挂在逐字时间轴上；改一个字会连锁改画面。</p>
+  <p><strong>典型场景：</strong>讲解类长视频，不手拖 NLE 时间轴，用代码生成画面。</p>
+  <p><strong>边界：</strong>非旁白主导、强实拍素材管线需另建工作流。</p>
+  <p><strong>原文依据：</strong>「组合是天文数字……一部片又由成千上万个画面组成。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】八步流程与硬关口</h3>
+  <p><strong>八步：</strong>预检 → 开题 → 旁白与分镜 → 定调 → 委派 → 初版 → 精修与交付 → 复盘。</p>
+  <p><strong>硬关口：</strong>① 旁白/逐字时间锁定，字幕独立轨不烧录 ② 开题完成前不出画面 ③ 风格由人选定 ④ 花钱/公开/不可逆先停问。</p>
+  <p><strong>委派：</strong>按默认「分镜时长」切片，每片<strong>全新子 Agent</strong>，并发数可配置；任务卡给框架不给细约束。</p>
+  <p><strong>精修：</strong>初版后开<strong>空白 High 会话</strong>；可用第三方模型「看片」代替打分。</p>
+  <div class="highlight">模型建议：Claude Opus 5.5，阶段不低于 Medium；主会话 High，子 Agent Medium。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】四层未知 × 四象限</h3>
+  <table>
+    <tr><th>象限</th><th>含义</th><th>Skill 解法</th></tr>
+    <tr><td>已知已知</td><td>规则清晰</td><td>框架约束、默认参数表</td></tr>
+    <tr><td>已知未知</td><td>知道要问什么</td><td>开题访谈、定调样帧</td></tr>
+    <tr><td>未知已知</td><td>会做但说不清</td><td>样片库、试剪首段</td></tr>
+    <tr><td>未知未知</td><td>大雾里走</td><td>外部知识、Skill 审计提示词</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】人何时必须介入？</h3>
+  <table>
+    <tr><th>环节</th><th>你要做什么</th><th>Agent 自主</th></tr>
+    <tr><td>开题</td><td>答访谈：受众、长度、感觉、素材</td><td>预检工具链</td></tr>
+    <tr><td>定调</td><td>选风格样帧、认可首段试剪</td><td>生成候选</td></tr>
+    <tr><td>初版</td><td>用感受指出问题</td><td>拼接分镜、看片反馈</td></tr>
+    <tr><td>交付</td><td>终版说「可以」才发布</td><td>精修迭代</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】会话与提问碎度</h3>
+  <p><strong>坑名：</strong>在聊过别事的会话里开剪。</p>
+  <p><strong>解法：</strong>每部片新文件夹 + 空白 Claude Code 会话。</p>
+  <p><strong>坑名：</strong>Agent 逐步请示「要不要继续」。</p>
+  <p><strong>解法：</strong>启动提示词要求每步更新 progress.md 并自动继续；仅硬关口暂停。</p>
+  <p><strong>坑名：</strong>用分数评价画面。</p>
+  <p><strong>解法：</strong>换模型观众视角 + 自然语言感受反馈。</p>
+  <p><strong>严重程度：</strong>旁白未锁为致命；碎问为小心。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】三层框架：世界观 / 方法论 / Skill</h3>
+  <p><strong>原则：</strong>世界观（框架化思维）→ 方法论（四类未知）→ Skill（可复用八步与提示词文件）。</p>
+  <p><strong>落地：</strong>教程.md 进项目根；启动提示词注入参数与硬关口；委派卡只给边界。</p>
+  <p><strong>边界：</strong>完整版含 Remotion 引擎与风格手册在付费课；基础版提示词本页已够手动跑通一部片。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「直接上 Premiere/FCP 拖时间轴更可控」</p>
+  <p class="rebuttal-text">时间轴控的是像素，口播长片控的是「每个字上的画面组合」；代码化 Remotion + 分镜并行才能把 30 分钟级复杂度拆进可审计的 Agent 任务，而不是把人锁死在手动关键帧里。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>长口播剪辑瓶颈在组合爆炸与上下文，不是缺一个拖动工具。</li>
+    <li>八步 Skill 把预检到复盘固化，旁白锁定与分镜并行是核心杠杆。</li>
+    <li>四象限对应不同提示词：访谈、委派、看片、审计。</li>
+    <li>人只审四处：开题、定调、初版、终版放行。</li>
+    <li>精修与审计依赖新会话/新视角，避免同一上下文盲点。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>建空文件夹，保存教程为 教程.md，粘贴启动提示词开剪。</li>
+    <li>在 progress.md 记录生效参数与每步结论。</li>
+    <li>定调前坚持「开题不出画」；字幕走独立轨。</li>
+    <li>初版后用空白 High 会话精修一轮。</li>
+    <li>用审计提示词让强模型只微调 Skill 而非重写流程。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「剪辑 = 人拖时间轴」转为「剪辑 = 为时间轴上的每个字生成可复用代码画面，并用 Agent 编排并行」。 </p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

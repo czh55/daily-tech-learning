@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-21",
+    "files": [
+      {
+        "path": "svgs/2026-10-21/42-ai-video-editing-skill.svg",
+        "title": "42. AI 视频剪辑实战：用 Claude Opus 5.5 剪口播长视频，完整工作流教程",
+        "source": "https://xiangyugongzuoliu.com/42-ai-video-editing-skill/"
+      },
+      {
+        "path": "svgs/2026-10-21/doubao-short-video-generation.svg",
+        "title": "初试短视频生成：豆包将我梦中的场景画出来了~",
+        "source": "https://juejin.cn/post/7698983022057652278"
+      },
+      {
+        "path": "svgs/2026-10-21/go-htmx-templ-sqlc-fullstack-gophercon-uk-2026.svg",
+        "title": "React 太重、Svelte 太绕？Go + HTMX 全栈方案，连 LLM 都更容易看懂",
+        "source": "https://tonybai.com/2026/10/21/go-htmx-templ-sqlc-fullstack-gophercon-uk-2026/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-20",
     "files": [
       {
