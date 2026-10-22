@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-10-22",
+    "files": [
+      {
+        "path": "svgs/2026-10-22/ai-coding-2500-prs-harness.svg",
+        "title": "一个人一个月合并 2500 PRs 的秘密是什么？",
+        "source": "https://juejin.cn/post/7699017769225306152"
+      },
+      {
+        "path": "svgs/2026-10-22/go-concurrency-concurrent-ml-events.svg",
+        "title": "Go 并发的天花板，被一个 30 年前的老模型捅破了？CML 把 channel 玩出了新花样",
+        "source": "https://tonybai.com/2026/10/22/go-concurrency-concurrent-ml-events/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-21",
     "files": [
       {
