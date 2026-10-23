@@ -1,0 +1,139 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'go-ca-urgent-security-release.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fef2f2,#fff7ed);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#b91c1c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-red{background:#fee2e2;color:#991b1b}.tag-orange{background:#ffedd5;color:#9a3412}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #dc2626}
+.card h3{font-size:22px;font-weight:700;color:#b91c1c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fff7ed;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9a3412;border-left:4px solid #f97316}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fee2e2,#fecaca);border:2px solid #fca5a5;border-radius:14px;padding:12px 16px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#991b1b}
+.node-mid{background:linear-gradient(135deg,#ffedd5,#fed7aa);border-color:#fdba74;color:#9a3412}
+.node-leaf{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#6ee7b7;color:#065f46}
+.arrow-sym{font-size:18px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#b91c1c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#fef2f2;padding:10px 14px;text-align:left;font-weight:700;color:#b91c1c;border-bottom:2px solid #fecaca}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px}`;
+
+const body = `
+<h1>Go 紧急安全版：中间 CA 信任危机与工程响应</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-red">CVE-2026-111943</span>
+  <span class="tag tag-orange">crypto/x509</span>
+  <span class="tag tag-slate">TLS 信任链</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：签名正确、未过期的证书链为何仍可能被 Go 拒绝——以及升级工具链与重建已发布二进制为何是两件事，生产上如何按清单验证修复真正落地。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#b91c1c;margin-bottom:12px;text-align:center">证书链验证：从叶子到根，任一环失信则整条链失效</h3>
+  <div class="diagram">
+    <div class="node-leaf">服务器证书</div><span class="arrow-sym">→</span>
+    <div class="node-mid">中间 CA</div><span class="arrow-sym">→</span>
+    <div class="node">根 CA</div>
+  </div>
+  <p style="text-align:center;font-size:15px;color:#64748b;margin-top:12px">Go 1.26.10 / 1.27.3 在 Verify 中过滤含特定不可信中间证书的链</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：证书数字签名正确就等于今天仍可信。签名只证明与密钥匹配，不能证明签发方或整条链路仍被信任。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】定点拒绝 vs 全面收紧</h3>
+  <p><strong>在讲什么问题：</strong>为何 Go 要在标准库而非只等 OS/浏览器更新根库。</p>
+  <p><strong>关键理解：</strong>修复落在 <code>x509.Certificate.Verify</code>，排除含列入黑名单的中间 CA 的验证链，不是关闭 TLS。</p>
+  <p><strong>怎么落地：</strong>用 <code>go version</code> 确认构建链；对运行中二进制用 <code>go version -m</code> 看嵌入的 Go 版本。</p>
+  <p><strong>边界说明：</strong>拒绝列表是补充措施，不能替代 CRL/OCSP、CA 治理与系统信任库更新。</p>
+  <p><strong>原文依据：</strong>「升级 Go，不等于修复已经运行的程序。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】三层防御各管什么</h3>
+  <table>
+    <tr><th>层次</th><th>机制</th><th>局限</th><th>一句话</th></tr>
+    <tr><td>证书自身</td><td>签名、有效期、主机名、用途</td><td>不判断 CA 是否仍被信任</td><td>必要非充分</td></tr>
+    <tr><td>平台/撤销</td><td>系统根库、CRL/OCSP</td><td>非全球即时同步；策略各异</td><td>慢且不一致</td></tr>
+    <tr><td>Go 定点拒绝</td><td>crypto/x509 黑名单</td><td>仅针对已知中间证</td><td>弥补更新滞后</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】生产五步检查清单</h3>
+  <p><strong>操作步骤：</strong>① 盘点开发机/CI/构建容器/定时任务的 Go 版本 → ② 盘点已发布产物与镜像 digest → ③ 用新工具链重建、测试、部署 → ④ 对关键域名做 TLS 握手与链验证 → ⑤ 建立定期安全版本跟进机制。</p>
+  <p><strong>避坑：</strong>只给镜像打新标签不重建；以为开发机升级就覆盖线上静态二进制。</p>
+  <div class="highlight">容器镜像与 CI 固定 Go 版本必须一并升级，否则新代码仍用旧 x509 逻辑编译。</div>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】工具链升级陷阱</h3>
+  <p><strong>坑名：</strong>开发环境已是 Go 1.27.3，生产二进制仍是数月前 Go 1.26.x 编译。</p>
+  <p><strong>原因：</strong>修复编进标准库，只有重新链接/编译才进入产物。</p>
+  <p><strong>解法：</strong>对每个服务执行 <code>go version -m ./your-binary</code>，对照 CVE 修复版本。</p>
+  <p><strong>严重程度：</strong>致命（HTTPS 仍信任应拒绝的链，或合法链被误拒导致中断）。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时会连不上</h3>
+  <table>
+    <tr><th>场景</th><th>现象</th><th>判断</th><th>动作</th></tr>
+    <tr><td>仍用含被拒中间证的链</td><td>升级后 TLS 失败</td><td>信任策略变更非实现 bug</td><td>向 CA/运维换链</td></tr>
+    <tr><td>自定义 VerifyOptions</td><td>行为与默认不同</td><td>可能绕过或叠加策略</td><td>审计业务验证代码</td></tr>
+    <tr><td>仅升级 IDE 本地 Go</td><td>线上无变化</td><td>未重建部署</td><td>走完整发布流水线</td></tr>
+  </table>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「跟着操作系统更新根证书就够了，Go 多此一举」</p>
+  <p class="rebuttal-text">中间证与根证不是同一层；在部分环境系统库更新滞后时，只靠 OS 等于把 HTTPS 安全押在运维排期上。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Go 1.26.10/1.27.3 针对 CVE-2026-111943 拒绝特定中间证书链。</li>
+    <li>签名有效≠信任链仍被接受；CA 失信会波及已签发证书。</li>
+    <li>撤销与系统根库重要，但无法保证所有客户端即时一致。</li>
+    <li>工具链升级与二进制/镜像重建必须成对完成。</li>
+    <li>信任是动态授予，需要可重复的安全更新流程。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>全环境核对 Go 版本是否 ≥ 修复版。</li>
+    <li>对核心服务二进制跑 <code>go version -m</code> 并登记。</li>
+    <li>触发 CI 全量重建容器镜像而非只改标签。</li>
+    <li>用示例 <code>main.go</code> 对关键 API 做握手验证。</li>
+    <li>订阅 Go 安全公告，URGENT 通道当日评估。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「HTTPS 能连上就说明安全」转为「信任链、运行时版本与部署产物三者必须一起审计」。 </p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Wrote', OUT, 'height', height);

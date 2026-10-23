@@ -1,0 +1,145 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'ai-coding-software-engineering-part2.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f5f3ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#6d28d9,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-purple{background:#ede9fe;color:#6d28d9}.tag-indigo{background:#e0e7ff;color:#4338ca}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #7c3aed}
+.card h3{font-size:22px;font-weight:700;color:#6d28d9;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#f5f3ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#5b21b6;border-left:4px solid #a78bfa}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:14px;padding:12px 16px;text-align:center;min-width:110px;font-weight:700;font-size:13px;color:#5b21b6}
+.node-warn{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#fbbf24;color:#92400e}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#6d28d9,#4f46e5);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f5f3ff;padding:10px 14px;text-align:left;font-weight:700;color:#6d28d9;border-bottom:2px solid #ddd6fe}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>AI Coding 时代最值钱的：软件工程（下）</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">曳光弹 / MVP</span>
+  <span class="tag tag-indigo">TDD 红绿</span>
+  <span class="tag tag-slate">Matt Pocock skills</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：AI 干掉九成战术编码后，人该管战略拆活、对齐、词表与反馈闭环——以及如何把约束放进 lint 而非烧进每次请求的 CLAUDE.md。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#6d28d9;margin-bottom:12px;text-align:center">战术活（快反馈） vs 战略活（慢反馈）</h3>
+  <div class="diagram">
+    <div class="node">AI 擅长<br>局部正确</div><span class="arrow-sym">|</span>
+    <div class="node-warn">人必须管<br>边界与拆活</div><span class="arrow-sym">→</span>
+    <div class="node">智慧 &gt; 知识</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：提示词越长模型越听话。可机械执行的规则应进 lint/pre-commit，进 CLAUDE.md 的每次都在烧 token 且可能被忽略。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】横着干 vs 曳光弹（Tracer Bullet）</h3>
+  <p><strong>在讲什么问题：</strong>大模型按层一次建库、接口、页面，验收永远是半成品。</p>
+  <p><strong>关键理解：</strong>每一块要小，但要纵向穿通 DB→API→UI→测试，能演示能验收；MVP 体量要装进全新上下文窗口。</p>
+  <p><strong>怎么落地：</strong>参考 mattpocock/skills 的 /命令式技能包，按竖切增量交付。</p>
+  <p><strong>边界说明：</strong>改字段类型波及全库等改动只能分阶段横迁：新旧并存→迁移调用→删旧。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】三条失败模式的对症技能</h3>
+  <p><strong>对齐失败：</strong>用 grill-me / grill-with-docs 让 AI 先提问，方向仍在你。</p>
+  <p><strong>太啰嗦：</strong>CONTEXT.md 两行一词——准名字 + 作废别名（DDD 通用语言，人和 AI 共用）。</p>
+  <p><strong>跑不起来：</strong>先红后绿 TDD；写码与审码分两个会话，规范只给审码会话。</p>
+  <div class="highlight">测试标准答案必须来自外部（手算、需求），不能用实现里的常量当期望，否则改错税率测试仍绿。</div>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】lint vs CLAUDE.md</h3>
+  <table>
+    <tr><th>维度</th><th>lint / 类型检查 / hook</th><th>CLAUDE.md</th><th>结论</th></tr>
+    <tr><td>通过时成本</td><td>零 token</td><td>每次请求都带</td><td>能 lint 就别写进 md</td></tr>
+    <tr><td>失败时</td><td>错误塞回迫使修复</td><td>概率被忽略</td><td>硬约束用机器</td></tr>
+    <tr><td>适用</td><td>格式、类型、禁 import</td><td>业务语境、取舍</td><td>分工明确</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】AI 编码反模式</h3>
+  <p><strong>坑名：</strong>同一上下文里让模型自审「有没有问题」——几乎总说没问题。</p>
+  <p><strong>解法：</strong>新会话当审稿人；pre-commit 三分钟人嫌烦，AI 可等。</p>
+  <p><strong>坑名：</strong>不对 AI 提问就开工，半懂需求一路写到交卷。</p>
+  <p><strong>严重程度：</strong>对齐失败为致命；啰嗦为可修复；无测试为小心→致命。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】人该介入的时机</h3>
+  <table>
+    <tr><th>场景</th><th>人主导</th><th>AI 主导</th><th>理由</th></tr>
+    <tr><td>模块是否存在</td><td>是</td><td>否</td><td>战略九个月才爆雷</td></tr>
+    <tr><td>修单个 bug</td><td>验收</td><td>实现</td><td>战术十分钟反馈</td></tr>
+    <tr><td>名词与边界</td><td>定词表</td><td>遵守词表</td><td>减少各叫各的</td></tr>
+    <tr><td>风格硬规则</td><td>配 lint</td><td>被动修</td><td>不烧上下文</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】工具换了，方法没换</h3>
+  <p><strong>原则：</strong>架构服务一个没有记忆、没有品味、但手速极快的下属。</p>
+  <p><strong>为什么重要：</strong>知识廉价，智慧（判断与取舍）才是客户付费点。</p>
+  <p><strong>怎么落地：</strong>曳光弹竖切 + 先问再做 + 外部锚定测试 + 双会话审码。</p>
+  <p><strong>适用边界：</strong>上篇已讲代码库卫生；本篇管对齐、啰嗦、可运行与拆活。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「有 AI 就不需要软件工程纪律」</p>
+  <p class="rebuttal-text">AI 把战术活加速到九成自动化，恰恰让从未练过的战略拆活与反馈设计变成唯一瓶颈。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>战术活 AI 擅长，战略活与慢反馈仍靠人。</li>
+    <li>曳光弹竖切避免层层半成品堆到最后才联调。</li>
+    <li>grill 技能解决对齐；词表解决啰嗦；TDD+双会话解决质量。</li>
+    <li>lint 硬约束，CLAUDE.md 只放软语境。</li>
+    <li>架构思想不变，对象多了一个极速下属。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>下一个需求先跑一轮 grill-me 问清边界再写码。</li>
+    <li>为项目补 CONTEXT.md 两行一词表并禁止别名。</li>
+    <li>把可自动化规则迁到 eslint/tsc/pre-commit。</li>
+    <li>红测试一条再让 AI 写绿实现；审码换新会话。</li>
+    <li>试装 mattpocock/skills 里与团队流程匹配的技能。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「提示词工程师」转为「为无记忆快手下指令的软件工程负责人」。 </p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Wrote', OUT, 'height', height);
