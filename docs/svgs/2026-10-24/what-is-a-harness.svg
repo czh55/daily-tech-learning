@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5175" viewBox="0 0 1320 5175">
+  <foreignObject x="0" y="0" width="1320" height="5175">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-orange{background:#ffedd5;color:#c2410c}.tag-amber{background:#fef3c7;color:#b45309}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fff7ed;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9a3412;border-left:4px solid #fb923c}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ffedd5,#fed7aa);border:2px solid #fdba74;border-radius:14px;padding:12px 16px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#9a3412}
+.node-alt{background:linear-gradient(135deg,#e0f2fe,#bae6fd);border-color:#7dd3fc;color:#0369a1}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#fff7ed;padding:10px 14px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #fed7aa}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>Harness 到底是什么？大厨、厨房与餐馆</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Agent 架构</span>
+  <span class="tag tag-amber">Interface vs Harness</span>
+  <span class="tag tag-slate">MCP / 工具平面</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：人类看到的 App 界面、只会吐文本的 LLM、以及真正解析工具调用并执行代码的 Harness，三者如何分工，以及 MCP、T3 Code 在栈里各占什么位置。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">从文本到行动：Agent = LLM + Harness</h3>
+  <div class="diagram">
+    <div class="node">人类<br/>Interface</div><span class="arrow-sym">↔</span>
+    <div class="node-alt">LLM<br/>生成文本</div><span class="arrow-sym">↔</span>
+    <div class="node">Harness<br/>厨房/执行环</div><span class="arrow-sym">→</span>
+    <div class="node">工具平面<br/>read/bash/MCP</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：Claude Code / Codex App 本身就是 Harness。实际上终端 TUI 与桌面 GUI 是 Interface；底层才接 Anthropic Agent SDK 或 Codex App Server 这类 Harness，且通常不直接暴露给终端用户。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Harness 五件套</h3>
+  <p><strong>在讲什么问题：</strong>LLM 默认只能生成文本，无法像人类点按钮那样执行操作。</p>
+  <p><strong>关键理解：</strong>Harness 是解析 LLM 专用文本格式（如 &lt;read_file&gt;）、调用真实工具、把结果塞回上下文的运行时系统。</p>
+  <p><strong>五要素：</strong>可执行工具集、调用语法、解析与调度器、结果回注机制、带说明的工具清单。</p>
+  <p><strong>典型场景：</strong>Claude Code 内置 SDK、Cursor 自研 Harness、Pi 被 OpenClaw 复用。</p>
+  <p><strong>边界说明：</strong>Harness 不是界面；人类与 LLM 都看不到工具平面，只有 Harness 把工具「端上来」。</p>
+  <p><strong>原文依据：</strong>「必须有某种东西来解释这些响应，然后根据 LLM 回复的内容去运行相应的正确代码。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Interface / Harness / Agent</h3>
+  <table>
+    <tr><th>维度</th><th>Interface（界面）</th><th>Harness</th><th>Agent</th><th>一句话</th></tr>
+    <tr><td>服务对象</td><td>人类</td><td>LLM</td><td>端到端任务</td><td>Agent=二者合体</td></tr>
+    <tr><td>能力</td><td>按钮/快捷键/终端</td><td>解析工具调用并执行</td><td>能「办成事」</td><td>LLM 单独不能行动</td></tr>
+    <tr><td>可见性</td><td>用户直接看到</td><td>几乎不暴露给用户</td><td>产品品牌名</td><td>名字常混在 App 里</td></tr>
+    <tr><td>例子</td><td>Chrome、Claude TUI</td><td>Agents SDK、Codex Server</td><td>「Claude Code 体验」</td><td>配置不同即不同 Agent</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】厨房比喻：工具 vs MCP</h3>
+  <p><strong>核心思路：</strong>Harness=厨房；工具=锅刀搅拌机（在此机执行代码）；MCP=菜谱/远程 API（代码在别处，经协议请求）。</p>
+  <p><strong>操作理解：</strong>工具层与人类/LLM 层之间有分割线——双方都不能直接摸工具，只能经 Harness 暴露。</p>
+  <p><strong>选型条件：</strong>要改本机文件/跑 bash → 内置工具；要读邮件、看站点指标 → MCP 连外部服务。</p>
+  <p><strong>对比相邻：</strong>Chrome 扩展≈在本机跑代码改行为；MCP≈知道 URL 就能用的远程能力。</p>
+  <div class="highlight">T3 Code 像餐馆：不自备厨房（Harness）无法营业；可把菜谱（MCP）递给任意厨房，而不必给每家 Harness 写一套插件。</div>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】扩展能力放哪一层</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>读本地 repo</td><td>Harness 内置 read/edit/bash</td><td>低延迟、标准语法</td><td>纯 MCP 绕远</td><td>无必要网络 hop</td></tr>
+    <tr><td>接 Gmail/分析后台</td><td>MCP 服务</td><td>数据在远端</td><td>硬写进每个 Harness 插件</td><td>N×维护成本</td></tr>
+    <tr><td>跨 Harness 子 Agent</td><td>产品层 MCP（如 T3 Code）</td><td>代码集中在一处</td><td>给 CC/Codex/Pi 各写插件</td><td>作者明确选择集中暴露</td></tr>
+    <tr><td>极简可控栈</td><td>Pi 类轻 Harness + 自带工具</td><td>工具少、可 BYO</td><td>指望 App 界面当 Harness</td><td>界面不解析工具环</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】术语与产品混淆</h3>
+  <p><strong>坑名：</strong>把「Agent 产品名」当成「Harness 实现」。</p>
+  <p><strong>原因：</strong>Claude Code/Codex 把 Harness 打包进 App，用户看不到分层。</p>
+  <p><strong>解法：</strong>问「谁在解析工具调用、谁在跑 bash」——那才是 Harness。</p>
+  <p><strong>坑名：</strong>以为 MCP 替代了工具。</p>
+  <p><strong>解法：</strong>MCP 是访问外部资源的协议层，本地执行仍靠 Harness 工具平面。</p>
+  <p><strong>严重程度：</strong>架构讨论时混淆为致命；选型时混用为小心。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Agent 的定义纪律</h3>
+  <p><strong>原则：</strong>LLM 是大厨，Harness 是厨房；只有二者结合才能出菜（Agent）。</p>
+  <p><strong>为什么重要：</strong>不同「Agent」往往是不同 Harness 配置（工具、提示、MCP），而非不同模型魔法。</p>
+  <p><strong>怎么落地：</strong>评估产品时拆成 Interface + Harness + 工具/MCP 清单；扩展能力优先看清能否 BYO 工具。</p>
+  <p><strong>适用边界：</strong>T3 Code 是餐馆不是厨房——必须自带 Harness 才能工作。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「有个聊天界面加 API 就是 Agent，不必区分 Harness」</p>
+  <p class="rebuttal-text">没有解析-执行-回注闭环，模型只是在空敲键盘；业界争论的正是这层运行时该谁建、能否互换。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>人类用 Interface，LLM 用 Harness；二者都不等于 Agent。</li>
+    <li>Agent = Harness + LLM，差异多来自 Harness 配置而非模型 alone。</li>
+    <li>工具在本机执行，MCP 连外部；T3 Code 用 MCP 集中交付跨 Harness 能力。</li>
+    <li>优秀 Harness 内置核心工具且支持自带工具（BYO）。</li>
+    <li>Claude Code/Codex 的界面层与 SDK/Server 层必须分开看。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>画一张你常用产品的 Interface / Harness / 工具 / MCP 四层图。</li>
+    <li>新集成需求先判断：本机工具还是 MCP 远端。</li>
+    <li>评估 Agent 框架时问：工具平面是否可扩展、结果如何回注上下文。</li>
+    <li>读 Theo 原文或开源 T3 Code，用同一比喻对齐团队词表。</li>
+    <li>做 Harness 自研时从五件套 checklist 对照缺口。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「选哪个 Agent App」转为「选哪套厨房 + 什么菜谱」——界面只是就餐体验，执行力在 Harness。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

@@ -1,0 +1,125 @@
+欢迎收听每日技术学习语音讲解。本期主题，Harness 到底是什么？大厨、厨房与餐馆。标签包括Agent 架构、Interface vs Harness、MCP / 工具平面。本次讲解预计时长 约 10 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：人类看到的 App 界面、只会吐文本的 LLM、以及真正解析工具调用并执行代码的 Harness，三者如何分工，以及 MCP、T3 Code 在栈里各占什么位置。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：人类，Interface，然后LLM，生成文本，然后Harness，厨房/执行环，然后工具平面，read/bash/MCP
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：Claude Code / Codex App 本身就是 Harness。实际上终端 TUI 与桌面 GUI 是 Interface；底层才接 Anthropic Agent SDK 或 Codex App Server 这类 Harness，且通常不直接暴露给终端用户。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「有个聊天界面加 API 就是 Agent，不必区分 Harness」
+
+没有解析-执行-回注闭环，模型只是在空敲键盘；业界争论的正是这层运行时该谁建、能否互换。
+
+接下来，第四部分，【概念拆解卡】Harness 五件套。
+
+在讲什么问题，LLM 默认只能生成文本，无法像人类点按钮那样执行操作。
+
+关键理解，Harness 是解析 LLM 专用文本格式（如 <read_file>）、调用真实工具、把结果塞回上下文的运行时系统。
+
+五要素：可执行工具集、调用语法、解析与调度器、结果回注机制、带说明的工具清单。
+
+典型场景，Claude Code 内置 SDK、Cursor 自研 Harness、Pi 被 OpenClaw 复用。
+
+边界说明，Harness 不是界面；人类与 LLM 都看不到工具平面，只有 Harness 把工具「端上来」。
+
+原文依据，「必须有某种东西来解释这些响应，然后根据 LLM 回复的内容去运行相应的正确代码。」
+
+接下来，第五部分，【跨概念对比表】Interface / Harness / Agent。
+
+服务对象，人类，LLM，端到端任务，Agent=二者合体
+
+能力，按钮/快捷键/终端，解析工具调用并执行，能「办成事」，LLM 单独不能行动
+
+可见性，用户直接看到，几乎不暴露给用户，产品品牌名，名字常混在 App 里
+
+例子，Chrome、Claude TUI，Agents SDK、Codex Server，「Claude Code 体验」，配置不同即不同 Agent
+
+接下来，第六部分，【方法/工具卡】厨房比喻：工具 vs MCP。
+
+核心思路：Harness=厨房；工具=锅刀搅拌机（在此机执行代码）；MCP=菜谱/远程 API（代码在别处，经协议请求）。
+
+操作理解：工具层与人类/LLM 层之间有分割线——双方都不能直接摸工具，只能经 Harness 暴露。
+
+选型条件，要改本机文件/跑 bash ，得到 内置工具；要读邮件、看站点指标 ，得到 MCP 连外部服务。
+
+对比相邻：Chrome 扩展≈在本机跑代码改行为；MCP≈知道 URL 就能用的远程能力。
+
+T3 Code 像餐馆：不自备厨房（Harness）无法营业；可把菜谱（MCP）递给任意厨房，而不必给每家 Harness 写一套插件。
+
+接下来，第七部分，【决策/选型表】扩展能力放哪一层。
+
+读本地 repo，Harness 内置 read/edit/bash，低延迟、标准语法，纯 MCP 绕远，无必要网络 hop
+
+接 Gmail/分析后台，MCP 服务，数据在远端，硬写进每个 Harness 插件，N×维护成本
+
+跨 Harness 子 Agent，产品层 MCP（如 T3 Code），代码集中在一处，给 CC/Codex/Pi 各写插件，作者明确选择集中暴露
+
+极简可控栈，Pi 类轻 Harness + 自带工具，工具少、可 BYO，指望 App 界面当 Harness，界面不解析工具环
+
+接下来，第八部分，【避坑清单卡】术语与产品混淆。
+
+坑名，把「Agent 产品名」当成「Harness 实现」。
+
+原因，Claude Code/Codex 把 Harness 打包进 App，用户看不到分层。
+
+解法，问「谁在解析工具调用、谁在跑 bash」——那才是 Harness。
+
+坑名，以为 MCP 替代了工具。
+
+解法，MCP 是访问外部资源的协议层，本地执行仍靠 Harness 工具平面。
+
+严重程度，架构讨论时混淆为致命；选型时混用为小心。
+
+接下来，第九部分，【心法/原则卡】Agent 的定义纪律。
+
+原则，LLM 是大厨，Harness 是厨房；只有二者结合才能出菜（Agent）。
+
+为什么重要，不同「Agent」往往是不同 Harness 配置（工具、提示、MCP），而非不同模型魔法。
+
+怎么落地，评估产品时拆成 Interface + Harness + 工具/MCP 清单；扩展能力优先看清能否 BYO 工具。
+
+适用边界，T3 Code 是餐馆不是厨房——必须自带 Harness 才能工作。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+人类用 Interface，LLM 用 Harness；二者都不等于 Agent。
+
+Agent = Harness + LLM，差异多来自 Harness 配置而非模型 alone。
+
+工具在本机执行，MCP 连外部；T3 Code 用 MCP 集中交付跨 Harness 能力。
+
+优秀 Harness 内置核心工具且支持自带工具（BYO）。
+
+Claude Code/Codex 的界面层与 SDK/Server 层必须分开看。
+
+画一张你常用产品的 Interface / Harness / 工具 / MCP 四层图。
+
+新集成需求先判断：本机工具还是 MCP 远端。
+
+评估 Agent 框架时问：工具平面是否可扩展、结果如何回注上下文。
+
+读 Theo 原文或开源 T3 Code，用同一比喻对齐团队词表。
+
+做 Harness 自研时从五件套 checklist 对照缺口。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「选哪个 Agent App」转为「选哪套厨房 + 什么菜谱」——界面只是就餐体验，执行力在 Harness。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
