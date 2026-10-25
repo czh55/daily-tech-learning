@@ -1,0 +1,161 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'go-formal-verification-gobra-viper-ai.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ecfdf5,#d1fae5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#047857,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-green{background:#d1fae5;color:#047857}.tag-teal{background:#ccfbf1;color:#0f766e}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #059669}
+.card h3{font-size:22px;font-weight:700;color:#047857;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#ecfdf5;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#065f46;border-left:4px solid #34d399}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:2px solid #6ee7b7;border-radius:14px;padding:12px 16px;text-align:center;min-width:100px;font-weight:700;font-size:13px;color:#065f46}
+.node-alt{background:linear-gradient(135deg,#e0f2fe,#bae6fd);border-color:#7dd3fc;color:#0369a1}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#047857,#059669);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#ecfdf5;padding:10px 14px;text-align:left;font-weight:700;color:#047857;border-bottom:2px solid #a7f3d0}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Go 形式化验证：Gobra、Viper 与 AI 时代的可信代码</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">形式化验证</span>
+  <span class="tag tag-teal">Gobra / Viper</span>
+  <span class="tag tag-slate">AI 生成代码</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 AI Agent 把代码产出速度推到人类审查极限之上，如何用独立于模型的机器可检查证明（而非更多 LLM 自评）来守住正确性，以及 Go 生态里 Gobra 如何把契约、循环不变量与权限逻辑落到可运行工具链。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#047857;margin-bottom:12px;text-align:center">验证栈：从 Go 注解到 SMT 求解</h3>
+  <div class="diagram">
+    <div class="node">Go + Gobra<br>注解</div><span class="arrow-sym">→</span>
+    <div class="node-alt">Viper<br>中间验证语言</div><span class="arrow-sym">→</span>
+    <div class="node">Silicon<br>符号执行</div><span class="arrow-sym">→</span>
+    <div class="node">Z3 SMT<br>约束求解</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：测试全绿或 fuzz 没炸就等于正确。形式化验证回答的是「在给定前置条件与规范下，程序是否必然满足后置条件」——与有限样本测试是不同层次的问题；规范写错则证明再严也可能证错目标。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】演绎式验证 vs 测试</h3>
+  <p><strong>在讲什么问题：</strong>AI 生成 PR 后，瓶颈从「写得快」转向「能否独立证明没写错」。</p>
+  <p><strong>关键理解：</strong>requires/ensures/invariant 把意图写成逻辑义务，验证器穷举推理路径（在模型内），不依赖抽样输入。</p>
+  <p><strong>典型场景：</strong>求和公式、并发指针权限、切片元素后置条件。</p>
+  <p><strong>边界说明：</strong>只证「满足你写下的规范」；溢出、外部库、Go 全语言特性未必在 Gobra 子集内。</p>
+  <p><strong>原文依据：</strong>「机器不必相信 AI 的解释。它只需要检查证明本身。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】测试 / 静态分析 / 形式化验证</h3>
+  <table>
+    <tr><th>维度</th><th>单元测试</th><th>go test -race</th><th>Gobra 演绎验证</th><th>一句话</th></tr>
+    <tr><td>保证强度</td><td>覆盖到的输入</td><td>实际跑到的竞态</td><td>规范内所有路径（模型允许时）</td><td>越强越要前期写规范</td></tr>
+    <tr><td>成本</td><td>低</td><td>中</td><td>高（注解+工具链）</td><td>用在对的地方</td></tr>
+    <tr><td>AI 协作</td><td>Agent 写用例</td><td>CI 跑 race</td><td>Agent 提案、验证器裁决</td><td>结论必须来自验证器</td></tr>
+    <tr><td>溢出/位宽</td><td>易漏边界</td><td>不解决逻辑错</td><td>需在规范中显式建模</td><td>数学 int ≠ Go int</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Gobra 求和证明三件套</h3>
+  <p><strong>操作步骤：</strong>1) requires 0&lt;=n 限定输入；2) 循环 invariant 连接部分和与 i；3) ensures sum==n*(n+1)/2 作为出口性质。</p>
+  <p><strong>落地命令：</strong>构建 gobra.jar → export Z3_EXE → java -jar gobra.jar -i sum.gobra。</p>
+  <p><strong>避坑：</strong>故意改错 invariant 会报「Loop invariant might not be preserved」——用失败信息迭代注解。</p>
+  <div class="highlight">生产级规范必须写明 n 上界与溢出策略，否则数学推导不能自动等于机器 int 行为。</div>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】权限逻辑与并发</h3>
+  <p><strong>关键理解：</strong>acc(x) 描述谁拥有读写某内存；goroutine 启动时权限转移不当会在验证期拒绝，而非等生产竞态。</p>
+  <p><strong>边界说明：</strong>acc 不自动消除所有并发错误——规范完整性与并发模型覆盖仍靠人。</p>
+  <p><strong>相关概念：</strong>切片别名、量化断言、链表谓词——业务越复杂，注解成本越高。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时引入 Gobra</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>AI 高频改动的核心算法</td><td>关键函数加契约+CI 跑 Gobra</td><td>独立正确性证据</td><td>只靠 Agent 互审</td><td>同源模型共错</td></tr>
+    <tr><td>胶水层 CRUD</td><td>测试+fuzz</td><td>ROI 更高</td><td>全库形式化</td><td>规范爆炸</td></tr>
+    <tr><td>安全/并发原语</td><td>权限逻辑+race 双轨</td><td>互补覆盖</td><td>仅 race</td><td>未跑到的时序未证</td></tr>
+    <tr><td>规范尚模糊的需求</td><td>先澄清需求再写 ensures</td><td>验证器不能替你想业务</td><td>先证明再对齐产品</td><td>证错目标</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】AI Agent × 验证器闭环</h3>
+  <p><strong>核心思路：</strong>Agent 生成实现+候选 requires/ensures/invariant；Gobra 失败时像修编译错误一样迭代。</p>
+  <p><strong>选型条件：</strong>与 OpenAI+Lean、Cordeiro「LLM 生成代码形式化验证」报告同构——探索归 AI，裁决归验证器。</p>
+  <p><strong>对比相邻：</strong>VeGo、Rust Verus 是兄弟探索；Gobra 优势是留在 Go 语法面。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】形式化验证常见误区</h3>
+  <p><strong>坑名：</strong>把「Gobra found 0 errors」当成产品需求正确。</p>
+  <p><strong>解法：</strong>评审规范是否与业务一致；对边界输入单独论证溢出。</p>
+  <p><strong>坑名：</strong>低估 Java+SBT+Z3 工具链维护成本。</p>
+  <p><strong>严重程度：</strong>规范错误为致命；工具安装为可管理成本。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】AI 时代的软件工程重心</h3>
+  <p><strong>原则：</strong>实现可以交给 Agent，规范与风险归属仍属工程师。</p>
+  <p><strong>怎么落地：</strong>在流水线中增加「验证器绿」门槛，与测试、lint 并列。</p>
+  <p><strong>适用边界：</strong>全栈形式化尚远；从数学内核、并发原语、安全敏感模块切入。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「形式化验证太贵，TDD + Code Review 足够应对 AI 代码」</p>
+  <p class="rebuttal-text">当生成速度超过人脑穷举路径的能力，抽样测试的覆盖率上限就是瓶颈；验证不是替代测试，而是给关键性质一条不依赖模型自指的独立证据链。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>AI 加速实现后，正确性成为新瓶颈；需要验证器而非更多 LLM 裁判。</li>
+    <li>Gobra 在 Viper+Z3 上为 Go 子集提供契约、不变量与权限推理。</li>
+    <li>求和示例展示 requires/invariant/ensures 如何连成可机检证明。</li>
+    <li>并发与切片难点在权限与别名规范，成本随业务复杂度上升。</li>
+    <li>Agent 适合提案与修证明义务，最终「0 errors」必须来自 Gobra。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>选 1 个纯函数用官方 sum.gobra 跑通本地 Gobra+Z3。</li>
+    <li>在 AI PR 流程中为「核心算法」增加可选 Gobra 检查步骤。</li>
+    <li>写规范时同步列出输入范围与溢出假设。</li>
+    <li>对比 go test -race 与 acc 注解在同一并发原语上的互补点。</li>
+    <li>跟踪 VeGo/Verus 与 Gobra 生态，按语言栈选型。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「让 AI 写更多测试」转为「让人写清规范、让机器证实现」——形式化验证是 AI 软件工程里独立于模型的信任锚点。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);

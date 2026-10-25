@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-10-25",
+    "files": [
+      {
+        "path": "svgs/2026-10-25/go-formal-verification-gobra-viper-ai.svg",
+        "title": "Go 代码也能像数学定理一样被证明？AI 编程时代，形式化验证正在补上最后一块拼图",
+        "source": "https://tonybai.com/2026/10/25/go-formal-verification-gobra-viper-ai/"
+      },
+      {
+        "path": "svgs/2026-10-25/llamafactory-pretrain-cyber.svg",
+        "title": "大模型训练全流程实战指南实战篇（十七）— LLamaFatory预训练实战：从语料到模型",
+        "source": "https://juejin.cn/post/7700077216746700843"
+      }
+    ]
+  },
+  {
     "date": "2026-10-24",
     "files": [
       {

@@ -1,0 +1,123 @@
+欢迎收听每日技术学习语音讲解。本期主题，LLaMA-Factory LoRA 增量预训练：从语料到 Qwen3-32B 领域基座。标签包括预训练 PT、LLaMA-Factory、网络安全领域。本次讲解预计时长 约 9 到 10 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：如何把治理后的领域 chunks、蒸馏问答与分层采样的通用语料（悟道 WuDao）合并成约 926M tokens 的 jsonl，在 LLaMA-Factory 里用 stage=pt + LoRA 做增量预训练，并通过续写与评测集相对变化选出 checkpoint，同时控制灾难性遗忘。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：数据准备，cyber_pt，然后注册，dataset_info，然后train，LoRA PT，然后merge+评测，选 checkpoint
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：预训练评测分数是绝对真理。作者强调预训练评测是方向性的，真正价值要等 SFT 后再评；应看相对变化（基座 vs 合并后），而非单次绝对分。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「领域 RAG 就够了，不必做 LoRA 预训练」
+
+RAG 不改模型权重，难内化术语分布与长程连贯；增量 PT 是在参数里「读过教材」，与检索增强解决的是不同层的知识驻留问题。
+
+接下来，第四部分，【概念拆解卡】增量预训练在学什么。
+
+在讲什么问题，领域「教材」注入——下一 token 预测，不关心 QA 格式。
+
+关键理解，高质量 Alpaca 问答可拼成自然文本参与 PT；与 SFT 不同，列映射为 prompt←text。
+
+边界说明，<1M tokens 不建议 PT，直接 SFT；本文 ~926M tokens 走 LoRA PT 合理区间。
+
+原文依据，「模型已经读完了领域教材，但还不知道如何组织成有用回答」——下篇才是 SFT。
+
+接下来，第五部分，【方法/工具卡】构建 cyber_pt.jsonl。
+
+操作步骤，1) chunks_judged keep+text；2) EasyDataset 蒸馏 Alpaca 转问答拼接；3) 合并 wudao_pt 通用分层采样（百科40%等）；4) MD5 去重+坏词过滤。
+
+落地比例：通用 60%～70%，领域 30%～40%，缓解灾难性遗忘。
+
+避坑，只用领域语料会掉通用问答——必须混合通用分布。
+
+接下来，第六部分，【决策/选型表】按 token 规模选训练方式。
+
+<1M，跳过 PT，直接 SFT，数据不足以改变分布，硬做 PT，性价比差
+
+1M～1B，LoRA 增量 PT，个人/中小团队可承受，默认全参，显存与成本爆炸
+
+>1B，全参 PT，企业级语料，单卡 LoRA 硬扛，与目标不匹配
+
+本文 ~926M，LoRA rank 8/8，作者实测路径，rank 过高，易伤通用能力
+
+接下来，第七部分，【方法/工具卡】cyber_pt.yaml 关键参数。
+
+核心配置：stage: pt；finetuning_type: lora；cutoff_len 4096；lr 5e-5；epochs 20；bf16 + gradient_checkpointing。
+
+启动：llamafactory-cli train params/cyber_pt.yaml（Qwen3-32B 约需 1～2×A100/H100）。
+
+合并：选 loss 0.5～0.8 区间 checkpoint ，得到 export yaml ，得到 llamafactory-cli export。
+
+dataset_info 中 columns.prompt 映射 jsonl 的 text 字段——注册错误则训练读空列。
+
+接下来，第八部分，【避坑清单卡】训练与选型。
+
+坑名，领域 loss 降但通用 benchmark 大跌。
+
+解法，减 epoch、降 lr、提高通用语料比例。
+
+坑名，续写胡言或重复。
+
+解法，学习率或轮次过大 ，得到 选更早 checkpoint。
+
+坑名，只盯训练后关键词命中率。
+
+解法，与未合并基座对比相对提升。
+
+接下来，第九部分，【方法/工具卡】效果查看双轨。
+
+文本续写：30～50 条领域开头，vLLM 部署对比基座与 PT 模型（术语、连贯性）。
+
+评测集：通用:领域 1:1 几百条，EvalScope 看相对变化；接口与模板两次一致。
+
+重训原则：每次只改 1～2 个变量并记录配置，避免无法归因。
+
+接下来，第十部分，【心法/原则卡】预训练在全流程中的位置。
+
+原则，PT 注入知识，SFT 教「怎么答」——跳过 PT 或跳过评测都会在后面付费。
+
+怎么落地，token 统计用基座 tokenizer.json 批处理累加；注册+yaml+export 三件套进 Git。
+
+适用边界，32B 级训练是工程战役；小模型可缩小数据与 checkpoint 实验规模。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+领域 chunks + 蒸馏 QA + 分层通用语料 ，得到 cyber_pt.jsonl（约 76k 条 / 926M tokens）。
+
+通用:领域 ≈ 6:4～7:3 是控制遗忘的实用比例。
+
+LLaMA-Factory stage=pt + LoRA 8/8 完成约 2 天训练并 plot_loss。
+
+checkpoint 在 loss 0.5～0.8 区间合并，续写+EvalScope 相对评测选型（如 checkpoint-6250）。
+
+预训练评测是方向性的，SFT 才是对外价值的主战场。
+
+用 tokenizer 统计现有 jsonl 的 token 数，对照四档规模表选 PT/SFT。
+
+在 dataset_info.json 注册 cyber_pt 并核对 prompt←text 映射。
+
+准备 cyber_pt.yaml 与 merge yaml，记录 save_steps 与 export_size。
+
+vLLM 部署后跑同一 prompt 对比基座与合并模型续写。
+
+构建 1:1 评测集，用 EvalScope 只看相对指标变化。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「堆领域数据训练」转为「混合分布 + LoRA 增量 + 相对评测选 checkpoint」——预训练是把知识写进权重，而不是替代 SFT 的终点。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
