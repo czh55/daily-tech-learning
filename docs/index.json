@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-10-26",
+    "files": [
+      {
+        "path": "svgs/2026-10-26/victorialogs-go-performance.svg",
+        "title": "VictoriaLogs 为什么这么快？一场关于 Go 性能边界的工程实践",
+        "source": "https://tonybai.com/2026/10/26/victorialogs-high-performance-go-logging-engine/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-25",
     "files": [
       {
