@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-27",
+    "files": [
+      {
+        "path": "svgs/2026-10-27/ai-coding-layoffs-after-efficiency.svg",
+        "title": "出事了，AI 提效后，老板让我裁员20%",
+        "source": "https://juejin.cn/post/7700887980139036682"
+      },
+      {
+        "path": "svgs/2026-10-27/openai-fde-ai-production.svg",
+        "title": "OpenAI 揭秘 FDE：AI 时代，最难的不是写代码，而是解决真实问题",
+        "source": "https://tonybai.com/2026/10/27/openai-forward-deployed-engineering-ai-production/"
+      },
+      {
+        "path": "svgs/2026-10-27/video-model-scela-prompt.svg",
+        "title": "如何让视频模型对你言听计从？结构化提示词助你生成电影级画面",
+        "source": "https://juejin.cn/post/7701269179106639913"
+      }
+    ]
+  },
+  {
     "date": "2026-10-26",
     "files": [
       {

@@ -1,0 +1,143 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'ai-coding-layoffs-after-efficiency.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-orange{background:#ffedd5;color:#c2410c}.tag-amber{background:#fef3c7;color:#b45309}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #f97316}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#fff7ed;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#9a3412;border-left:4px solid #fb923c}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ffedd5,#fed7aa);border:2px solid #fdba74;border-radius:14px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:13px;color:#9a3412}
+.node-alt{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#fcd34d;color:#92400e}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#fff7ed;padding:10px 14px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #fed7aa}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#ecfdf5;border:2px solid #10b981;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#047857;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>AI 提效后，老板让我裁员 20%</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">AI Coding</span>
+  <span class="tag tag-amber">组织与人力</span>
+  <span class="tag tag-slate">职场观察</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当团队从 0 到 1 搭起 AI 编码工作流后，为何业务停滞的公司里「提效」反而像递刀子——技术负责人如何在老板要量化 ROI、下属感到被 AI 催赶、以及岗位融合与裁员压力之间理解结构性矛盾。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">提效与组织压力的因果链</h3>
+  <div class="diagram">
+    <div class="node">AI 工作流<br>落地</div><span class="arrow-sym">→</span>
+    <div class="node-alt">老板要求<br>量化提效</div><span class="arrow-sym">→</span>
+    <div class="node">业务蛋糕<br>不增长</div><span class="arrow-sym">→</span>
+    <div class="node-alt">岗位融合<br>裁员预期</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#047857;font-size:16px">误解：把 AI 用得越好，个人在组织里就越安全。在业务不扩张时，可量化的提效往往被管理层读作「同样产出需要更少人头」。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】技术负责人的两难</h3>
+  <p><strong>在讲什么问题：</strong>搭 AI 流程的人为何同时承受老板 push 与团队怨气？</p>
+  <p><strong>关键理解：</strong>提效数字「太多也不好、太少也不好」——太少无法交代，太多则坐实减编理由；且团队并非抗拒学习，而是「没业务还提什么效」。</p>
+  <p><strong>典型场景：</strong>半年从本地辅助编码到云端自主、多 Agent Team；课评不错但业务侧冷清。</p>
+  <p><strong>边界说明：</strong>个案叙事，非全行业统计；但揭示常见情绪与逻辑。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】提效不等于增安全感</h3>
+  <p><strong>原则：</strong>在蛋糕做不大的公司里，AI 提效的终局常被理解为岗位融合与裁员，除非业务同步增长。</p>
+  <p><strong>为什么重要：</strong>老板算的是人力成本账（文中举例月薪 1.5w 级，一年近 20w）；不会用 AI 可能被杀鸡儆猴，会用则证明「不需要那么多人」。</p>
+  <p><strong>怎么落地（对负责人）：</strong>把「提效」与「新业务收入/交付范围」绑在一起谈，避免单一工时指标。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】员工体感：以前 vs AI 提效后</h3>
+  <table>
+    <tr><th>维度</th><th>传统节奏</th><th>AI 提效后（文中所述）</th><th>结论</th></tr>
+    <tr><td>项目负载</td><td>一人 1–2 个项目</td><td>原基础上持续创新新项目</td><td>压力上升</td></tr>
+    <tr><td>责任</td><td>背锅照旧</td><td>锅仍在，节奏被 AI 拉高</td><td>「被 AI 骑」感</td></tr>
+    <tr><td>工作时长</td><td>加班可预期</td><td>AI 不停人不能停</td><td>倦怠与怨气</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】管理层视角下的「提效」解读</h3>
+  <table>
+    <tr><th>场景</th><th>老板可能动作</th><th>核心理由</th><th>对团队信号</th><th>风险</th></tr>
+    <tr><td>不会用 AI</td><td>裁员立威、逼卷</td><td>降本</td><td>恐惧驱动学习</td><td>流失与敷衍</td></tr>
+    <tr><td>会用且可量化</td><td>缩编、岗位融合</td><td>证明人效冗余</td><td>提效=危险</td><td>抵制工具化</td></tr>
+    <tr><td>业务增长</td><td>扩交付而非纯砍人</td><td>蛋糕变大</td><td>提效扩边界</td><td>需真实订单</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】推行 AI 工作流时的组织坑</h3>
+  <p><strong>坑名：</strong>只教工具、不谈业务盘子——团队感到「在给老板递刀子」。</p>
+  <p><strong>解法：</strong>明确 AI 用于哪些增长型交付，而非仅缩短既有工时。</p>
+  <p><strong>坑名：</strong>无法给出老板要的「准确提效数字」却持续加码创新项目。</p>
+  <p><strong>解法：</strong>定义可辩护指标（质量、范围、周期），并同步沟通编制预期。</p>
+  <p><strong>严重程度：</strong>组织信任受损为「小心」；大规模裁撤为「致命」。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】从 0 到 1 的 AI Coding 路径（文中实践）</h3>
+  <p><strong>操作步骤：</strong>本地 AI 辅助编码 → 云端自主运行 → 多 Agent Team；配合讲课与远程答疑。</p>
+  <p><strong>选型条件：</strong>适合仍有交付需求、愿投入学习的团队。</p>
+  <p><strong>边界说明：</strong>流程成熟无法抵消「无新业务」时的编制逻辑；需与商业侧同频。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「只要全员 AI 提效，公司就能靠人效战胜竞争对手」</p>
+  <p class="rebuttal-text">提效释放的是产能，若需求曲线平坦，管理层理性选择往往是减编而非无限接新项目——历史车轮不等人效报表单独好看。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>AI 工作流可以做得漂亮，但若业务不增长，「提效」在老板账本里常指向更少岗位。</li>
+    <li>技术负责人夹在量化 ROI 与团队怨气之间，数字两难。</li>
+    <li>员工体感从「牛马」变为「被 AI 催赶」，责任未减、创新项目反增。</li>
+    <li>结构性结论：除非业务多，否则提效与裁员/融合强相关——非个人态度问题。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>与老板对齐：提效节省的产能用于哪些新收入或新产品，而非默认减编。</li>
+    <li>建立除「节省人天」外的成果指标（缺陷率、交付范围、客户数）。</li>
+    <li>对团队坦诚沟通编制预期，减少「偷偷递刀子」猜疑。</li>
+    <li>业务低迷期谨慎承诺「效率翻倍」类口号，避免反噬。</li>
+    <li>负责人自身心理建设：工具进步与组织收缩可同时发生。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「把 AI 用到位就能保命」转为「提效必须与业务增长叙事绑定，否则组织会按成本逻辑回收人头」。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);
