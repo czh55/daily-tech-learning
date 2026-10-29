@@ -1,0 +1,150 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'how-openai-reinvented-codex.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#eef2ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#4338ca,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-indigo{background:#e0e7ff;color:#3730a3}.tag-violet{background:#ede9fe;color:#5b21b6}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #6366f1}
+.card h3{font-size:22px;font-weight:700;color:#4338ca;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.card .highlight{background:#eef2ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#312e81;border-left:4px solid #818cf8}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border:2px solid #a5b4fc;border-radius:14px;padding:12px 16px;text-align:center;min-width:90px;font-weight:700;font-size:13px;color:#312e81}
+.node-alt{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:#c4b5fd;color:#4c1d95}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#eef2ff;padding:10px 14px;text-align:left;font-weight:700;color:#4338ca;border-bottom:2px solid #c7d2fe}
+td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>从失败到重塑 ChatGPT：OpenAI 如何在 10 个月内重新发明 Codex</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-indigo">Codex</span>
+  <span class="tag tag-violet">Agent 产品</span>
+  <span class="tag tag-slate">工程组织</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当云端自主编程 Agent 未能形成持续使用时，OpenAI 如何通过本地执行、可复用 Agent 引擎、真实工程数据训练与多 Agent 桌面形态，把 Codex 从一次失败发布变成影响 ChatGPT 整体产品路线的核心能力。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#4338ca;margin-bottom:12px;text-align:center">Codex 逆袭链路</h3>
+  <div class="diagram">
+    <div class="node">Cloud 受挫<br>环境+交互</div><span class="arrow-sym">→</span>
+    <div class="node-alt">本地 Agent<br>可纠偏</div><span class="arrow-sym">→</span>
+    <div class="node">Rust 引擎<br>多入口复用</div><span class="arrow-sym">→</span>
+    <div class="node-alt">真实工作流<br>训练模型</div><span class="arrow-sym">→</span>
+    <div class="node">多 Agent 桌面<br>任务委托</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：Codex 逆袭只靠 GPT-5 级模型升级。采访强调产品形态、执行环境、人机交互与组织反馈环与模型进步同等关键——失败的是「一步到位的云端自主」，不是 Agent 方向本身。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Codex Cloud 为何「能用但不留人」</h3>
+  <p><strong>在讲什么问题：</strong>为何「把任务交给云端同事」在 OpenAI 内部可行，外部却难持续？</p>
+  <p><strong>关键理解：</strong>复制仓库 ≠ 复制开发环境；缺少执行中途的轻量纠偏，理解偏差只能整任务重来。</p>
+  <p><strong>典型场景：</strong>私有依赖、本地工具链、认证与团队约定无法在云端低成本复现。</p>
+  <p><strong>边界说明：</strong>云端仍适合不依赖本机长期在线的任务，但不应假设用户愿意先搭一套平行环境。</p>
+  <p><strong>原文依据：</strong>「产品试图减少的工作，反而可能以另一种形式重新出现。」</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】先建 Agent 引擎，再堆界面功能</h3>
+  <p><strong>原则：</strong>CLI/IDE/桌面只是入口，推理、工具调用、计划调整应与界面解耦。</p>
+  <p><strong>怎么落地：</strong>用 Rust 重写核心执行层，同一引擎服务 CLI、桌面多 Agent 与后续 Cloud。</p>
+  <p><strong>适用边界：</strong>小团队验证期可接受单一入口；扩展第二入口前必须先抽象引擎。</p>
+  <p><strong>原文支撑：</strong>Every 采访：团队刻意不急着给 CLI 堆功能，而是重建可复用 Agent 内核。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】从竞赛能力到真实工程训练</h3>
+  <p><strong>核心思路：</strong>排行榜分数不能替代复杂仓库里的测试、调试与人类中途干预数据。</p>
+  <p><strong>操作步骤：</strong>1) 收集真实 PR/任务轨迹；2) 让模型学习失败-修正循环；3) 用生产式评测而非单次 Demo。</p>
+  <p><strong>避坑：</strong>只在标准化内部环境验证会高估外部可用性（「内部环境掩盖问题」）。</p>
+  <p><strong>对比相邻：</strong>与「更强 base 模型直接上 Cloud」相比，更强调 workflow 对齐。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】辅助写代码 vs 任务委托 Agent</h3>
+  <table>
+    <tr><th>维度</th><th>传统 Copilot</th><th>Codex 多 Agent 桌面</th><th>一句话</th></tr>
+    <tr><td>人的角色</td><td>逐行编写+补全</td><td>拆任务、审查、控风险</td><td>从编码者转向编排者</td></tr>
+    <tr><td>反馈环</td><td>编辑器内即时</td><td>多任务并行+汇总 diff</td><td>适合长时自治子任务</td></tr>
+    <tr><td>失败成本</td><td>局部撤销</td><td>错误计划可能扩散多文件</td><td>更需要评测与权限边界</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时坚持 Cloud、何时本地优先</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>环境高度定制、需频繁纠偏</td><td>本地/IDE Agent</td><td>复用现有 toolchain</td><td>一次性 Cloud 长任务</td><td>重启成本高</td></tr>
+    <tr><td>模型尚不够自主</td><td>可中断的结对式 Agent</td><td>降低错误放大</td><td>完全无人值守 Cloud</td><td>缺少中途干预</td></tr>
+    <tr><td>已验证引擎+标准化环境</td><td>Cloud 执行离线任务</td><td>不占本机</td><td>每个入口重写 Agent</td><td>创新速度被拖慢</td></tr>
+    <tr><td>组织要快速试错</td><td>小团队+短反馈</td><td>采访强调跨职能闭环</td><td>大团队瀑布式规划</td><td>被旧成功路径束缚</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Agent 产品常见陷阱</h3>
+  <p><strong>坑名：</strong>在自家标准化环境验证通过就对外发布。</p>
+  <p><strong>原因：</strong>低估外部迁移成本与工具链碎片化。</p>
+  <p><strong>解法：</strong>用代表性外部仓库做「首日可用」测试，而不只内部 dogfood。</p>
+  <p><strong>严重程度：</strong>致命——Cloud 阶段的核心教训。</p>
+  <p><strong>坑名：</strong>把界面当产品，引擎与模型未对齐自主程度。</p>
+  <p><strong>解法：</strong>自主级别与模型可靠性、交互机制同步设计。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「本地 Agent 只是 Claude Code 的跟随策略，并无结构性创新」</p>
+  <p class="rebuttal-text">若只有界面跟随而无引擎复用、真实工作流训练与多 Agent 组织形态，确实只是追热点；OpenAI 叙事的关键在引擎+数据飞轮+桌面并行，而非单点抄 CLI。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Codex Cloud 失败揭示的是环境、交互与模型自主度不匹配，而非 Agent 愿景错误。</li>
+    <li>本地执行是更短路径的纠偏与信任建立，再向上接 Cloud 与 ChatGPT。</li>
+    <li>可复用 Agent 引擎决定能否快速试错 CLI、桌面、云端等多形态。</li>
+    <li>真实工程轨迹训练补齐竞赛分数与生产差距。</li>
+    <li>小团队自主权与短周期反馈，与模型迭代同样决定产品速度。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>盘点自家 Agent：引擎是否与 Web/CLI/IDE 耦合，评估抽象成本。</li>
+    <li>为 Agent 任务设计「中途纠偏」交互，而非只允许整任务重跑。</li>
+    <li>建立外部代表性环境的 onboarding 时长指标，避免内部幻觉。</li>
+    <li>收集失败-修正轨迹作为评测与微调数据，而不只看一次性通过率。</li>
+    <li>阅读 Every 对 OpenAI 团队的 Codex 采访原文，对照产品路线图。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「谁的模型榜单更高」转为「谁的 Agent 工作方式让用户敢委托、能纠偏、可规模化复制到多入口」——Codex 逆袭是产品系统工程，不是单点模型发布。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);

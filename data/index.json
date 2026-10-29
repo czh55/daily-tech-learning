@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-10-29",
+    "files": [
+      {
+        "path": "svgs/2026-10-29/dagger-1-0-beta-third-generation-ci-cd-for-ai-agents.svg",
+        "title": "Dagger 1.0 Beta 发布：Docker 之父要为 AI Agent 重做 CI/CD",
+        "source": "https://tonybai.com/2026/10/29/dagger-1-0-beta-third-generation-ci-cd-for-ai-agents/"
+      },
+      {
+        "path": "svgs/2026-10-29/how-openai-reinvented-codex.svg",
+        "title": "从一次失败到重塑 ChatGPT：OpenAI 如何在 10 个月内重新发明 Codex？",
+        "source": "https://tonybai.com/2026/10/29/how-openai-reinvented-codex/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-27",
     "files": [
       {
