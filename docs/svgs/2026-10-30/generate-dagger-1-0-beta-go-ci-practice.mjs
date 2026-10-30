@@ -1,0 +1,147 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'dagger-1-0-beta-go-ci-practice.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ecfeff,#e0f2fe);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#0e7490,#0369a1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-cyan{background:#cffafe;color:#0e7490}.tag-blue{background:#dbeafe;color:#1d4ed8}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #0891b2}
+.card h3{font-size:22px;font-weight:700;color:#0e7490;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#cffafe,#a5f3fc);border:2px solid #67e8f9;border-radius:14px;padding:12px 16px;text-align:center;min-width:88px;font-weight:700;font-size:12px;color:#155e75}
+.node-alt{background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-color:#93c5fd;color:#1e3a8a}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#0e7490,#0369a1);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#ecfeff;padding:10px 12px;text-align:left;font-weight:700;color:#0e7490;border-bottom:2px solid #a5f3fc}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Dagger 1.0 Beta 实战：Go 对照实验</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-cyan">Dagger</span>
+  <span class="tag tag-blue">Go CI</span>
+  <span class="tag tag-slate">对照实验</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在同一 Go 项目上并排搭建 GitHub Actions 与 Dagger 两套流水线后，第三代 CI 的「本地=CI=远程、执行图缓存、单测级 check」能否被可重复地验证，而不是停留在概念对比。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#0e7490;margin-bottom:12px;text-align:center">实验路径</h3>
+  <div class="diagram">
+    <div class="node">Go demo<br>mathutil</div><span class="arrow-sym">→</span>
+    <div class="node-alt">GHA ci.yml<br>基线</div><span class="arrow-sym">→</span>
+    <div class="node">dagger init<br>官方 go 模块</div><span class="arrow-sym">→</span>
+    <div class="node-alt">dagger check<br>缓存/单测</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：对照实验里 Dagger 首次 check 54.8s、二次 3.3s 就等于「永远快 16 倍」。首次含镜像/模块/依赖拉取，应分开度量安装成本与增量缓存收益。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】对照实验在验证什么</h3>
+  <p><strong>在讲什么问题：</strong>GHA 对简单 Go 项目已够用，为何还要 Dagger？</p>
+  <p><strong>关键理解：</strong>YAML 工作流是远程入口，不会自动让开发者本地与 CI 共享同一套执行定义；Agent 多轮修复会放大「本地绿、CI 红、再读日志」的延迟。</p>
+  <p><strong>典型场景：</strong>同一仓库上 go test ./... 本地过、推送后 Actions 重装依赖再测。</p>
+  <p><strong>边界说明：</strong>小项目 GHA+setup-go cache 可能已足够；实验价值在 Agent/高频迭代与测试粒度。</p>
+  <p><strong>原文依据：</strong>「工作流定义是远程执行的入口，并不会自动让本地开发环境与 CI 使用同一套执行定义。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】从零搭建对照流水线</h3>
+  <p><strong>核心思路：</strong>先固定检查基线（go test + go vet），再分别用 GHA 与 Dagger 官方 go 模块执行同一语义。</p>
+  <p><strong>操作步骤：</strong>1) 创建 dagger-go-demo 与 mathutil 测试；2) 写 .github/workflows/ci.yml（checkout、setup-go、test、vet）；3) dagger init 选 go 模块；4) dagger check -l --all 确认发现 TestAdd 等；5) 对比二次 dagger check 耗时。</p>
+  <p><strong>选型条件：</strong>需要向团队证明「单测级重跑」与本地复现时优先 Dagger 实验。</p>
+  <p><strong>避坑：</strong>模块未发现测试就空跑——先确认 dagger check -l 有 test 项再下结论。</p>
+  <p><strong>原文支撑：</strong>「不要在没有确认模块发现结果的情况下，就把一次空跑当作成功的实验。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】单测级 check 与失败现场</h3>
+  <p><strong>操作步骤：</strong>dagger check --go-test=TestAdd 只跑单个测试；故意改断言观察结构化失败与 RUN LOCALLY 提示。</p>
+  <p><strong>怎么落地：</strong>Agent 修复循环中把「重跑整个 Job」改为「重跑 dag:// 单 check URL」。</p>
+  <p><strong>对比相邻方法：</strong>GHA 通常以 Step/Job 为最小重试单位；Dagger 把包/测试识别为可选执行单元。</p>
+  <p><strong>适用边界：</strong>过滤参数以当前 CLI --help 为准，模块版本不同发现项可能变化。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】GHA 基线 vs Dagger 实战</h3>
+  <table>
+    <tr><th>维度</th><th>本文 GHA 基线</th><th>本文 Dagger 路径</th><th>结论</th></tr>
+    <tr><td>定义位置</td><td>.github/workflows/ci.yml</td><td>dagger.toml + 官方 go 模块</td><td>Dagger 意图是代码化执行图</td></tr>
+    <tr><td>本地复现</td><td>开发者自行记命令</td><td>同机 dagger check</td><td>一致性是对照核心指标</td></tr>
+    <tr><td>缓存观测</td><td>setup-go cache</td><td>二次 check 3.3s vs 54.8s</td><td>需区分首次安装</td></tr>
+    <tr><td>失败定位</td><td>Job/Step 日志</td><td>TEST 树 + 单测 filter</td><td>Agent 友好度差异</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】对照实验后是否替换 GHA</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>Agent 高频改测</td><td>GHA 内嵌官方 Dagger Action</td><td>保留触发模型+统一执行定义</td><td>仅加 Runner</td><td>不解决定义分裂</td></tr>
+    <tr><td>简单 Go 库、改动少</td><td>维持 GHA</td><td>文章承认基线已够用</td><td>为概念全盘迁移</td><td>ROI 为负</td></tr>
+    <tr><td>需远程 Engine 无 Cloud</td><td>自建 Engine + Action</td><td>文章说明可不购 Cloud</td><td>假设必须 Dagger Cloud</td><td>与文内路径不符</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】实战对照误区</h3>
+  <p><strong>坑名：</strong>把 nektos/act 当作 GHA 已解决本地一致性问题。</p>
+  <p><strong>原因：</strong>act 是补充方案，团队默认路径仍是「推送后才跑 YAML」。</p>
+  <p><strong>解法：</strong>用「同一 commit 上本地 dagger check 与 CI 结果是否一致」作为验收标准。</p>
+  <p><strong>严重程度：</strong>小心——影响实验结论可信度。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「Go 项目用 Makefile 统一 test/vet 就够了，不必上 Dagger」</p>
+  <p class="rebuttal-text">Makefile 能统一命令却不能自带容器化执行图、内容寻址缓存与 dag:// 级测试调度；对照实验要的是引擎级增量与可编程 check 发现，不是再多一层 shell 封装。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>同一 Go 项目是验证第三代 CI 的最小可复现实验台，而非抽象辩论。</li>
+    <li>GHA 基线证明「能用」；Dagger 证明「本地可跑同一 check、可缓存、可单测过滤」。</li>
+    <li>首次运行耗时含环境准备，应用二次运行衡量缓存。</li>
+    <li>官方 go 模块 + dagger check -l 是把测试从 Job 脚本提升为可选单元的入口。</li>
+    <li>替换 GHA 非目标；可用官方 Action 接入 Engine，Cloud Checks 为可选增强。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>克隆实验结构：demo 模块 + GHA yaml + dagger init。</li>
+    <li>记录首次/二次 dagger check 与 GHA Job 时长各一组。</li>
+    <li>演练 dagger check --go-test=… 失败→修复→仅重跑该 check。</li>
+    <li>在 PR 流水线用 Dagger GitHub Action 跑与本地相同 workspace。</li>
+    <li>阅读 dagger check --help 与 go 模块版本 pin（dagger.lock）。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>第三代 CI 的「优势」要用同一仓库上的可重复对照实验来证明——重点是执行定义一处编写、多处运行，以及把验证从 Job 日志下沉到测试级 check。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);

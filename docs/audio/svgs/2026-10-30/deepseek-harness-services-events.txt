@@ -1,0 +1,119 @@
+欢迎收听每日技术学习语音讲解。本期主题，DeepSeek Harness：服务与事件监听。标签包括Cordis、插件扩展、护栏。本次讲解预计时长 约 9 到 10 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：多插件如何共享同一份业务逻辑（服务），以及如何在会话/工具/Agent 生命周期上插入策略（事件监听），且卸载插件时自动清理副作用。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Service，提供能力，然后ctx.on，插入行为
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：每个 Tool 里复制一份 LLM 调用逻辑最直观。官方边界是工具=单次入口、服务=任意方法；改摘要规则应只改 Service 一处。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「直接在每个 Tool 里 if 判断更安全，不必学 Cordis 事件模型」
+
+改 N 个工具无法覆盖未来第三方 Tool；pre/post-execute 是横切策略层，且插件卸载自动 off——分散 if 既难审计也难与软件工厂式护栏对齐。
+
+接下来，第四部分，【概念拆解卡】Cordis 服务是什么。
+
+在讲什么问题，多插件复用逻辑为何不能靠 copy-paste？
+
+关键理解，服务是挂在 ctx 上的具名能力（如 ctx.summaryService）；消费方 export const inject 声明 summaryService，无需 import 提供方类。
+
+典型场景，summarize 与 archive 两个工具共用 SummaryService.summarize。
+
+边界说明，服务只在 Harness 同进程；跨进程应走 API 而非伪服务。
+
+原文依据，「工具给模型用，服务给同进程的插件和工具用。」
+
+接下来，第五部分，【方法/工具卡】编写与注入服务。
+
+操作步骤，1) class X extends Service + super(ctx,name)；2) module augmentation 声明 ctx 类型；3) apply 里 ctx.plugin(X)；4) 消费插件声明 inject 后直接调用。
+
+选型条件，两份以上工具/插件出现相同 LLM+会话处理时抽服务。
+
+避坑，提供方卸载时 Cordis dispose 依赖方——勿在工具里缓存已 dispose 的服务引用。
+
+怎么落地，scratch-plugin + cordis.yml，pnpm dsh web --patch 验证工具链。
+
+接下来，第六部分，【方法/工具卡】SummaryService 实战要点。
+
+核心思路：读 sessions 历史，得到截断 transcript（MAX_MESSAGE/TRANSCRIPT），得到调 ctx.llm，得到缓存 key 含 style/maxLength。
+
+操作步骤，summary-service.ts 实现 summarize；summarize-tool / archive-tool 只做参数转发与写文件。
+
+原文支撑：「保留 transcript 尾部」——最新轮次描述当前工作状态。
+
+适用边界，forceRefresh 绕过缓存；finish 非 stop 要映射为明确错误。
+
+接下来，第七部分，【跨概念对比表】事件五种分派模式。
+
+emit，否，无，agent/error，只观察
+
+waterfall，否，是，tools/pre-execute，next() 洋葱链
+
+parallel，是，无，session/flush，全并行
+
+serial，是，是，部分 agent 步骤，顺序串行
+
+bail，否，是，短路决策，首个有效值停止
+
+接下来，第八部分，【方法/工具卡】护栏插件 guardrail。
+
+pre-execute：匹配 shell_execute 危险命令，得到kind:deny 且不 call next()；否则 return next()。
+
+post-execute：await next() 后对 allow 且 string content 做 API key/邮箱/手机号 redact。
+
+避坑，观察型处理器误忘 next() 会误杀整条 waterfall——最常见 bug。
+
+怎么落地，不改现有工具代码，仅新增 guardrail 插件挂载 ctx.on。
+
+接下来，第九部分，【避坑清单卡】waterfall 误用。
+
+坑名，post-execute 在 decision 已 deny 仍尝试脱敏。
+
+原因，无 allow 结果可改，逻辑应原样 return decision。
+
+解法，先判断 decision.kind === allow 再 redact。
+
+严重程度，小心——可能抛错或泄露策略状态。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Cordis 插件=apply 挂载；扩展靠服务（能力）与 ctx.on（行为）。
+
+inject 保证依赖就绪顺序；服务卸载会 cascade dispose 消费者。
+
+SummaryService 示范「服务写逻辑、工具写薄壳」。
+
+事件分派模式决定 handler 签名；工具链最常用 waterfall。
+
+护栏用 pre 拦截 + post 脱敏，无需改原工具实现。
+
+在 scratch-plugin 复现 summary-service + 两工具 + cordis.yml patch。
+
+为一个重复逻辑抽取 Service，删除工具内 duplicate 代码。
+
+添加 guardrail：DANGEROUS_PATTERNS + SECRET_PATTERNS 两套规则。
+
+对照文档列出 agent/session/tools 作用域下要监听的事件清单。
+
+写单元测试：pre-execute 忘 next() 时下游是否被短路（回归 waterfall）。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「每个 Tool 自给自足」转为「服务集中逻辑、事件横切策略」——Harness 插件体系的成熟度取决于能否复用与可逆挂载。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

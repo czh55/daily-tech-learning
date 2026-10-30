@@ -1,0 +1,117 @@
+欢迎收听每日技术学习语音讲解。本期主题，Dagger 1.0 Beta 实战：Go 对照实验。标签包括Dagger、Go CI、对照实验。本次讲解预计时长 约 10 到 11 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：在同一 Go 项目上并排搭建 GitHub Actions 与 Dagger 两套流水线后，第三代 CI 的「本地=CI=远程、执行图缓存、单测级 check」能否被可重复地验证，而不是停留在概念对比。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Go demo，mathutil，然后GHA ci.yml，基线，然后dagger init，官方 go 模块，然后dagger check，缓存/单测
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：对照实验里 Dagger 首次 check 54.8s、二次 3.3s 就等于「永远快 16 倍」。首次含镜像/模块/依赖拉取，应分开度量安装成本与增量缓存收益。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「Go 项目用 Makefile 统一 test/vet 就够了，不必上 Dagger」
+
+Makefile 能统一命令却不能自带容器化执行图、内容寻址缓存与 dag:// 级测试调度；对照实验要的是引擎级增量与可编程 check 发现，不是再多一层 shell 封装。
+
+接下来，第四部分，【概念拆解卡】对照实验在验证什么。
+
+在讲什么问题，GHA 对简单 Go 项目已够用，为何还要 Dagger？
+
+关键理解，YAML 工作流是远程入口，不会自动让开发者本地与 CI 共享同一套执行定义；Agent 多轮修复会放大「本地绿、CI 红、再读日志」的延迟。
+
+典型场景，同一仓库上 go test ./... 本地过、推送后 Actions 重装依赖再测。
+
+边界说明，小项目 GHA+setup-go cache 可能已足够；实验价值在 Agent/高频迭代与测试粒度。
+
+原文依据，「工作流定义是远程执行的入口，并不会自动让本地开发环境与 CI 使用同一套执行定义。」
+
+接下来，第五部分，【方法/工具卡】从零搭建对照流水线。
+
+核心思路：先固定检查基线（go test + go vet），再分别用 GHA 与 Dagger 官方 go 模块执行同一语义。
+
+操作步骤，1) 创建 dagger-go-demo 与 mathutil 测试；2) 写 .github/workflows/ci.yml（checkout、setup-go、test、vet）；3) dagger init 选 go 模块；4) dagger check -l --all 确认发现 TestAdd 等；5) 对比二次 dagger check 耗时。
+
+选型条件，需要向团队证明「单测级重跑」与本地复现时优先 Dagger 实验。
+
+避坑，模块未发现测试就空跑——先确认 dagger check -l 有 test 项再下结论。
+
+原文支撑：「不要在没有确认模块发现结果的情况下，就把一次空跑当作成功的实验。」
+
+接下来，第六部分，【方法/工具卡】单测级 check 与失败现场。
+
+操作步骤，dagger check --go-test=TestAdd 只跑单个测试；故意改断言观察结构化失败与 RUN LOCALLY 提示。
+
+怎么落地，Agent 修复循环中把「重跑整个 Job」改为「重跑 dag:// 单 check URL」。
+
+对比相邻方法，GHA 通常以 Step/Job 为最小重试单位；Dagger 把包/测试识别为可选执行单元。
+
+适用边界，过滤参数以当前 CLI --help 为准，模块版本不同发现项可能变化。
+
+接下来，第七部分，【跨概念对比表】GHA 基线 vs Dagger 实战。
+
+定义位置，.github/workflows/ci.yml，dagger.toml + 官方 go 模块，Dagger 意图是代码化执行图
+
+本地复现，开发者自行记命令，同机 dagger check，一致性是对照核心指标
+
+缓存观测，setup-go cache，二次 check 3.3s vs 54.8s，需区分首次安装
+
+失败定位，Job/Step 日志，TEST 树 + 单测 filter，Agent 友好度差异
+
+接下来，第八部分，【决策/选型表】对照实验后是否替换 GHA。
+
+Agent 高频改测，GHA 内嵌官方 Dagger Action，保留触发模型+统一执行定义，仅加 Runner，不解决定义分裂
+
+简单 Go 库、改动少，维持 GHA，文章承认基线已够用，为概念全盘迁移，ROI 为负
+
+需远程 Engine 无 Cloud，自建 Engine + Action，文章说明可不购 Cloud，假设必须 Dagger Cloud，与文内路径不符
+
+接下来，第九部分，【避坑清单卡】实战对照误区。
+
+坑名，把 nektos/act 当作 GHA 已解决本地一致性问题。
+
+原因，act 是补充方案，团队默认路径仍是「推送后才跑 YAML」。
+
+解法，用「同一 commit 上本地 dagger check 与 CI 结果是否一致」作为验收标准。
+
+严重程度，小心——影响实验结论可信度。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+同一 Go 项目是验证第三代 CI 的最小可复现实验台，而非抽象辩论。
+
+GHA 基线证明「能用」；Dagger 证明「本地可跑同一 check、可缓存、可单测过滤」。
+
+首次运行耗时含环境准备，应用二次运行衡量缓存。
+
+官方 go 模块 + dagger check -l 是把测试从 Job 脚本提升为可选单元的入口。
+
+替换 GHA 非目标；可用官方 Action 接入 Engine，Cloud Checks 为可选增强。
+
+克隆实验结构：demo 模块 + GHA yaml + dagger init。
+
+记录首次/二次 dagger check 与 GHA Job 时长各一组。
+
+演练 dagger check --go-test=… 失败，得到修复，得到仅重跑该 check。
+
+在 PR 流水线用 Dagger GitHub Action 跑与本地相同 workspace。
+
+阅读 dagger check --help 与 go 模块版本 pin（dagger.lock）。
+
+总结
+
+行动清单
+
+关键认知转变
+
+第三代 CI 的「优势」要用同一仓库上的可重复对照实验来证明——重点是执行定义一处编写、多处运行，以及把验证从 Job 日志下沉到测试级 check。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

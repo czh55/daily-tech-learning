@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-10-30",
+    "files": [
+      {
+        "path": "svgs/2026-10-30/ai-software-factory-secure-reference-architecture.svg",
+        "title": "AI 软件工厂 1.0：当 Agent 开始写代码、部署和运维，我们需要怎样的架构？",
+        "source": "https://tonybai.com/2026/10/30/ai-software-factory-secure-reference-architecture/"
+      },
+      {
+        "path": "svgs/2026-10-30/dagger-1-0-beta-go-ci-practice.svg",
+        "title": "Dagger 1.0 Beta 实战：用 Go 项目看懂第三代 CI 的真正优势",
+        "source": "https://tonybai.com/2026/10/30/dagger-1-0-beta-go-ci-practice/"
+      },
+      {
+        "path": "svgs/2026-10-30/deepseek-harness-services-events.svg",
+        "title": "DeepSeek Harness 插件的服务与事件监听详解",
+        "source": "https://juejin.cn/post/7702296667312504851"
+      }
+    ]
+  },
+  {
     "date": "2026-10-29",
     "files": [
       {

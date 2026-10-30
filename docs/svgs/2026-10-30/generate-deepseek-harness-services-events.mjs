@@ -1,0 +1,143 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'deepseek-harness-services-events.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-orange{background:#ffedd5;color:#c2410c}.tag-amber{background:#fef3c7;color:#b45309}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ffedd5,#fed7aa);border:2px solid #fdba74;border-radius:14px;padding:12px 16px;text-align:center;min-width:100px;font-weight:700;font-size:12px;color:#9a3412}
+.arrow-sym{font-size:16px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#fff7ed;padding:10px 12px;text-align:left;font-weight:700;color:#c2410c;border-bottom:2px solid #fed7aa}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>DeepSeek Harness：服务与事件监听</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Cordis</span>
+  <span class="tag tag-amber">插件扩展</span>
+  <span class="tag tag-slate">护栏</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：多插件如何共享同一份业务逻辑（服务），以及如何在会话/工具/Agent 生命周期上插入策略（事件监听），且卸载插件时自动清理副作用。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">两条扩展线</h3>
+  <div class="diagram">
+    <div class="node">Service<br>提供能力</div><span class="arrow-sym">+</span>
+    <div class="node">ctx.on<br>插入行为</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:8px">工具给模型用 · 服务给同进程插件用</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：每个 Tool 里复制一份 LLM 调用逻辑最直观。官方边界是工具=单次入口、服务=任意方法；改摘要规则应只改 Service 一处。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Cordis 服务是什么</h3>
+  <p><strong>在讲什么问题：</strong>多插件复用逻辑为何不能靠 copy-paste？</p>
+  <p><strong>关键理解：</strong>服务是挂在 ctx 上的具名能力（如 ctx.summaryService）；消费方 export const inject 声明 summaryService，无需 import 提供方类。</p>
+  <p><strong>典型场景：</strong>summarize 与 archive 两个工具共用 SummaryService.summarize。</p>
+  <p><strong>边界说明：</strong>服务只在 Harness 同进程；跨进程应走 API 而非伪服务。</p>
+  <p><strong>原文依据：</strong>「工具给模型用，服务给同进程的插件和工具用。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】编写与注入服务</h3>
+  <p><strong>操作步骤：</strong>1) class X extends Service + super(ctx,name)；2) module augmentation 声明 ctx 类型；3) apply 里 ctx.plugin(X)；4) 消费插件声明 inject 后直接调用。</p>
+  <p><strong>选型条件：</strong>两份以上工具/插件出现相同 LLM+会话处理时抽服务。</p>
+  <p><strong>避坑：</strong>提供方卸载时 Cordis dispose 依赖方——勿在工具里缓存已 dispose 的服务引用。</p>
+  <p><strong>怎么落地：</strong>scratch-plugin + cordis.yml，pnpm dsh web --patch 验证工具链。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】SummaryService 实战要点</h3>
+  <p><strong>核心思路：</strong>读 sessions 历史→截断 transcript（MAX_MESSAGE/TRANSCRIPT）→调 ctx.llm→缓存 key 含 style/maxLength。</p>
+  <p><strong>操作步骤：</strong>summary-service.ts 实现 summarize；summarize-tool / archive-tool 只做参数转发与写文件。</p>
+  <p><strong>原文支撑：</strong>「保留 transcript 尾部」——最新轮次描述当前工作状态。</p>
+  <p><strong>适用边界：</strong>forceRefresh 绕过缓存；finish 非 stop 要映射为明确错误。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】事件五种分派模式</h3>
+  <table>
+    <tr><th>模式</th><th>await</th><th>返回值</th><th>典型事件</th><th>一句话</th></tr>
+    <tr><td>emit</td><td>否</td><td>无</td><td>agent/error</td><td>只观察</td></tr>
+    <tr><td>waterfall</td><td>否</td><td>是</td><td>tools/pre-execute</td><td>next() 洋葱链</td></tr>
+    <tr><td>parallel</td><td>是</td><td>无</td><td>session/flush</td><td>全并行</td></tr>
+    <tr><td>serial</td><td>是</td><td>是</td><td>部分 agent 步骤</td><td>顺序串行</td></tr>
+    <tr><td>bail</td><td>否</td><td>是</td><td>短路决策</td><td>首个有效值停止</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】护栏插件 guardrail</h3>
+  <p><strong>pre-execute：</strong>匹配 shell_execute 危险命令→kind:deny 且不 call next()；否则 return next()。</p>
+  <p><strong>post-execute：</strong>await next() 后对 allow 且 string content 做 API key/邮箱/手机号 redact。</p>
+  <p><strong>避坑：</strong>观察型处理器误忘 next() 会误杀整条 waterfall——最常见 bug。</p>
+  <p><strong>怎么落地：</strong>不改现有工具代码，仅新增 guardrail 插件挂载 ctx.on。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】waterfall 误用</h3>
+  <p><strong>坑名：</strong>post-execute 在 decision 已 deny 仍尝试脱敏。</p>
+  <p><strong>原因：</strong>无 allow 结果可改，逻辑应原样 return decision。</p>
+  <p><strong>解法：</strong>先判断 decision.kind === allow 再 redact。</p>
+  <p><strong>严重程度：</strong>小心——可能抛错或泄露策略状态。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「直接在每个 Tool 里 if 判断更安全，不必学 Cordis 事件模型」</p>
+  <p class="rebuttal-text">改 N 个工具无法覆盖未来第三方 Tool；pre/post-execute 是横切策略层，且插件卸载自动 off——分散 if 既难审计也难与软件工厂式护栏对齐。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Cordis 插件=apply 挂载；扩展靠服务（能力）与 ctx.on（行为）。</li>
+    <li>inject 保证依赖就绪顺序；服务卸载会 cascade dispose 消费者。</li>
+    <li>SummaryService 示范「服务写逻辑、工具写薄壳」。</li>
+    <li>事件分派模式决定 handler 签名；工具链最常用 waterfall。</li>
+    <li>护栏用 pre 拦截 + post 脱敏，无需改原工具实现。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>在 scratch-plugin 复现 summary-service + 两工具 + cordis.yml patch。</li>
+    <li>为一个重复逻辑抽取 Service，删除工具内 duplicate 代码。</li>
+    <li>添加 guardrail：DANGEROUS_PATTERNS + SECRET_PATTERNS 两套规则。</li>
+    <li>对照文档列出 agent/session/tools 作用域下要监听的事件清单。</li>
+    <li>写单元测试：pre-execute 忘 next() 时下游是否被短路（回归 waterfall）。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「每个 Tool 自给自足」转为「服务集中逻辑、事件横切策略」——Harness 插件体系的成熟度取决于能否复用与可逆挂载。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);
