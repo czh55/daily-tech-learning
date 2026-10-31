@@ -1,0 +1,163 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'steve-yegge-counting-house-ai-enterprise.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fffbeb,#fef3c7);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#b45309,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-amber{background:#fef3c7;color:#92400e}.tag-orange{background:#ffedd5;color:#9a3412}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #d97706}
+.card h3{font-size:22px;font-weight:700;color:#b45309;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #fcd34d;border-radius:14px;padding:10px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#78350f}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#b45309,#d97706);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#fffbeb;padding:10px 12px;text-align:left;font-weight:700;color:#b45309;border-bottom:2px solid #fde68a}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Counting House：千万级业务的 AI 数字流水线</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-amber">Steve Yegge</span>
+  <span class="tag tag-orange">企业 AI</span>
+  <span class="tag tag-slate">客服/金融</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：面对每年千万级、规则明确的客服与业务请求，企业如何用无状态数字职员、黄金样本评估、分级自主权与「AI 提议、编排器执行」的架构，把 AI 从演示推进到可审计、可回退的规模化生产，而不是再堆一个全能 Agent。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#b45309;margin-bottom:12px;text-align:center">Counting House 闭环</h3>
+  <div class="diagram">
+    <div class="node">意图分类</div><span class="arrow-sym">→</span>
+    <div class="node">黄金样本</div><span class="arrow-sym">→</span>
+    <div class="node">分级自主权</div><span class="arrow-sym">→</span>
+    <div class="node">编排执行</div><span class="arrow-sym">→</span>
+    <div class="node">审计降级</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">与 Wheelhouse（探索型软件工厂）并列的另一条企业 AI 路径</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：Counting House = 更聪明的客服 Bot。Yegge 强调<strong>无状态、无写权限、按意图单独配置</strong>；95% 准确率若 5% 是错退款，商业风险与错队列完全不同。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Counting House 是什么</h3>
+  <p><strong>在讲什么问题：</strong>高吞吐量业务（退款、改签、理赔）为何不能照搬 Wheelhouse 式探索 Agent？</p>
+  <p><strong>关键理解：</strong>每次只处理一个案例的数字职员——无长期记忆、无独立凭证；任务结束即销毁会话，降低污染与审计成本。</p>
+  <p><strong>和其他概念关系：</strong>Wheelhouse 面向代码探索与多 Agent 协作；Counting House 面向受约束的业务流水线。</p>
+  <p><strong>怎么落地用：</strong>按业务意图（查询/改签/退款/特殊协助）分别配模型、工具与自主权，而非一个通用超级 Agent。</p>
+  <p><strong>边界说明：</strong>任务开放创新、成功标准模糊、无可靠人工兜底时不宜硬套；适合意图有限、历史案例充足的大体量服务。</p>
+  <p><strong>原文依据：</strong>「不要让 AI 像员工一样自由行动，而要把它变成一个没有长期记忆、没有独立凭证、每次只处理一个任务的数字职员。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Wheelhouse vs Counting House</h3>
+  <table>
+    <tr><th>对比维度</th><th>Wheelhouse（软件工厂）</th><th>Counting House</th><th>一句话结论</th></tr>
+    <tr><td>任务性质</td><td>探索代码、未知问题</td><td>重复业务案例、规则可梳理</td><td>探索要空间，业务要护栏</td></tr>
+    <tr><td>状态与记忆</td><td>可持续协作、多 Agent</td><td>无状态、每案新会话</td><td>业务侧用无状态换可控</td></tr>
+    <tr><td>权限模型</td><td>较大工具与部署空间</td><td>AI 提议，编排器写系统</td><td>写操作不能交给概率模型</td></tr>
+    <tr><td>成功指标</td><td>提交量、工程反馈</td><td>混淆矩阵 + 错误成本</td><td>准确率 alone 不够</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】上岗前的黄金样本与评估</h3>
+  <p><strong>核心思路：</strong>先建人工基线，再让模型在同一 Gold Set 上竞争，而非靠几个演示就上生产。</p>
+  <p><strong>操作步骤：</strong>① 从历史抽真实案例并人工多维评分（SOP、资格、语气、风险）→ ② 每意图 200–1000 案起步，留独立测试集 → ③ 用混淆矩阵算精确率/召回与<strong>错误代价</strong> → ④ 按意图单独晋级自主权。</p>
+  <p><strong>选型条件：</strong>有足够历史工单且业务规则能写清时优先建 Gold Set；否则先补数据与规则再谈模型。</p>
+  <p><strong>避坑：</strong>不断调参只迎合测试集、评审者不一致导致 Gold Set 本身有偏。</p>
+  <p><strong>原文引用：</strong>「几个成功案例并不能证明模型能够稳定处理数百万次真实请求。」</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】五级自主权怎么用</h3>
+  <table>
+    <tr><th>场景</th><th>推荐等级</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>新意图刚接入</td><td>Shadow 影子</td><td>并行出答案不影响客户</td><td>直接 Transact</td><td>无错误成本证据</td></tr>
+    <tr><td>低风险查询（航班状态）</td><td>Contain 自主回复</td><td>错答成本相对可控</td><td>一律 Assist</td><td>浪费已验证能力</td></tr>
+    <tr><td>退款/改签</td><td>Assist → Transact + 编排</td><td>高代价错误需编排与审批</td><td>模型直写库</td><td>无法幂等与 Saga 补偿</td></tr>
+    <tr><td>评估恶化</td><td>Off 或降级</td><td>按意图关闭，不必停全系统</td><td>全局关停</td><td>丧失其他已验证意图产能</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】AI 提议，编排器执行</h3>
+  <p><strong>在讲什么问题：</strong>改签/退款跨多系统，模型不能自己维护长事务。</p>
+  <p><strong>关键理解：</strong>模型提交结构化 action intent；编排器做资格复核、幂等、审批、Saga 补偿与审计队列。</p>
+  <p><strong>怎么落地：</strong>用 Temporal 等持久化工作流承载确定性步骤；PII 经隐私网关，模型不碰明文敏感数据。</p>
+  <p><strong>边界说明：</strong>编排器也会错，但关键风险不再完全绑定模型幻觉。</p>
+  <p><strong>原文依据：</strong>「把概率性的智能决策与确定性的业务执行分开。」</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Counting House 落地陷阱</h3>
+  <p><strong>坑名：</strong>用总体准确率选模型上线退款。</p>
+  <p><strong>原因：</strong>5% 错误可能是错队列，也可能是违规退款——混淆矩阵与金额损失必须分开算。</p>
+  <p><strong>解法：</strong>按意图设评估重点（退款看精确率，特殊协助看召回率）。</p>
+  <p><strong>严重程度：</strong>致命——财务与合规风险。</p>
+  <p><strong>坑名：</strong>以为接 API 就等于 Counting House。</p>
+  <p><strong>原因：</strong>脱敏、Gold Set、策略表、工作流与组织协同往往比调模型更耗时。</p>
+  <p><strong>解法：</strong>从单一低风险意图影子模式起步，验证后再复制。</p>
+  <p><strong>严重程度：</strong>小心——项目易烂尾。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】壁垒在评估体系，不在模型牌面</h3>
+  <p><strong>原则：</strong>企业自持意图分类、Gold Set、评分标准与错误成本——谁掌握评估，谁掌握换模权。</p>
+  <p><strong>为什么重要：</strong>模型与价格会变；业务规则写在可验证体系里才可替换 cheaper 模型而不重做全栈。</p>
+  <p><strong>怎么落地：</strong>客服案例汇总成「联系原因分布」，反哺产品/物流/定价——AI 同时是业务探测器。</p>
+  <p><strong>适用边界：</strong>仍需跨部门（运营、质控、财务、法务、工程）共建，非单一 AI 小组能包办。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「传统 RPA + 规则引擎早就能做客服自动化，不必再套 Counting House 叙事」</p>
+  <p class="rebuttal-text">规则引擎难覆盖自然语言与模糊诉求，纯 LLM Agent 又缺分级评估与编排隔离——Counting House 的价值是把生成式理解接回可审计的 Gold Set、自主权阶梯和 Saga 执行，不是重发明 RPA。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>企业 AI 分化：探索型 Wheelhouse vs 受约束 Counting House。</li>
+    <li>无状态按案处理是架构选择，便于审计、降本与按意图降级。</li>
+    <li>Gold Set + 错误成本 + 混淆矩阵先于放权，五级自主权按意图单独晋级。</li>
+    <li>写操作经编排器：资格、幂等、审批、补偿与审计与模型解耦。</li>
+    <li>长期壁垒是企业自有的评估与业务知识，而非锁定某一 frontier 模型。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>阅读 Yegge 原文《The Counting House》与 Tony Bai 导读对照 Wheelhouse。</li>
+    <li>选一个最低风险意图（如订单/航班状态查询）抽取 200+ 历史案建 Gold Set。</li>
+    <li>定义该意图的 Shadow → Assist 晋级门槛（精确率/召回/错误成本阈值）。</li>
+    <li>画出「模型提议 → 编排器 → 业务系统」链路，标明幂等与人工审批点。</li>
+    <li>指定跨职能负责人（运营、质控、工程）而非仅 AI 试点组。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>规模化 AI 业务的关键不是造更全能的 Agent，而是把任务拆小、权限收紧、评估做实——让模型只承担已证明胜任的工作，并用可替换的评估体系锁住长期竞争力。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);
