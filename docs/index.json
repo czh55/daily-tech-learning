@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-01",
+    "files": [
+      {
+        "path": "svgs/2026-11-01/rsi-harness-nvidia-sol-pi-recursive-self-improvement-agent.svg",
+        "title": "递归自我改进（RSI）的 Harness 长什么样？英伟达 SoL-Pi 给出了第一份工程答卷",
+        "source": "https://tonybai.com/2026/11/01/rsi-harness-nvidia-sol-pi-recursive-self-improvement-agent/"
+      }
+    ]
+  },
+  {
     "date": "2026-10-31",
     "files": [
       {
