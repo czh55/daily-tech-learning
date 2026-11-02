@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-02",
+    "files": [
+      {
+        "path": "svgs/2026-11-02/cve-2026-98432-linux-kernel-vulnerability-go-mptcp.svg",
+        "title": "Claude 挖出 Linux 内核高危漏洞，Go 程序为何也受到了牵连？",
+        "source": "https://tonybai.com/2026/11/02/cve-2026-98432-linux-kernel-vulnerability-go-mptcp/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-01",
     "files": [
       {
