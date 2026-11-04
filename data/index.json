@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-11-04",
+    "files": [
+      {
+        "path": "svgs/2026-11-04/deepseek-super-agent-architecture.svg",
+        "title": "DeepSeek Super-Agent核心特性详解与实战指南：把操作系统思想搬进智能体",
+        "source": "https://juejin.cn/post/7703895388126560283"
+      },
+      {
+        "path": "svgs/2026-11-04/go-zero-heap-allocation-noalloc.svg",
+        "title": "Go 也要实现零堆分配？noalloc：让每一次内存分配都无处遁形",
+        "source": "https://tonybai.com/2026/11/04/go-zero-heap-allocation-noalloc/"
+      },
+      {
+        "path": "svgs/2026-11-04/openai-pando-rebuild-git-for-ai-agent-era.svg",
+        "title": "继Anthropic之后，OpenAI 也重建了自己的版本控制系统",
+        "source": "https://tonybai.com/2026/11/04/openai-pando-rebuild-git-for-ai-agent-era/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-03",
     "files": [
       {

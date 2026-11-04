@@ -1,0 +1,151 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'deepseek-super-agent-architecture.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ede9fe,#ecfeff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#6d28d9,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-violet{background:#ede9fe;color:#5b21b6}.tag-cyan{background:#cffafe;color:#0e7490}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #7c3aed}
+.card h3{font-size:22px;font-weight:700;color:#6d28d9;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ede9fe,#c4b5fd);border:2px solid #a78bfa;border-radius:14px;padding:10px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#5b21b6}
+.node-cy{background:linear-gradient(135deg,#ecfeff,#67e8f9);border-color:#22d3ee;color:#0e7490}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#6d28d9,#0891b2);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#ede9fe;padding:10px 12px;text-align:left;font-weight:700;color:#5b21b6;border-bottom:2px solid #c4b5fd}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>DeepSeek Super-Agent：OS 思想进智能体</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-violet">Router-Worker</span>
+  <span class="tag tag-cyan">Thread 直通</span>
+  <span class="tag tag-slate">Harness 插件</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：人多 Session 并行时人的注意力成为上限——Super-Agent 如何用 Router 全局连续分派、Worker 隔离执行、Fast/Slow Path 事件过滤、Thread 订阅绕过 Router、Inline&amp;Spill 与链式召回控上下文，以及存算分离与 Watchdog 保 7×24 在线，把进程调度/缓存/存算分离等 OS 概念落到 dsh-superagent-prototype（0.1 参考实现）。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#6d28d9;margin-bottom:12px;text-align:center">Super-Agent 五模块咬合</h3>
+  <div class="diagram">
+    <div class="node">Router 分派</div><span class="arrow-sym">+</span>
+    <div class="node">事件 Trigger</div><span class="arrow-sym">+</span>
+    <div class="node node-cy">Thread 直通</div><span class="arrow-sym">+</span>
+    <div class="node">Inline/Spill</div><span class="arrow-sym">+</span>
+    <div class="node node-cy">存算分离</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">特征：连续 / 高效并行 / 主动 / 持久</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：Super-Agent = 单会话里的多 Agent 子任务。<strong>实际是跨 Session 的统一入口</strong>——IM 改方案 A、GitHub PR 改方案 B 仍由 Router 识别同一任务并通知 Worker，避免多 Session 各改各的。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Router-Worker 双层</h3>
+  <p><strong>在讲什么问题：</strong>全局「一个智能体」体验 vs 高并发执行隔离？</p>
+  <p><strong>关键理解：</strong>Router 常驻、承接人类、维护全局上下文、只分派不干活（可无 Bash）；Worker 上下文隔离、完整工具链、强模型，结果汇报 Router 统一对外。</p>
+  <p><strong>和其他概念关系：</strong>类比 OS 调度器 vs 进程；不同于同 Session 内 master-sub agent 编排。</p>
+  <p><strong>怎么落地用：</strong>Harness 装 superagent 插件 → GitHub 机器人 + 仓库 + 可选飞书 → 用户 @ 机器人派活，Router 建 Worker。</p>
+  <p><strong>边界说明：</strong>0.1 原型，吃内存；GitHub 派活不如 IDE 内直观；官方定位为设计参考非成品。</p>
+  <p><strong>原文依据：</strong>「Router 是内核调度器，Worker 是被隔离的进程。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Fast Path / Slow Path 与 Thread 直通</h3>
+  <p><strong>核心思路：</strong>Trigger 含群聊/CI/PR 等；Fast Path 用确定性规则滤噪，Slow Path 才调模型；Thread 冷启动后后续事件直投 Worker，不经 Router。</p>
+  <p><strong>操作步骤：</strong>① 配置 sources（GitHub/飞书）→ ② 白名单/来源规则减 Trigger → ③ 观察 Router token：消融显示去掉 Thread 直通 Router 决策 +30%、读缓存 token +37% → ④ Inline 热数据、Spill 冷数据 + ID 链式召回。</p>
+  <p><strong>选型条件：</strong>多通道、长周期任务、需 7×24 跟进；单轮问答不需要 Super-Agent。</p>
+  <p><strong>避坑：</strong>每条消息都走 Slow Path 成本爆炸——必须先配 Fast Path。</p>
+  <p><strong>原文引用：</strong>「去掉 Thread 订阅直通后……多烧约 37% 的 Token。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】单 Session 多 Agent vs Super-Agent</h3>
+  <table>
+    <tr><th>对比维度</th><th>单 Session 多 Agent</th><th>Super-Agent</th><th>一句话结论</th></tr>
+    <tr><td>会话边界</td><td>一个聊天窗</td><td>跨 IM/GitHub 等多入口</td><td>连续性感知靠 Router 全局状态</td></tr>
+    <tr><td>并行上限</td><td>受单上下文长度</td><td>多 Worker 隔离</td><td>人的注意力 3–5 Session → 任务导向</td></tr>
+    <tr><td>事件输入</td><td>主要是用户消息</td><td>Trigger 驱动主动</td><td>需 Fast Path 控成本</td></tr>
+    <tr><td>架构类比</td><td>团队内分工</td><td>OS 调度 + 进程</td><td>工程化程度更高</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】是否上 Super-Agent 原型</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么不行</th></tr>
+    <tr><td>GitHub 异步派活 + Harness 已有</td><td>试装插件</td><td>Router-Worker 验证</td><td>生产核心链路</td><td>0.1 非完整产品</td></tr>
+    <tr><td>Windows 原生环境</td><td>WSL 装 Harness</td><td>插件不支持 Windows</td><td>本机直接跑</td><td>官方限制</td></tr>
+    <tr><td>低噪音 IM 自动化</td><td>Fast Path 规则先行</td><td>省 Slow Path token</td><td>全量 LLM 过滤</td><td>成本不可控</td></tr>
+    <tr><td>需要即时 IDE 反馈</td><td>Trae / 本地 Harness</td><td>交互更直观</td><td>仅 GitHub @ 机器人</td><td>体验偏异步</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】实战与源码目录</h3>
+  <p><strong>坑名：</strong>忽视角色隔离。<strong>原因：</strong>Sources/Executor 越权。<strong>解法：</strong>遵循插件编译期约束：Sources 只上报、Executor 只汇报。<strong>严重程度：</strong>致命——安全。</p>
+  <p><strong>坑名：</strong>配置链路过长（GitHub 小号+仓库+飞书）。<strong>原因：</strong>0.1 安装复杂。<strong>解法：</strong>按 Harness 逐步指引，非一次性生产化。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑名：</strong>以为链式召回可替代业务知识库。<strong>原因：</strong>ID 图是引用机制。<strong>解法：</strong>仍要 Spill 存储与工具读外部。<strong>严重程度：</strong>小心。</p>
+  <p><strong>源码映射：</strong>src/core Router；src/sources 事件；src/executor Worker；src/core/health.ts Watchdog 雏形。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】多任务上限在系统不在模型</h3>
+  <p><strong>原则：</strong>单任务上限看模型，多任务上限看人的注意力与 Session 架构——Super-Agent 用系统工程换并行。</p>
+  <p><strong>为什么重要：</strong>官方四特征（连续/高效/主动/持久）定义了下一代 Agent 产品形态方向。</p>
+  <p><strong>怎么落地：</strong>从 Harness + 单 GitHub 仓库试点；监控 Router token 与 Worker 健康；外部 Watchdog 防死循环。</p>
+  <p><strong>适用边界：</strong>个人轻量用法仍用单 Session；原型吃资源。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「简单就是美」派 / 安全与合规官</p>
+  <p class="rebuttal-text">7×24 主动 Trigger、跨渠道统一 Router 与 Worker 自动改仓，把攻击面、误触发和不可审计的自主行为放大——在 0.1 原型阶段谈 OS 级调度，不如先把单会话 Harness 的权限与人工审批做扎实。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>痛点：人多 Session（约 3–5 个）导致注意力瓶颈，非模型不够强。</li>
+    <li>五大设计：Router-Worker、Fast/Slow Trigger、Thread 直通、Inline&amp;Spill+链式召回、存算分离+Watchdog。</li>
+    <li>Thread 直通显著省 Router token（约 37%），是工程化关键杠杆。</li>
+    <li>dsh-superagent-prototype 为 Harness 插件，源码结构与架构一一对应，强调角色隔离。</li>
+    <li>现阶适合研究/试点，不宜直接替代 IDE 内同步开发流。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>读 DeepSeek 官方《Super-Agent 设计探索》与 GitHub deepseek-ai/dsh-superagent-prototype。</li>
+    <li>在 WSL/Linux 装好 DeepSeek Harness 后按指引安装 Super-Agent 插件。</li>
+    <li>用专用 GitHub 机器人仓库试 @ 派活，对比单 Session 多开的管理成本。</li>
+    <li>配置 Fast Path 规则，避免每条群消息进 Slow Path。</li>
+    <li>跟踪 Watchdog/health 与存算分离演进，再评估生产可用性。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>智能体竞争从「单会话 prompt 技巧」转向「像 OS 一样调度 Session、缓存上下文、分离状态与计算」——Super-Agent 卖的是架构参考，不是现成 SaaS。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);

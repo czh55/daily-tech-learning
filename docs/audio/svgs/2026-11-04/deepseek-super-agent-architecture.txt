@@ -1,0 +1,121 @@
+欢迎收听每日技术学习语音讲解。本期主题，DeepSeek Super-Agent：OS 思想进智能体。标签包括Router-Worker、Thread 直通、Harness 插件。本次讲解预计时长 约 12 到 13 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：人多 Session 并行时人的注意力成为上限——Super-Agent 如何用 Router 全局连续分派、Worker 隔离执行、Fast/Slow Path 事件过滤、Thread 订阅绕过 Router、Inline&Spill 与链式召回控上下文，以及存算分离与 Watchdog 保 7×24 在线，把进程调度/缓存/存算分离等 OS 概念落到 dsh-superagent-prototype（0.1 参考实现）。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Router 分派，然后事件 Trigger，然后Thread 直通，然后Inline/Spill，然后存算分离
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：Super-Agent = 单会话里的多 Agent 子任务。实际是跨 Session 的统一入口——IM 改方案 A、GitHub PR 改方案 B 仍由 Router 识别同一任务并通知 Worker，避免多 Session 各改各的。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「简单就是美」派 / 安全与合规官
+
+7×24 主动 Trigger、跨渠道统一 Router 与 Worker 自动改仓，把攻击面、误触发和不可审计的自主行为放大——在 0.1 原型阶段谈 OS 级调度，不如先把单会话 Harness 的权限与人工审批做扎实。
+
+接下来，第四部分，【概念拆解卡】Router-Worker 双层。
+
+在讲什么问题，全局「一个智能体」体验 vs 高并发执行隔离？
+
+关键理解，Router 常驻、承接人类、维护全局上下文、只分派不干活（可无 Bash）；Worker 上下文隔离、完整工具链、强模型，结果汇报 Router 统一对外。
+
+和其他概念关系：类比 OS 调度器 vs 进程；不同于同 Session 内 master-sub agent 编排。
+
+怎么落地用：Harness 装 superagent 插件 ，得到 GitHub 机器人 + 仓库 + 可选飞书 ，得到 用户 @ 机器人派活，Router 建 Worker。
+
+边界说明，0.1 原型，吃内存；GitHub 派活不如 IDE 内直观；官方定位为设计参考非成品。
+
+原文依据，「Router 是内核调度器，Worker 是被隔离的进程。」
+
+接下来，第五部分，【方法/工具卡】Fast Path / Slow Path 与 Thread 直通。
+
+核心思路：Trigger 含群聊/CI/PR 等；Fast Path 用确定性规则滤噪，Slow Path 才调模型；Thread 冷启动后后续事件直投 Worker，不经 Router。
+
+操作步骤，① 配置 sources（GitHub/飞书），得到 ② 白名单/来源规则减 Trigger ，得到 ③ 观察 Router token：消融显示去掉 Thread 直通 Router 决策 +30%、读缓存 token +37% ，得到 ④ Inline 热数据、Spill 冷数据 + ID 链式召回。
+
+选型条件，多通道、长周期任务、需 7×24 跟进；单轮问答不需要 Super-Agent。
+
+避坑，每条消息都走 Slow Path 成本爆炸——必须先配 Fast Path。
+
+原文引用：「去掉 Thread 订阅直通后……多烧约 37% 的 Token。」
+
+接下来，第六部分，【跨概念对比表】单 Session 多 Agent vs Super-Agent。
+
+会话边界，一个聊天窗，跨 IM/GitHub 等多入口，连续性感知靠 Router 全局状态
+
+并行上限，受单上下文长度，多 Worker 隔离，人的注意力 3–5 Session ，得到 任务导向
+
+事件输入，主要是用户消息，Trigger 驱动主动，需 Fast Path 控成本
+
+架构类比，团队内分工，OS 调度 + 进程，工程化程度更高
+
+接下来，第七部分，【决策/选型表】是否上 Super-Agent 原型。
+
+GitHub 异步派活 + Harness 已有，试装插件，Router-Worker 验证，生产核心链路，0.1 非完整产品
+
+Windows 原生环境，WSL 装 Harness，插件不支持 Windows，本机直接跑，官方限制
+
+低噪音 IM 自动化，Fast Path 规则先行，省 Slow Path token，全量 LLM 过滤，成本不可控
+
+需要即时 IDE 反馈，Trae / 本地 Harness，交互更直观，仅 GitHub @ 机器人，体验偏异步
+
+接下来，第八部分，【避坑清单卡】实战与源码目录。
+
+坑名，忽视角色隔离。原因：Sources/Executor 越权。解法：遵循插件编译期约束：Sources 只上报、Executor 只汇报。严重程度：致命——安全。
+
+坑名，配置链路过长（GitHub 小号+仓库+飞书）。原因：0.1 安装复杂。解法：按 Harness 逐步指引，非一次性生产化。严重程度：小心。
+
+坑名，以为链式召回可替代业务知识库。原因：ID 图是引用机制。解法：仍要 Spill 存储与工具读外部。严重程度：小心。
+
+源码映射：src/core Router；src/sources 事件；src/executor Worker；src/core/health.ts Watchdog 雏形。
+
+接下来，第九部分，【心法/原则卡】多任务上限在系统不在模型。
+
+原则，单任务上限看模型，多任务上限看人的注意力与 Session 架构——Super-Agent 用系统工程换并行。
+
+为什么重要，官方四特征（连续/高效/主动/持久）定义了下一代 Agent 产品形态方向。
+
+怎么落地，从 Harness + 单 GitHub 仓库试点；监控 Router token 与 Worker 健康；外部 Watchdog 防死循环。
+
+适用边界，个人轻量用法仍用单 Session；原型吃资源。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+痛点：人多 Session（约 3–5 个）导致注意力瓶颈，非模型不够强。
+
+五大设计：Router-Worker、Fast/Slow Trigger、Thread 直通、Inline&Spill+链式召回、存算分离+Watchdog。
+
+Thread 直通显著省 Router token（约 37%），是工程化关键杠杆。
+
+dsh-superagent-prototype 为 Harness 插件，源码结构与架构一一对应，强调角色隔离。
+
+现阶适合研究/试点，不宜直接替代 IDE 内同步开发流。
+
+读 DeepSeek 官方《Super-Agent 设计探索》与 GitHub deepseek-ai/dsh-superagent-prototype。
+
+在 WSL/Linux 装好 DeepSeek Harness 后按指引安装 Super-Agent 插件。
+
+用专用 GitHub 机器人仓库试 @ 派活，对比单 Session 多开的管理成本。
+
+配置 Fast Path 规则，避免每条群消息进 Slow Path。
+
+跟踪 Watchdog/health 与存算分离演进，再评估生产可用性。
+
+总结
+
+行动清单
+
+关键认知转变
+
+智能体竞争从「单会话 prompt 技巧」转向「像 OS 一样调度 Session、缓存上下文、分离状态与计算」——Super-Agent 卖的是架构参考，不是现成 SaaS。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
