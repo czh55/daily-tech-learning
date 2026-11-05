@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-05",
+    "files": [
+      {
+        "path": "svgs/2026-11-05/agent-swarm-vs-single-agent-architecture.svg",
+        "title": "从 Agent Swarm 到 Single Agent：AI Agent 的高效架构，正在走向两条路",
+        "source": "https://tonybai.com/2026/11/05/agent-swarm-vs-single-agent-architecture/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-04",
     "files": [
       {
