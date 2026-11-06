@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-11-06",
+    "files": [
+      {
+        "path": "svgs/2026-11-06/doubao-real-avatar-video-tips.svg",
+        "title": "豆包真人分身操作技巧：这次让我来做主演",
+        "source": "https://juejin.cn/post/7704689501193928745"
+      },
+      {
+        "path": "svgs/2026-11-06/go-generic-set-proposal-accepted.svg",
+        "title": "再见，map[T]struct！Go 泛型 Set 终于被官方接受了",
+        "source": "https://tonybai.com/2026/11/06/go-generic-set-proposal-accepted/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-05",
     "files": [
       {
