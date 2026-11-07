@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-11-07",
+    "files": [
+      {
+        "path": "svgs/2026-11-07/anthropic-components-of-agent-memory.svg",
+        "title": "从记忆到进化：Anthropic 揭秘 Agent Memory 的底层设计",
+        "source": "https://tonybai.com/2026/11/07/anthropic-components-of-agent-memory/"
+      },
+      {
+        "path": "svgs/2026-11-07/when-ai-writes-code-who-proves-it-works.svg",
+        "title": "Lean 创始人：当 AI 开始写代码，谁来证明它是正确的？",
+        "source": "https://tonybai.com/2026/11/07/when-ai-writes-code-who-proves-it-works/"
+      },
+      {
+        "path": "svgs/2026-11-07/why-go-json-v2-took-six-years.svg",
+        "title": "为什么一个 JSON 库，Go 团队花了六年才重写完？",
+        "source": "https://tonybai.com/2026/11/07/why-go-json-v2-took-six-years/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-06",
     "files": [
       {
