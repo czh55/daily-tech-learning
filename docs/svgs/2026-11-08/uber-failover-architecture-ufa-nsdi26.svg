@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5363" viewBox="0 0 1320 5363">
+  <foreignObject x="0" y="0" width="1320" height="5363">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#eff6ff,#e0e7ff);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#1e3a8a,#3730a3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-blue{background:#dbeafe;color:#1e40af}.tag-indigo{background:#e0e7ff;color:#4338ca}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #4f46e5}
+.card h3{font-size:22px;font-weight:700;color:#3730a3;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#dbeafe,#93c5fd);border:2px solid #60a5fa;border-radius:14px;padding:10px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#1e3a8a}
+.node-em{background:linear-gradient(135deg,#e0e7ff,#a5b4fc);border-color:#818cf8;color:#4338ca}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#1e3a8a,#3730a3);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#e0e7ff;padding:10px 12px;text-align:left;font-weight:700;color:#312e81;border-bottom:2px solid #a5b4fc}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>不是所有服务都值得「双活」</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-blue">Uber UFA</span>
+  <span class="tag tag-indigo">分级容灾</span>
+  <span class="tag tag-slate">NSDI 26</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在年均不到 20 小时的 full-peak 区域故障面前，全局 2× 容灾预留如何让 400 万核算力利用率常年约 20%，以及 Uber 如何通过业务分级、fail-open 化依赖清理与受控超卖，在两年把预留打到约 1.3×、砍掉 102.5 万核且核心可用率仍稳在 99.97%。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#3730a3;margin-bottom:12px;text-align:center">UFA 改造链：依赖 → 分级 → 超卖</h3>
+  <div class="diagram">
+    <div class="node">2× 一刀切双活</div><span class="arrow-sym">→</span>
+    <div class="node node-em">消灭 fail-close</div><span class="arrow-sym">→</span>
+    <div class="node">T0～T5 四档响应</div><span class="arrow-sym">→</span>
+    <div class="node node-em">1.5× 超卖池</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">full-peak 故障约占全年 0.23%，却长期锁住约一半机队算力</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「双活 / 全量 2× 容量」等于高可靠。实际上 6000+ 微服务里大量跨层 fail-close 会让牺牲低优先级服务时拖垮 T0/T1；不分级超卖等于在关键路径上赌博。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】UFA 与 full-peak 故障</h3>
+  <p><strong>在讲什么问题：</strong>何时才需要「另一区域扛住 100% 峰值流量」？</p>
+  <p><strong>关键理解：</strong>Uber 定义 full-peak = 迁移量超周峰值 85% 用户且区域故障超 50% 城市；四年数据年均 &lt;20 小时。旧模型按此极端为所有服务预留 2×，利用率约 20%。</p>
+  <p><strong>和其他概念关系：</strong>UFA（Uber Failover Architecture）= 分级故障响应 + 依赖隔离 + K8s 资源池超卖；编排靠 OMG（Outage Mitigator）。</p>
+  <p><strong>怎么落地用：</strong>用自家故障日志算「真正需要全量峰值接力」的小时占比，再决定默认容灾倍数是 2× 还是分级后的 ~1.3×。</p>
+  <p><strong>边界说明：</strong>分级容灾成立前提是 fail-open 与网络精准断连；未清理依赖前不能牺牲 Restore-Later / Terminate 类服务。</p>
+  <p><strong>原文依据：</strong>「Full-peak 故障平均每年发生不到 20 小时，占全年 0.23%。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】四种故障响应类型</h3>
+  <p><strong>核心思路：</strong>按业务层级 T0～T5 映射 Always-On / Active-Migrate / Restore-Later / Terminate，非核心服务故障时可被牺牲或延后恢复，核心秒级扩容不被抢占。</p>
+  <p><strong>操作步骤：</strong>① 给每个服务定层级 → ② 映射响应类型与 RTO → ③ 划分 stateless.cpu 与 overcommit.cpu 池 → ④ 故障时 OMG 按类型驱逐、迁移、断网。</p>
+  <p><strong>选型条件：</strong>超大规模微服务、双区域、容灾成本与利用率矛盾尖锐；小团队单区域无需整套 UFA。</p>
+  <p><strong>避坑：</strong>Terminate 类在故障期持续不可用——只能用于 NP；不能把 T1 行程链路放进 Restore-Later。</p>
+  <p><strong>对比相邻方法：</strong>传统 active-active 全员 2×；UFA 让低优先级「寄居」在闲置缓冲容量里日常超卖。</p>
+  <p><strong>原文引用：</strong>T0/T1 Always-On；T2 Active-Migrate；T3～T5 Restore-Later；NP Terminate。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】容灾模型维度</h3>
+  <table>
+    <tr><th>维度</th><th>全局 2× 双活</th><th>UFA 分级 + 超卖</th><th>一句话结论</th></tr>
+    <tr><td>预留倍数</td><td>≈2× 全服务</td><td>~1.3× 综合（含 1.5× 超卖池）</td><td>用数据砍掉「为 0.23% 时间买单」</td></tr>
+    <tr><td>利用率</td><td>~20% 基线</td><td>31% 均值，P99 42%</td><td>11 个月减 102.5 万核</td></tr>
+    <tr><td>依赖要求</td><td>隐含「下游都得活」</td><td>4155 个 fail-close 必须清理</td><td>省钱与可靠一体两面</td></tr>
+    <tr><td>故障表现</td><td>理论全量接管</td><td>2026-01 17h 事件 99.97% 可用</td><td>8 分钟内突发容量就绪</td></tr>
+    <tr><td>组织成本</td><td>规则简单</td><td>~50 人平台团队、两年分层推进</td><td>社会技术变革 &gt; 单点技术</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时采用分级容灾</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>万级微服务、双 Region</td><td>UFA 式分级 + 依赖门禁</td><td>RPC 跨层调用占比高</td><td>继续全员 2×</td><td>算力账单与利用率双输</td></tr>
+    <tr><td>单体或少服务</td><td>传统 HA + 演练</td><td>依赖图可控</td><td>上 OMG + 7 层 tier</td><td>治理 ROI 不成比例</td></tr>
+    <tr><td>已做超卖但未分级</td><td>先 fail-close 扫描</td><td>超卖会把隐患放大</td><td>直接砍 NP 资源</td><td>易触发亚稳态失败</td></tr>
+    <tr><td>强监管行程/支付</td><td>T0/T1 Always-On + Canary 断网</td><td>牺牲外围保核心</td><td>全 Terminate 低环境</td><td>合规与实验环境需求冲突</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】fail-open 与三层安全网</h3>
+  <p><strong>原则：</strong>低优先级服务可以死，前提是上游必须 fail-open——下游挂了我能降级，而不是把错误原样抛出拖死核心。</p>
+  <p><strong>为什么重要：</strong>一周内 RPC 约 62 万亿次，约半数为高→低跨层；不隔离则「腾资源」等于「捅核心」。</p>
+  <p><strong>怎么落地：</strong>运行时依赖画像 + Go/Java 静态传播分析 + Canary 5 分钟断网回归；AI 驱动 47 条移动端 E2E 故障注入。</p>
+  <p><strong>适用边界：</strong>静态分析拦在合入前，Canary 45 天仅 3 次新增回归——仍要保留运行时监控补漏。</p>
+  <p><strong>原文支撑：</strong>三层网共揪出 4155 个 fail-close 违规。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】UFA 工程陷阱</h3>
+  <p><strong>坑名：</strong>未清依赖就超卖。<strong>原因：</strong>Restore-Later 被抢占触发链式挂。<strong>解法：</strong>依赖图先行或与 UFA 并行投人。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑名：</strong>预发无法复现地域问题。<strong>原因：</strong>真实灰度才暴露机场周边延迟等。<strong>解法：</strong>分区域灰度 + 主动切换治灰色故障。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑名：</strong>镜像拉取打垮仓库。<strong>原因：</strong>大规模冷启动。<strong>解法：</strong>Kraken P2P 预热数 TB 镜像，启动快 30%。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑名：</strong>一刀切驱逐批处理。<strong>原因：</strong>与业务方未协调。<strong>解法：</strong>故障窗口暂停向批处理集群调度非关键任务。<strong>严重程度：</strong>可忽略→小心（团队规模相关）。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：SRE「最大冗余 / 全员双活」保守派</p>
+  <p class="rebuttal-text">按年不到一天的 full-peak 去削减全局 2× 预留是在用统计赌博换账单——一旦遇到超长区域故障或依赖清理漏网，亚稳态级联会比多花的 CPU 昂贵得多。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>数据证明 full-peak 极罕见，一刀切 2× 让机队长期低利用率。</li>
+    <li>UFA 用 T0～T5 四档响应把「牺牲非核心」产品化，并配套 OMG 编排。</li>
+    <li>fail-close 清理是超卖与分级的前提，三层分析抓出 4155 处违规。</li>
+    <li>11 个月减 102.5 万核、利用率升至 31%，核心可用率保持 99.97%。</li>
+    <li>最难的是跨 6000+ 服务、数百团队的社会技术协作而非单点算法。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>统计近 3～5 年区域故障中「需全量峰值接力」的时长占比。</li>
+    <li>绘制高→低层级 RPC，标记 fail-close 调用对并排期修复。</li>
+    <li>为核心服务定义 Always-On 清单，其余映射 Migrate / Restore / Terminate。</li>
+    <li>在 Canary 引入「断网低 tier 5 分钟」自动回滚门禁。</li>
+    <li>阅读 NSDI 26 原文核对超卖公式与 Kraken / OMG 细节。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>容灾设计应从「每个服务都值得双活」转为「按业务价值买可靠性」——闲置算力不是勋章，在依赖可隔离的前提下，分级与超卖才是 hyperscale 的长期均衡。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

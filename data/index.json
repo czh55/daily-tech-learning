@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-08",
+    "files": [
+      {
+        "path": "svgs/2026-11-08/uber-failover-architecture-ufa-nsdi26.svg",
+        "title": "不是所有服务都值得「双活」：Uber 容灾架构的降本哲学",
+        "source": "https://tonybai.com/2026/11/08/uber-failover-architecture-ufa-nsdi26/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-07",
     "files": [
       {
