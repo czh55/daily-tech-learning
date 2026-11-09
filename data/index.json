@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-11-09",
+    "files": [
+      {
+        "path": "svgs/2026-11-09/44-ai-agent-chrome-auto-publish.svg",
+        "title": "44. 自媒体全自动发布终极方案：AI Agent 接管你的 Chrome，YouTube、B站、X一键发布",
+        "source": "https://xiangyugongzuoliu.com/44-ai-agent-chrome-auto-publish/"
+      },
+      {
+        "path": "svgs/2026-11-09/cpp26-historic-dis-rejection-herb-sutter.svg",
+        "title": "C++ 史上首次被否决！C++ 之父与标准委员会，终于闹掰了？",
+        "source": "https://tonybai.com/2026/11/09/cpp26-historic-dis-rejection-herb-sutter/"
+      },
+      {
+        "path": "svgs/2026-11-09/go-maps-grow-go-1-28.svg",
+        "title": "再见，Go map 的渐进式扩容！Go 1.28 将迎来 maps.Grow",
+        "source": "https://tonybai.com/2026/11/09/go-maps-grow-go-1-28/"
+      },
+      {
+        "path": "svgs/2026-11-09/intelligent-ui-mcp-apps.svg",
+        "title": "解密prompt系列73. 爆改对话框：揭秘 Intelligent UI 的动态界面魔法",
+        "source": "https://www.cnblogs.com/gogoSandy/p/23555610"
+      }
+    ]
+  },
+  {
     "date": "2026-11-08",
     "files": [
       {

@@ -1,0 +1,121 @@
+欢迎收听每日技术学习语音讲解。本期主题，对话框里开窗：Intelligent UI 与 MCP Apps。标签包括OpenAI Intelligent UI、MCP Apps、gogoSandy #73。本次讲解预计时长 约 11 到 12 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：AI 只能「念地图」式吐文本时，如何在聊天宿主内嵌入可交互 UI；拆解 MCP Apps 的 ui resourceUri、structuredContent 双轨输出，以及 callServerTool / sendMessage / updateModelContext 三条回传路径，并对比 lustereczko-mcp 现场 HTML 与 A2UI 预制组件路线。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：LLM 调工具，然后_meta.ui，然后拉取 ui://，然后iframe 渲染，然后三路回传
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：「嵌个 iframe 就是 Intelligent UI」。实际上能看不能动只完成一半；没有 resourceUri 门牌与宿主↔View 协议，点击筛选无法直达 MCP 或注入上下文。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：极简对话优先的产品派
+
+在聊天里塞 iframe 与三路桥接会把宿主复杂度推回「小程序平台」——多数问答只需可靠文本与文件；Intelligent UI 是大象引领的习惯战，不代表开放 MCP Apps 必然成为默认集成方式。
+
+接下来，第四部分，【概念拆解卡】Intelligent UI 拆成两问。
+
+在讲什么问题，闭源 ChatGPT 推送的 Intelligent UI，底层对应哪类开放能力？
+
+关键理解，① 预制 UI 如何进对话并双向交互（MCP Apps）② UI 能否由模型现场生成（lustereczko-mcp 空白画布 + display_ui_to_user）。
+
+和其他概念关系：OpenAI 倾向原生组件库 + 编译器（类 A2UI）；MCP 生态走开放 ui:// 资源与 JSON 工具元数据。
+
+怎么落地用：工具定义加 _meta.ui.resourceUri；返回同时带 content 与 structuredContent。
+
+边界说明，早年 MCP Apps 不火因场景偏企业重交互；个人轻量仍多 SKILL 文本流。
+
+原文依据，「AI 的能力通天，表达方式却被文本框锁死。」
+
+接下来，第五部分，【方法/工具卡】两把钥匙与 To UI 数据。
+
+核心思路：钥匙一：工具 _meta 声明 ui:// 地址，宿主执行函数时顺带拉 UI 包（HTML+JS）。钥匙二：structuredContent 喂图表/编辑器状态，content 仅摘要给 LLM。
+
+操作步骤，① MCP 服务打包 UI 资源 ② 工具 JSON 写 resourceUri ③ 宿主实现 Apps 协议 ④ UI 读 structuredContent 渲染。
+
+选型条件，BI 筛选、PPTX 批注、地图框选等强交互；宿主需支持 MCP Apps（非仅纯文本 fallback）。
+
+避坑，只返 content 时高级宿主退化为念数字；UI 与模型争用同一 JSON 会干扰推理。
+
+示例：visualize_data ，得到 ui://charts/interactive。
+
+接下来，第六部分，【跨概念对比表】From UI 三路动作。
+
+callServerTool，绕过 LLM ，得到 MCP，图表点「华东区」重查，无幻觉、毫秒级
+
+sendMessage，组装 User Message ，得到 Agent，PPTX 框选+批注发送，模型看到真人式指令
+
+updateModelContext，静默注入上下文，地图框选西直门再问「好吃的」，不触发即时回复
+
+接下来，第七部分，【决策/选型表】预制 UI vs 现场生成。
+
+MCP Apps 标准，程序员预制 ui://，稳定、可审计、双向协议成熟，每个场景要前端资产
+
+lustereczko-mcp，ui:// 返回空白画布 + LLM 填 HTML，极客、随问随写界面，安全与风格一致性难控
+
+OpenAI / A2UI，原生组件 + 流式编译，统一观感、流式体验，闭源、绑定宿主
+
+纯文本 SKILL，无 UI，轻量个人自动化，无法点选/地图/复杂表单
+
+接下来，第八部分，【心法/原则卡】lustereczko「劫持」ui://。
+
+原则，请求静态资源时不返预制 HTML，返空白画布；LLM 调用 display_ui_to_user 把刚写的 HTML/JS 糊上。
+
+为什么重要，把 MCP App 从「预制菜」推进到「现炒」——对齐模型 Coding 能力爆发。
+
+怎么落地，个人项目（如 pptx-skill）用 MCP-App 作 HTML 层编辑协议。
+
+适用边界，作者更看好狂野方案，但企业仍可能优选 A2UI 式组件沙箱。
+
+风向：GPT 全量 Intelligent UI 正在重塑用户习惯，图形化 AI 交互逼近爆发窗口。
+
+接下来，第九部分，【避坑清单卡】协议与产品现实。
+
+坑名，iframe 无回传。原因：未实现 Apps 宿主协议。解法：三路 API 择一或组合。严重程度：致命（假交互）。
+
+坑名，现场 HTML XSS。原因：LLM 生成可执行脚本。解法：沙箱、CSP、预制组件兜底。严重程度：致命（lustereczko 路线）。
+
+坑名，场景误判。原因：个人低频重交互。解法：先 SKILL，企业流再上 Apps。严重程度：可忽略，得到小心。
+
+坑名，只跟 OpenAI 走。原因：闭源 Intelligent UI 难迁移。解法：MCP 开放元数据优先。严重程度：小心（供应商锁定）。
+
+接下来，第十部分，总结与行动。
+
+结论
+
+Intelligent UI 表象是交互答案，实质是 MCP Apps 开放标准 + 宿主双向协议。
+
+resourceUri 与 structuredContent/content 分叉，让模型专注摘要、UI 吃全量数据。
+
+callServerTool、sendMessage、updateModelContext 覆盖直连接口、代发指令、静默上下文三态。
+
+lustereczko-mcp 用空白画布实现现场 UI，与 A2UI 预制流式路线形成光谱两端。
+
+OpenAI 全量推送正在催化场景，企业重交互与个人轻 SKILL 将长期并存。
+
+为下一个 MCP 工具设计 _meta.ui.resourceUri 与 structuredContent 字段。
+
+按交互类型选回传路径：BI 筛选用 callServerTool，批注发 Agent 用 sendMessage。
+
+评估宿主是否支持 Apps；不支持则 content fallback 仍要可读。
+
+重交互原型可试 lustereczko 画布，生产环境优先预制+沙箱。
+
+跟踪 MCP Apps 规范与 Intelligent UI 产品对齐，避免重复造 iframe 轮子。
+
+总结
+
+行动清单
+
+关键认知转变
+
+下一代人机交互应从「模型说什么」扩展到「模型住在哪里说话」——对话框是壳，ui:// 资源与 structuredContent 才是让 AI 从瞎子导航员变成能递地图的共事者。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

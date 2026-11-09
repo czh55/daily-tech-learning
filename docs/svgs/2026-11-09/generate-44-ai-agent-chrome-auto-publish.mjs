@@ -1,0 +1,154 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, '44-ai-agent-chrome-auto-publish.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ecfdf5,#d1fae5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#047857,#0d9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-green{background:#d1fae5;color:#047857}.tag-teal{background:#ccfbf1;color:#0f766e}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #10b981}
+.card h3{font-size:22px;font-weight:700;color:#047857;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#d1fae5,#6ee7b7);border:2px solid #34d399;border-radius:14px;padding:10px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#065f46}
+.node-em{background:linear-gradient(135deg,#ccfbf1,#5eead4);border-color:#2dd4bf;color:#0f766e}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#047857,#0d9488);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#d1fae5;padding:10px 12px;text-align:left;font-weight:700;color:#065f46;border-bottom:2px solid #6ee7b7}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>自媒体发布：让 Agent 接管真 Chrome</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-green">Chrome Use</span>
+  <span class="tag tag-teal">站点适配器</span>
+  <span class="tag tag-slate">翔宇 #44</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：写稿、做图、剪视频都能 Skill 化，为何「发出去」仍被平台四道关拦截；以及 Chrome Use 如何通过 CLI、守护进程、本机中继与扩展，在真实登录态下完成 YouTube、B 站、抖音、X、知乎等一键发布（实测 63 站 187 适配器）。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#047857;margin-bottom:12px;text-align:center">Chrome Use 链路：Agent → CLI → 守护进程 → 中继 → 扩展</h3>
+  <div class="diagram">
+    <div class="node">Agent 指令</div><span class="arrow-sym">→</span>
+    <div class="node node-em">CLI</div><span class="arrow-sym">→</span>
+    <div class="node">Daemon</div><span class="arrow-sym">→</span>
+    <div class="node node-em">Relay</div><span class="arrow-sym">→</span>
+    <div class="node">Extension</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">插件从内向外连，不弹「允许远程调试」；用无障碍树按编号点按，非截图坐标</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：「Playwright / 云端浏览器」就能打通发布。实际上测试工具开空白环境易过人机验证；Browserbase 按会话计费又慢。最省事不是伪装指纹，而是真 IP + 真 Chrome + 真 Cookie。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】平台四道识别关</h3>
+  <p><strong>在讲什么问题：</strong>网站如何给访问打「像人还是像 Agent」的分？</p>
+  <p><strong>关键理解：</strong>① 网络地址 ② 浏览器特征（含自动化标记）③ 登录状态 ④ 操作习惯（停留、点击节奏）。分越高越易验证码或重登。</p>
+  <p><strong>和其他概念关系：</strong>API 按量卖给程序；网页会员额度给真人——把人的额度交给 Agent 是平台「钱袋子」动因。</p>
+  <p><strong>怎么落地用：</strong>专用 Chrome Profile 只登要自动化的站；Agent 用与你一致的出口与时区。</p>
+  <p><strong>边界说明：</strong>检测通过 ≠ 不封号；验证码与二次验证仍须人处理。</p>
+  <p><strong>原文依据：</strong>「要让 Agent 顺利发布，最省事的办法不是伪装，而是让它直接用你自己的网络、浏览器、登录状态。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】六种浏览器自动化</h3>
+  <table>
+    <tr><th>做法</th><th>代表</th><th>卡点</th><th>一句话</th></tr>
+    <tr><td>测试工具</td><td>Playwright</td><td>空白环境、自动化标记</td><td>测自家站合适</td></tr>
+    <tr><td>远程调试</td><td>Chrome DevTools</td><td>每次弹允许调试</td><td>人不在即卡死</td></tr>
+    <tr><td>云端浏览器</td><td>Browserbase</td><td>贵、慢、按会话计费</td><td>作者已弃用</td></tr>
+    <tr><td>内置浏览器</td><td>ChatGPT 等</td><td>外部 Agent 难调用</td><td>生态封闭</td></tr>
+    <tr><td>指纹浏览器</td><td>跨境场景</td><td>水较深</td><td>非本篇主线</td></tr>
+    <tr><td>Chrome 插件</td><td>Chrome Use</td><td>需专用资料+常开窗口</td><td>对准四道关的真环境</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】架构四件与站点适配器</h3>
+  <p><strong>核心思路：</strong>CLI 收令、Daemon 常驻记 Ref、Relay 本机单向拉起、Extension 用官方调试 API；上层 Site Adapter 把 YouTube/B 站/抖音/X/微博等发布流程固化为命令。</p>
+  <p><strong>操作步骤：</strong>① 新建「Agent专用」Profile ② 装扩展 ID knfcmb… ③ install.sh + extension install ④ doctor 自检 ⑤ 写入规则只用该 Profile。</p>
+  <p><strong>选型条件：</strong>已用 Claude Code / Codex；要在不重新登录前提下跨多平台发内容。</p>
+  <p><strong>避坑：</strong>Mac 上 extension install 加 <code>--no-profile</code>；专用窗口不能关；发布前人工确认。</p>
+  <p><strong>数据点：</strong>2026-10-31 实测 63 网站、187 适配器；小红书暂仅读。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】发布平台与适配器</h3>
+  <table>
+    <tr><th>发什么</th><th>平台</th><th>适配器路径</th><th>备注</th></tr>
+    <tr><td>视频</td><td>YouTube</td><td>youtube-studio/video-upload</td><td>演示停发布前确认</td></tr>
+    <tr><td>视频</td><td>B 站 / 抖音</td><td>*-creator/video-publish</td><td>超时先查后台再重跑</td></tr>
+    <tr><td>帖</td><td>X / 微博 / IG</td><td>*/post</td><td>多 Agent 彩色标签隔离</td></tr>
+    <tr><td>文</td><td>知乎 / 掘金 / CSDN / 思否</td><td>article-publish</td><td>无适配器可让 Agent 编写</td></tr>
+    <tr><td>读</td><td>小红书</td><td>仅数据读取</td><td>暂无发布类</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】安全与日常五招</h3>
+  <p><strong>原则：</strong>专用 Profile 收紧权限（禁读凭据、禁删文件）；提示词注入当普通数据处理；发布/付款类人确认。</p>
+  <p><strong>五招：</strong>大白话派活 → 站点适配器一条命令 → 示范录制脚本 → 多 Agent 并行 → 验证码交给人。</p>
+  <p><strong>常见报错：</strong>远程调试弹窗=升级/重装；profile isn't open=重开专用窗口；Ref not found=重读页面。</p>
+  <p><strong>原文支撑：</strong>Apache-2.0 开源；扩展不往页面注码，靠无障碍树操作。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】安装与合规</h3>
+  <p><strong>坑名：</strong>共用日常 Profile。<strong>原因：</strong>银行/邮箱同环境，注入面大。<strong>解法：</strong>仅登自动化站点。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑名：</strong>超时即重跑。<strong>原因：</strong>后台仍在上传。<strong>解法：</strong>先查平台后台。<strong>严重程度：</strong>小心（重复发布）。</p>
+  <p><strong>坑名：</strong>公司策略禁扩展。<strong>原因：</strong>管理员屏蔽商店。<strong>解法：</strong>申请放行或换个人机。<strong>严重程度：</strong>致命（在企业环境）。</p>
+  <p><strong>坑名：</strong>Codex 默认自带浏览器。<strong>原因：</strong>未强制 chrome-use。<strong>解法：</strong>AGENTS.md 写明浏览器任务走 CLI。<strong>严重程度：</strong>小心。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：平台合规与 ToS 保守派</p>
+  <p class="rebuttal-text">即使用真实浏览器，自动化发布仍可能违反各站服务条款；把 Max 订阅额度转成无人值守发帖，是在用「像人」绕过 API 计费，封号与法律风险不应被 doctor 全绿掩盖。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>自媒体 Agent 化瓶颈在发布环节，根因是平台四道关保护商业模型。</li>
+    <li>Chrome Use 用真环境对齐四道关，架构 CLI+Daemon+Relay+Extension 免远程调试弹窗。</li>
+    <li>站点适配器覆盖主流视频/帖/文发布；63 站 187 适配器可查询扩展。</li>
+    <li>专用 Profile + 权限收紧 + 发布前人工确认，是可控自动化的底线。</li>
+    <li>日常五招（派活、适配器、录制、并行、人机协作）可闭环_skill 上下游。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>新建「Agent专用」Chrome 用户资料并仅登录目标平台。</li>
+    <li>执行 install.sh、<code>chrome-use extension install --no-profile</code>、doctor。</li>
+    <li>规则文件锁定浏览器任务只走 chrome-use（Codex 写进 AGENTS.md）。</li>
+    <li>先用只读命令验证登录与适配器，再开放上传/发帖并保留发布前确认。</li>
+    <li>对照 chrome-use.leeguoo.com 故障排查与安全准则定期复查。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>浏览器自动化选型应从「能控页面」升级为「能复用真人资产」——在专用边界内让 Agent 操作你已登录的 Chrome，比云端空白浏览器更接近可运营的发布闭环。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);

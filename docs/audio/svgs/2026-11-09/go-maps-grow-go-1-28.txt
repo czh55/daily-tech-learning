@@ -1,0 +1,117 @@
+欢迎收听每日技术学习语音讲解。本期主题，已有 map 也能预扩容：maps.Grow 与 Copy 智能化。标签包括Go 1.28、#81698、maps 包。本次讲解预计时长 约 11 到 12 分钟，共 10 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：当目标 map 已存在且不能重建时，如何避免向 HTTP Header、ReverseProxy 合并路径上反复触发渐进式扩容——Proposal #81698 用 maps.Grow(m,n) 表达「再增 n 个元素」的容量意图，并让 maps.Copy 在 src 更大时自动预扩容，基准最高约快 57%、分配约减半。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：make(hint)，然后maps.Grow(m,n)，然后maps.Copy，然后少次扩容
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：Grow 保证以后绝不扩容、或能查 cap。实际上它是尽力而为的 hint，不暴露真实容量；不能缩小 map；n<0 或向 nil 且 n>0 会 panic，Grow(nil,0) 安全。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「map 够用就行」派 / 反对膨胀标准库
+
+多数业务 map 极小，标准库再加 Grow 只是安慰剂——真正瓶颈在网络与业务逻辑，手工 make 合理 hint 或偶尔扩容完全可接受，不必为边缘 proxy 场景堆 API。
+
+接下来，第四部分，【概念拆解卡】maps.Grow 语义。
+
+在讲什么问题，create 时有 make hint，原地 bulk 写入却只能忍受 runtime 渐进扩容？
+
+关键理解，Go 1.28 起 func Grow[M ~map[K]V](m M, n int) 为已有 map 预留至少容纳 n 个新增元素的空间，等价于 make 的 len(m)+n 提示；引用语义就地生效，无返回值。
+
+和其他概念关系：maps.Clone / 重建 map 会复制全表；Grow 适合第三方持有的 dst（net/http Header 等）。
+
+怎么落地用：merge 前 maps.Grow(dst, len(src)) 再 maps.Copy；未创建 map 仍优先 make(map[K]V, hint)。
+
+边界说明，连续 Grow(m,1000) 再 Grow(m,10) 不会缩小；拒绝 #52157 式 cap 查询是为避免虚假保证。
+
+原文依据，Proposal #81698 已于 2026-11-07 标记 completed。
+
+接下来，第五部分，【方法/工具卡】maps.Copy 自动预扩容。
+
+核心思路：当 len(src)>len(dst) 时，Copy 内部先 grow(dst, len(src)-len(dst))，再遍历写入；小 map（不超过一个 group）跳过以免多余开销。
+
+操作步骤，① 判断批量写入规模 ，得到 ② 可选显式 Grow ，得到 ③ Copy 或手写循环 ，得到 ④ 压测热路径验证分配次数。
+
+选型条件，ReverseProxy/TimeoutHandler/CGI Header 合并、libhoney-go 式大批量导入；两 map 同 key 全集或同 size 无重叠 key 时优化基本无感。
+
+避坑，不要用 Grow 替代 make；不要假定 n 后零扩容；重叠 key 时按 len(src) 估容量而非 len(src) 盲目全量 reserve 过度——实现用 len(src)-len(dst) 减过度分配。
+
+对比相邻方法，自建新 map 再手工拷贝旧表：多一轮分配与遍历；裸循环插入：多次渐进扩容。
+
+原文引用：CL 839065 在 AMD Ryzen 5 5600X 上空 map 复制 64 键 -57.12%。
+
+接下来，第六部分，【跨概念对比表】map 容量手段。
+
+时机，创建时，已存在 map，可替换引用时，原地场景用 Grow
+
+语义，总容量提示，+n 新增，全新桶表，Grow 不返新指针
+
+持有方，自建，调用方 dst，需换掉旧引用，HTTP dst 只能 Grow
+
+保证，hint，尽力 hint，确定新表，皆非绝对零扩容
+
+典型收益，基线，大 bulk 写，内存尖峰，Copy 自动化常见路径
+
+接下来，第七部分，【避坑清单卡】Grow / Copy 使用陷阱。
+
+坑名，把 n 当总容量。原因：API 定义 n 为新增数。解法：用 len(待写入) 或 len(src)-len(dst)。严重程度：小心。
+
+坑名，对 nil map Grow 正 n。原因：与写 nil map 同规。解法：先 make 或 Grow(nil,0)。严重程度：致命（panic）。
+
+坑名，期望 cap 可见。原因：#52157 未采纳。解法：只表达意图，用 benchmark 验证。严重程度：可忽略。
+
+坑名，小 map 过度优化。原因：Copy 对小表跳过 presize。解法：无需手调 Grow。严重程度：可忽略。
+
+接下来，第八部分，【心法/原则卡】隐藏实现、保留意图。
+
+原则，给开发者表达「还要加多少」的把手，不把 bucket 容量暴露成可依赖不变量。
+
+为什么重要，map 扩容策略属 runtime 内部细节；虚假 cap 契约会束缚未来优化（#56182 渐进式 vs 一次扩）。
+
+怎么落地，Go 1.28 升级后审查 merge/Header 工具函数，一行 Grow 或依赖智能 Copy。
+
+适用边界，非热路径、元素极少时收益微乎其微；勿为微优化牺牲可读性。
+
+原文支撑：「提供必要的控制能力，但尽可能隐藏底层实现细节。」
+
+接下来，第九部分，总结与行动。
+
+结论
+
+#81698 接受并完成，Go 1.28 将提供 maps.Grow(m,n) 服务已有 map 的批量写入场景。
+
+n 表新增元素；不缩小、无 cap API；负 n 与 nil+n>0 panic。
+
+maps.Copy 在 src 更大时自动 presize，小 map 跳过，避免无谓开销。
+
+CL 839065：空/大 map 复制耗时最多降约 57%，内存与分配次数约减半。
+
+设计延续 hint 哲学，不替代 make，补全 HTTP Header、ReverseProxy 等原地合并痛点。
+
+在 merge 辅助函数中试用 maps.Grow(dst, len(src)) + maps.Copy。
+
+对 ReverseProxy Header 合并路径做升级前后 benchmark。
+
+Go 1.28 rc 发布后确认 maps 包文档中的尽力而为表述。
+
+审查是否误用重建 map 规避扩容，可改为 Grow 原地写。
+
+阅读 CL 819620 / 839065 核对 Copy 的 len(src)-len(dst) 逻辑。
+
+总结
+
+行动清单
+
+关键认知转变
+
+map 性能优化从「只能在 make 时猜容量」转为「在已知下一批写入量时，用 Grow 或智能 Copy 把意图交给 runtime」——一行声明换更少渐进扩容，而非暴露内部 cap。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
