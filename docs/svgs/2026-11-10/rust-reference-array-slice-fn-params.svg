@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="4653" viewBox="0 0 1320 4653">
+  <foreignObject x="0" y="0" width="1320" height="4653">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fff7ed,#ffedd5);padding:48px 60px;color:#1e293b}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#c2410c,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-orange{background:#ffedd5;color:#9a3412}.tag-amber{background:#fef3c7;color:#92400e}.tag-slate{background:#f1f5f9;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#c2410c;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#ffedd5,#fed7aa);border:2px solid #fdba74;border-radius:14px;padding:10px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#9a3412}
+.node-em{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#fbbf24;color:#92400e}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#ffedd5;padding:10px 12px;text-align:left;font-weight:700;color:#9a3412;border-bottom:2px solid #fdba74}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#eff6ff;border:2px solid #2563eb;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#1e40af;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#1d4ed8;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#1e3a8a}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>Rust 数组与切片：四种形参怎么选</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-orange">Rust</span>
+  <span class="tag tag-amber">DST / 借用</span>
+  <span class="tag tag-slate">函数形参</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：定长数组、DST 切片、数组引用与切片引用在内存布局与传参上的本质差异，以及为何函数形参应默认写 &amp;[T] 而非把 [T] 或 &amp;[T; N] 写死。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#c2410c;margin-bottom:12px;text-align:center">数据层与视图层：从 [T;N] 到 &amp;[T]</h3>
+  <div class="diagram">
+    <div class="node">[i32; 3]</div><span class="arrow-sym">→</span>
+    <div class="node node-em">&amp;[i32; 3]</div><span class="arrow-sym">→</span>
+    <div class="node">Unsize</div><span class="arrow-sym">→</span>
+    <div class="node node-em">&amp;[i32]</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">瘦指针（8B）靠类型记长度；胖指针（16B）在值里携带 len</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：切片 [i32] 可以当栈变量或 fn 按值参数。实际上 [i32] 是 DST，编译期大小未知，只能藏在 &amp;[i32] 等指针后；fn foo(s: [i32]) 会直接 E0277。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】四种相关类型</h3>
+  <p><strong>在讲什么问题：</strong>四个长得像的类型为何不能互换？</p>
+  <p><strong>关键理解：</strong>[T; N] 长度是类型一部分；[T] 无固定大小；&amp;[T; N] 是 8 字节瘦指针；&amp;[T] 是 16 字节胖指针（地址+len）。</p>
+  <p><strong>和其他概念关系：</strong>Vec&lt;T&gt; 拥有堆数据，&amp;[T] 只是借用视图，无 capacity。</p>
+  <p><strong>怎么落地用：</strong>验 size_of：定长数组 12B（3×i32），&amp;[i32] 类型本身 16B。</p>
+  <p><strong>边界说明：</strong>DST 不能单独存在；大数组按值传参拷贝贵，应优先引用。</p>
+  <p><strong>原文依据：</strong>「瘦指针靠类型记住长度，胖指针靠值记住长度。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】C++ / Go / Rust 序列视图</h3>
+  <table>
+    <tr><th>维度</th><th>C++</th><th>Go</th><th>Rust</th><th>结论</th></tr>
+    <tr><td>定长数组传参</td><td>退化为指针丢长度</td><td>整体拷贝</td><td>按值或 &amp; 引用</td><td>C++ 需 span 补丁</td></tr>
+    <tr><td>通用只读视图</td><td>std::span（C++20）</td><td>[]T（24B 含 cap）</td><td>&amp;[T]（16B）</td><td>语义最接近 span</td></tr>
+    <tr><td>扩容</td><td>视图不能</td><td>append 可长</td><td>视图不能，Vec 能</td><td>Rust 拆清所有者</td></tr>
+    <tr><td>安全</td><td>无</td><td>无借用检查</td><td>借用检查器</td><td>悬垂/别名写受控</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】函数形参怎么写</h3>
+  <table>
+    <tr><th>需求</th><th>形参</th><th>依据</th><th>不推荐</th><th>原因</th></tr>
+    <tr><td>只读任意长度</td><td>&amp;[T]</td><td>标准库惯例</td><td>[T; N] 按值</td><td>长度写死+拷贝</td></tr>
+    <tr><td>就地改元素</td><td>&amp;mut [T]</td><td>可改不可增删</td><td>&amp;mut Vec</td><td>除非真要扩容</td></tr>
+    <tr><td>必须恰好 N 个</td><td>&amp;[T; N] 或 const N</td><td>协议头/矩阵</td><td>为每 N 复制函数</td><td>用 const 泛型</td></tr>
+    <tr><td>小型 Copy 数据</td><td>[T; N]</td><td>如 [f32;2] 坐标</td><td>大数组按值</td><td>栈拷贝爆炸</td></tr>
+    <tr><td>要 push/pop</td><td>&amp;mut Vec&lt;T&gt;</td><td>视图无容量</td><td>&amp;mut [T]</td><td>无 push API</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】自动转换与反向技巧</h3>
+  <p><strong>核心思路：</strong>数组→切片用 Unsized Coercion；Vec/String/Box 用 Deref Coercion，均在调用点零成本完成。</p>
+  <p><strong>操作步骤：</strong>① 参数写 &amp;[T] → ② 传 &amp;arr / &amp;v / &amp;arr[i..j] → ③ 需定长时用 s[..N].try_into()。</p>
+  <p><strong>选型条件：</strong>泛型接受多种容器时 &amp;[T]；协议固定宽度用 try_into 或 const N 泛型。</p>
+  <p><strong>避坑：</strong>勿混淆两套 coercion；try_into 长度不匹配返回 Err，别用 into 盲转。</p>
+  <p><strong>对比相邻方法：</strong>impl AsRef&lt;[T]&gt; 更宽但更抽象；&amp;[T] 直白且无额外 trait 约束。</p>
+  <p><strong>原文引用：</strong>口诀——参数想通用写 &amp;[T]；想严格才写 &amp;[T; N]。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】新手第一道暗礁</h3>
+  <p><strong>坑名：</strong>fn foo(s: [i32])。<strong>原因：</strong>DST 不能入栈。<strong>解法：</strong>改 &amp;[i32]。<strong>严重程度：</strong>致命（不编译）。</p>
+  <p><strong>坑名：</strong>以为 [i32;3] 与 [i32;4] 同类。<strong>原因：</strong>长度入类型。<strong>解法：</strong>用切片或泛型 N。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑名：</strong>在 &amp;mut [T] 上 push。<strong>原因：</strong>视图不负责容量。<strong>解法：</strong>&amp;mut Vec。 <strong>严重程度：</strong>小心。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：Go/Python 转轨开发者 / 「类型太啰嗦」派</p>
+  <p class="rebuttal-text">多记四种写法只是语言洁癖——实战里照抄 &amp;[T] 就够，强行理解 DST 和胖指针对业务交付零收益，不如把时间花在 async 和生命周期上。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Rust 把序列拆成数据（[T;N]、[T]）与借用视图（&amp;[T;N]、&amp;[T]），[T] 只能经胖指针使用。</li>
+    <li>函数形参默认 &amp;[T] 或 &amp;mut [T]，兼容数组、Vec、子区间。</li>
+    <li>Unsize 与 Deref 两套转换机制不同，皆在调用处零成本。</li>
+    <li>定长需求用 &amp;[T; N]、const 泛型或 try_into，小数组才可按值 [T; N]。</li>
+    <li>相对 C++ span 与 Go slice，&amp;[T] 无容量、不可扩容，安全靠借用检查。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>把仍写 [T; N] 按值入参的 API 审一遍，大数组改 &amp;[T]。</li>
+    <li>在 playground 打印 size_of 验证瘦/胖指针差异。</li>
+    <li>解析二进制头时用 try_into 做运行时长度校验。</li>
+    <li>矩阵类 API 尝试 fn foo&lt;const N: usize&gt;(arr: &amp;[T; N])。</li>
+    <li>思考题：对比 impl AsRef&lt;[T]&gt; 与 &amp;[T] 在 crate 公开 API 上的取舍。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>切片不是「动态数组类型」，而是「带长度的借用视图」——长度可从类型（数组引用）搬到运行时值（&amp;[T]），这才是 Vec、String、迭代器链条的统一地基。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

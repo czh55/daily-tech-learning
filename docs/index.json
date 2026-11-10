@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-11-10",
+    "files": [
+      {
+        "path": "svgs/2026-11-10/go-cgo-without-c-toolchain-proposal-update.svg",
+        "title": "Go cgo 去 C 工具链提案最新进展：Cherry Mui 给出更具体的落地方案",
+        "source": "https://tonybai.com/2026/11/10/go-cgo-without-c-toolchain-proposal-update/"
+      },
+      {
+        "path": "svgs/2026-11-10/rust-reference-array-slice-fn-params.svg",
+        "title": "切片与数组：[i32; 3]、[i32]、&[i32; 3]、&[i32] 到底有什么区别？",
+        "source": "https://tonybai.com/2026/11/10/rust-reference-array-slice-fn-params/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-09",
     "files": [
       {
