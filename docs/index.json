@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-11-13",
+    "files": [
+      {
+        "path": "svgs/2026-11-13/ai-era-what-should-software-engineers-do-now.svg",
+        "title": "AI 时代，程序员最需要改变的，是对自己价值的认知",
+        "source": "https://tonybai.com/2026/11/13/ai-era-what-should-software-engineers-do-now/"
+      },
+      {
+        "path": "svgs/2026-11-13/go-ordered-map-sorted-collection-proposal-60630.svg",
+        "title": "Go 终于要有官方有序 Map 了！继泛型 Set 之后，Go Collection API 再进一步",
+        "source": "https://tonybai.com/2026/11/13/go-ordered-map-sorted-collection-proposal-60630/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-12",
     "files": [
       {

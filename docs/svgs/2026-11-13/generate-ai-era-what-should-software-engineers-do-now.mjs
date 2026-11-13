@@ -1,0 +1,152 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'ai-era-what-should-software-engineers-do-now.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-purple{background:#ede9fe;color:#5b21b6}.tag-pink{background:#fce7f3;color:#9d174d}.tag-amber{background:#fef3c7;color:#92400e}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #7c3aed}
+.card h3{font-size:22px;font-weight:700;color:#6d28d9;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px 0}
+.node{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #c4b5fd;border-radius:14px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#5b21b6}
+.node-em{background:linear-gradient(135deg,#7c3aed,#6d28d9);border-color:#a78bfa;color:#faf5ff}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#6d28d9,#be185d);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#f1f5f9;padding:10px 12px;text-align:left;font-weight:700;color:#6d28d9;border-bottom:2px solid #cbd5e1}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fdf2f8;border:2px solid #db2777;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#9d174d;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#be185d;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#831843}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+.highlight{background:#f5f3ff;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#5b21b6;border-left:4px solid #7c3aed}
+.pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}`;
+
+const body = `
+<h1>AI 时代：从代码生产者到 Business Stack 问题解决者</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-purple">职业认知</span>
+  <span class="tag tag-pink">Scott Bolinger</span>
+  <span class="tag tag-amber">Dan Luu</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当 AI 极速降低编码成本后，程序员如何重新定位价值——从技术栈护城河转向产品、商业与用户理解，并把省下的工程能力投向过去因太贵而不敢做的「更大野心」软件问题。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#6d28d9;margin-bottom:12px;text-align:center">价值重心迁移：从 Technical Plan 到 Business Stack</h3>
+  <div class="diagram">
+    <div class="node">User Story</div><span class="arrow-sym">→</span>
+    <div class="node">AI 实现探索</div><span class="arrow-sym">→</span>
+    <div class="node">方案评审·风险</div><span class="arrow-sym">↔</span>
+    <div class="node node-em">产品·营销·心理学</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">技术知识从「亲自编码」转向「判断、验收与对结果负责」</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：学新语言框架就能保住 AI 时代的饭碗。原文强调模型迭代在稀释纯技术栈稀缺性；更有效的竞争力是创造力、产品定位与对人的理解，并用新成本模型寻找更大尺度的问题。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】技术护城河为何在干涸</h3>
+  <p><strong>在讲什么问题：</strong>Scott 认为继续堆技术栈难以维持职业优势。</p>
+  <p><strong>关键理解：</strong>清晰 User Story 往往比冗长 Technical Plan 更能驱动 AI 探索实现；工程师更像管 AI 的产品角色。</p>
+  <p><strong>和其他概念关系：</strong>技术仍重要，但用途从写代码变成验方案、识风险。</p>
+  <p><strong>怎么落地用：</strong>写需求时优先验收标准与用户旅程，技术细节留给 AI 迭代，自己专注 review 与安全边界。</p>
+  <p><strong>边界说明：</strong>安全关键、性能极致或合规系统仍需深度技术把控，不能全外包给 AI。</p>
+  <p><strong>原文依据：</strong>「过去技能越来越偏技术；现在越来越偏向人。」</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】SaaS 变容易后去找新困难</h3>
+  <p><strong>原则：</strong>旧难题被 AI 抹平后，主动升级问题尺度，而非怀念技术难度本身。</p>
+  <p><strong>为什么重要：</strong>用十年前人力成本估算会扼杀今天一个人+Agent 可尝试的产品。</p>
+  <p><strong>怎么落地：</strong>列出「因太贵没做」的 backlog，用周末原型验证；从 App 思维跳到行业/国家/宇宙级野心（Scott《无穷的开始》）。</p>
+  <p><strong>适用边界：</strong>Dan Luu 提醒缺乏验收标准的复杂系统盲目放大只会造黑盒，野心须配测试与 Benchmark。</p>
+  <p><strong>原文支撑：</strong>两人共识：别让旧成本约束限制今日创造力。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】扩展 Business Stack 的四块拼图</h3>
+  <p><strong>核心思路：</strong>产品成功不唯技术，工程师应提前介入商业全栈。</p>
+  <p><strong>操作步骤：</strong>① 用用户访谈验证真实痛点；② 学基础 Product/Marketing/Sales 语言写定位；③ 自己用 AI 做 MVP；④ 用数据验证付费意愿再扩团队。</p>
+  <p><strong>选型条件：</strong>想独立做 side project 或技术负责人带小团队时优先补商业栈。</p>
+  <p><strong>避坑：</strong>别在 AI 零验证阶段就扩功能堆栈。</p>
+  <p><strong>对比相邻方法：</strong>纯接单外包仍卖工时；Business Stack 卖的是问题定义与价值闭环。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Scott Bolinger vs Dan Luu</h3>
+  <table>
+    <tr><th>维度</th><th>Scott</th><th>Dan Luu</th><th>一句话结论</th></tr>
+    <tr><td>核心呼吁</td><td>理解人、产品、商业</td><td>对软件更 ambitious</td><td>一个改「你是谁」，一个改「你做什么」</td></tr>
+    <tr><td>失落来源</td><td>SaaS 搭建变容易</td><td>过去不值得做的 side project 现可做</td><td>同是成本曲线变化</td></tr>
+    <tr><td>风险提醒</td><td>人仍要判断方向</td><td>AI 代码须严测</td><td>效率↑不代表责任↓</td></tr>
+    <tr><td>行动意象</td><td>100/1000 人团队想建什么</td><td>几小时做 ripgrep/解释器分支</td><td>大小野心都合法，关键可验证</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】AI 时代你该把精力投哪</h3>
+  <table>
+    <tr><th>场景</th><th>推荐重心</th><th>核心理由</th><th>不推荐</th><th>为什么</th></tr>
+    <tr><td>求职保薪资</td><td>技术深度+领域问题交付</td><td>企业仍要 accountability</td><td>仅刷 LEETCODE</td><td>实现可被 AI 替代</td></tr>
+    <tr><td>独立产品</td><td>Product positioning + 小规模实验</td><td>发现隐性需求</td><td>先造完再找人</td><td>无市场验证</td></tr>
+    <tr><td>基础设施岗</td><td>方案评审、SLO、安全</td><td>AI 难替责任链</td><td>全甩给 Agent</td><td>黑盒风险</td></tr>
+    <tr><td>个人成长沮丧期</td><td>列「新困难问题」清单</td><td>转移失落为探索</td><td>固守旧技术骄傲</td><td>护城河叙事已变</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】读此文时常见误区</h3>
+  <p><strong>坑名：</strong>认为「AI 不能做营销/心理学」就当免责牌。<strong>原因：</strong>Scott 说的是人类判断与情感共鸣难被完全替代，非拒绝工具。<strong>解法：</strong>用 AI 做研究草稿，人拍板价值与伦理。<strong>严重程度：</strong>小心。</p>
+  <p><strong>坑名：</strong>为野心扩张而抛弃测试。<strong>原因：</strong>Dan Luu 明确 AI 产出需 Benchmark。<strong>解法：</strong>小步交付+可观测验收。<strong>严重程度：</strong>致命。</p>
+  <p><strong>坑名：</strong>彻底不学新技术。<strong>原因：</strong>原文承认技术用于识别风险。<strong>解法：</strong>保持架构/security 可读性。<strong>严重程度：</strong>小心。</p>
+  <div class="pitfall">Tony Bai 归纳：不要只当更高效代码生产者，要当更有创造力的问题解决者——但「创造力」须落到可验证的用户价值，而非空喊愿景。</div>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：资深 Staff 工程师 / 「工程卓越」派</p>
+  <p class="rebuttal-text">把程序员推向商业栈会让基础软件质量空心化，多数人连并发与分布式都没摸透就去「做产品」，最终产出一堆 AI 拼凑、难以维护的 SaaS 垃圾山。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>技术栈 alone 不再是可靠护城河；描述 User Story 与验收比堆技术方案更能驱动 AI 产出。</li>
+    <li>SaaS 级搭建变容易后，应主动寻找更大尺度、过去太贵而不做的问题。</li>
+    <li>竞争力向 Product、Marketing、心理学与创造力迁移，技术用于 judgment 与 quality。</li>
+    <li>Dan Luu 与 Scott 共用逻辑：打破旧成本模型，但野心必须配测试与清晰验收。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>写下一项「因人力太贵未做」的想法，用 AI 在 48 小时内做可演示 MVP。</li>
+    <li>把下一份需求文档改成 User Story + 验收标准优先，技术方案后置。</li>
+    <li>选一门非技术技能（定位/用户访谈）每周投入 2 小时。</li>
+    <li>对 AI 生成代码建立个人 review 清单（安全、边界、可测性）。</li>
+    <li>自问：若有随时调用的 AI 工程队，我最想创造什么？写下来并找一位用户聊聊。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>AI 让写代码变便宜，应放大对软件的野心与对人的理解，而不是缩小职业想象空间；价值从「会写」转向「敢定义问题并扛结果」。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);
