@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-16",
+    "files": [
+      {
+        "path": "svgs/2026-11-16/go-simd-api-graduation-proposal-83009.svg",
+        "title": "Go SIMD 要转正了：一份 API 规范背后的设计野心",
+        "source": "https://tonybai.com/2026/11/16/go-simd-api-graduation-proposal-83009/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-15",
     "files": [
       {
