@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-11-17",
+    "files": [
+      {
+        "path": "svgs/2026-11-17/ohmymv-website-introduction.svg",
+        "title": "学员实践：ohmymv 介绍",
+        "source": "https://xiangyugongzuoliu.com/ohmymv-website-introduction/"
+      },
+      {
+        "path": "svgs/2026-11-17/pansnap-website-introduction.svg",
+        "title": "学员实践：PanSnap 介绍",
+        "source": "https://xiangyugongzuoliu.com/pansnap-website-introduction/"
+      },
+      {
+        "path": "svgs/2026-11-17/rust-ai-borrow-checker-appeasement-debt.svg",
+        "title": "Rust 本想消灭 40 年技术债，AI 却造出了新债",
+        "source": "https://tonybai.com/2026/11/17/rust-ai-borrow-checker-appeasement-debt/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-16",
     "files": [
       {
