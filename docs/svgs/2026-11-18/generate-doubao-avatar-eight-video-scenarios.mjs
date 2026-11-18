@@ -1,0 +1,138 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'doubao-avatar-eight-video-scenarios.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#fdf4ff,#fce7f3);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#a21caf,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-ai{background:#fae8ff;color:#86198f}.tag-video{background:#fce7f3;color:#9d174d}.tag-slate{background:#e2e8f0;color:#334155}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #c026d3}
+.card h3{font-size:22px;font-weight:700;color:#a21caf;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+.node{background:linear-gradient(135deg,#fdf4ff,#fae8ff);border:2px solid #e879f9;border-radius:14px;padding:10px 12px;text-align:center;min-width:72px;font-weight:700;font-size:10px;color:#86198f}
+.node-em{background:linear-gradient(135deg,#a21caf,#db2777);border-color:#f0abfc;color:#fdf4ff}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#86198f,#be185d);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#fdf4ff;padding:10px 12px;text-align:left;font-weight:700;color:#a21caf;border-bottom:2px solid #f5d0fe}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#fff1f2;border:2px solid #e11d48;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#be123c;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#e11d48;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#881337}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+.pitfall{background:#fef2f2;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#991b1b;border-left:4px solid #ef4444}`;
+
+const body = `
+<h1>豆包真人分身：8 个可抄的视频场景 playbook</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-ai">真人分身</span>
+  <span class="tag tag-video">豆包视频创作</span>
+  <span class="tag tag-slate">转化 + 涨粉</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：分身模型建好后「不知道拍什么」——在分身只能小幅表演的前提下，如何用 8 类结构化场景（带货口播、日常剧情、古装/职场/科幻/演唱会/动漫同框等）和对应提示词套路，让创意而不是工具成为瓶颈。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#a21caf;margin-bottom:12px;text-align:center">能力边界 → 场景选择</h3>
+  <div class="diagram">
+    <div class="node-em">会说话的照片</div><span class="arrow-sym">→</span>
+    <div class="node">坐/站口播</div><span class="arrow-sym">→</span>
+    <div class="node">镜头场景音效</div><span class="arrow-sym">→</span>
+    <div class="node">忌大步走/痛哭</div>
+  </div>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：分身 = 全能演员。原文比喻为<strong>「会说话的照片」</strong>——大幅肢体与复杂走位会僵硬，应用镜头与分镜替它「演」。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】分身的两类主线</h3>
+  <p><strong>在讲什么：</strong>8 场景分广告带货（口播、日常剧情）与娱乐影视（多人、古装、职场、科幻、演唱会、动漫同框）。</p>
+  <p><strong>关键理解：</strong>门槛降低后，差距在选题与人设；分身解决出镜，不解决文案与选题。</p>
+  <p><strong>落地路径：</strong>豆包 → AI 创作 → 视频创作 → 使用分身出镜 → 商品图/参考图 + 提示词。</p>
+  <p><strong>边界：</strong>科幻吃提示词与音效，新手慎重仓；快歌/rap 10 秒唱不完。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】8 场景速查</h3>
+  <table>
+    <tr><th>场景</th><th>目标</th><th>提示词要点</th><th>避坑</th></tr>
+    <tr><td>口播带货</td><td>转化</td><td>短句、拿商品、看镜头</td><td>忌长难句术语堆叠</td></tr>
+    <tr><td>日常剧情</td><td>自然植入</td><td>单人独白、轻剧情</td><td>忌多人走位</td></tr>
+    <tr><td>多人同框</td><td>对话感</td><td>一问一答轮次拆分</td><td>忌大段独白</td></tr>
+    <tr><td>古装</td><td>惊艳</td><td>服装参考图、特效关键词</td><td>参考图勿露他人脸</td></tr>
+    <tr><td>职场</td><td>共鸣</td><td>简约办公室、理性表情</td><td>少夸张肢体</td></tr>
+    <tr><td>科幻</td><td>视觉冲击</td><td>机甲飞船宇宙</td><td>易五毛特效</td></tr>
+    <tr><td>演唱会</td><td>情感</td><td>舞台灯、慢歌一句</td><td>忌快歌 rap</td></tr>
+    <tr><td>动漫同框</td><td>出片率最高</td><td>分时段镜头脚本、立绘参考</td><td>侵权图先改风格；忌 Q 版</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】提示词写法（口播示例）</h3>
+  <p><strong>操作：</strong>「真人分身拿着护手霜，双手揉搓，看向镜头说：清爽不油腻，润手超舒服。10s」——动作 + 台词 + 时长一体写清。</p>
+  <p><strong>日常剧情：</strong>场景单一、产品自然入镜（如喝水推水杯），结构用自问自答/碎碎念。</p>
+  <p><strong>古装：</strong>上传服装参考 + 「红光爆发、拂袖收势」类镜头语言。</p>
+  <p><strong>动漫同框：</strong>0–4s 推近、4–10s 环绕、10–15s 定格对视——用分镜时间轴约束模型。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】作者亲历</h3>
+  <p><strong>分身不是演员：</strong>大幅度动作 → 僵硬背影。</p>
+  <p><strong>动漫参考：</strong>豆包可能拒侵权原图 → 先让模型改风格再上传；选干净立绘。</p>
+  <p><strong>科幻：</strong>对新手门槛高，音效关键。</p>
+  <p><strong>演唱会：</strong>抒情慢歌 10 秒一句刚好。</p>
+  <div class="pitfall">分身能替你出镜，替不了你写文案、想选题、做人设——8 个场景是壳，内容仍须自己填。</div>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】从「然后呢」到今晚开拍</h3>
+  <p><strong>原则：</strong>当出镜变容易，创意成为稀缺；先收藏一个场景今晚试一条，别让分身躺相册。</p>
+  <p><strong>对比旧限制：</strong>过去卡预算/场地/演员；现在卡想象力。</p>
+  <p><strong>原文金句：</strong>「里面那个人是我，但又不太像我。」——接受分身作为表演延伸，而非替身的人生。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「数字分身会淹没真人创作者」</p>
+  <p class="rebuttal-text">模板化口播人人能抄，但餐桌上的真实即兴、现场互动的不可复现性仍是信任资产；分身扩的是「演不了的角色」长尾，不是吃掉已有真人 IP 的基本盘。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>先认清「会说话的照片」边界，再选坐/站口播与镜头语言场景。</li>
+    <li>带货走短句口播+轻剧情；涨粉走古装/职场/演唱会/动漫同框等情绪场景。</li>
+    <li>提示词结构化（时长、轮次、分镜段）比堆形容词更重要。</li>
+    <li>工具解放出镜，选题与人设仍是创作者护城河。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>在豆包确认分身可用，挑「口播」或「动漫同框」其一写 10s 提示词试生成。</li>
+    <li>准备无他人脸的参考图（古装/动漫先改风格）。</li>
+    <li>记录失败片段（动作过大/快歌）归入避坑清单。</li>
+    <li>成片中标注转化目标（带货）或人设目标（涨粉），勿混剪逻辑。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「分身做好就完事」到「分身是出镜基础设施，持续竞争力在脚本与选题迭代」——限制从预算转为想象力与执行力。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');

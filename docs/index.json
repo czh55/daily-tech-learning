@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-11-18",
+    "files": [
+      {
+        "path": "svgs/2026-11-18/build-mcp-in-golang.svg",
+        "title": "AI 已经会写代码了，为什么还用不好你的业务系统？",
+        "source": "https://tonybai.com/2026/11/18/build-mcp-in-golang/"
+      },
+      {
+        "path": "svgs/2026-11-18/doubao-avatar-eight-video-scenarios.svg",
+        "title": "做好真人分身却不知道拍什么？8个视频应用场景直接抄",
+        "source": "https://juejin.cn/post/7709080191914606635"
+      }
+    ]
+  },
+  {
     "date": "2026-11-17",
     "files": [
       {
