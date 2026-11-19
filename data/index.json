@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-11-19",
+    "files": [
+      {
+        "path": "svgs/2026-11-19/go-test-user-defined-analyzers-proposal.svg",
+        "title": "Alan Donovan 提出新 Proposal：要让 go test 运行自定义静态分析器！",
+        "source": "https://tonybai.com/2026/11/19/go-test-user-defined-analyzers-proposal/"
+      },
+      {
+        "path": "svgs/2026-11-19/inside-openai-codex-sandbox.svg",
+        "title": "AI Agent 的安全边界：深入 OpenAI Codex Sandbox 设计",
+        "source": "https://tonybai.com/2026/11/19/inside-openai-codex-sandbox/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-18",
     "files": [
       {

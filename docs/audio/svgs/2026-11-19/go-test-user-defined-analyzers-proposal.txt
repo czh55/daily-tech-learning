@@ -1,0 +1,113 @@
+欢迎收听每日技术学习语音讲解。本期主题，go test 运行自定义 Analyzer：项目级静态测试。标签包括Proposal #82464、go.vet 配置、GOEXPERIMENT=vetfiles。本次讲解预计时长 约 9 到 10 分钟，共 11 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：如何让团队特有的编码规范、资源配对与 API 禁区像单元测试一样，在每次 go test ./... 时自动、可版本化、可复现地执行，而不必维护一套与 CI 脱节的独立 lint 流水线。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：内置 go vet，语言底线，然后go.vet，模块强制规则，然后gopls，个人偏好
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：又要一个大而全的 golangci-lint 配置。go.vet 只声明「跑哪些 Analyzer、作用域是什么」，不接管每个 Analyzer 的 Flags——避免与 gopls/staticcheck 的配置体系打架。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：golangci-lint 已经能跑一百个 linter
+
+外部 mega-linter 永远无法成为 Go 工具链的默认可复现契约——只有让模块用 go.vet 声明并在 go test 里与构建缓存一体执行，规则才会像测试一样跟分支走、跟 reproducible build 走。
+
+接下来，第四部分，【概念拆解卡】为何塞进 go test？。
+
+在讲什么问题，Lock/Unlock、AddRef/DecRef、内部 API 禁区等规则编译器不管，动态测试也难全覆盖。
+
+关键理解，项目声明 Analyzer ，得到 go test 识别 go.vet ，得到 基于 go/analysis 构图并行，复用构建缓存。
+
+关系：与 #82465（go/analysis 进标准库）协同，但推进节奏独立。
+
+落地：enable . "myAnalyzer" / disable . "printf"；调试 go test -debug-vetconfig。
+
+边界：freeze exception 尚未获批；陌生仓库自动跑自定义 Analyzer 涉及信任边界。
+
+原文依据，「静态分析就可以像普通测试一样，成为项目开发流程中默认的一部分。」
+
+接下来，第五部分，【跨概念对比表】方案演进 Mk.1 ，得到 Mk.5。
+
+早期，goanalysis.go + 源码注释，配置在仓内，侵入源码、争议大
+
+讨论，放进 go.mod？，与依赖集中，目录自治差
+
+Mk.5，独立 go.vet 文件，目录级 enable/disable，格式仍可能调整
+
+接下来，第六部分，【方法/工具卡】go.vet 与执行图。
+
+核心思路：Analyzer 仍是 analysis.Analyzer，依赖关系组成任务图，与测试并行调度。
+
+步骤：① 在包内实现 Analyzer ，得到 ② 子目录写 go.vet 启用范围 ，得到 ③ 本地/CI 统一 go test ./... ，得到 ④ 套件可导出 []*analysis.Analyzer 供按需引用。
+
+选型：重度规则优先模块化小 Analyzer，避免整包依赖庞大 suite 导致依赖膨胀。
+
+避坑，不要在 go.vet 里塞满每个 Analyzer 的 Flags——配置爆炸且与并发冲突。
+
+接下来，第七部分，【决策/选型表】何时用哪层静态检查。
+
+全语言 printf/锁拷贝，内置 go vet，人人应有底线，复制进 go.vet
+
+模块架构/配对规则，go.vet 自定义，可版本化随仓走，仅 CI 脚本
+
+个人风格提示，gopls 配置，不绑架团队，写进 go.vet 强制全队
+
+AI 生成代码护栏，项目 Analyzer + go test，每次改动自动查，只靠 Code Review
+
+接下来，第八部分，【避坑清单卡】实验与生态。
+
+实验开关：GOEXPERIMENT=vetfiles 默认关闭，代码隔离在独立文件——生产用户无感。
+
+套件陷阱：依赖「全家桶」Analyzer 包会拖入不需要的重分析器。
+
+信任：打开陌生仓库是否自动执行仓内 Analyzer 仍需授权设计；不阻碍 go test 先行。
+
+现状：Go 1.28 freeze exception 为申请态，#82464 仍 Open。
+
+接下来，第九部分，【心法/原则卡】代码易得，约束要自动。
+
+原则，生成代码时代，把难以用测试覆盖的不变量写成 Analyzer，绑定日常命令。
+
+落地：先挑一条配对规则（如 Ref 计数）写成 Analyzer，在 go.vet 启用，观察与 CI 一致性。
+
+边界：不把 Analyzer 简化成裸函数——元数据、Requires、Facts 仍要类型化表达。
+
+原文支撑：「当代码越来越容易生成，如何让项目的工程约束自动、持续地得到执行。」
+
+接下来，第十部分，总结与行动。
+
+结论
+
+#82464 把项目级规则从 CI 外挂拉回 go test 主路径。
+
+go.vet 取代侵入式 goanalysis.go，支持目录级 enable/disable。
+
+继续基于 go/analysis 任务图；与内置 vet、gopls 三层分工清晰。
+
+vetfiles 实验先行；AI 时代静态测试是约束生成的关键基础设施。
+
+列出 3 条只能静态检查的 team 规则（配对、目录禁令、API 禁区）。
+
+用现有 go/analysis 写最小 Analyzer，本地验证输出。
+
+关注 design doc 与 GOEXPERIMENT=vetfiles 预览版反馈。
+
+CI 只保留 go test ./...，减少 lint 脚本分叉。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「lint 是运维配置的周边」到「静态规则是仓内一等测试」——质量门禁应跟源码同提交、同缓存、同命令。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

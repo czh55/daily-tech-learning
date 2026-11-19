@@ -1,0 +1,147 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'go-test-user-defined-analyzers-proposal.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#ecfdf5,#f0fdf4);padding:48px 60px;color:#1e293b}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#047857,#0d9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-go{background:#ccfbf1;color:#0f766e}.tag-vet{background:#d1fae5;color:#065f46}.tag-proposal{background:#e0f2f1;color:#115e59}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06);border-left:5px solid #10b981}
+.card h3{font-size:22px;font-weight:700;color:#047857;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#475569;margin-bottom:10px}
+.map{background:#fff;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.diagram{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:16px 0}
+.node{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:14px;padding:12px 14px;text-align:center;min-width:88px;font-weight:700;font-size:11px;color:#065f46}
+.node-em{background:linear-gradient(135deg,#047857,#0d9488);border-color:#34d399;color:#ecfdf5}
+.arrow-sym{font-size:14px;color:#94a3b8}
+.conclusion{background:linear-gradient(135deg,#047857,#0f766e);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#ecfdf5;padding:10px 12px;text-align:left;font-weight:700;color:#047857;border-bottom:2px solid #6ee7b7}
+td{padding:10px 12px;border-bottom:1px solid #e2e8f0;color:#475569;vertical-align:top}
+.correction{background:#fef3c7;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#92400e;margin-bottom:8px}
+.rebuttal{background:#f0fdfa;border:2px solid #0d9488;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#0f766e;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#0d9488;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#134e4a}
+.subtitle{font-size:17px;color:#64748b;margin-bottom:32px;line-height:1.6}
+.highlight{background:#ecfdf5;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#065f46;border-left:4px solid #10b981}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;color:#0f172a}`;
+
+const body = `
+<h1>go test 运行自定义 Analyzer：项目级静态测试</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-go">Proposal #82464</span>
+  <span class="tag tag-vet">go.vet 配置</span>
+  <span class="tag tag-proposal">GOEXPERIMENT=vetfiles</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：如何让团队特有的编码规范、资源配对与 API 禁区像单元测试一样，在每次 <code>go test ./...</code> 时自动、可版本化、可复现地执行，而不必维护一套与 CI 脱节的独立 lint 流水线。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#047857;margin-bottom:12px;text-align:center">静态分析三层职责</h3>
+  <div class="diagram">
+    <div class="node">内置 go vet<br/>语言底线</div>
+    <div class="node-em">go.vet<br/>模块强制规则</div>
+    <div class="node">gopls<br/>个人偏好</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#64748b;margin-top:12px">动态测试测行为；自定义 Analyzer 测源码结构——Alan 称之为 static tests。</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#92400e;font-size:16px">误解：又要一个大而全的 golangci-lint 配置。<strong>go.vet</strong> 只声明「跑哪些 Analyzer、作用域是什么」，不接管每个 Analyzer 的 Flags——避免与 gopls/staticcheck 的配置体系打架。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】为何塞进 go test？</h3>
+  <p><strong>在讲什么问题：</strong>Lock/Unlock、AddRef/DecRef、内部 API 禁区等规则编译器不管，动态测试也难全覆盖。</p>
+  <p><strong>关键理解：</strong>项目声明 Analyzer → <code>go test</code> 识别 <code>go.vet</code> → 基于 <code>go/analysis</code> 构图并行，复用构建缓存。</p>
+  <p><strong>关系：</strong>与 #82465（go/analysis 进标准库）协同，但推进节奏独立。</p>
+  <p><strong>落地：</strong><code>enable . "myAnalyzer"</code> / <code>disable . "printf"</code>；调试 <code>go test -debug-vetconfig</code>。</p>
+  <p><strong>边界：</strong>freeze exception 尚未获批；陌生仓库自动跑自定义 Analyzer 涉及信任边界。</p>
+  <p><strong>原文依据：</strong>「静态分析就可以像普通测试一样，成为项目开发流程中默认的一部分。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】方案演进 Mk.1 → Mk.5</h3>
+  <table>
+    <tr><th>阶段</th><th>形态</th><th>优势</th><th>问题</th></tr>
+    <tr><td>早期</td><td>goanalysis.go + 源码注释</td><td>配置在仓内</td><td>侵入源码、争议大</td></tr>
+    <tr><td>讨论</td><td>放进 go.mod？</td><td>与依赖集中</td><td>目录自治差</td></tr>
+    <tr><td>Mk.5</td><td>独立 go.vet 文件</td><td>目录级 enable/disable</td><td>格式仍可能调整</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】go.vet 与执行图</h3>
+  <p><strong>核心思路：</strong>Analyzer 仍是 <code>analysis.Analyzer</code>，依赖关系组成任务图，与测试并行调度。</p>
+  <p><strong>步骤：</strong>① 在包内实现 Analyzer → ② 子目录写 go.vet 启用范围 → ③ 本地/CI 统一 <code>go test ./...</code> → ④ 套件可导出 <code>[]*analysis.Analyzer</code> 供按需引用。</p>
+  <p><strong>选型：</strong>重度规则优先模块化小 Analyzer，避免整包依赖庞大 suite 导致依赖膨胀。</p>
+  <p><strong>避坑：</strong>不要在 go.vet 里塞满每个 Analyzer 的 Flags——配置爆炸且与并发冲突。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】何时用哪层静态检查</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>不推荐</th></tr>
+    <tr><td>全语言 printf/锁拷贝</td><td>内置 go vet</td><td>人人应有底线</td><td>复制进 go.vet</td></tr>
+    <tr><td>模块架构/配对规则</td><td>go.vet 自定义</td><td>可版本化随仓走</td><td>仅 CI 脚本</td></tr>
+    <tr><td>个人风格提示</td><td>gopls 配置</td><td>不绑架团队</td><td>写进 go.vet 强制全队</td></tr>
+    <tr><td>AI 生成代码护栏</td><td>项目 Analyzer + go test</td><td>每次改动自动查</td><td>只靠 Code Review</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】实验与生态</h3>
+  <p><strong>实验开关：</strong><code>GOEXPERIMENT=vetfiles</code> 默认关闭，代码隔离在独立文件——生产用户无感。</p>
+  <p><strong>套件陷阱：</strong>依赖「全家桶」Analyzer 包会拖入不需要的重分析器。</p>
+  <p><strong>信任：</strong>打开陌生仓库是否自动执行仓内 Analyzer 仍需授权设计；不阻碍 go test 先行。</p>
+  <p><strong>现状：</strong>Go 1.28 freeze exception 为申请态，#82464 仍 Open。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】代码易得，约束要自动</h3>
+  <p><strong>原则：</strong>生成代码时代，把难以用测试覆盖的不变量写成 Analyzer，绑定日常命令。</p>
+  <p><strong>落地：</strong>先挑一条配对规则（如 Ref 计数）写成 Analyzer，在 go.vet 启用，观察与 CI 一致性。</p>
+  <p><strong>边界：</strong>不把 Analyzer 简化成裸函数——元数据、Requires、Facts 仍要类型化表达。</p>
+  <p><strong>原文支撑：</strong>「当代码越来越容易生成，如何让项目的工程约束自动、持续地得到执行。」</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：golangci-lint 已经能跑一百个 linter</p>
+  <p class="rebuttal-text">外部 mega-linter 永远无法成为 Go 工具链的默认可复现契约——只有让模块用 go.vet 声明并在 go test 里与构建缓存一体执行，规则才会像测试一样跟分支走、跟 reproducible build 走。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>#82464 把项目级规则从 CI 外挂拉回 go test 主路径。</li>
+    <li>go.vet 取代侵入式 goanalysis.go，支持目录级 enable/disable。</li>
+    <li>继续基于 go/analysis 任务图；与内置 vet、gopls 三层分工清晰。</li>
+    <li>vetfiles 实验先行；AI 时代静态测试是约束生成的关键基础设施。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>列出 3 条只能静态检查的 team 规则（配对、目录禁令、API 禁区）。</li>
+    <li>用现有 go/analysis 写最小 Analyzer，本地验证输出。</li>
+    <li>关注 design doc 与 GOEXPERIMENT=vetfiles 预览版反馈。</li>
+    <li>CI 只保留 <code>go test ./...</code>，减少 lint 脚本分叉。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「lint 是运维配置的周边」到「静态规则是仓内一等测试」——质量门禁应跟源码同提交、同缓存、同命令。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
