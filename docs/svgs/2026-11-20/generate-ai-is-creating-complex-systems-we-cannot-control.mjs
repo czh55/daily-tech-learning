@@ -1,0 +1,155 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'ai-is-creating-complex-systems-we-cannot-control.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#0c0a09,#1c1917);padding:48px 60px;color:#e7e5e4}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#f97316,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-cook{background:#431407;color:#fdba74}.tag-agent{background:#1e1b4b;color:#c4b5fd}.tag-sre{background:#14532d;color:#86efac}
+.card{background:#1c1917;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.35);border-left:5px solid #ea580c}
+.card h3{font-size:22px;font-weight:700;color:#fdba74;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#d6d3d1;margin-bottom:10px}
+.map{background:#0c0a09;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.4);border:1px solid #44403c}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+.node{background:linear-gradient(135deg,#431407,#292524);border:2px solid #c2410c;border-radius:14px;padding:12px 14px;text-align:center;min-width:80px;font-weight:700;font-size:11px;color:#fed7aa}
+.node-em{background:linear-gradient(135deg,#7c2d12,#4c1d95);border-color:#f97316;color:#fff7ed}
+.arrow-sym{font-size:14px;color:#78716c}
+.conclusion{background:linear-gradient(135deg,#7c2d12,#312e81);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#431407;padding:10px 12px;text-align:left;font-weight:700;color:#fdba74;border-bottom:2px solid #ea580c}
+td{padding:10px 12px;border-bottom:1px solid #44403c;color:#d6d3d1;vertical-align:top}
+.correction{background:#422006;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#fcd34d;margin-bottom:8px}
+.rebuttal{background:#1e1b4b;border:2px solid #6366f1;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#a5b4fc;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#818cf8;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#e0e7ff}
+.subtitle{font-size:17px;color:#a8a29e;margin-bottom:32px;line-height:1.6}
+.highlight{background:#431407;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#fed7aa;border-left:4px solid #ea580c}
+code{background:#292524;padding:2px 6px;border-radius:4px;font-size:14px;color:#fafaf9}`;
+
+const body = `
+<h1>复杂系统失效 × AI 加速：别让复杂度跑赢理解力</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-cook">Cook 18 条</span>
+  <span class="tag tag-agent">多 Agent</span>
+  <span class="tag tag-sre">五道防线</span>
+</div>
+<p class="subtitle">一句话：AI 让构建复杂系统的成本骤降，但 Cook 指出灾难来自多缺陷组合与退化运行；Agent 自主性、多智能体并行与「自我验证」会放大级联与不可见性——软件工程需用限制自主性、隔离爆炸半径、独立验证、全链路可观察与人类急停来保持「构建力 ≈ 理解力 ≈ 防御力」。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#fdba74;margin-bottom:12px;text-align:center">级联故障示意（非单点 Root Cause）</h3>
+  <div class="diagram">
+    <div class="node">小延迟</div><span class="arrow-sym">→</span>
+    <div class="node">自动重试放大</div><span class="arrow-sym">→</span>
+    <div class="node-em">下游过载</div><span class="arrow-sym">→</span>
+    <div class="node">限流缺口</div><span class="arrow-sym">→</span>
+    <div class="node-em">监控同瘫</div><span class="arrow-sym">→</span>
+    <div class="node-em">全站级联</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#a8a29e;margin-top:12px">每层组件单独看都「没 Bug」——失效来自交互与同时出现的防御缺口。</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#fde68a;font-size:16px">误解：事故总能找到唯一 Root Cause。原文强调事后归因常是<strong>结果偏见</strong>；只修「最后一环」不改变缺陷组合方式，下次仍会出事，只是表象不同。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】复杂系统为何持续运行却仍危险</h3>
+  <p><strong>在讲什么问题：</strong>为何系统长期无大事，却不代表健康？</p>
+  <p><strong>关键理解：</strong>冗余 + 人工救火掩盖「潜伏缺陷」；系统常处于<strong>退化运行</strong>，小异常是灾难前奏。</p>
+  <p><strong>关系：</strong>Cook 四主题——失效机理、事后误判、人在环中角色、持续安全——与 SRE 事故分析相通，但 AI 改变了缺陷产生与传播速度。</p>
+  <p><strong>落地：</strong>把「多次小告警」当组合风险信号，而非噪音；定期演练降级与人工接管。</p>
+  <p><strong>边界：</strong>原则不否定组件质量，但否定「单点修完就安全」的幻想。</p>
+  <p><strong>原文依据：</strong>「灾难需要多个故障共同作用」「复杂系统经常处于退化运行状态。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】传统协作开发 vs 多 Agent 流水线</h3>
+  <table>
+    <tr><th>维度</th><th>人工/传统 CI</th><th>多 Agent 自主流水线</th><th>工程含义</th></tr>
+    <tr><td>错误传播</td><td>人审、串行，较慢</td><td>规划→并行编码→同规格测试，秒级放大</td><td>需求误解可整批污染</td></tr>
+    <tr><td>复杂度增长</td><td>受人力约束</td><td>功能/自动化易堆叠，N Agent 交互 ~ O(N²)</td><td>需主动限规模</td></tr>
+    <tr><td>可观测性</td><td>日志/链路透明</td><td>多轮推理+动态改计划，行为难复现</td><td>要 Agent 审计链</td></tr>
+    <tr><td>新防御层风险</td><td>工具相对静态</td><td>AI CR/自动修复/自动重试本身可引新失效</td><td>变更即新失效模式</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】AI 自动化里的验证盲区</h3>
+  <p><strong>同源测试：</strong>编码 Agent 与测试 Agent 共读一份错误需求 → 测试全绿但前提错——<strong>严重程度：致命</strong>。</p>
+  <p><strong>自我确认：</strong>把模型自评当最终正确性证明 → 须叠加确定性测试、静态分析、人工抽检。</p>
+  <p><strong>权限膨胀：</strong>为提效给合并/出网/改生产配置 → 应分级只读/工作区/发布/高风险必批。</p>
+  <p><strong>解法：</strong>验证输入与编码输入解耦；关键路径保留人类在边界上的判断（目标、风险、权限、偏离、急停）。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】Agent 自主性分级</h3>
+  <table>
+    <tr><th>任务类型</th><th>建议权限</th><th>批准</th><th>不宜场景</th></tr>
+    <tr><td>只读分析</td><td>读代码/文档，禁止写</td><td>无</td><td>需改配置诊断时</td></tr>
+    <tr><td>开发任务</td><td>隔离 worktree/目录</td><td>可选</td><td>直连生产库</td></tr>
+    <tr><td>发布/合并</td><td>创建 PR，禁自动合并</td><td>人类或策略</td><td>无人值守上线</td></tr>
+    <tr><td>高风险运维</td><td>显式授权 + 全局停止</td><td>必批 + 急停</td><td>把模型输出直连 shell -c</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】五道防线（相互补充，非单线流水线）</h3>
+  <p><strong>① 限制自主性：</strong>按风险切权限，勿因能力强就放大授权。</p>
+  <p><strong>② 故障隔离：</strong>独立工作区、目录/工具/Token 预算、限流熔断，约束爆炸半径。</p>
+  <p><strong>③ 独立验证：</strong>验收标准 + 确定性测试 + 扫描 + 人工审查 + 可追溯证据。</p>
+  <p><strong>④ 可观察：</strong>记发起人、目标、模型/工具、每次 I/O、状态变迁、资源改动。</p>
+  <p><strong>⑤ 人类急停：</strong>在关键边界干预；高风险须全局 Kill Switch。</p>
+  <p><strong>操作序列：</strong>定权限档 → 建隔离环境 → 拆验证源 → 接审计 → 演练急停。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】工程师角色：生产者 → 设计者/观察者/防御者</h3>
+  <p><strong>在讲什么：</strong>AI 提效不改变「无故障运行需要对故障有经验」——不懂级联与退化的工程师难驾驭 Agent 堆出的系统。</p>
+  <p><strong>关键转变：</strong>少花时间在堆功能，多花在边界设计、协作拓扑、验证体系、运行观察与恢复机制。</p>
+  <p><strong>落地：</strong>每引入一层 AI 自动化，同步补一层独立检查与观测；追求四力同步：构建、理解、验证、防御。</p>
+  <p><strong>边界：</strong>代码能力仍重要，须与系统工程能力结合；目标不是更多 Agent，而是可理解的复杂系统。</p>
+  <p><strong>原文：</strong>「不要让系统复杂度跑赢我们的理解能力。」</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「更快出代码就能赢，出事再靠更强模型修补」</p>
+  <p class="rebuttal-text">Cook 与原文都指出：改变引入新失效模式，且事故由多因素组合构成。若无隔离、独立验证与可观察性，「加速生产」只会加速制造自己无法解释的耦合系统——补丁无法替代防御体系设计。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>AI 未改变复杂系统失效规律，但加快了构建、耦合与故障传播。</li>
+    <li>多 Agent 放大需求误解、验证同源与不可见执行路径三类风险。</li>
+    <li>五道防线必须叠加：限权、隔离、独立验证、审计可观察、人类急停。</li>
+    <li>工程师重心转向系统防御与理解，而非单纯代码产量。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>为 Agent 任务定义权限档，默认最小权限。</li>
+    <li>编码与测试/验收输入分离，关键路径加确定性测试。</li>
+    <li>为每次 Agent 运行落审计：工具调用与文件/外呼改动。</li>
+    <li>设定 Token/时间/并发预算与全局停止开关并演练。</li>
+    <li>把 recurring 小异常纳入「组合风险」复盘，而非仅盯单点 Bug。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「用 AI 把复杂系统造得更快」到「用工程体系让复杂度始终可被人类理解、验证与叫停」——效率的终点是可驾驭，而非不可知的规模。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg, 'utf8');
+console.log('Generated:', OUT, 'height:', height, 'px');
