@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-22",
+    "files": [
+      {
+        "path": "svgs/2026-11-22/ai-agents-apache-datafusion-influxdb-3-database-architecture.svg",
+        "title": "AI 正在改变数据库的构建方式：深入 Apache DataFusion 与 InfluxDB 3.0",
+        "source": "https://tonybai.com/2026/11/22/ai-agents-apache-datafusion-influxdb-3-database-architecture/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-21",
     "files": [
       {

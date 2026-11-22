@@ -1,0 +1,129 @@
+欢迎收听每日技术学习语音讲解。本期主题，组件化数据库：DataFusion × Parquet × Agent。标签包括FDAP 栈、动态过滤、Coding Agent。本次讲解预计时长 约 11 到 12 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：Andrew Lamb 专访揭示数据库正从垂直整合产品走向 DataFusion/Arrow/Parquet 可组合基建——查询侧靠多级剪枝与运行时 Dynamic Filters 少读无用数据，格式侧用 Variant/向量/ALP 适配 AI 负载；Coding Agent 降低组装专用库成本，却放大开源 PR 审查压力，专用 SQL 接口或成 Agent 访问数据的新默认。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：Parquet，然后Arrow 内存，然后DataFusion，然后Flight 传输，然后专用 Catalog
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：DataFusion 是「又一个数据库产品」。原文类比 LLVM——它提供 Parser ，得到 Logical ，得到 Optimizer ，得到 Physical ，得到 Execution + Extension API，让你嵌入自有存储与算子，而不是替代 Postgres。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「成熟云数仓一站式更省事」
+
+当 Agent 能替你写扩展算子与专用优化规则，为通用数仓付溢价买用不上的能力，可能比组合 DataFusion 更慢更贵——真正代价在缺乏架构判断力，而非缺一个安装包。
+
+接下来，第四部分，【概念拆解卡】DataFusion：数据库领域的 LLVM。
+
+在讲什么：如何不重复实现整套 SQL 引擎就建专用库？
+
+关键理解，Rust + Arrow 列式内存的可嵌入查询框架；逻辑计划答「算什么」，物理计划答「怎么算」。
+
+关系：与 PostgreSQL 完整 DB 相对；与 Spark「自带生态」相对——强调 Extension API 换 Catalog/数据源/优化规则。
+
+落地：专注领域索引与统计信息，把 Parser/Optimizer/Execution 交给 DataFusion。
+
+边界：分布式需另接 Ballista 或 DataFusion Distributed；不是你的事务 OLTP 一键方案。
+
+原文：「开发者可以专注于自己的业务领域，而不必重新实现一套完整的 SQL 查询引擎。」
+
+接下来，第五部分，【方法/工具卡】TopK + 动态过滤（Dynamic Filters）。
+
+场景：1000 个 Parquet 文件求最近 10 条日志——静态 Min/Max 无法在开始前知道第 10 名时间戳。
+
+步骤：① TopK 堆维护当前第 10 名边界 ，得到 ② 边界下发 Scan ，得到 ③ 文件/Row Group/Page 级跳过不可能入选数据 ，得到 ④ 执行中持续收紧。
+
+依据：Logfire 特定查询模式曾获 10×+ 提升；强依赖时间排序与统计元数据——并非所有布局只读一个文件。
+
+避坑，无排序分区布局时动态过滤收益骤降；勿把「理论只开一个文件」当默认 SLA。
+
+接下来，第六部分，【跨概念对比表】静态剪枝 vs 动态过滤。
+
+信息时点，查询开始前已知谓词，执行中由 TopK/Join 产生新边界
+
+典型适用，WHERE country='US'，ORDER BY ts DESC LIMIT 10
+
+剪枝层次，文件 / Row Group / Page，同上，但边界迭代更新
+
+前提，统计信息准确，额外需要数据布局与排序属性
+
+接下来，第七部分，【决策/选型表】Parquet 演进能力选型。
+
+半结构化 JSON，Variant + Shredding 热字段成列，仍当纯字符串列扫全表
+
+地理查询，GEOMETRY + Bounding Box 空间剪枝，无空间索引的精确相交仍要读数据
+
+AI 向量，FINITE_VECTOR 列式存，格式本身 ≠ ANN 索引与相似度搜索
+
+点查少行，ALP 等编码减解码成本，传统 Page 解压仍不适合高频随机读
+
+接下来，第八部分，【方法/工具卡】分布式：Ballista vs DataFusion Distributed。
+
+核心难点：不是分片 Scan，而是 Shuffle——GROUP BY / Join 要把相同键送到同一节点。
+
+Ballista：较完整 Scheduler + Executor + Shuffle 框架。
+
+DataFusion Distributed：可组合 API，嵌入自有系统。
+
+权衡：物化中间结果利故障恢复、损 I/O；流式 Shuffle 低延迟、故障处理更复杂。
+
+接下来，第九部分，【避坑清单卡】Agent 时代的开源与自建。
+
+坑 1：Agent 批量喷 PR（DataFusion 曾积 ~400 个未关），得到 审查带宽不扩。**解法：**社区已限非 Draft PR 数、CI 迁 Fork；贡献者先证明真实问题与架构契合。
+
+坑 2：以为「向量 Parquet」= 向量数据库。**解法：**存储格式与 ANN 检索分层设计。
+
+坑 3：专用库从零写引擎。**解法：**FDAP 组装 + 自研 Catalog/算子/优化规则。
+
+坑 4：忽视数据布局。**解法：**分区/排序/聚簇决定剪枝上限，先于调优器魔法。
+
+接下来，第十部分，【心法/原则卡】Agent 让「组装专用库」重新经济。
+
+原则，代码生成变便宜后，买通用库硬适配未必优于组合开源组件 + SQL 统一 Agent 接口。
+
+反面：30 年产品化浪潮因维护人力昂贵压制自研；现在瓶颈转向审查、架构判断与长期治理。
+
+落地：Andrew 建议——给数据项目加 SQL 接口，让 Agent 用 SQL 查；人类少学领域 DSL。
+
+边界：仍需理解系统；廉价代码不廉价维护责任。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+数据库走向模块化：DataFusion 像 LLVM，Parquet/Arrow/Flight 独立演进。
+
+性能核心少做无用功：文件，得到Row Group，得到Page 剪枝 + 运行时动态过滤。
+
+Parquet 向 JSON/空间/向量/点查扩展，存储与检索能力须分层。
+
+分布式难在 Shuffle 与故障权衡，非简单水平切 Scan。
+
+Agent 降组装成本、抬审查成本；SQL 或成 Agent 访问数据的 lingua franca。
+
+审视数据湖分区与排序是否支撑 TopK/时间范围剪枝。
+
+评估 DataFusion Extension 能否覆盖领域 Catalog 与自定义统计。
+
+半结构化字段试点 Variant Shredding，避免 JSON 字符串列。
+
+给内部数据服务暴露 SQL（或 Flight SQL），用 Agent 做集成探针。
+
+贡献开源时少批量 Agent PR，多带上下文与可维护测试。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「选一个数据库产品」到「用可组合引擎 + 开放格式拼装最适合业务的专用数据系统」，并把 SQL 当作人机与 Agent 共用的操作界面。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

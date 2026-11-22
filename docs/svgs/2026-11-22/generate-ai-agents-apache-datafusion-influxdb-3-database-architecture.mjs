@@ -1,0 +1,159 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'ai-agents-apache-datafusion-influxdb-3-database-architecture.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#0c1222,#1a1f3a);padding:48px 60px;color:#e2e8f0}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#f97316,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-df{background:#431407;color:#fdba74}.tag-parquet{background:#1e3a5f;color:#7dd3fc}.tag-ai{background:#3b0764;color:#e9d5ff}
+.card{background:#1e293b;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.35);border-left:5px solid #f97316}
+.card h3{font-size:22px;font-weight:700;color:#fdba74;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#cbd5e1;margin-bottom:10px}
+.map{background:#0f172a;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.4);border:1px solid #334155}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+.node{background:linear-gradient(135deg,#431407,#4c1d95);border:2px solid #ea580c;border-radius:14px;padding:12px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#fed7aa}
+.node-em{background:linear-gradient(135deg,#1e3a5f,#312e81);border-color:#38bdf8;color:#e0e7ff}
+.arrow-sym{font-size:14px;color:#64748b}
+.conclusion{background:linear-gradient(135deg,#c2410c,#7c3aed);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#431407;padding:10px 12px;text-align:left;font-weight:700;color:#fdba74;border-bottom:2px solid #f97316}
+td{padding:10px 12px;border-bottom:1px solid #334155;color:#cbd5e1;vertical-align:top}
+.correction{background:#422006;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#fcd34d;margin-bottom:8px}
+.rebuttal{background:#1e1b4b;border:2px solid #a855f7;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#d8b4fe;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#c084fc;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#ede9fe}
+.subtitle{font-size:17px;color:#94a3b8;margin-bottom:32px;line-height:1.6}
+.highlight{background:#431407;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#fed7aa;border-left:4px solid #f97316}`;
+
+const body = `
+<h1>组件化数据库：DataFusion × Parquet × Agent</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-df">FDAP 栈</span>
+  <span class="tag tag-parquet">动态过滤</span>
+  <span class="tag tag-ai">Coding Agent</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：Andrew Lamb 专访揭示数据库正从垂直整合产品走向 DataFusion/Arrow/Parquet 可组合基建——查询侧靠多级剪枝与运行时 Dynamic Filters 少读无用数据，格式侧用 Variant/向量/ALP 适配 AI 负载；Coding Agent 降低组装专用库成本，却放大开源 PR 审查压力，专用 SQL 接口或成 Agent 访问数据的新默认。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#fdba74;margin-bottom:12px;text-align:center">FDAP：从存储到执行的组件链</h3>
+  <div class="diagram">
+    <div class="node">Parquet</div><span class="arrow-sym">→</span>
+    <div class="node-em">Arrow 内存</div><span class="arrow-sym">→</span>
+    <div class="node-em">DataFusion</div><span class="arrow-sym">→</span>
+    <div class="node">Flight 传输</div><span class="arrow-sym">→</span>
+    <div class="node">专用 Catalog</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#94a3b8;margin-top:12px">InfluxDB 3.0 与 Apple / Cloudflare / Palantir 等复用同一套可演进组件，而非重复造 SQL 引擎。</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#fde68a;font-size:16px">误解：DataFusion 是「又一个数据库产品」。原文类比 LLVM——它提供 Parser → Logical → Optimizer → Physical → Execution + Extension API，让你嵌入自有存储与算子，而不是替代 Postgres。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】DataFusion：数据库领域的 LLVM</h3>
+  <p><strong>在讲什么：</strong>如何不重复实现整套 SQL 引擎就建专用库？</p>
+  <p><strong>关键理解：</strong>Rust + Arrow 列式内存的可嵌入查询框架；逻辑计划答「算什么」，物理计划答「怎么算」。</p>
+  <p><strong>关系：</strong>与 PostgreSQL 完整 DB 相对；与 Spark「自带生态」相对——强调 Extension API 换 Catalog/数据源/优化规则。</p>
+  <p><strong>落地：</strong>专注领域索引与统计信息，把 Parser/Optimizer/Execution 交给 DataFusion。</p>
+  <p><strong>边界：</strong>分布式需另接 Ballista 或 DataFusion Distributed；不是你的事务 OLTP 一键方案。</p>
+  <p><strong>原文：</strong>「开发者可以专注于自己的业务领域，而不必重新实现一套完整的 SQL 查询引擎。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】TopK + 动态过滤（Dynamic Filters）</h3>
+  <p><strong>场景：</strong>1000 个 Parquet 文件求最近 10 条日志——静态 Min/Max 无法在开始前知道第 10 名时间戳。</p>
+  <p><strong>步骤：</strong>① TopK 堆维护当前第 10 名边界 → ② 边界下发 Scan → ③ 文件/Row Group/Page 级跳过不可能入选数据 → ④ 执行中持续收紧。</p>
+  <p><strong>依据：</strong>Logfire 特定查询模式曾获 10×+ 提升；强依赖时间排序与统计元数据——并非所有布局只读一个文件。</p>
+  <p><strong>避坑：</strong>无排序分区布局时动态过滤收益骤降；勿把「理论只开一个文件」当默认 SLA。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】静态剪枝 vs 动态过滤</h3>
+  <table>
+    <tr><th>维度</th><th>谓词下推 / 静态剪枝</th><th>Dynamic Filters</th></tr>
+    <tr><td>信息时点</td><td>查询开始前已知谓词</td><td>执行中由 TopK/Join 产生新边界</td></tr>
+    <tr><td>典型适用</td><td>WHERE country='US'</td><td>ORDER BY ts DESC LIMIT 10</td></tr>
+    <tr><td>剪枝层次</td><td>文件 / Row Group / Page</td><td>同上，但边界迭代更新</td></tr>
+    <tr><td>前提</td><td>统计信息准确</td><td>额外需要数据布局与排序属性</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】Parquet 演进能力选型</h3>
+  <table>
+    <tr><th>负载</th><th>推荐能力</th><th>不指望什么</th></tr>
+    <tr><td>半结构化 JSON</td><td>Variant + Shredding 热字段成列</td><td>仍当纯字符串列扫全表</td></tr>
+    <tr><td>地理查询</td><td>GEOMETRY + Bounding Box 空间剪枝</td><td>无空间索引的精确相交仍要读数据</td></tr>
+    <tr><td>AI 向量</td><td>FINITE_VECTOR 列式存</td><td>格式本身 ≠ ANN 索引与相似度搜索</td></tr>
+    <tr><td>点查少行</td><td>ALP 等编码减解码成本</td><td>传统 Page 解压仍不适合高频随机读</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】分布式：Ballista vs DataFusion Distributed</h3>
+  <p><strong>核心难点：</strong>不是分片 Scan，而是 Shuffle——GROUP BY / Join 要把相同键送到同一节点。</p>
+  <p><strong>Ballista：</strong>较完整 Scheduler + Executor + Shuffle 框架。</p>
+  <p><strong>DataFusion Distributed：</strong>可组合 API，嵌入自有系统。</p>
+  <p><strong>权衡：</strong>物化中间结果利故障恢复、损 I/O；流式 Shuffle 低延迟、故障处理更复杂。</p>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】Agent 时代的开源与自建</h3>
+  <p><strong>坑 1：</strong>Agent 批量喷 PR（DataFusion 曾积 ~400 个未关）→ 审查带宽不扩。**解法：**社区已限非 Draft PR 数、CI 迁 Fork；贡献者先证明真实问题与架构契合。</p>
+  <p><strong>坑 2：</strong>以为「向量 Parquet」= 向量数据库。**解法：**存储格式与 ANN 检索分层设计。</p>
+  <p><strong>坑 3：</strong>专用库从零写引擎。**解法：**FDAP 组装 + 自研 Catalog/算子/优化规则。</p>
+  <p><strong>坑 4：</strong>忽视数据布局。**解法：**分区/排序/聚簇决定剪枝上限，先于调优器魔法。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Agent 让「组装专用库」重新经济</h3>
+  <p><strong>原则：</strong>代码生成变便宜后，买通用库硬适配未必优于组合开源组件 + SQL 统一 Agent 接口。</p>
+  <p><strong>反面：</strong>30 年产品化浪潮因维护人力昂贵压制自研；现在瓶颈转向审查、架构判断与长期治理。</p>
+  <p><strong>落地：</strong>Andrew 建议——给数据项目加 SQL 接口，让 Agent 用 SQL 查；人类少学领域 DSL。</p>
+  <p><strong>边界：</strong>仍需理解系统；廉价代码不廉价维护责任。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「成熟云数仓一站式更省事」</p>
+  <p class="rebuttal-text">当 Agent 能替你写扩展算子与专用优化规则，为通用数仓付溢价买用不上的能力，可能比组合 DataFusion 更慢更贵——真正代价在缺乏架构判断力，而非缺一个安装包。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>数据库走向模块化：DataFusion 像 LLVM，Parquet/Arrow/Flight 独立演进。</li>
+    <li>性能核心少做无用功：文件→Row Group→Page 剪枝 + 运行时动态过滤。</li>
+    <li>Parquet 向 JSON/空间/向量/点查扩展，存储与检索能力须分层。</li>
+    <li>分布式难在 Shuffle 与故障权衡，非简单水平切 Scan。</li>
+    <li>Agent 降组装成本、抬审查成本；SQL 或成 Agent 访问数据的 lingua franca。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>审视数据湖分区与排序是否支撑 TopK/时间范围剪枝。</li>
+    <li>评估 DataFusion Extension 能否覆盖领域 Catalog 与自定义统计。</li>
+    <li>半结构化字段试点 Variant Shredding，避免 JSON 字符串列。</li>
+    <li>给内部数据服务暴露 SQL（或 Flight SQL），用 Agent 做集成探针。</li>
+    <li>贡献开源时少批量 Agent PR，多带上下文与可维护测试。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「选一个数据库产品」到「用可组合引擎 + 开放格式拼装最适合业务的专用数据系统」，并把 SQL 当作人机与 Agent 共用的操作界面。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);
