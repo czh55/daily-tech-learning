@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-23",
+    "files": [
+      {
+        "path": "svgs/2026-11-23/probabilistic-data-structures-in-go.svg",
+        "title": "别再只用 Map 了：Go 工程师应该了解的概率性数据结构",
+        "source": "https://tonybai.com/2026/11/23/probabilistic-data-structures-in-go/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-22",
     "files": [
       {
