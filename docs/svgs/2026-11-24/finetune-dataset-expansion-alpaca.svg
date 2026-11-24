@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5537" viewBox="0 0 1320 5537">
+  <foreignObject x="0" y="0" width="1320" height="5537">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#0c1929,#132337);padding:48px 60px;color:#e2e8f0}
+h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,#38bdf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-sft{background:#0c4a6e;color:#bae6fd}.tag-data{background:#064e3b;color:#6ee7b7}.tag-llama{background:#312e81;color:#c4b5fd}
+.card{background:#1e293b;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.35);border-left:5px solid #38bdf8}
+.card h3{font-size:22px;font-weight:700;color:#7dd3fc;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#cbd5e1;margin-bottom:10px}
+.map{background:#0f172a;border-radius:20px;padding:36px;margin-bottom:32px;border:1px solid #334155}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px 0}
+.node{background:#0c4a6e;border:2px solid #38bdf8;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:700;color:#e0f2fe}
+.node-em{background:#064e3b;border-color:#34d399;color:#d1fae5}
+.arrow-sym{color:#64748b;font-size:14px}
+.conclusion{background:linear-gradient(135deg,#0369a1,#059669);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#0c4a6e;padding:10px 12px;text-align:left;color:#bae6fd;border-bottom:2px solid #38bdf8}
+td{padding:10px 12px;border-bottom:1px solid #334155;color:#cbd5e1;vertical-align:top}
+.correction{background:#422006;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#fcd34d;margin-bottom:8px}
+.rebuttal{background:#1e1b4b;border:2px solid #818cf8;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#c7d2fe;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#a5b4fc;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#ede9fe}
+.subtitle{font-size:17px;color:#94a3b8;margin-bottom:32px;line-height:1.6}
+.highlight{background:#0c4a6e;padding:12px 16px;border-radius:10px;margin:12px 0;font-size:15px;color:#bae6fd;border-left:4px solid #38bdf8}</style>
+      
+<h1>微调数据集扩充：量够且样真</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-sft">SFT / 微调</span>
+  <span class="tag tag-data">MGA + 五类增强</span>
+  <span class="tag tag-llama">LLaMA-Factory Alpaca</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：在人工标注仅数百条、离万级目标甚远时，如何用 MGA 体裁×受众改写、五种提示词增强、格式重排与约 20% 多轮对话扩量提质，并以事实不变、问法真、多样性可度量的规则与硬事实校验避免灌水，最终输出 LLaMA-Factory 可直接训练的 Alpaca JSON。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#7dd3fc;margin-bottom:12px;text-align:center">扩充流水线</h3>
+  <div class="diagram">
+    <div class="node">原始锚点 (~1)</div><span class="arrow-sym">→</span>
+    <div class="node-em">MGA / 五增强</div><span class="arrow-sym">→</span>
+    <div class="node">格式重排</div><span class="arrow-sym">→</span>
+    <div class="node-em">多轮 ~20%</div><span class="arrow-sym">→</span>
+    <div class="node">质检 → Alpaca</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#94a3b8;margin-top:10px">原始:扩充分 ≈ 1:3；评测集禁入扩充。</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#fde68a;font-size:16px">误解：扩充 = 同义改写刷条数。作者强调信息量不变、错误可放大十倍；须度量问句相似度，避免模板灌水。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】扩充三条界限</h3>
+  <p><strong>事实不变：</strong>CVE、版本、命令、配置项扩前后一致，规则校验兜底。</p>
+  <p><strong>问法要真：</strong>模拟用户真实问法，非单纯同义词替换。</p>
+  <p><strong>多样性可度量：</strong>记录来源与方式，统计相似度分布。</p>
+  <p><strong>比例：</strong>原始:扩充 ≈ 1:3；一条 MGA 可产十几条但入集宜挑 ~3 条防偏置。</p>
+  <p><strong>红线：</strong>评测集不得参与扩充。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】MGA（Massive Genre-Audience）</h3>
+  <p><strong>思路：</strong>同知识换体裁（操作手册/复盘/讲义等）×受众（运维/合规/新人等）重写 QA。</p>
+  <p><strong>步骤：</strong>① product 随机体裁受众 → ② Qwen 等 JSON 输出 → ③ hard_facts 正则（CVE/版本/反引号命令）⊆ 新答案 → ④ 问题长度 ≤80。</p>
+  <p><strong>落地：</strong>dashscope 兼容 OpenAI API；temperature ~0.8。</p>
+  <p><strong>避坑：</strong>一条扩十几条全入库会偏置；实体识别等需补全校验并留审计 meta。</p>
+  <p><strong>对比：</strong>强于 paraphrase——差异来自结构与口吻而非换词。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】五种提示词增强</h3>
+  <table>
+    <tr><th>方法</th><th>作用</th><th>风险点</th></tr>
+    <tr><td>上下文增强</td><td>补日志/配置材料，问题改「结合材料…」</td><td>材料需贴场景</td></tr>
+    <tr><td>双向生成</td><td>答案反推 3 个不同问法</td><td>问答不匹配脏数据</td></tr>
+    <tr><td>语义等价</td><td>口语/术语/长短问；Jaccard 0.5～0.9</td><td>过低语义变、过高重复</td></tr>
+    <tr><td>关联扩展</td><td>前置/相邻/上下游 QA</td><td>须知识库核验防幻觉</td></tr>
+    <tr><td>场景设置</td><td>加角色、环境与约束</td><td>约束越具体区分度越高</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】格式重排（只改结构不改事实）</h3>
+  <p><strong>目标格式：</strong>① 结论 ≤40 字 → ② 有序列表 3～6 点 → ③ 命令代码块保留版本 → ④ 适用边界段。</p>
+  <p><strong>校验 format_ok：</strong>硬事实不丢、有分点、代码块数一致、长度比 0.7～1.8。</p>
+  <p><strong>价值：</strong>专家标注常无换行；模型会学「墙式段落」而非可扫读结构。</p>
+  <p><strong>避坑：</strong>重排前后必 hard_facts 差集检查。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】多轮对话（~20%）</h3>
+  <p><strong>机制：</strong>单轮抽 ~2000/万条扩展 2～4 轮追问；history 为 [问,答] 序列，末轮 instruction+output。</p>
+  <p><strong>边界：</strong>太多稀释单轮知识且 token 贵；太少学不会追问。</p>
+  <p><strong>避坑：</strong>禁止为凑轮次前后矛盾；优先真实工单回流而非纯生成。</p>
+  <p><strong>Alpaca：</strong>history 拼在 instruction 前，最后一轮收尾 output。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】扩充手段选型</h3>
+  <table>
+    <tr><th>痛点</th><th>首选</th><th>辅以</th><th>勿用</th></tr>
+    <tr><td>条数不足</td><td>MGA 挑 3 条/源</td><td>五类增强分批</td><td>同句换 10 说法灌水</td></tr>
+    <tr><td>问法单一</td><td>场景+双向+paraphrase</td><td>上下文材料</td><td>仅 synonym</td></tr>
+    <tr><td>答案难读</td><td>格式重排</td><td>结论+分点模板</td><td>扩写虚构细节</td></tr>
+    <tr><td>不会追问</td><td>20% 多轮</td><td>真实工单</td><td>50%+ 多轮</td></tr>
+    <tr><td>专业幻觉</td><td>关联扩展+KB</td><td>硬事实正则</td><td>纯模型 related</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】质检流水线</h3>
+  <p><strong>reverse / related：</strong>最易问答不匹配，必过检。</p>
+  <p><strong>多轮：</strong>末轮结论须覆盖前轮信息，禁无信息寒暄。</p>
+  <p><strong>评测泄漏：</strong>测集进训练分数虚高。</p>
+  <p><strong>过拟合：</strong>扩太多重复知识锚点失效。</p>
+  <p><strong>工程：</strong>meta 记 method/genre/audience 便于抽样复核与相似度统计。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「蒸馏/买数据派」——直接买万条或强模型蒸馏比作坊式 MGA 便宜省事。</p>
+  <p class="rebuttal-text">中小团队缺覆盖与预算时，蒸馏剩不下专业条且格式乱；可控扩充+硬事实校验能把锚点知识扩到多样问法又不改 CVE/版本，评测不掺数据才能信分数。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>量：MGA + 五增强在 1:3 比例下扩量，单条 MGA 入集约 3 条。</li>
+    <li>质：格式重排补骨架；20% 多轮练追问；全程事实与规则校验。</li>
+    <li>产出：单轮/多轮统一 Alpaca，对接 LLaMA-Factory 微调。</li>
+    <li>反模式：同义刷屏、评测污染、无 meta 不可审计。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>为领域定义 hard_facts 正则并接入每条扩充回调。</li>
+    <li>实现 MGA GENRES×AUDIENCES 抽样与 meta 落盘。</li>
+    <li>对存量标注跑 format_ok 重排流水线。</li>
+    <li>按 20% 配额从高质量单轮抽多轮，优先工单。</li>
+    <li>扩充后统计 Jaccard/来源分布，剔相似簇。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「条数越多越好」到「锚点不变、问法多样、格式可学、每条可溯」——微调数据是带约束的合成工程而非简单复制。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

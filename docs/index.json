@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-11-24",
+    "files": [
+      {
+        "path": "svgs/2026-11-24/ai-era-learning-programming-languages.svg",
+        "title": "AI 时代，你可能再也学不会一门编程语言了",
+        "source": "https://tonybai.com/2026/11/24/ai-era-learning-programming-languages/"
+      },
+      {
+        "path": "svgs/2026-11-24/finetune-dataset-expansion-alpaca.svg",
+        "title": "大模型训练全流程实战指南实战篇（十九）——微调数据集的扩充与构建",
+        "source": "https://juejin.cn/post/7711340494361641000"
+      }
+    ]
+  },
+  {
     "date": "2026-11-23",
     "files": [
       {
