@@ -1,5 +1,20 @@
 [
   {
+    "date": "2026-11-25",
+    "files": [
+      {
+        "path": "svgs/2026-11-25/an-overview-of-go-tooling-v2.svg",
+        "title": "Go 工具链全景：2026 版——从 go install 到 gopls 与 MCP 的高效开发指南",
+        "source": "https://tonybai.com/2026/11/25/an-overview-of-go-tooling-v2/"
+      },
+      {
+        "path": "svgs/2026-11-25/go-goroutine-stack-growth-optimization-uber.svg",
+        "title": "Go 的 goroutine 栈增长，为什么会吃掉 Uber 近 4% CPU？",
+        "source": "https://tonybai.com/2026/11/25/go-goroutine-stack-growth-optimization-uber/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-24",
     "files": [
       {

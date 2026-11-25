@@ -1,0 +1,137 @@
+欢迎收听每日技术学习语音讲解。本期主题，goroutine 栈增长：被忽视的 4% CPU。标签包括Runtime、Uber 生产数据、Stack Cache。本次讲解预计时长 约 12 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：为何 Go 1.19 已有自适应初始栈，Uber 全集群 copystack 仍占约 3.9% CPU（约为 GC 一半），短生命周期 RPC goroutine 如何躲过 GC 采样，以及 Stack Cache、Watermark、Lend/Token Budget 如何权衡 CPU 与内存。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：2KB 初栈，然后morestack/copystack，然后GC 采样盲区，然后Stack Cache 复用，然后Budget 约束
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：调大 GOMAXPROCS 或初始栈全局常量即可一劳永逸。自适应栈依赖 GC 存活快照，短生命周期大栈 goroutine 在两次 GC 间生死未入统计，问题在采样机制而非「栈不够大」。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：「线程池派」——用 worker 池限制 goroutine 数量与栈深，比改 Runtime 更可控。
+
+池化能减并发度却无法消除单次深栈 copystack；当 RPC 模型仍要一请求一 goroutine 时，Runtime 级复用解决的是每次扩栈复制，与业务架构正交且 Uber 已证集群级收益。
+
+接下来，第四部分，【概念拆解卡】copystack 与动态栈。
+
+在讲什么：goroutine 从小栈起步，不足时 morestack/newstack 扩栈，copystack 迁移并修正指针。
+
+关键理解，非简单 memcpy；深度调用链可多次扩栈复制，高 QPS 短 RPC 路径上成本累积。
+
+关系：与 GC CPU（Uber 约 7.3%）并列，是 Runtime 内易被忽视的热路径。
+
+落地：pprof 看 runtime.copystack；大规模微服务应监控该占比。
+
+边界：长生命周期、浅栈应用可能几乎无感；问题在「短寿大栈」分布。
+
+原文：「runtime.copystack 平均消耗了约 3.9% 的 CPU，已经达到 GC CPU 开销的一半以上。」
+
+接下来，第五部分，【概念拆解卡】Go 1.19 自适应初始栈的盲区。
+
+机制：GC 扫描存活 goroutine 栈用量，推算新 goroutine 的 startingStackSize。
+
+盲区：A 类长命小栈 goroutine 长期参与统计；B 类 RPC 短寿 goroutine 在 GC 前扩栈至 16–32KB 后已退出，真实需求未进入样本。
+
+后果：下一批 B 仍从偏小初栈起步，重复 copystack。
+
+落地：识别工作负载是否「大量短生命周期 + 较深调用栈」。
+
+原文：「不是 Go 不会自适应，而是基于 GC 快照的自适应机制，无法及时捕获短生命周期 goroutine 的栈需求。」
+
+接下来，第六部分，【方法/工具卡】Stack Cache（CL 793780）。
+
+核心思路：goroutine 退出后不立刻释放已扩大栈，经 per-P free-G 机制缓存复用（上限约 128KB，更大仍释放）。
+
+生产效果：Uber 全量部署后集群 runtime.copystack CPU 约 4%，得到0.2%。
+
+避坑，小栈 goroutine 可能长期占用大栈 ，得到 内存膨胀担忧。
+
+对比 Watermark（CL 793920）：记录生命周期栈峰值改进初栈估算；部分服务 copystack 降至 0–0.7%。
+
+接下来，第七部分，【跨概念对比表】Lend Budget vs Token Budget。
+
+约束对象，额外借出的栈内存字节，大栈复用次数，怕内存用 Lend，要轻量用 Token
+
+默认规模，GOMAXPROCS×2048KB（如 8P，得到16MB），每栈 64 Token，最多 255，Lend 更确定
+
+耗尽行为，释放缓存，回正常初栈流程，Token 用尽释放栈，均有回退路径
+
+开销设计，per-P credit 批量申请，减全局同步，利用 g 对齐填充 1 字节，无额外原子，Token 路径更省
+
+关闭，GODEBUG=stackcachelendkb=0，GODEBUG=stackcachetokens=0，实验期可快速回滚
+
+合成 Benchmark，几何平均耗时降约 92.7–93%（DeepGoroutines ~12.7μs，得到0.74μs），非全应用 93% 提升
+
+接下来，第八部分，【决策/选型表】栈优化路线怎么选。
+
+已证实高 copystack 占比，跟进 Stack Cache 主线 CL，Uber 全集群验证，仅业务层减 goroutine
+
+内存预算紧张，Lend Budget，字节上限确定，无界 Stack Cache
+
+Runtime 热路径敏感，Token Budget，少全局计数，重度 per-g 原子统计
+
+初栈估算长期偏小，Watermark 方案，补 GC 采样盲区，全局调大初栈常量
+
+等待上游合入前，监控 + pprof + 内部初栈调参，Uber Zero-Growth 博客实践，fork 私有 runtime 长期分支
+
+接下来，第九部分，【避坑清单卡】解读生产与 Benchmark。
+
+把 93% 照搬到 KPI：合成 DeepGoroutines 不代表全栈服务。解：先看自家 copystack 占比。
+
+忽视混合负载：大栈复用可能让仅需 2KB 的 goroutine 占大栈——Benchmark 特意测 16 个小栈子 goroutine 场景。
+
+CL 未正式发布：截至 2026-11 仍评审中，勿假设已进发行版。严重度：致命（错误依赖 GODEBUG 行为）。
+
+只盯 CPU：Lend 耗尽后行为回退，需同时看 RSS。解：双指标仪表盘。
+
+接下来，第十部分，【心法/原则卡】生产数据推动 Runtime 演进。
+
+原则，规模足够大时，Runtime 微操作可成真实瓶颈；最有效手段常是改进 Runtime 而非无限业务优化。
+
+反面：仅内部 patch 不回馈社区，难以形成 Watermark 等多路径共识。
+
+落地：测量 copystack vs GC；向 Issue #77893 贡献 workload 与 benchmark。
+
+边界：小团队浅栈服务收益有限，不必过早深度定制。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+copystack 可在超大 Go 集群占 ~4% CPU，普遍性强于个案。
+
+Go 1.19 自适应栈受 GC 快照限制，短寿大栈是结构性盲区。
+
+Stack Cache 生产验证显著；Lend/Token Budget 平衡内存风险。
+
+Watermark 等社区方案说明多路径并存，无银弹。
+
+相关 CL 仍实验阶段，GODEBUG 可作开关.
+
+用 pprof/持续剖析查看 runtime.copystack 是否进入 Top。
+
+刻画 goroutine 寿命与栈深度分布，判断是否 B 类负载。
+
+跟踪 go#77893 与 CL 793780/858361/858022 合入状态。
+
+若内存敏感，优先理解 Lend Budget 默认 GOMAXPROCS×2MB。
+
+参与讨论时附带真实服务 copystack 占比，推动上游决策。
+
+总结
+
+行动清单
+
+关键认知转变
+
+从「goroutine 很便宜」到「栈增长与复制在特定负载下同样昂贵」——优化目标应从业务代码扩展到 Runtime 可见性与开源协作。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！

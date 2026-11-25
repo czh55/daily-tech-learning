@@ -1,0 +1,162 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'go-goroutine-stack-growth-optimization-uber.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#14120c,#1f1a0f);padding:48px 60px;color:#e2e8f0}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-rt{background:#78350f;color:#fde68a}.tag-uber{background:#1c1917;color:#d6d3d1}.tag-perf{background:#14532d;color:#86efac}
+.card{background:#1e293b;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.35);border-left:5px solid #f59e0b}
+.card h3{font-size:22px;font-weight:700;color:#fcd34d;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#cbd5e1;margin-bottom:10px}
+.map{background:#0f172a;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.4);border:1px solid #334155}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+.node{background:linear-gradient(135deg,#78350f,#92400e);border:2px solid #fbbf24;border-radius:14px;padding:12px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#fef3c7}
+.node-em{background:linear-gradient(135deg,#14532d,#166534);border-color:#4ade80;color:#dcfce7}
+.arrow-sym{font-size:14px;color:#64748b}
+.conclusion{background:linear-gradient(135deg,#d97706,#ea580c);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#78350f;padding:10px 12px;text-align:left;font-weight:700;color:#fde68a;border-bottom:2px solid #f59e0b}
+td{padding:10px 12px;border-bottom:1px solid #334155;color:#cbd5e1;vertical-align:top}
+.correction{background:#422006;border:2px solid #f59e0b;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#fcd34d;margin-bottom:8px}
+.rebuttal{background:#1e1b4b;border:2px solid #818cf8;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#c7d2fe;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#a5b4fc;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#ede9fe}
+.subtitle{font-size:17px;color:#94a3b8;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>goroutine 栈增长：被忽视的 4% CPU</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-rt">Runtime</span>
+  <span class="tag tag-uber">Uber 生产数据</span>
+  <span class="tag tag-perf">Stack Cache</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：为何 Go 1.19 已有自适应初始栈，Uber 全集群 copystack 仍占约 3.9% CPU（约为 GC 一半），短生命周期 RPC goroutine 如何躲过 GC 采样，以及 Stack Cache、Watermark、Lend/Token Budget 如何权衡 CPU 与内存。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#fcd34d;margin-bottom:12px;text-align:center">栈增长成本与优化路径</h3>
+  <div class="diagram">
+    <div class="node">2KB 初栈</div><span class="arrow-sym">→</span>
+    <div class="node-em">morestack/copystack</div><span class="arrow-sym">→</span>
+    <div class="node">GC 采样盲区</div><span class="arrow-sym">→</span>
+    <div class="node-em">Stack Cache 复用</div><span class="arrow-sym">→</span>
+    <div class="node">Budget 约束</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#94a3b8;margin-top:12px">Issue #77893：600 服务中 334 个 copystack &gt;3%；CL 793780 部署后集群占比约 4%→0.2%。</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#fde68a;font-size:16px">误解：调大 GOMAXPROCS 或初始栈全局常量即可一劳永逸。自适应栈依赖 GC 存活快照，短生命周期大栈 goroutine 在两次 GC 间生死未入统计，问题在采样机制而非「栈不够大」。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】copystack 与动态栈</h3>
+  <p><strong>在讲什么：</strong>goroutine 从小栈起步，不足时 morestack/newstack 扩栈，copystack 迁移并修正指针。</p>
+  <p><strong>关键理解：</strong>非简单 memcpy；深度调用链可多次扩栈复制，高 QPS 短 RPC 路径上成本累积。</p>
+  <p><strong>关系：</strong>与 GC CPU（Uber 约 7.3%）并列，是 Runtime 内易被忽视的热路径。</p>
+  <p><strong>落地：</strong>pprof 看 runtime.copystack；大规模微服务应监控该占比。</p>
+  <p><strong>边界：</strong>长生命周期、浅栈应用可能几乎无感；问题在「短寿大栈」分布。</p>
+  <p><strong>原文：</strong>「runtime.copystack 平均消耗了约 3.9% 的 CPU，已经达到 GC CPU 开销的一半以上。」</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Go 1.19 自适应初始栈的盲区</h3>
+  <p><strong>机制：</strong>GC 扫描存活 goroutine 栈用量，推算新 goroutine 的 startingStackSize。</p>
+  <p><strong>盲区：</strong>A 类长命小栈 goroutine 长期参与统计；B 类 RPC 短寿 goroutine 在 GC 前扩栈至 16–32KB 后已退出，真实需求未进入样本。</p>
+  <p><strong>后果：</strong>下一批 B 仍从偏小初栈起步，重复 copystack。</p>
+  <p><strong>落地：</strong>识别工作负载是否「大量短生命周期 + 较深调用栈」。</p>
+  <p><strong>原文：</strong>「不是 Go 不会自适应，而是基于 GC 快照的自适应机制，无法及时捕获短生命周期 goroutine 的栈需求。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Stack Cache（CL 793780）</h3>
+  <p><strong>核心思路：</strong>goroutine 退出后不立刻释放已扩大栈，经 per-P free-G 机制缓存复用（上限约 128KB，更大仍释放）。</p>
+  <p><strong>生产效果：</strong>Uber 全量部署后集群 runtime.copystack CPU 约 4%→0.2%。</p>
+  <p><strong>避坑：</strong>小栈 goroutine 可能长期占用大栈 → 内存膨胀担忧。</p>
+  <p><strong>对比 Watermark（CL 793920）：</strong>记录生命周期栈峰值改进初栈估算；部分服务 copystack 降至 0–0.7%。</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】Lend Budget vs Token Budget</h3>
+  <table>
+    <tr><th>对比维度</th><th>Lend Budget（CL 858361）</th><th>Token Budget（CL 858022）</th><th>一句话结论</th></tr>
+    <tr><td>约束对象</td><td>额外借出的栈内存字节</td><td>大栈复用次数</td><td>怕内存用 Lend，要轻量用 Token</td></tr>
+    <tr><td>默认规模</td><td>GOMAXPROCS×2048KB（如 8P→16MB）</td><td>每栈 64 Token，最多 255</td><td>Lend 更确定</td></tr>
+    <tr><td>耗尽行为</td><td>释放缓存，回正常初栈流程</td><td>Token 用尽释放栈</td><td>均有回退路径</td></tr>
+    <tr><td>开销设计</td><td>per-P credit 批量申请，减全局同步</td><td>利用 g 对齐填充 1 字节，无额外原子</td><td>Token 路径更省</td></tr>
+    <tr><td>关闭</td><td>GODEBUG=stackcachelendkb=0</td><td>GODEBUG=stackcachetokens=0</td><td>实验期可快速回滚</td></tr>
+    <tr><td>合成 Benchmark</td><td colspan="2">几何平均耗时降约 92.7–93%（DeepGoroutines ~12.7μs→0.74μs）</td><td>非全应用 93% 提升</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】栈优化路线怎么选</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>核心理由</th><th>不推荐</th></tr>
+    <tr><td>已证实高 copystack 占比</td><td>跟进 Stack Cache 主线 CL</td><td>Uber 全集群验证</td><td>仅业务层减 goroutine</td></tr>
+    <tr><td>内存预算紧张</td><td>Lend Budget</td><td>字节上限确定</td><td>无界 Stack Cache</td></tr>
+    <tr><td>Runtime 热路径敏感</td><td>Token Budget</td><td>少全局计数</td><td>重度 per-g 原子统计</td></tr>
+    <tr><td>初栈估算长期偏小</td><td>Watermark 方案</td><td>补 GC 采样盲区</td><td>全局调大初栈常量</td></tr>
+    <tr><td>等待上游合入前</td><td>监控 + pprof + 内部初栈调参</td><td>Uber Zero-Growth 博客实践</td><td>fork 私有 runtime 长期分支</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】解读生产与 Benchmark</h3>
+  <p><strong>把 93% 照搬到 KPI：</strong>合成 DeepGoroutines 不代表全栈服务。<strong>解：</strong>先看自家 copystack 占比。</p>
+  <p><strong>忽视混合负载：</strong>大栈复用可能让仅需 2KB 的 goroutine 占大栈——Benchmark 特意测 16 个小栈子 goroutine 场景。</p>
+  <p><strong>CL 未正式发布：</strong>截至 2026-11 仍评审中，勿假设已进发行版。<strong>严重度：</strong>致命（错误依赖 GODEBUG 行为）。</p>
+  <p><strong>只盯 CPU：</strong>Lend 耗尽后行为回退，需同时看 RSS。<strong>解：</strong>双指标仪表盘。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】生产数据推动 Runtime 演进</h3>
+  <p><strong>原则：</strong>规模足够大时，Runtime 微操作可成真实瓶颈；最有效手段常是改进 Runtime 而非无限业务优化。</p>
+  <p><strong>反面：</strong>仅内部 patch 不回馈社区，难以形成 Watermark 等多路径共识。</p>
+  <p><strong>落地：</strong>测量 copystack vs GC；向 Issue #77893 贡献 workload 与 benchmark。</p>
+  <p><strong>边界：</strong>小团队浅栈服务收益有限，不必过早深度定制。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：「线程池派」——用 worker 池限制 goroutine 数量与栈深，比改 Runtime 更可控。</p>
+  <p class="rebuttal-text">池化能减并发度却无法消除单次深栈 copystack；当 RPC 模型仍要一请求一 goroutine 时，Runtime 级复用解决的是每次扩栈复制，与业务架构正交且 Uber 已证集群级收益。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>copystack 可在超大 Go 集群占 ~4% CPU，普遍性强于个案。</li>
+    <li>Go 1.19 自适应栈受 GC 快照限制，短寿大栈是结构性盲区。</li>
+    <li>Stack Cache 生产验证显著；Lend/Token Budget 平衡内存风险。</li>
+    <li>Watermark 等社区方案说明多路径并存，无银弹。</li>
+    <li>相关 CL 仍实验阶段，GODEBUG 可作开关.</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>用 pprof/持续剖析查看 runtime.copystack 是否进入 Top。</li>
+    <li>刻画 goroutine 寿命与栈深度分布，判断是否 B 类负载。</li>
+    <li>跟踪 go#77893 与 CL 793780/858361/858022 合入状态。</li>
+    <li>若内存敏感，优先理解 Lend Budget 默认 GOMAXPROCS×2MB。</li>
+    <li>参与讨论时附带真实服务 copystack 占比，推动上游决策。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>从「goroutine 很便宜」到「栈增长与复制在特定负载下同样昂贵」——优化目标应从业务代码扩展到 Runtime 可见性与开源协作。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);
