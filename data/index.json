@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-11-26",
+    "files": [
+      {
+        "path": "svgs/2026-11-26/go-1-28-gotip-cgo-bindings.svg",
+        "title": "Go 1.28 新特性抢先体验：gotip 玩转无 C 工具链的 cgo",
+        "source": "https://tonybai.com/2026/11/26/go-1-28-gotip-cgo-bindings/"
+      }
+    ]
+  },
+  {
     "date": "2026-11-25",
     "files": [
       {
