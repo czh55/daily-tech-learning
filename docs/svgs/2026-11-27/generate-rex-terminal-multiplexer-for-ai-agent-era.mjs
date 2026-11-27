@@ -1,0 +1,162 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { buildSvg } from '../../../scripts/svg-auto-height.mjs';
+
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(DIR, 'rex-terminal-multiplexer-for-ai-agent-era.svg');
+
+const CSS = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#0c1222,#162032);padding:48px 60px;color:#e2e8f0}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#38bdf8,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-mux{background:#312e81;color:#c7d2fe}.tag-agent{background:#134e4a;color:#5eead4}.tag-osc{background:#7c2d12;color:#fdba74}
+.card{background:#1e293b;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.35);border-left:5px solid #38bdf8}
+.card h3{font-size:22px;font-weight:700;color:#7dd3fc;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#cbd5e1;margin-bottom:10px}
+.map{background:#0f172a;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.4);border:1px solid #334155}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+.node{background:linear-gradient(135deg,#1e3a5f,#1e40af);border:2px solid #38bdf8;border-radius:14px;padding:12px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#e0f2fe}
+.node-em{background:linear-gradient(135deg,#134e4a,#115e59);border-color:#2dd4bf;color:#ccfbf1}
+.arrow-sym{font-size:14px;color:#64748b}
+.conclusion{background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#1e3a8a;padding:10px 12px;text-align:left;font-weight:700;color:#bfdbfe;border-bottom:2px solid #3b82f6}
+td{padding:10px 12px;border-bottom:1px solid #334155;color:#cbd5e1;vertical-align:top}
+.correction{background:#172554;border:2px solid #3b82f6;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#93c5fd;margin-bottom:8px}
+.rebuttal{background:#1e1b4b;border:2px solid #818cf8;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#c7d2fe;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#a5b4fc;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#ede9fe}
+.subtitle{font-size:17px;color:#94a3b8;margin-bottom:32px;line-height:1.6}`;
+
+const body = `
+<h1>Rex：AI Agent 时代的终端 Multiplexer 原语</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-mux">Mirroring vs Compositing</span>
+  <span class="tag tag-agent">多 Agent / PTY</span>
+  <span class="tag tag-osc">OSC 7501</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：当终端从单人 Shell 界面变成多 Agent 长期并行运行环境时，Terminal Multiplexer 应如何演进——Superlogical 的 Rex 用 Mirroring + API + Block 模型，把「管理终端程序」做成可被上层 Agent Workspace 复用的基础设施原语，而非再造一个全能 IDE。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#7dd3fc;margin-bottom:12px;text-align:center">终端分层：从人机交互到 Agent 编排</h3>
+  <div class="diagram">
+    <div class="node">PTY / Shell</div><span class="arrow-sym">→</span>
+    <div class="node-em">Multiplexer Server</div><span class="arrow-sym">→</span>
+    <div class="node">Block API</div><span class="arrow-sym">→</span>
+    <div class="node-em">libghostty 渲染</div><span class="arrow-sym">→</span>
+    <div class="node">Agent / 人类 Client</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#94a3b8;margin-top:12px">Agent 需要：持久化、读输出、注输入、判完成、多客户端观测——本质是 Multiplexer 能力被放大。</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#bfdbfe;font-size:16px">误解：Rex = 又一个 Agent IDE，要和 Herdr/Orca 比功能清单。实际 Rex 定位 <strong>Multiplexer First</strong>，上层工作区可以在其 API 之上自建恢复、编排与 UI。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Terminal、PTY 与 Multiplexer</h3>
+  <p><strong>在讲什么：</strong>终端模拟器只负责渲染；Shell/Agent 是 PTY 上的终端程序；Multiplexer 在客户端与程序之间插 Server，实现关窗口不杀进程、多窗格、远程重连。</p>
+  <p><strong>关键理解：</strong>AI Agent 让「长期运行 + 多进程树 + 跨 Agent 观察」从开发者便利变成基础设施刚需。</p>
+  <p><strong>关系：</strong>Multiplexer 不负责 Agent 推理，只负责进程与会话生命周期——与 Harness 分工明确。</p>
+  <p><strong>落地：</strong>主 Agent 拉起子 Agent 前，先想清楚会话持久化、输出抓取、人工介入点挂在哪一层。</p>
+  <p><strong>边界：</strong>Multiplexer 不保存 Agent 任务记忆与上下文，Session 恢复需 Harness 协同。</p>
+  <p><strong>原文：</strong>「这些能力并不是专门为 AI Agent 设计的，它们本来就是 Multiplexer 应该解决的问题。」</p>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】tmux Compositing vs Rex Mirroring</h3>
+  <table>
+    <tr><th>维度</th><th>tmux Compositing</th><th>Rex Mirroring</th><th>结论</th></tr>
+    <tr><td>屏幕</td><td>Server 合成整屏</td><td>各程序原始流由 Client 渲染</td><td>中间层解释负担转移</td></tr>
+    <tr><td>客户端</td><td>任意终端/SSH 即可</td><td>需完整终端引擎（libghostty）</td><td>SSH 裸连不友好</td></tr>
+    <tr><td>新终端特性</td><td>需 tmux 正确实现</td><td>客户端原生处理</td><td>图像/鼠标等更易用</td></tr>
+    <tr><td>网络</td><td>传合成屏 diff</td><td>传各 Block 终端数据</td><td>弱网可能更费带宽</td></tr>
+    <tr><td>历史评价</td><td>跨终端兼容的经典权衡</td><td>用强客户端换直接呈现</td><td>非先进/落后，约束不同</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】Rex 对象模型与编排 API</h3>
+  <p><strong>核心思路：</strong>Session → Window → Block；Block 是可扩展运行单元，不止传统 Pane。</p>
+  <p><strong>操作：</strong>session.create / new_window → 布局定义 Block → session.describe_block → client.key 注输入 → 监听输出与事件。</p>
+  <p><strong>选型：</strong>需要程序化编排多个 Agent 终端时用 API；纯人手 SSH 运维仍倾向 tmux。</p>
+  <p><strong>避坑：</strong>关图形客户端 ≠ 停 Server；停 Server 的恢复逻辑要自研并与 Agent Session ID 关联。</p>
+  <p><strong>原文：</strong>「外部程序可以不依赖人工操作 UI，就能创建终端环境、启动程序、读取状态并进行控制。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】OSC 7501 终端状态协议</h3>
+  <p><strong>在讲什么：</strong>程序经 PTY 发 OSC 转义序列，key=value 报告 state：idle / working / done / blocked / error。</p>
+  <p><strong>落地：</strong>Agent 工具少靠猜日志，Multiplexer/终端统一读状态；未知序列可被忽略，利于向后兼容。</p>
+  <p><strong>生态：</strong>Herdr Core 传闻已采用——协议可跨产品，不必锁死 Rex。</p>
+  <p><strong>边界：</strong>只解决「进程在终端里处于什么态」，不替代业务级任务 DAG。</p>
+  <p><strong>验证：</strong>编排层对照 blocked 状态触发人工授权，而非死等 EOF。</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】Rex vs Herdr vs Orca</h3>
+  <table>
+    <tr><th>场景</th><th>推荐</th><th>理由</th><th>不推荐</th></tr>
+    <tr><td>自研 Agent 平台要终端底座</td><td>Rex API + 自研 Workspace</td><td>原语可组合</td><td>指望 Rex 内置全套 IDE</td></tr>
+    <tr><td>开箱即用 Agent 桌面</td><td>Herdr / Orca</td><td>工作流与 UI 一体</td><td>用功能表硬比 Rex</td></tr>
+    <tr><td>远程纯 SSH</td><td>tmux</td><td>客户端门槛低</td><td>Rex Mirroring 无专用客户端</td></tr>
+    <tr><td>观察 Agent 授权/错误</td><td>OSC 7501 兼容终端</td><td>标准化 state</td><td>每家解析 ANSI 日志</td></tr>
+    <tr><td>生产长期依赖</td><td>评估 Beta/闭源/API 稳定性</td><td>基础设施风险</td><td>默认会开源（无承诺）</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】采用 Rex 前的现实代价</h3>
+  <p><strong>智能客户端硬要求：</strong>Mirroring 依赖 libghostty 级引擎，普通 SSH 终端不够用。<strong>严重度：</strong>高。</p>
+  <p><strong>弱网带宽：</strong>多 Block 原始流可能比合成屏更重。<strong>解：</strong>评估内网/本机优先场景。</p>
+  <p><strong>闭源 Beta：</strong>API 与许可未定型。<strong>解：</strong>关键路径保留 tmux 回退或抽象编排接口。</p>
+  <p><strong>Agent 恢复误判：</strong>终端会话在 ≠ 任务上下文在。<strong>解：</strong>Harness 持久化 checkpoint，与 Rex 会话 ID 双轨。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】Primitive 先于一体化应用</h3>
+  <p><strong>原则：</strong>像 Linux 进程/管道一样，Multiplexer 提供小而稳的可组合能力，复杂 Agent IDE 在上层拼装。</p>
+  <p><strong>为什么重要：</strong>Superlogical 愿景是「面向一切工作的 Multiplexer」，终端只是第一步。</p>
+  <p><strong>怎么落地：</strong>编排层只依赖 session/block API + OSC 7501，UI 与业务恢复自建。</p>
+  <p><strong>边界：</strong>原语路线牺牲开箱即用，团队要有集成能力。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：资深 SRE——「tmux 二十年够用，Agent 再多也是 Shell 里跑命令。」</p>
+  <p class="rebuttal-text">子 Agent 并行、图像输出、blocked 授权与可编程编排会把「合成屏 + 人肉点 pane」推到维护极限，这不是命令数量问题，是观测与控制接口要从 UI 升级到 API 与协议。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Agent 放大 Multiplexer 价值：持久化、多进程、读/写/判完成成为基础设施。</li>
+    <li>Compositing 兼容 SSH；Mirroring 用强客户端换原生终端特性与直接数据流。</li>
+    <li>Rex = libghostty 渲染 + Server 管 Block + 丰富 API，定位 Multiplexer 非 Agent IDE。</li>
+    <li>OSC 7501 让终端程序自报状态，可成为跨工具协作协议。</li>
+    <li>与 Herdr/Orca 是层次不同，可叠加而非零和；Beta/闭源/恢复边界需冷静评估。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>画一张主/子 Agent 进程树，标出必须持久化与人工介入的 PTY。</li>
+    <li>对比 tmux 与 Rex API 能否覆盖：创建 Block、读输出、client.key、describe_block。</li>
+    <li>在 Agent 工具链中试验 OSC 7501 state=blocked/working 驱动 UI。</li>
+    <li>编排代码与 Agent Session ID 绑定，明确 Server 重启后的恢复责任分工。</li>
+    <li>关注 Superlogical 正式开源与 API 稳定公告，再押生产依赖。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>终端 Multiplexer 从「开发者关窗不丢编译」升级为「多 Agent 运行时的可编程操作系统层」——值得投资的是 API 与协议，而不只是分屏 UI。</p>
+</div>
+`;
+
+const { svg, height } = await buildSvg({ css: CSS, body, width: 1320 });
+fs.writeFileSync(OUT, svg);
+console.log(`Wrote ${OUT} (${height}px)`);

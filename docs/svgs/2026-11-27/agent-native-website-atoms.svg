@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="5615" viewBox="0 0 1320 5615">
+  <foreignObject x="0" y="0" width="1320" height="5615">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#1a0f24,#2d1b3d);padding:48px 60px;color:#e2e8f0}
+h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,#f472b6,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-right:8px}
+.tag-atoms{background:#581c87;color:#e9d5ff}.tag-edit{background:#134e4a;color:#5eead4}.tag-stripe{background:#1e3a8a;color:#bfdbfe}
+.card{background:#1e293b;border-radius:16px;padding:32px;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,0.35);border-left:5px solid #c084fc}
+.card h3{font-size:22px;font-weight:700;color:#e9d5ff;margin-bottom:12px}
+.card p{font-size:16px;line-height:1.8;color:#cbd5e1;margin-bottom:10px}
+.map{background:#0f172a;border-radius:20px;padding:36px;margin-bottom:32px;box-shadow:0 4px 24px rgba(0,0,0,0.4);border:1px solid #4c1d95}
+.diagram{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+.node{background:linear-gradient(135deg,#4c1d95,#6b21a8);border:2px solid #c084fc;border-radius:14px;padding:12px 14px;text-align:center;min-width:72px;font-weight:700;font-size:11px;color:#fae8ff}
+.node-em{background:linear-gradient(135deg,#134e4a,#115e59);border-color:#2dd4bf;color:#ccfbf1}
+.arrow-sym{font-size:14px;color:#64748b}
+.conclusion{background:linear-gradient(135deg,#9333ea,#db2777);color:#fff;border-radius:20px;padding:36px;margin-top:24px}
+.conclusion h2{font-size:26px;margin-bottom:16px}
+.conclusion p,.conclusion ol li{font-size:16px;line-height:1.8;opacity:0.95}
+.conclusion ol li{margin-left:20px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:#581c87;padding:10px 12px;text-align:left;font-weight:700;color:#f3e8ff;border-bottom:2px solid #a855f7}
+td{padding:10px 12px;border-bottom:1px solid #334155;color:#cbd5e1;vertical-align:top}
+.correction{background:#3b0764;border:2px solid #a855f7;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center}
+.correction h3{color:#e9d5ff;margin-bottom:8px}
+.rebuttal{background:#1e1b4b;border:2px solid #818cf8;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.rebuttal h3{color:#c7d2fe;margin-bottom:12px;font-size:22px;font-weight:700}
+.rebuttal-role{font-size:14px;color:#a5b4fc;font-weight:600;margin-bottom:10px}
+.rebuttal-text{font-size:17px;line-height:1.8;color:#ede9fe}
+.subtitle{font-size:17px;color:#94a3b8;margin-bottom:32px;line-height:1.6}</style>
+      
+<h1>Atoms 实战：一人搭建 Agent 原生网站「门道」</h1>
+<div style="margin-bottom:16px">
+  <span class="tag tag-atoms">Atoms 无代码</span>
+  <span class="tag tag-edit">多 Agent 编辑部</span>
+  <span class="tag tag-stripe">会员 / Stripe</span>
+</div>
+<p class="subtitle">本文解决的核心问题是：个人如何在不写代码的前提下，用 Atoms 把 Agent 装进网站当「员工」——以门道 mendao.pub.atoms.world 为例，用深度研究定卖什么、竞赛模式定架构、双编辑 Agent 每日收稿，Stripe 十九元月费，两人订阅即可覆盖模型成本。</p>
+
+<div class="map">
+  <h3 style="font-size:20px;color:#e9d5ff;margin-bottom:12px;text-align:center">六步搭建 Agent 原生站</h3>
+  <div class="diagram">
+    <div class="node">深度研究定方向</div><span class="arrow-sym">→</span>
+    <div class="node-em">竞赛模式定架构</div><span class="arrow-sym">→</span>
+    <div class="node">编辑部 Agent</div><span class="arrow-sym">→</span>
+    <div class="node-em">定时任务</div><span class="arrow-sym">→</span>
+    <div class="node">Stripe 会员</div><span class="arrow-sym">→</span>
+    <div class="node-em">SEO + Agent 入口</div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:#94a3b8;margin-top:12px">卖点是「信息减量」：替读者筛最佳实践，与 AI 日报式增量相反。</p>
+</div>
+
+<div class="correction">
+  <h3>认知纠偏</h3>
+  <p style="color:#f3e8ff;font-size:16px">误解：Agent 原生网站 = 只给来访 Agent 看 robots/skill。门道一半在<strong>站内 Agent 当编辑决策</strong>，一半在<strong>读者 Agent 带 Skill 来查</strong>，两端都是 Agent。</p>
+</div>
+
+<div class="card">
+  <h3>【概念拆解卡】Agent 原生网站 vs 传统内容站</h3>
+  <p><strong>在讲什么：</strong>决策与日常运营由站内 Agent 完成（收稿、写理由、更新），而不只是 CMS + 人工编辑。</p>
+  <p><strong>关键理解：</strong>卖的是持续更新的「最佳实践索引」，读者为省上下文窗口与时间订阅。</p>
+  <p><strong>关系：</strong>领域 → 步骤 → 问题 → 做法 四层模型；免费前 10 篇，第 11 篇起锁会员。</p>
+  <p><strong>落地：</strong>先选垂直人群 + 三个「天天会搜」的实操问题，再搭站。</p>
+  <p><strong>边界：</strong>不转载全文，只中文标题+编者按+入选理由+原文链；下架只打标记。</p>
+  <p><strong>原文：</strong>「门道卖的是信息减量……最佳实践每天都在变，读者就有理由一直订阅下去。」</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】第 0–2 步：深度研究与竞赛模式</h3>
+  <p><strong>深度研究（Iris）：</strong>先要大纲确认方向；十个问题用读者会搜的原句；每题 ≥3 个一手做法+来源编号；同类站价格表禁瞎估。</p>
+  <p><strong>竞赛模式：</strong>同一段架构提示词出四版，选「读者一进来知道先看哪儿」的刊物型，而非术语落地页。</p>
+  <p><strong>架构要点：</strong>读者 Vite+React；编辑部 Vercel AI SDK Python；后台 FastAPI+Postgres 全在 Atoms 云。</p>
+  <p><strong>避坑：</strong>研究报告是起点不是站内容；挑三个天天碰的问题填进架构提示词。</p>
+  <p><strong>验收：</strong>四版首页能点领域→步骤→问题；问题页无文章时显示「编辑部还没有收录文章」。</p>
+</div>
+
+<div class="card">
+  <h3>【方法/工具卡】编辑部五日流水线</h3>
+  <p><strong>步骤：</strong>收集 RSS（首源 90 天/其后 7 天）→ 程序筛选（重复/广告词/太短等）→ 责任编辑 JSON 判决 → 复核编辑盲审拿不准/疑点 → 程序闸门发布。</p>
+  <p><strong>岗位：</strong>责任编辑全工具；复核编辑仅 read+decide，看不到编辑结论。</p>
+  <p><strong>记忆：</strong>交接日志 + 核心记忆 ≤1000 字，禁 URL/抄原文。</p>
+  <p><strong>可靠性：</strong>daily-日期幂等；8 分钟一批；模型连错 3 次停步；作业队列 md_jobs 续跑。</p>
+  <p><strong>原文：</strong>「复核编辑每次新开一个对话，看不到责任编辑的结论。」</p>
+</div>
+
+<div class="card">
+  <h3>【决策/选型表】免费 vs 会员与鉴权</h3>
+  <table>
+    <tr><th>场景</th><th>策略</th><th>理由</th><th>禁止</th></tr>
+    <tr><td>每问题前 10 篇</td><td>永久免费全文链</td><td>SEO+试用</td><td>前端各自判断权限</td></tr>
+    <tr><td>第 11 篇起</td><td>仅标题+锁+去 /membership</td><td>转化</td><td>多处重复写死逻辑</td></tr>
+    <tr><td>读权限</td><td>后端单函数 canReadFull</td><td>一致</td><td>站长默认看全站</td></tr>
+    <tr><td>外站 Agent</td><td>Bearer md_ 密钥</td><td>5000 次/日</td><td>密钥写进日志</td></tr>
+    <tr><td>定时编辑部</td><td>x-run-secret 内部头</td><td>防误触</td><td>未配密钥仍开放 internal</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【跨概念对比表】信息增量 vs 信息减量</h3>
+  <table>
+    <tr><th>维度</th><th>AI 日报/热点推</th><th>门道式减量站</th><th>结论</th></tr>
+    <tr><td>价值</td><td>更多新资讯</td><td>已筛的实操做法</td><td>订阅动机不同</td></tr>
+    <tr><td>生产</td><td>人工或简单聚合</td><td>Agent 编辑+双审</td><td>边际成本在模型</td></tr>
+    <tr><td>读者 Agent</td><td>仍要读大量文</td><td>Skill+API/.md</td><td>省上下文</td></tr>
+    <tr><td>变现</td><td>广告/流量</td><td>月会员 19 元</td><td>2 人即可回本量级</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>【避坑清单卡】提示词与数据工程陷阱</h3>
+  <p><strong>研究方向错：</strong>问题写成「内容策略优化」而非「选题怎么找」。<strong>解：</strong>大纲必人工过一遍。</p>
+  <p><strong>示例文章占位：</strong>架构要求真文前进场显示空状态。<strong>严重度：</strong>中（SEO 与信任）。</p>
+  <p><strong>权限散落：</strong>免费界线只许后端一函数。<strong>解：</strong>接口验收 visible vs total。</p>
+  <p><strong>复核可见编辑结论：</strong>破坏双盲。<strong>解：</strong>新对话+仅领域卡片+原文。</p>
+  <p><strong>核心记忆灌水：</strong>超 1000 字或含链拒写。<strong>解：</strong>迁移行业时整张换领域卡片。</p>
+</div>
+
+<div class="card">
+  <h3>【心法/原则卡】一人副业的产品纪律</h3>
+  <p><strong>原则：</strong>一段提示词只做一件事，等 Alex 验收后再发下一段——顺序表 0–12 不可跳步。</p>
+  <p><strong>成本：</strong>模型月耗约三十元内，两会员覆盖——先验证订阅再扩领域。</p>
+  <p><strong>迁移：</strong>换行业改人群、站名、领域、三问题；编辑部与 Stripe 骨架复用。</p>
+  <p><strong>边界：</strong>Atoms 黑盒云；深度定制与合规需自评平台连接器能力。</p>
+</div>
+
+<div class="rebuttal">
+  <h3>反驳</h3>
+  <p class="rebuttal-role">对立视角：资深内容创业者——「AI 收稿就是洗稿聚合，订阅站活不过半年。」</p>
+  <p class="rebuttal-text">门道价值在双编辑+闸门引文校验与「只链不全文」的减量索引，若你不维护领域卡片与下架表，才会退化成低质 RSS 农场。</p>
+</div>
+
+<div class="conclusion">
+  <h2>结论</h2>
+  <p><strong>总结</strong></p>
+  <ol>
+    <li>Agent 原生站 = 站内 Agent 决策 + 站外 Agent 消费，门道用编辑部自动化每日更新。</li>
+    <li>深度研究定三个高频问题 → 竞赛模式定刊物型 UX → md_ 全套表与单点鉴权。</li>
+    <li>收集/筛选/判断/审核/发布五步；复核盲审+程序闸门保质量。</li>
+    <li>前 10 免费 + Stripe 会员 + Agent API 密钥，成本门槛低。</li>
+    <li>提示词按序交付、逐项验收是可复制的一人副业方法论。</li>
+  </ol>
+  <p><strong>行动清单</strong></p>
+  <ol>
+    <li>用深度研究模板跑一遍你的垂直人群，挑出三个天天搜的问题。</li>
+    <li>竞赛模式发架构提示词，选「刊物型」方案并建 md_ 表+接口。</li>
+    <li>配 RSS、双编辑手册、领域卡片，设 daily 定时与 EDITORIAL_RUN_SECRET。</li>
+    <li>Stripe 测试模式接通会员，核对 visible/total 与 sitemap 仅免费页。</li>
+    <li>给读者 Agent 写 Skill + /agent Markdown 与 .md 路由。</li>
+  </ol>
+  <p><strong>关键认知转变</strong></p>
+  <p>副业站不必先学全栈——把「架构、表、接口、员工手册」拆成可验收的提示词序列，人做产品判断，Atoms 团队做实现，Agent 做日常编辑。</p>
+</div>
+
+    </div>
+  </foreignObject>
+</svg>

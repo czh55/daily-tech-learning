@@ -1,0 +1,137 @@
+欢迎收听每日技术学习语音讲解。本期主题，Rex：AI Agent 时代的终端 Multiplexer 原语。标签包括Mirroring vs Compositing、多 Agent / PTY、OSC 7501。本次讲解预计时长 约 12 到 13 分钟，共 12 个部分。好，我们开始。
+
+一句话概括。本文解决的核心问题是：当终端从单人 Shell 界面变成多 Agent 长期并行运行环境时，Terminal Multiplexer 应如何演进——Superlogical 的 Rex 用 Mirroring + API + Block 模型，把「管理终端程序」做成可被上层 Agent Workspace 复用的基础设施原语，而非再造一个全能 IDE。
+
+接下来，第一部分，核心概念关系。
+
+关系脉络如下：PTY / Shell，然后Multiplexer Server，然后Block API，然后libghostty 渲染，然后Agent / 人类 Client
+
+接下来，第二部分，认知纠偏。
+
+认知纠偏
+
+误解：Rex = 又一个 Agent IDE，要和 Herdr/Orca 比功能清单。实际 Rex 定位 Multiplexer First，上层工作区可以在其 API 之上自建恢复、编排与 UI。
+
+接下来，第三部分，反驳。
+
+反驳
+
+对立视角：资深 SRE——「tmux 二十年够用，Agent 再多也是 Shell 里跑命令。」
+
+子 Agent 并行、图像输出、blocked 授权与可编程编排会把「合成屏 + 人肉点 pane」推到维护极限，这不是命令数量问题，是观测与控制接口要从 UI 升级到 API 与协议。
+
+接下来，第四部分，【概念拆解卡】Terminal、PTY 与 Multiplexer。
+
+在讲什么：终端模拟器只负责渲染；Shell/Agent 是 PTY 上的终端程序；Multiplexer 在客户端与程序之间插 Server，实现关窗口不杀进程、多窗格、远程重连。
+
+关键理解，AI Agent 让「长期运行 + 多进程树 + 跨 Agent 观察」从开发者便利变成基础设施刚需。
+
+关系：Multiplexer 不负责 Agent 推理，只负责进程与会话生命周期——与 Harness 分工明确。
+
+落地：主 Agent 拉起子 Agent 前，先想清楚会话持久化、输出抓取、人工介入点挂在哪一层。
+
+边界：Multiplexer 不保存 Agent 任务记忆与上下文，Session 恢复需 Harness 协同。
+
+原文：「这些能力并不是专门为 AI Agent 设计的，它们本来就是 Multiplexer 应该解决的问题。」
+
+接下来，第五部分，【跨概念对比表】tmux Compositing vs Rex Mirroring。
+
+屏幕，Server 合成整屏，各程序原始流由 Client 渲染，中间层解释负担转移
+
+客户端，任意终端/SSH 即可，需完整终端引擎（libghostty），SSH 裸连不友好
+
+新终端特性，需 tmux 正确实现，客户端原生处理，图像/鼠标等更易用
+
+网络，传合成屏 diff，传各 Block 终端数据，弱网可能更费带宽
+
+历史评价，跨终端兼容的经典权衡，用强客户端换直接呈现，非先进/落后，约束不同
+
+接下来，第六部分，【方法/工具卡】Rex 对象模型与编排 API。
+
+核心思路：Session ，得到 Window ，得到 Block；Block 是可扩展运行单元，不止传统 Pane。
+
+操作：session.create / new_window ，得到 布局定义 Block ，得到 session.describe_block ，得到 client.key 注输入 ，得到 监听输出与事件。
+
+选型：需要程序化编排多个 Agent 终端时用 API；纯人手 SSH 运维仍倾向 tmux。
+
+避坑，关图形客户端 ≠ 停 Server；停 Server 的恢复逻辑要自研并与 Agent Session ID 关联。
+
+原文：「外部程序可以不依赖人工操作 UI，就能创建终端环境、启动程序、读取状态并进行控制。」
+
+接下来，第七部分，【方法/工具卡】OSC 7501 终端状态协议。
+
+在讲什么：程序经 PTY 发 OSC 转义序列，key=value 报告 state：idle / working / done / blocked / error。
+
+落地：Agent 工具少靠猜日志，Multiplexer/终端统一读状态；未知序列可被忽略，利于向后兼容。
+
+生态：Herdr Core 传闻已采用——协议可跨产品，不必锁死 Rex。
+
+边界：只解决「进程在终端里处于什么态」，不替代业务级任务 DAG。
+
+验证：编排层对照 blocked 状态触发人工授权，而非死等 EOF。
+
+接下来，第八部分，【决策/选型表】Rex vs Herdr vs Orca。
+
+自研 Agent 平台要终端底座，Rex API + 自研 Workspace，原语可组合，指望 Rex 内置全套 IDE
+
+开箱即用 Agent 桌面，Herdr / Orca，工作流与 UI 一体，用功能表硬比 Rex
+
+远程纯 SSH，tmux，客户端门槛低，Rex Mirroring 无专用客户端
+
+观察 Agent 授权/错误，OSC 7501 兼容终端，标准化 state，每家解析 ANSI 日志
+
+生产长期依赖，评估 Beta/闭源/API 稳定性，基础设施风险，默认会开源（无承诺）
+
+接下来，第九部分，【避坑清单卡】采用 Rex 前的现实代价。
+
+智能客户端硬要求：Mirroring 依赖 libghostty 级引擎，普通 SSH 终端不够用。严重度：高。
+
+弱网带宽：多 Block 原始流可能比合成屏更重。解：评估内网/本机优先场景。
+
+闭源 Beta：API 与许可未定型。解：关键路径保留 tmux 回退或抽象编排接口。
+
+Agent 恢复误判：终端会话在 ≠ 任务上下文在。解：Harness 持久化 checkpoint，与 Rex 会话 ID 双轨。
+
+接下来，第十部分，【心法/原则卡】Primitive 先于一体化应用。
+
+原则，像 Linux 进程/管道一样，Multiplexer 提供小而稳的可组合能力，复杂 Agent IDE 在上层拼装。
+
+为什么重要，Superlogical 愿景是「面向一切工作的 Multiplexer」，终端只是第一步。
+
+怎么落地，编排层只依赖 session/block API + OSC 7501，UI 与业务恢复自建。
+
+边界：原语路线牺牲开箱即用，团队要有集成能力。
+
+接下来，第十一部分，总结与行动。
+
+结论
+
+Agent 放大 Multiplexer 价值：持久化、多进程、读/写/判完成成为基础设施。
+
+Compositing 兼容 SSH；Mirroring 用强客户端换原生终端特性与直接数据流。
+
+Rex = libghostty 渲染 + Server 管 Block + 丰富 API，定位 Multiplexer 非 Agent IDE。
+
+OSC 7501 让终端程序自报状态，可成为跨工具协作协议。
+
+与 Herdr/Orca 是层次不同，可叠加而非零和；Beta/闭源/恢复边界需冷静评估。
+
+画一张主/子 Agent 进程树，标出必须持久化与人工介入的 PTY。
+
+对比 tmux 与 Rex API 能否覆盖：创建 Block、读输出、client.key、describe_block。
+
+在 Agent 工具链中试验 OSC 7501 state=blocked/working 驱动 UI。
+
+编排代码与 Agent Session ID 绑定，明确 Server 重启后的恢复责任分工。
+
+关注 Superlogical 正式开源与 API 稳定公告，再押生产依赖。
+
+总结
+
+行动清单
+
+关键认知转变
+
+终端 Multiplexer 从「开发者关窗不丢编译」升级为「多 Agent 运行时的可编程操作系统层」——值得投资的是 API 与协议，而不只是分屏 UI。
+
+讲解完毕。建议对照页面上的 SVG 卡片复习要点，并阅读原文加深理解。祝学习顺利！
